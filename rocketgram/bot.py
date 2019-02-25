@@ -55,17 +55,22 @@ class Bot:
 
         return self.__token
 
-    @property
-    def name(self):
-        """Bot's username."""
-
+    def get_name(self):
         return self.__name
+
+    def set_name(self, name):
+        if self.__name is not None:
+            raise TypeError('Bot''s name can be set one time.')
+
+        self.__name = name
+
+    name = property(fget=get_name, fset=set_name, doc="Bot's username. Can be set one time.")
 
     @property
     def user_id(self):
         """Bot's user_id."""
 
-        return self.__name
+        return self.__user_id
 
     @property
     def dispatcher(self):
@@ -110,7 +115,7 @@ class Bot:
         """Bot's globals data storage."""
         return self.__globals
 
-    async def init(self):
+    async def init(self, getme=True):
         """Initializes connector and dispatcher.
         Performs bot initialization authorize bot on telegram and sets bot's name.
 
@@ -119,15 +124,6 @@ class Bot:
         logger.debug('Performing init...')
 
         await self.connector.init()
-
-        try:
-            response = await self.get_me()
-            self.__name = response.result.username
-            logger.info('Bot authorized as @%s', response.result.username)
-        except TelegramSendError as error:
-            logger.critical('Authorization fail with code %s for %s', error.code, self.token)
-            return False
-
         await self.dispatcher.init(self)
 
         return True

@@ -2,195 +2,238 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
-
 import asyncio
 import logging
 import signal
-from collections import namedtuple
-from random import choice
-from string import ascii_letters, digits
+import typing
+from contextlib import suppress
 
 from aiohttp import web
 
 from ..exceptions import TelegramSendError
 
+if typing.TYPE_CHECKING:
+    from ..bot import Bot
+
 logger = logging.getLogger('rocketgram.executors.webhook')
-
-BotParams = namedtuple('BotParams', ('bot', 'url', 'path'))
-HandlerParams = namedtuple('HandlerParams', ('method', 'path'))
-
-SHUTDOWN_WAIT = 3
-RANDOM_SUFFIX_LEN = 30
 
 
 class WebHooksExecutor:
-    def __init__(self, base_url, base_path, *, host=None, port=8080, skip_setup=False, skip_remove=False,
-                 shutdown_signals=None):
-        self.__bots = list()
-        self.__handlers = dict()
+    def __init__(self, base_url: str, base_path: str, *, host=None, port=8080):
+        """
+
+        :param base_url:
+        :param base_path:
+        :param host:
+        :param port:
+        """
+
         self.__base_url = base_url
         self.__base_path = base_path
-        if not shutdown_signals:
-            self.__shutdown_signals = (signal.SIGINT,)
-        else:
-            self.__shutdown_signals = shutdown_signals
-
-        self.__skip_setup = skip_setup
-        self.__skip_remove = skip_remove
-
-        self.__srv = None
         self.__host = host
         self.__port = port
 
-        self.__loop = asyncio.get_event_loop()
+        self.__bots = dict()
+        self.__srv = None
+        self.__started = False
 
-    def add_bot(self, bot, url=None, path=None, suffix=None):
-        if url is None or path is None:
-            if suffix is not None:
-                url = self.__base_url + '/' + suffix
-                path = self.__base_path + '/' + suffix
-            else:
-                rnd = ''.join([choice(ascii_letters + digits) for i in range(RANDOM_SUFFIX_LEN)])
-                url = self.__base_url + '/' + rnd
-                path = self.__base_path + '/' + rnd
+    @property
+    def bots(self):
+        """
 
-        self.__bots.append(BotParams(bot, url, path))
-        self.add_handler('POST', path, bot.process, is_bot=True)
+        :return:
+        """
+        return self.__bots.values()
 
-    def add_handler(self, method, path, handler, is_bot=False):
-        params = HandlerParams(method, path)
-        if params in self.__handlers:
-            raise ValueError('Duplicate handler params!')
+    @property
+    def running(self):
+        """
 
-        self.__handlers[params] = handler
+        :rtype: object
+        """
+        return self.__started
 
-    async def __webhandler(self, request: web.BaseRequest):
-        params = HandlerParams(request.method, request.path)
+    async def add_bot(self, bot: 'Bot', suffix=None, webhook=True, drop_updates=False,
+                      max_connections=None):
+        """
 
-        handler = self.__handlers.get(params)
-        if not handler:
-            logger.warning("Handler not found for request '%s %s'.", request.method, request.path)
-            return web.Response(status=400, text="Bad request.")
+        :param bot:
+        :param suffix:
+        :param webhook:
+        :param drop_updates:
+        :param max_connections:
+        """
+        if bot in self.__bots.values():
+            raise TypeError('Bot already added.')
 
-        response = await handler(await request.read())
-        if response:
-            return web.Response(body=response, headers={'Content-Type': 'application/json'})
+        if not suffix:
+            suffix = bot.token
 
-        return web.Response()
+        full_path = self.__base_path + suffix
+        full_url = self.__base_url + suffix
 
-    def __signal(self, sig):
-        logger.info("Got signal '%s'", sig)
+        if bot.name is None:
+            response = await bot.get_me()
+            bot.name = response.result.username
+            logger.info('Bot authorized as @%s', response.result.username)
 
-        self.__loop.stop()
+        await bot.init()
 
-    async def init_bots(self):
-        async def init(bot):
-            try:
-                await bot.init()
-            except Exception:
-                logger.exception('Error while init bot %s', bot.name)
-                return False
+        self.__bots[full_path] = bot
+        logger.info('Added bot @%s', bot.name)
 
-            return True
+        if drop_updates:
+            await bot.delete_webhook()
+            offset = 0
+            while True:
+                resp = await bot.get_updates(offset + 1)
+                if not len(resp.result):
+                    break
+                for update in resp.result:
+                    if offset < update.update_id:
+                        offset = update.update_id
+            logger.debug('Updates dropped for @%s', bot.name)
 
-        fs = [init(b.bot) for b in self.__bots]
+        if webhook or drop_updates:
+            await bot.set_webhook(full_url, max_connections=max_connections)
+            logger.debug('Webhook setup done for bot @%s', bot.name)
 
-        done, pending = await asyncio.wait(fs, loop=self.__loop)
+    async def remove_bot(self, bot: 'Bot', webhook=False):
+        """
 
-        if False in [r.result() for r in done]:
-            return False
-        else:
-            return True
+        :param bot:
+        :param webhook:
+        """
+        if bot not in self.__bots.values():
+            raise TypeError('Bot was not found.')
 
-    async def setup_webhooks(self):
-        async def setup(bot, url):
-            try:
-                await bot.set_webhook(url)
-            except TelegramSendError as error:
-                logger.critical('setWebhook fail for @%s: %s, %s', bot.name, error.code, error.response.description)
-                return False
-
-            return True
-
-        fs = [setup(b.bot, b.url) for b in self.__bots]
-
-        done, pending = await asyncio.wait(fs, loop=self.__loop)
-
-        if False in [r.result() for r in done]:
-            return False
-        else:
-            return True
-
-    async def remove_webhooks(self):
-        async def remove(bot):
+        if webhook:
             try:
                 await bot.delete_webhook()
             except TelegramSendError:
                 logger.error('Error while removing webhook for %s.' % bot.name)
 
-        await asyncio.gather(*[remove(b.bot) for b in self.__bots], loop=self.__loop)
+        self.__bots = {k: v for k, v in self.__bots.items() if v != bot}
 
-    def run(self):
-        logger.info("Starting with webhook...")
+        await bot.shutdown()
 
-        loop = self.__loop
+    async def start(self):
+        """
 
-        if not loop.run_until_complete(self.init_bots()):
-            self.shutdown(False)
+        :return:
+        """
+
+        async def __handler(request: web.BaseRequest):
+            if request.method != 'POST':
+                return web.Response(status=400, text="Bad request.")
+
+            bot: 'Bot' = self.__bots.get(request.path)
+
+            if not bot:
+                logger.warning("Bot not found for request '%s %s'.", request.method, request.path)
+
+            response = await bot.process(await request.read(), is_webhook=True)
+            if response:
+                return web.Response(body=response, headers={'Content-Type': 'application/json'})
+
+            return web.Response()
+
+        if self.__started:
             return
 
-        webserver = web.Server(self.__webhandler)
+        logger.info("Starting with webhooks...")
+
+        loop = asyncio.get_event_loop()
 
         logger.info("Listening on http://%s:%s%s", self.__host, self.__port, self.__base_path)
-        server = loop.create_server(webserver, self.__host, self.__port, backlog=128)
+        self.__srv = await loop.create_server(web.Server(__handler), self.__host, self.__port, backlog=128)
 
-        if not self.__skip_setup:
-            if not loop.run_until_complete(self.setup_webhooks()):
-                self.shutdown()
-                return
-
-        self.__srv = loop.run_until_complete(server)
-
+        self.__started = True
         logger.info("Running!")
 
-        for sig in self.__shutdown_signals:
-            loop.add_signal_handler(sig, self.__signal, sig)
+    async def stop(self):
+        """
 
-        loop.run_forever()
-        self.shutdown()
+        :return:
+        """
+        logger.info("Stopping server...")
 
-    def shutdown(self, remove_webhooks=True):
-        logger.info("Shutting down...")
+        if not self.__started:
+            return
 
-        loop = self.__loop
+        self.__started = False
 
         if self.__srv:
             self.__srv.close()
-            loop.run_until_complete(self.__srv.wait_closed())
+            await self.__srv.wait_closed()
+            self.__srv = None
 
-        try:
-            pending = asyncio.Task.all_tasks(loop=loop)
-            waits = asyncio.wait_for(asyncio.shield(asyncio.gather(*pending)), SHUTDOWN_WAIT, loop=loop)
-            loop.run_until_complete(waits)
-        except asyncio.TimeoutError:
-            pass
+        logger.info("Stopped.")
 
-        pending = asyncio.Task.all_tasks(loop=loop)
-        for t in asyncio.Task.all_tasks():
-            if not t.done():
-                logger.error('Cancelled pending task during shutdown: %s', t)
-                t.cancel()
-        try:
-            loop.run_until_complete(asyncio.gather(*pending))
-        except asyncio.CancelledError:
-            pass  # skip error
 
-        if not self.__skip_remove and remove_webhooks:
-            loop.run_until_complete(self.remove_webhooks())
+def run_webhook(bots, base_url: str, base_path: str, *, host='0.0.0.0', port=8080, webhook_setup=True,
+                webhook_delete=True, drop_updates=False, signals: tuple = (signal.SIGINT,), shutdown_wait=3):
+    """
 
-        shdwns = asyncio.gather(*[b.bot.shutdown() for b in self.__bots], loop=loop)
-        loop.run_until_complete(shdwns)
+    :param bots:
+    :param base_url:
+    :param base_path:
+    :param host:
+    :param port:
+    :param webhook_setup:
+    :param webhook_delete:
+    :param drop_updates:
+    :param signals:
+    :param shutdown_wait:
+    """
 
-        loop.close()
+    logger.info('Starting webhook executor...')
+    logger.debug('Using base url: %s', base_url)
+    logger.debug('Using base path: %s', base_path)
 
-        logger.info("Done.")
+    executor = WebHooksExecutor(base_url, base_path, host=host, port=port)
+    loop = asyncio.get_event_loop()
+
+    if not isinstance(bots, (list, tuple)):
+        bots = (bots,)
+
+    async def run():
+        for bot in bots:
+            await executor.add_bot(bot, webhook=webhook_setup, drop_updates=drop_updates)
+        await executor.start()
+
+    async def stop():
+        await executor.stop()
+        for bot in executor.bots:
+            await executor.remove_bot(bot, webhook=webhook_delete)
+
+    loop.run_until_complete(run())
+
+    for s in signals:
+        loop.add_signal_handler(s, loop.stop)
+
+    loop.run_forever()
+
+    for s in signals:
+        loop.remove_signal_handler(s)
+
+    logger.info('Shutting down...')
+
+    loop.run_until_complete(stop())
+
+    pending = asyncio.Task.all_tasks()
+    waits = asyncio.wait_for(asyncio.shield(asyncio.gather(*pending)), shutdown_wait)
+
+    with suppress(asyncio.TimeoutError):
+        loop.run_until_complete(waits)
+
+    pending = asyncio.Task.all_tasks()
+    for t in pending:
+        if not t.done():
+            logger.error('Cancelled pending task during shutdown: %s', t)
+            t.cancel()
+
+    with suppress(asyncio.CancelledError):
+        loop.run_until_complete(asyncio.gather(*pending))
+
+    logger.info('Bye!')

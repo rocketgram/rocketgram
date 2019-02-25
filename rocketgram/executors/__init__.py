@@ -3,5 +3,5 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-from .updates import UpdatesExecutor
-from .webhooks import WebHooksExecutor
+from .updates import UpdatesExecutor, run_updates
+from .webhooks import WebHooksExecutor, run_webhook

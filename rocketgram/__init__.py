@@ -6,8 +6,7 @@
 from .bot import Bot, Context
 from .dispatchers import simpledispatcher
 from .exceptions import *
-from .executors.updates import UpdatesExecutor
-from .executors.webhooks import WebHooksExecutor
+from .executors import *
 from .inlineresults import *
 from .keyboards import *
 

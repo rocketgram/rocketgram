@@ -2,10 +2,11 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
-
 import asyncio
 import logging
+import signal
 import typing
+from contextlib import suppress
 
 if typing.TYPE_CHECKING:
     from ..bot import Bot
@@ -13,78 +14,207 @@ if typing.TYPE_CHECKING:
 logger = logging.getLogger('rocketgram.executors.updates')
 
 
-class UpdatesExecutor():
-    def __init__(self, timeout=30, delete_webhook=True):
-        self.__bots = list()
-        self.__loop = asyncio.get_event_loop()
-        self.__timeout = timeout
+class UpdatesExecutor:
+    def __init__(self, request_timeout=30):
+        """
 
-    def add_bot(self, bot: 'Bot'):
+        """
+        self.__timeout = request_timeout
+
+        self.__bots = list()
+        self.__task = None
+        self.__started = False
+
+    @property
+    def bots(self):
+        """
+
+        :return:
+        """
+        return self.__bots.copy()
+
+    @property
+    def running(self):
+        """
+
+        :rtype: object
+        """
+        return self.__started
+
+    async def add_bot(self, bot: 'Bot', drop_updates=False):
+        """
+
+        :param bot:
+        :param drop_updates:
+        """
+        if bot in self.__bots:
+            raise TypeError('Bot already added.')
+
+        if bot.name is None:
+            response = await bot.get_me()
+            bot.name = response.result.username
+            logger.info('Bot authorized as @%s', response.result.username)
+
+        await bot.init()
+
+        logger.info('Added bot @%s', bot.name)
+
         self.__bots.append(bot)
 
-    async def init_bots(self):
-        async def init(bot):
-            try:
-                await bot.init()
-            except Exception:
-                logger.exception('Error while init router %s', bot.name)
-                return False
+        await bot.delete_webhook()
 
-            return True
-
-        fs = [init(bot) for bot in self.__bots]
-
-        done, pending = await asyncio.wait(fs, loop=self.__loop)
-
-        if False in [r.result() for r in done]:
-            return False
-        else:
-            return True
-
-    async def run_updates(self):
-        async def process(bot):
-            await bot.delete_webhook()
-
+        if drop_updates:
             offset = 0
             while True:
-                upds = list()
-                resp = await bot.get_updates(offset + 1, timeout=self.__timeout)
+                resp = await bot.get_updates(offset + 1)
+                if not len(resp.result):
+                    break
                 for update in resp.result:
                     if offset < update.update_id:
                         offset = update.update_id
+            logger.debug('Updates dropped for @%s', bot.name)
+
+    async def remove_bot(self, bot: 'Bot'):
+        """
+
+        :param bot:
+        """
+        if bot not in self.__bots:
+            raise TypeError('Bot was not found.')
+
+        self.__bots.remove(bot)
+
+        await bot.shutdown()
+
+    async def start(self):
+        """
+
+        :return:
+        """
+
+        if self.__started:
+            return
+
+        async def __run():
+
+            offsets = dict()
+            running = list()
+
+            async def __process(bot):
+                upds = list()
+                resp = await bot.get_updates(offsets.get(bot, 0) + 1, timeout=self.__timeout)
+                for update in resp.result:
+                    if offsets.get(bot, 0) < update.update_id:
+                        offsets[bot] = update.update_id
 
                     upds.append(bot.process(update))
 
-                await asyncio.gather(*upds, loop=self.__loop)
+                await asyncio.gather(*upds)
 
-        await asyncio.wait([process(bot) for bot in self.__bots], loop=self.__loop)
+                return bot
 
-    def run(self):
-        logger.info("Starting router with updates...")
+            pending = set()
 
-        loop = self.__loop
+            try:
+                while True:
+                    for bot in self.__bots:
+                        if bot not in running:
+                            running.append(bot)
+                            pending.add(asyncio.create_task(__process(bot)))
 
-        if not loop.run_until_complete(self.init_bots()):
-            self.shutdown()
-            return
+                    done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
+
+                    for d in done:
+                        running.remove(d.result())
+
+            except asyncio.CancelledError:
+                for t in pending:
+                    t.cancel()
+                    with suppress(asyncio.CancelledError):
+                        await t
+
+        logger.info("Starting with updates...")
+
+        self.__started = True
+        self.__task = asyncio.get_event_loop().create_task(__run())
 
         logger.info("Running!")
 
-        try:
-            loop.run_until_complete(self.run_updates())
-        except KeyboardInterrupt:  # pragma: no cover
-            pass
-        finally:
-            self.shutdown()
+    async def stop(self):
+        """
 
-    def shutdown(self):
-        logger.info("Shutting down...")
+        :return:
+        """
 
-        loop = self.__loop
+        if not self.__started:
+            return
 
-        shdwns = asyncio.gather(*[bot.init() for bot in self.__bots], loop=loop)
-        loop.run_until_complete(shdwns)
+        logger.info("Stopping server...")
 
-        loop.close()
+        self.__started = False
 
-        logger.info("Done.")
+        self.__task.cancel()
+        with suppress(asyncio.CancelledError):
+            await self.__task
+
+        self.__task = None
+
+        logger.info("Stopped.")
+
+
+def run_updates(bots, drop_updates=False, signals: tuple = (signal.SIGINT,), shutdown_wait=5):
+    """
+
+    :param bots:
+    :param drop_updates:
+    :param signals:
+    :param shutdown_wait:
+    """
+    logger.info('Starting updates executor...')
+
+    executor = UpdatesExecutor()
+    loop = asyncio.get_event_loop()
+
+    if not isinstance(bots, (list, tuple)):
+        bots = (bots,)
+
+    async def run():
+        for bot in bots:
+            await executor.add_bot(bot, drop_updates=drop_updates)
+        await executor.start()
+
+    async def stop():
+        await executor.stop()
+        for bot in executor.bots:
+            await executor.remove_bot(bot)
+
+    loop.run_until_complete(run())
+
+    for s in signals:
+        loop.add_signal_handler(s, loop.stop)
+
+    loop.run_forever()
+
+    for s in signals:
+        loop.remove_signal_handler(s)
+
+    logger.info('Shutting down...')
+
+    loop.run_until_complete(stop())
+
+    pending = asyncio.Task.all_tasks()
+    waits = asyncio.wait_for(asyncio.shield(asyncio.gather(*pending)), shutdown_wait)
+
+    with suppress(asyncio.TimeoutError):
+        loop.run_until_complete(waits)
+
+    pending = asyncio.Task.all_tasks()
+    for t in pending:
+        if not t.done():
+            logger.error('Cancelled pending task during shutdown: %s', t)
+            t.cancel()
+
+    with suppress(asyncio.CancelledError, asyncio.TimeoutError):
+        loop.run_until_complete(asyncio.gather(*pending))
+
+    logger.info('Bye!')
