@@ -188,10 +188,10 @@ class Bot:
             r = update.Response(response.data, req.method) if response.data else None
             if r:
                 logger.debug("Error from telegram: %s '%s'", response.status, r.description)
-                raise exceptions.TelegramSendError(req.method, req, response.status, r)
+                raise TelegramSendError(req.method, req, response.status, r)
             else:
                 logger.debug("Error from telegram: %s", response.status)
-                raise exceptions.TelegramSendError(req.method, req, response.status, None)
+                raise TelegramSendError(req.method, req, response.status, None)
 
     def prepare_request(self, req: request.Request, include_method=False):
         request_data = req.get(include_method=include_method)

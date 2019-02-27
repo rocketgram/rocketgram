@@ -19,7 +19,7 @@ if typing.TYPE_CHECKING:
 
 logger = logging.getLogger('rocketgram.simpledispatcher')
 
-SCOPE = '%s-%s'
+SCOPE = '%s-%s-%s'
 
 
 class HandlerNotFoundError(Exception):
@@ -87,12 +87,13 @@ class SimpleDispatcher(BaseSimpleDispatcher):
         Valid user scope can be only for message or callback query in chats and groups."""
 
         if ctx.update.update_type == UpdateType.message:
-            return SCOPE % (ctx.update.message.chat.chat_id, ctx.update.message.user.user_id)
+            return SCOPE % (id(ctx.bot), ctx.update.message.chat.chat_id, ctx.update.message.user.user_id)
         elif ctx.update.update_type == UpdateType.callback_query:
             if ctx.update.callback_query.inline_message_id is not None:
                 return None
             return SCOPE % (
-                ctx.update.callback_query.message.chat.chat_id, ctx.update.callback_query.message.user.user_id)
+                id(ctx.bot), ctx.update.callback_query.message.chat.chat_id,
+                ctx.update.callback_query.message.user.user_id)
 
     async def process(self, ctx: 'Context'):
         """Process new request."""
