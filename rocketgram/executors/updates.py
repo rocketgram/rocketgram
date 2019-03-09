@@ -122,10 +122,14 @@ class UpdatesExecutor:
                             running.append(bot)
                             pending.add(asyncio.create_task(__process(bot)))
 
-                    done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
+                    if len(pending):
+                        done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
 
-                    for d in done:
-                        running.remove(d.result())
+                        for d in done:
+                            running.remove(d.result())
+                    else:
+                        logger.info("Nothing to run. Sleep some time...")
+                        await asyncio.sleep(1)
 
             except asyncio.CancelledError:
                 for t in pending:
