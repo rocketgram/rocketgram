@@ -3,6 +3,6 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-from .dispatcher import SimpleDispatcher
+from .dispatcher import Dispatcher
 from .dispatcher import WaitNext
-from .proxy import SimpleDispatcherProxy
+from .proxy import DispatcherProxy

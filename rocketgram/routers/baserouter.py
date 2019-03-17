@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
     from ..context import Context
 
 
-class BaseDispatcher:
+class BaseRouter:
     async def init(self, bot: 'Bot'):
         raise NotImplemented
 

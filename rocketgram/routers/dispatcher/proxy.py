@@ -3,10 +3,10 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-from .base import BaseSimpleDispatcher
+from .base import BaseDispatcher
 
 
-class SimpleDispatcherProxy(BaseSimpleDispatcher):
+class DispatcherProxy(BaseDispatcher):
     @property
     def inits(self):
         return self._init
