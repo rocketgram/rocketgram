@@ -4,7 +4,7 @@
 
 
 from .bot import Bot, Context
-from .dispatchers import simpledispatcher
+from .routers import dispatcher
 from .exceptions import *
 from .executors import *
 from .inlineresults import *
