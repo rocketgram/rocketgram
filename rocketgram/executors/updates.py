@@ -21,12 +21,12 @@ class UpdatesExecutor:
         """
         self.__timeout = request_timeout
 
-        self.__bots = list()
+        self.__bots: typing.List['Bot'] = list()
         self.__task = None
         self.__started = False
 
     @property
-    def bots(self):
+    def bots(self) -> typing.List['Bot']:
         """
 
         :return:
@@ -34,14 +34,14 @@ class UpdatesExecutor:
         return self.__bots.copy()
 
     @property
-    def running(self):
+    def running(self) -> bool:
         """
 
         :rtype: object
         """
         return self.__started
 
-    async def add_bot(self, bot: 'Bot', drop_updates=False):
+    async def add_bot(self, bot: 'Bot', *, drop_updates=False):
         """
 
         :param bot:
