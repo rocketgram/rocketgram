@@ -139,6 +139,23 @@ class Context:
                                        disable_notification=disable_notification,
                                        reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
 
+    def send_or_edit(self, text, parse_mode=Default, disable_web_page_preview=Default, disable_notification=Default,
+                     reply_to_message_id=None, reply_markup=None):
+        """https://core.telegram.org/bots/api#sendmessage
+        https://core.telegram.org/bots/api#editmessagetext"""
+
+        if self.__update.update_type == UpdateType.message:
+            return self.__bot.send_message(self.update.message.chat.chat_id, text, parse_mode=parse_mode,
+                                           disable_web_page_preview=disable_web_page_preview,
+                                           disable_notification=disable_notification,
+                                           reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+        else:
+            return self.__bot.edit_message_text(chat_id=self.__update.callback_query.message.chat.chat_id,
+                                                message_id=self.__update.callback_query.message.message_id, text=text,
+                                                parse_mode=parse_mode,
+                                                disable_web_page_preview=disable_web_page_preview,
+                                                reply_markup=reply_markup)
+
     def edit_message_text(self, text, parse_mode=Default, disable_web_page_preview=Default, reply_markup=None):
         """https://core.telegram.org/bots/api#editmessagetext"""
 
