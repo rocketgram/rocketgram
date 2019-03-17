@@ -3,6 +3,7 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 import asyncio
+import json
 import logging
 import signal
 import typing
@@ -53,7 +54,7 @@ class WebHooksExecutor:
         """
         return self.__started
 
-    async def add_bot(self, bot: 'Bot', suffix=None, webhook=True, drop_updates=False,
+    async def add_bot(self, bot: 'Bot', *, suffix=None, webhook=True, drop_updates=False,
                       max_connections=None):
         """
 
@@ -131,10 +132,16 @@ class WebHooksExecutor:
 
             if not bot:
                 logger.warning("Bot not found for request '%s %s'.", request.method, request.path)
+                return web.Response(status=404, text="Not found.")
 
             response = await bot.process(await request.read(), is_webhook=True)
             if response:
-                return web.Response(body=response, headers={'Content-Type': 'application/json'})
+                send_file, data = response
+
+                if send_file:
+                    raise RuntimeError('Sending files though webhook-request not supported!')
+                data = json.dumps(data)
+                return web.Response(body=data, headers={'Content-Type': 'application/json'})
 
             return web.Response()
 
