@@ -46,7 +46,7 @@ def parse(text, entities):
         t = text[offset:offset + length]
         if encoded:
             t = t.decode('utf-16-le')
-        parsed.append(Item(e._type, t, e.url, e.user))
+        parsed.append(Item(e.entity_type, t, e.url, e.user))
 
         idx = offset + length
 
