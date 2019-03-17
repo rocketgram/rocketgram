@@ -7,6 +7,11 @@ from .types import Default
 
 
 class Request:
+    def __init__(self):
+        self._method = None
+        self._data = None
+        raise NotImplemented
+
     @property
     def method(self):
         return self._method
@@ -113,6 +118,17 @@ class SendDocument(Request):
         self._data = dict(chat_id=chat_id, document=document, caption=caption,
                           disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
                           reply_markup=reply_markup)
+
+
+class SendAnimation(Request):
+    """https://core.telegram.org/bots/api#sendanimation"""
+
+    def __init__(self, chat_id, animation, duration=None, width=None, height=None, caption=None,
+                 thumb=None, disable_notification=Default, reply_to_message_id=None, reply_markup=None):
+        self._method = "sendAnimation"
+        self._data = dict(chat_id=chat_id, animation=animation, duration=duration, width=width, height=height,
+                          thumb=thumb, caption=caption, disable_notification=disable_notification,
+                          reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
 
 
 class SendSticker(Request):

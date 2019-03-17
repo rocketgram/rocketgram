@@ -11,12 +11,12 @@ from contextlib import suppress
 from . import types, update, exceptions, request
 from .connectors import AioHttpConnector
 from .context import Context
-from .dispatchers.simpledispatcher import SimpleDispatcher
 from .exceptions import TelegramSendError
 from .keyboards.keyboard import Keyboard
+from .routers.dispatcher import Dispatcher
 
 if typing.TYPE_CHECKING:
-    from .dispatchers import BaseDispatcher
+    from .routers import BaseRouter
     from .connectors import BaseConnector
 
 API_URL = "https://api.telegram.org/bot%s/"
@@ -28,7 +28,7 @@ logger_raw_out = logging.getLogger('rocketgram.raw.out')
 
 
 class Bot:
-    def __init__(self, token: str, *, connector: 'BaseConnector' = None, dispatcher: 'BaseDispatcher' = None,
+    def __init__(self, token: str, *, connector: 'BaseConnector' = None, router: 'BaseRouter' = None,
                  globals_class: typing.ClassVar = dict, context_data_class: typing.ClassVar = dict,
                  api_url: str = API_URL, api_file_url: str = API_FILE_URL):
 
@@ -43,7 +43,7 @@ class Bot:
         self.__disable_notification = False
         self.__disable_web_page_preview = False
 
-        self.__dispatcher = dispatcher if dispatcher else SimpleDispatcher()
+        self.__dispatcher = router if router else Dispatcher()
         self.__connector = connector if connector else AioHttpConnector()
 
         self.__globals = globals_class()
@@ -138,7 +138,7 @@ class Bot:
         await self.dispatcher.shutdown(self)
         await self.connector.shutdown()
 
-    async def process(self, upd, is_webhook: bool = False):
+    async def process(self, upd, is_webhook: bool = False) -> typing.Union[None, request.Request]:
         try:
             if not isinstance(upd, update.Update):
                 upd = update.Update(json.loads(upd))
@@ -272,6 +272,14 @@ class Bot:
         return self.send(request.SendDocument(chat_id=chat_id, document=document, caption=caption,
                                               disable_notification=disable_notification,
                                               reply_to_message_id=reply_to_message_id, reply_markup=reply_markup))
+
+    def send_animation(self, chat_id, animation, duration=None, width=None, height=None, caption=None,
+                       thumb=None, disable_notification=types.Default, reply_to_message_id=None, reply_markup=None):
+        """https://core.telegram.org/bots/api#sendvideo"""
+        return self.send(
+            request.SendAnimation(chat_id=chat_id, animation=animation, duration=duration, width=width, height=height,
+                                  thumb=thumb, caption=caption, disable_notification=disable_notification,
+                                  reply_to_message_id=reply_to_message_id, reply_markup=reply_markup))
 
     def send_sticker(self, chat_id, sticker, disable_notification=types.Default, reply_to_message_id=None,
                      reply_markup=None):

@@ -93,15 +93,15 @@ class Chat:
         self.chat_id = data['id']
 
         if data['type'] == 'private':
-            self._type = ChatType.private
+            self.chat_type = ChatType.private
         elif data['type'] == 'group':
-            self._type = ChatType.group
+            self.chat_type = ChatType.group
         elif data['type'] == 'supergroup':
-            self._type = ChatType.supergroup
+            self.chat_type = ChatType.supergroup
         elif data['type'] == 'channel':
-            self._type = ChatType.channel
+            self.chat_type = ChatType.channel
         else:
-            self._type = None
+            self.chat_type = None
 
         self.title = data.get('title')
         self.username = data.get('username')
@@ -114,6 +114,7 @@ class MessageType(enum.Enum):
     text = enum.auto()
     audio = enum.auto()
     document = enum.auto()
+    animation = enum.auto()
     game = enum.auto()
     photo = enum.auto()
     sticker = enum.auto()
@@ -163,6 +164,7 @@ class Message:
 
         self.audio = Audio(data['audio']) if data.get('audio') is not None else None
         self.document = Document(data['document']) if data.get('document') is not None else None
+        self.animation = Animation(data['animation']) if data.get('animation') is not None else None
         self.game = Game(data['game']) if data.get('game') is not None else None
 
         if data.get('photo') is not None:
@@ -215,8 +217,10 @@ class Message:
             self.message_type = MessageType.text
         elif self.audio is not None:
             self.message_type = MessageType.audio
-        elif self.document is not None:
+        elif self.document is not None and self.animation is None:
             self.message_type = MessageType.document
+        elif self.animation is not None:
+            self.message_type = MessageType.animation
         elif self.game is not None:
             self.message_type = MessageType.game
         elif self.photo is not None:
@@ -267,7 +271,7 @@ class MessageEntity:
     """https://core.telegram.org/bots/api#messageentity"""
 
     def __init__(self, data: dict):
-        self._type = data['type']
+        self.entity_type = data['type']
         self.offset = data['offset']
         self.length = data['length']
         self.url = data.get('url')
@@ -328,6 +332,20 @@ class Video:
         self.height = data['height']
         self.duration = data['duration']
         self.thumb = PhotoSize(data['thumb']) if data.get('thumb') is not None else None
+        self.mime_type = data.get('mime_type')
+        self.file_size = data.get('file_size')
+
+
+class Animation:
+    """https://core.telegram.org/bots/api#animation"""
+
+    def __init__(self, data: dict):
+        self.file_id = data['file_id']
+        self.width = data['width']
+        self.height = data['height']
+        self.duration = data['duration']
+        self.thumb = PhotoSize(data['thumb']) if data.get('thumb') is not None else None
+        self.file_name = data.get('file_name')
         self.mime_type = data.get('mime_type')
         self.file_size = data.get('file_size')
 
@@ -623,6 +641,8 @@ class Response:
         elif method is 'sendAudio':
             self.result = Message(data['result'])
         elif method is 'sendDocument':
+            self.result = Message(data['result'])
+        elif method is 'sendAnimation':
             self.result = Message(data['result'])
         elif method is 'sendSticker':
             self.result = Message(data['result'])
