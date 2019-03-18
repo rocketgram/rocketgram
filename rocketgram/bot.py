@@ -43,7 +43,7 @@ class Bot:
         self.__disable_notification = False
         self.__disable_web_page_preview = False
 
-        self.__dispatcher = router if router else Dispatcher()
+        self.__router = router if router else Dispatcher()
         self.__connector = connector if connector else AioHttpConnector()
 
         self.__globals = globals_class()
@@ -73,10 +73,10 @@ class Bot:
         return self.__user_id
 
     @property
-    def dispatcher(self):
+    def router(self):
         """Bot's dispatcher."""
 
-        return self.__dispatcher
+        return self.__router
 
     @property
     def connector(self):
@@ -124,7 +124,7 @@ class Bot:
         logger.debug('Performing init...')
 
         await self.connector.init()
-        await self.dispatcher.init(self)
+        await self.router.init(self)
 
         return True
 
@@ -135,7 +135,7 @@ class Bot:
 
         logger.debug('Performing shutdown...')
 
-        await self.dispatcher.shutdown(self)
+        await self.router.shutdown(self)
         await self.connector.shutdown()
 
     async def process(self, upd, is_webhook: bool = False) -> typing.Union[None, requests.Request]:
@@ -148,7 +148,7 @@ class Bot:
             context_data = self.__context_data_class()
             ctx = Context(self, upd, context_data)
 
-            await self.dispatcher.process(ctx)
+            await self.router.process(ctx)
 
             webhook_request = None
             send_file = False
