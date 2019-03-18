@@ -5,6 +5,7 @@
 
 from .bot import Bot, Context
 from .routers import dispatcher
+from .update import *
 from .exceptions import *
 from .executors import *
 from .inlineresults import *
