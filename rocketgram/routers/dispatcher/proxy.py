@@ -20,9 +20,9 @@ class DispatcherProxy(BaseDispatcher):
         return self._handlers
 
     @property
-    def preprocessors(self):
-        return self._preprocessors
+    def befores(self):
+        return self._pre
 
     @property
-    def postprocessors(self):
-        return self._postprocessors
+    def afters(self):
+        return self._post

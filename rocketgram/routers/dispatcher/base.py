@@ -2,36 +2,27 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
-
+import logging
 from dataclasses import dataclass
 from inspect import signature
-from typing import Callable, Coroutine, AsyncGenerator, Union, Optional, List, TYPE_CHECKING
+from typing import Callable, Coroutine, AsyncGenerator, Union, List, TYPE_CHECKING
 
-from .filters import FILTERS_ATTR, PRIORITY_ATTR, HANDLER_ASSIGNED_ATTR
+from .filters import FilterParams, FILTERS_ATTR, PRIORITY_ATTR, HANDLER_ASSIGNED_ATTR
 from ..baserouter import BaseRouter
 
 if TYPE_CHECKING:
+    from ...bot import Bot
     from ...context import Context
+    from .proxy import DispatcherProxy
 
-__all__ = ['BaseDispatcher', 'WaitNext']
+logger = logging.getLogger('rocketgram.dispatcher')
 
 
 @dataclass
 class Handler:
     priority: int
     handler: Union[Callable, Coroutine, AsyncGenerator]
-    filters: Optional[Union[Callable, Coroutine]]
-
-
-@dataclass
-class Waiter:
-    handler: Union[Callable, Coroutine, AsyncGenerator]
-    waiter: Union[Callable, Coroutine]
-
-
-@dataclass
-class WaitNext:
-    waiter: Union[Callable, Coroutine]
+    filters: List[FilterParams]
 
 
 DEFAULT_PRIORITY = 1024
@@ -54,7 +45,7 @@ def _register(what: List[Handler], handler_func: Callable[['Context'], None]):
     except AttributeError:
         raise TypeError('Handler must have at least one filter!')
 
-    # TODO: Check filter types!
+    # TODO: Check filter types?
 
     handler = Handler(priority, handler_func, filters)
 
@@ -65,12 +56,54 @@ def _register(what: List[Handler], handler_func: Callable[['Context'], None]):
 
 
 class BaseDispatcher(BaseRouter):
-    def __init__(self):
+    def __init__(self, default_priority=DEFAULT_PRIORITY):
         self._init = list()
         self._shutdown = list()
         self._handlers: List[Handler] = list()
-        self._preprocessors: List[Handler] = list()
-        self._postprocessors: List[Handler] = list()
+        self._pre: List[Handler] = list()
+        self._post: List[Handler] = list()
+        self._default_priority = default_priority
+        self._bots: List['Bot'] = list()
+
+    @property
+    def default_priority(self):
+        return self._default_priority
+
+    def _resort_handlers(self):
+        # sorting handlers by priority
+        self._handlers = sorted(self._handlers, key=lambda handler: handler.priority)
+        self._pre = sorted(self._pre, key=lambda handler: handler.priority)
+        self._post = sorted(self._post, key=lambda handler: handler.priority)
+
+    def from_proxy(self, proxy: 'DispatcherProxy'):
+        self._init.extend(proxy.inits())
+        self._shutdown.extend(proxy.shutdowns())
+        self._handlers.extend(proxy.handlers())
+        self._pre.extend(proxy.befores())
+        self._post.extend(proxy.afters())
+
+        # if handler added in runtime - resort handlers
+        if len(self._bots):
+            self._resort_handlers()
+
+    async def init(self, bot: 'Bot'):
+        logger.debug('Performing init...')
+
+        if not len(self._bots):
+            self._resort_handlers()
+
+        self._bots.append(bot)
+
+        for func in self._init:
+            await func(self, bot)
+
+    async def shutdown(self, bot: 'Bot'):
+        logger.debug('Performing shutdown...')
+
+        for func in reversed(self._shutdown):
+            await func(self, bot)
+
+        self._bots.remove(bot)
 
     def on_init(self):
         """Registers init"""
@@ -93,14 +126,37 @@ class BaseDispatcher(BaseRouter):
     def handler(self, handler_func: Callable[['Context'], None]):
         """Registers handler"""
 
-        return _register(self._handlers, handler_func)
+        r = _register(self._handlers, handler_func)
 
-    def on_enter(self, handler_func: Callable[['Context'], None]):
+        # if handler added in runtime - resort handlers
+        if len(self._bots):
+            self._resort_handlers()
+
+        return r
+
+    def before(self, handler_func: Callable[['Context'], None]):
         """Registers preprocessor"""
 
-        return _register(self._preprocessors, handler_func)
+        r = _register(self._pre, handler_func)
 
-    def on_leave(self, handler_func: Callable[['Context'], None]):
+        # if handler added in runtime - resort handlers
+        if len(self._bots):
+            self._resort_handlers()
+
+        return r
+
+    def after(self, handler_func: Callable[['Context'], None]):
         """Registers postprocessor"""
 
-        return _register(self._postprocessors, handler_func)
+        r = _register(self._post, handler_func)
+
+        # if handler added in runtime - resort handlers
+        if len(self._bots):
+            self._resort_handlers()
+
+        return r
+
+    async def process(self, ctx: 'Context'):
+        """Process new request."""
+
+        raise NotImplemented

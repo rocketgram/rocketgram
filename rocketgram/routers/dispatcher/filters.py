@@ -6,7 +6,7 @@
 from dataclasses import dataclass
 from functools import wraps
 from inspect import signature
-from typing import Callable, Tuple, Dict, TYPE_CHECKING
+from typing import Union, Callable, Coroutine, Tuple, Dict, TYPE_CHECKING
 
 FILTERS_ATTR = 'rocketgram_dispatcher_filters'
 PRIORITY_ATTR = 'rocketgram_dispatcher_handler_priority'
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class FilterParams:
-    func: Callable
+    func: Union[Callable, Coroutine]
     args: Tuple
     kwargs: Dict
 
@@ -103,6 +103,8 @@ def waiter(waiter_func: Callable[['Context'], None]):
     # Checking if function is registered in dispatcher or as waiter.
     if hasattr(waiter_func, HANDLER_ASSIGNED_ATTR):
         raise TypeError('Already registered as handler!')
+    if hasattr(waiter_func, WAITER_ASSIGNED_ATTR):
+        raise TypeError('Already registered as waiter!')
     if hasattr(waiter_func, WAITER_ASSIGNED_ATTR):
         raise TypeError('Already registered as waiter!')
 

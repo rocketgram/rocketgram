@@ -11,8 +11,6 @@ from ...update import UpdateType, MessageType
 if typing.TYPE_CHECKING:
     from ...context import Context
 
-__all__ = ['command', 'callback', 'update_type', 'message_type', 'chat_type', 'catch_all']
-
 
 @make_filter
 def command(ctx: 'Context', *commands: str, case_sensitive=False, separator=' '):
