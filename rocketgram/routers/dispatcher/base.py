@@ -44,8 +44,6 @@ def _register(what: List[Handler], handler_func: Callable[['Context'], None], de
     assert isinstance(filters, list), 'Handler function has wrong filters!'
     assert len(filters), 'Handler must have at least one filter!'
 
-    # TODO: Check filter types?
-
     what.append(Handler(priority, handler_func, filters))
 
     setattr(handler_func, HANDLER_ASSIGNED_ATTR, True)
