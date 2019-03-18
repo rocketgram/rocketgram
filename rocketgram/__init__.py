@@ -5,12 +5,13 @@
 
 from .bot import Bot
 from .context import Context
-from .requests import *
-from .update import *
 from .errors import *
 from .executors import *
 from .inlineresults import *
 from .keyboards import *
+from .requests import *
+from .routers import *
+from .update import *
 
 
 @property

@@ -5,4 +5,6 @@
 
 from .dispatcher import Dispatcher
 from .dispatcher import WaitNext
+from .filters import make_filter, priority, waiter
+from . import commonfilters
 from .proxy import DispatcherProxy

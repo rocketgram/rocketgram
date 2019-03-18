@@ -3,5 +3,5 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-from . import dispatcher
 from .baserouter import BaseRouter
+from .dispatcher import *
