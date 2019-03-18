@@ -10,14 +10,12 @@ from contextlib import suppress
 from dataclasses import dataclass
 from typing import List, Callable, Coroutine, AsyncGenerator, Union
 
-from .base import BaseDispatcher, Handler, DEFAULT_PRIORITY
+from .base import BaseDispatcher, Handler
 from .filters import FilterParams, FILTERS_ATTR, WAITER_ASSIGNED_ATTR
-from .proxy import DispatcherProxy
 from ...update import UpdateType
 
 if typing.TYPE_CHECKING:
     from ...context import Context
-    from ...bot import Bot
 
 logger = logging.getLogger('rocketgram.dispatcher')
 
