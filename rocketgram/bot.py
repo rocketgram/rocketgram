@@ -51,6 +51,9 @@ class Bot:
             from .connectors import AioHttpConnector
             self.__connector = AioHttpConnector()
 
+        assert issubclass(globals_class, dict), "`globals_class` must be `dict` or subcalss of `dict`!"
+        assert issubclass(context_data_class, dict), "`context_data_class` must be `dict` or subcalss of `dict`!"
+
         self.__globals = globals_class()
         self.__context_data_class = context_data_class
 
