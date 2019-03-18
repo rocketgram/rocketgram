@@ -12,7 +12,7 @@ from contextlib import suppress
 from aiohttp import web
 
 from .executor import Executor
-from ..exceptions import TelegramSendError
+from ..errors import TelegramSendError
 
 if typing.TYPE_CHECKING:
     from ..bot import Bot

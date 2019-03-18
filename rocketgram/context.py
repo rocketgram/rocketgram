@@ -12,7 +12,7 @@ from .update import UpdateType
 
 if typing.TYPE_CHECKING:
     from .bot import Bot
-    from .request import Request
+    from .requests import Request
 
 logger = logging.getLogger('rocketgram.context')
 

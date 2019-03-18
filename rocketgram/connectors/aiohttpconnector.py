@@ -15,7 +15,7 @@ except:
 
 from .. import types
 from .baseconnector import BaseConnector, Response
-from ..exceptions import TelegramConnectionError, TelegramTimeoutError, TelegramParseError
+from ..errors import TelegramConnectionError, TelegramTimeoutError, TelegramParseError
 
 logger = logging.getLogger('rocketgram.connectors.aiohttpconnector')
 

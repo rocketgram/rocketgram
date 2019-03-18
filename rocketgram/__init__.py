@@ -3,10 +3,11 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-from .bot import Bot, Context
-from .routers import dispatcher
+from .bot import Bot
+from .context import Context
+from .requests import *
 from .update import *
-from .exceptions import *
+from .errors import *
 from .executors import *
 from .inlineresults import *
 from .keyboards import *
