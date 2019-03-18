@@ -13,7 +13,7 @@ from ..baserouter import BaseRouter
 if TYPE_CHECKING:
     from ...bot import Bot
     from ...context import Context
-    from .proxy import DispatcherProxy
+    from .proxy import BaseDispatcherProxy
 
 logger = logging.getLogger('rocketgram.dispatcher')
 

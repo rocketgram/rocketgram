@@ -43,8 +43,8 @@ class Bot:
 
         self.__router = router
         if self.__router is None:
-            from .routers.dispatcher import Dispatcher
-            self.__router = Dispatcher()
+            from .routers.dispatcher import BaseDispatcher
+            self.__router = BaseDispatcher()
 
         self.__connector = connector
         if self.__connector is None:
