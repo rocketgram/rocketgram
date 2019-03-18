@@ -83,9 +83,9 @@ def priority(pri: int):
         if hasattr(handler_func, WAITER_ASSIGNED_ATTR):
             raise TypeError('Already registered as waiter!')
 
-        # Checking is handler is registered in dispatcher.
+        # Check if priority already set.
         if hasattr(handler_func, PRIORITY_ATTR):
-            raise TypeError('Priority for handler already set!')
+            raise TypeError('Priority already set!')
 
         setattr(handler_func, PRIORITY_ATTR, pri)
 
