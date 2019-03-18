@@ -8,9 +8,10 @@ import logging
 import typing
 from contextlib import suppress
 from dataclasses import dataclass
+from time import time
 from typing import List, Callable, Coroutine, AsyncGenerator, Union
 
-from .base import BaseDispatcher, Handler, DEFAULT_PRIORITY
+from .base import BaseDispatcher, DEFAULT_PRIORITY
 from .filters import WaitNext, FilterParams, WAITER_ASSIGNED_ATTR
 from ...update import UpdateType
 
@@ -20,6 +21,9 @@ if typing.TYPE_CHECKING:
 logger = logging.getLogger('rocketgram.dispatcher')
 
 SCOPE = '%s-%s-%s'
+
+DEFAULT_WATIRES_LIFETIME = 60 * 60 * 24  # 1 day
+DEFAULT_WATIRES_LIFETIME_CHECK = 60 * 30  # 30 minutes
 
 
 class StopRequest(Exception):
@@ -32,6 +36,7 @@ class HandlerNotFoundError(Exception):
 
 @dataclass
 class Waiter:
+    created: int
     handler: Union[Callable, Coroutine, AsyncGenerator]
     waiter: Union[Callable, Coroutine]
     filters: List[FilterParams]
@@ -59,11 +64,27 @@ def _user_scope(ctx: 'Context'):
                         ctx.update.callback_query.user.user_id)
 
 
+async def _run_filters(ctx, filters):
+    for fltr in filters:
+        fr = await _call_or_await(fltr.func, ctx, *fltr.args, **fltr.kwargs)
+        assert isinstance(fr, bool), \
+            'Filter `%s` returns `%s` while `bool` is expected!' % (fltr.func.__name__, type(fr))
+        if not fr:
+            return False
+
+    return True
+
+
 class Dispatcher(BaseDispatcher):
-    def __init__(self, *, default_priority=DEFAULT_PRIORITY):
+    def __init__(self, *, default_priority=DEFAULT_PRIORITY,
+                 watires_lifetime=DEFAULT_WATIRES_LIFETIME,
+                 watires_lifetime_check=DEFAULT_WATIRES_LIFETIME_CHECK):
         super().__init__(default_priority=default_priority)
 
         self.__waiters: typing.Dict[str, Waiter] = dict()
+        self.__watires_lifetime = watires_lifetime
+        self.__watires_lifetime_check = watires_lifetime_check
+        self.__last_waiters_check = int(time())
 
         # TODO: Set waitings cleaner threshold.
 
@@ -73,24 +94,17 @@ class Dispatcher(BaseDispatcher):
 
         waiter = self.__waiters[scope]
 
-        for f in waiter.filters:
-            if not await _call_or_await(f.func, ctx, *f.args, **f.kwargs):
-                return
+        if not await _run_filters(ctx, waiter.filters):
+            return
+        wr = await _call_or_await(waiter.waiter, ctx)
 
-        if not await _call_or_await(waiter.waiter, ctx):
+        assert isinstance(wr, bool), \
+            'Waiter `%s` returns `%s` while `bool` is expected!' % (waiter.waiter.__name__, type(wr))
+
+        if not wr:
             return
 
         return waiter
-
-    async def __find_handler(self, ctx: 'Context'):
-        for handler in self._handlers:
-            r = True
-            for f in handler.filters:
-                if not await _call_or_await(f.func, ctx, *f.args, **f.kwargs):
-                    r = False
-                    break
-            if r:
-                return handler
 
     async def __run_generator(self, anext: bool, ctx, handler, scope):
         wait = None
@@ -117,26 +131,18 @@ class Dispatcher(BaseDispatcher):
 
         # If new wait exist set it for scope otherwise remove scope from waiters
         if wait is not None:
-            self.__waiters[scope] = Waiter(gen, wait.waiter, wait.filters)
+            self.__waiters[scope] = Waiter(int(time()), gen, wait.waiter, wait.filters)
         elif scope in self.__waiters:
             del self.__waiters[scope]
-
-    async def __run_prepost(self, ctx: 'Context', prepost: List[Handler]):
-        for pre in prepost:
-            r = True
-            for f in pre.filters:
-                if not await _call_or_await(f.func, ctx, *f.args, **f.kwargs):
-                    r = False
-                    break
-            if r:
-                await pre.handler(ctx)
 
     async def process(self, ctx: 'Context'):
         """Process new request."""
 
         try:
             # Run preprocessors...
-            await self.__run_prepost(ctx, self._pre)
+            for pre in self._pre:
+                if await _run_filters(ctx, pre.filters):
+                    await pre.handler(ctx)
 
             anext = False
             scope = _user_scope(ctx)
@@ -151,7 +157,10 @@ class Dispatcher(BaseDispatcher):
 
             # Find handler from handlers list.
             if not handler:
-                handler = await self.__find_handler(ctx)
+                for hdlr in self._handlers:
+                    if await _run_filters(ctx, hdlr.filters):
+                        handler = hdlr
+                        break
 
             # No handlers found. Exiting.
             if not handler:
@@ -172,7 +181,15 @@ class Dispatcher(BaseDispatcher):
                     await r
 
             # Run postprocessors...
-            await self.__run_prepost(ctx, self._post)
+            for post in self._post:
+                if await _run_filters(ctx, post.filters):
+                    await post.handler(ctx)
+
+            # Cleanup waiters:
+            current = int(time())
+            if current > self.__last_waiters_check + self.__watires_lifetime_check:
+                self.__last_waiters_check = current
+                _ = asyncio.create_task(self.__waiters_cleanup(current))
 
         except StopRequest as e:
             logger.debug('Request was %s interrupted: %s', ctx.update.update_id, e)
@@ -180,3 +197,14 @@ class Dispatcher(BaseDispatcher):
             logger.warning('Handler not found for update %s', ctx.update.update_id)
         except:
             logger.exception('Got exception during processing request')
+
+    async def __waiters_cleanup(self, current: int):
+        closes = list()
+        for k in self.__waiters.keys():
+            wtr = self.__waiters[k]
+            if current - wtr.created > self.__watires_lifetime:
+                del self.__waiters[k]
+                closes.append(wtr.handler.aclose())
+        for cl in closes:
+            with suppress(StopAsyncIteration):
+                await cl
