@@ -8,13 +8,15 @@ import signal
 import typing
 from contextlib import suppress
 
+from .executor import Executor
+
 if typing.TYPE_CHECKING:
     from ..bot import Bot
 
 logger = logging.getLogger('rocketgram.executors.updates')
 
 
-class UpdatesExecutor:
+class UpdatesExecutor(Executor):
     def __init__(self, request_timeout=30):
         """
 

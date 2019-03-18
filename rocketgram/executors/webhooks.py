@@ -11,6 +11,7 @@ from contextlib import suppress
 
 from aiohttp import web
 
+from .executor import Executor
 from ..exceptions import TelegramSendError
 
 if typing.TYPE_CHECKING:
@@ -19,7 +20,7 @@ if typing.TYPE_CHECKING:
 logger = logging.getLogger('rocketgram.executors.webhook')
 
 
-class WebHooksExecutor:
+class WebHooksExecutor(Executor):
     def __init__(self, base_url: str, base_path: str, *, host=None, port=8080):
         """
 
