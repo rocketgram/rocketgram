@@ -13,24 +13,24 @@ logger = logging.getLogger('rocketgram.executors.updates')
 
 class Executor:
     def __init__(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     @property
     def bots(self) -> typing.List['Bot']:
-        raise NotImplemented
+        raise NotImplementedError
 
     @property
     def running(self) -> bool:
-        raise NotImplemented
+        raise NotImplementedError
 
     async def add_bot(self, bot: 'Bot', *, drop_updates=False):
-        raise NotImplemented
+        raise NotImplementedError
 
     async def remove_bot(self, bot: 'Bot'):
-        raise NotImplemented
+        raise NotImplementedError
 
     async def start(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     async def stop(self):
-        raise NotImplemented
+        raise NotImplementedError

@@ -159,4 +159,4 @@ class BaseDispatcher(BaseRouter):
     async def process(self, ctx: 'Context'):
         """Process new request."""
 
-        raise NotImplemented
+        raise NotImplementedError

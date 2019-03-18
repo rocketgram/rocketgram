@@ -12,10 +12,10 @@ if typing.TYPE_CHECKING:
 
 class BaseRouter:
     async def init(self, bot: 'Bot'):
-        raise NotImplemented
+        raise NotImplementedError
 
     async def shutdown(self, bot: 'Bot'):
-        raise NotImplemented
+        raise NotImplementedError
 
     async def process(self, ctx: 'Context'):
-        raise NotImplemented
+        raise NotImplementedError

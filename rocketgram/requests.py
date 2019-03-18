@@ -10,7 +10,7 @@ class Request:
     def __init__(self):
         self._method = None
         self._data = None
-        raise NotImplemented
+        raise NotImplementedError
 
     @property
     def method(self):
