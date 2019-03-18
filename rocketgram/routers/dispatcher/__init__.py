@@ -3,8 +3,7 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-from .dispatcher import Dispatcher
-from .dispatcher import WaitNext
-from .filters import make_filter, priority, waiter
 from . import commonfilters
+from .dispatcher import Dispatcher
+from .filters import make_filter, make_waiter, priority
 from .proxy import DispatcherProxy

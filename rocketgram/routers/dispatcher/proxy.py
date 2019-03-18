@@ -26,3 +26,8 @@ class DispatcherProxy(BaseDispatcher):
     @property
     def afters(self):
         return self._post
+
+    async def process(self, ctx: 'Context'):
+        """Process new request."""
+
+        raise NotImplementedError

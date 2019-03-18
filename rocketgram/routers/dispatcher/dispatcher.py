@@ -10,8 +10,8 @@ from contextlib import suppress
 from dataclasses import dataclass
 from typing import List, Callable, Coroutine, AsyncGenerator, Union
 
-from .base import BaseDispatcher, Handler
-from .filters import FilterParams, FILTERS_ATTR, WAITER_ASSIGNED_ATTR
+from .base import BaseDispatcher, Handler, DEFAULT_PRIORITY
+from .filters import WaitNext, FilterParams, WAITER_ASSIGNED_ATTR
 from ...update import UpdateType
 
 if typing.TYPE_CHECKING:
@@ -28,11 +28,6 @@ class StopRequest(Exception):
 
 class HandlerNotFoundError(Exception):
     pass
-
-
-@dataclass
-class WaitNext:
-    waiter: Union[Callable, Coroutine]
 
 
 @dataclass
@@ -65,8 +60,8 @@ def _user_scope(ctx: 'Context'):
 
 
 class Dispatcher(BaseDispatcher):
-    def __init__(self):
-        super().__init__(self)
+    def __init__(self, *, default_priority=DEFAULT_PRIORITY):
+        super().__init__(default_priority=default_priority)
 
         self.__waiters: typing.Dict[str, Waiter] = dict()
 
@@ -108,13 +103,11 @@ class Dispatcher(BaseDispatcher):
                 gen = handler.handler
                 wait = await gen.asend(ctx)
 
-        if wait and not isinstance(wait, WaitNext):
-            emsg = 'Handler `%s` sends `%s` while WaitNext is expected!' % (gen.__name__, type(wait))
-            raise TypeError(emsg)
+        assert not (wait and not isinstance(wait, WaitNext)), \
+            'Handler `%s` sends `%s` while WaitNext is expected!' % (gen.__name__, type(wait))
 
-        if wait and not hasattr(wait.waiter, WAITER_ASSIGNED_ATTR):
-            emsg = 'Handler `%s` sends waiting function not registered as waiter!' % handler.handler.__name__
-            raise TypeError(emsg)
+        assert not (wait and not hasattr(wait.waiter, WAITER_ASSIGNED_ATTR)), \
+            'Handler `%s` sends waiting function not registered as waiter!' % handler.handler.__name__
 
         # Check if other waiter for scope already exist
         if scope in self.__waiters and self.__waiters[scope].handler != gen:
@@ -124,8 +117,7 @@ class Dispatcher(BaseDispatcher):
 
         # If new wait exist set it for scope otherwise remove scope from waiters
         if wait is not None:
-            filters = getattr(wait.waiter, FILTERS_ATTR)
-            self.__waiters[scope] = Waiter(gen, wait.waiter, filters)
+            self.__waiters[scope] = Waiter(gen, wait.waiter, wait.filters)
         elif scope in self.__waiters:
             del self.__waiters[scope]
 

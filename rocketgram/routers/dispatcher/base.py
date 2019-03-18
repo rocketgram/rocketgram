@@ -4,10 +4,10 @@
 
 import logging
 from dataclasses import dataclass
-from inspect import signature
 from typing import Callable, Coroutine, AsyncGenerator, Union, List, TYPE_CHECKING
 
-from .filters import FilterParams, FILTERS_ATTR, PRIORITY_ATTR, HANDLER_ASSIGNED_ATTR
+from .filters import FILTERS_ATTR, PRIORITY_ATTR, WAITER_ASSIGNED_ATTR, HANDLER_ASSIGNED_ATTR
+from .filters import FilterParams, _check_sig
 from ..baserouter import BaseRouter
 
 if TYPE_CHECKING:
@@ -28,35 +28,32 @@ class Handler:
 DEFAULT_PRIORITY = 1024
 
 
-def _register(what: List[Handler], handler_func: Callable[['Context'], None]):
+def _register(what: List[Handler], handler_func: Callable[['Context'], None], default_priority: int):
     # Checking calling signature for handler_func.
-    try:
-        sig = signature(handler_func)
-        # object() means Context, passing to handler at runtime.
-        sig.bind(object())
-    except TypeError:
-        es = 'Handler `%s` must take exactly one argument `ctx: Context`!' % handler_func.__name__
-        raise TypeError(es) from None
+    # object() means Context, passing to handler at runtime.
+    assert _check_sig(handler_func, object()), \
+        'Handler `%s` must take exactly one argument `ctx: Context`!' % handler_func.__name__
 
-    priority = getattr(handler_func, PRIORITY_ATTR, DEFAULT_PRIORITY)
+    assert not hasattr(handler_func, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
+    assert not hasattr(handler_func, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
 
-    try:
-        filters = getattr(handler_func, FILTERS_ATTR)
-    except AttributeError:
-        raise TypeError('Handler must have at least one filter!')
+    priority = getattr(handler_func, PRIORITY_ATTR, default_priority)
+    assert isinstance(priority, int), 'Handler function has wrong priority!'
+
+    filters = getattr(handler_func, FILTERS_ATTR, list())
+    assert isinstance(filters, list), 'Handler function has wrong filters!'
+    assert len(filters), 'Handler must have at least one filter!'
 
     # TODO: Check filter types?
 
-    handler = Handler(priority, handler_func, filters)
-
-    what.append(handler)
+    what.append(Handler(priority, handler_func, filters))
 
     setattr(handler_func, HANDLER_ASSIGNED_ATTR, True)
     return handler_func
 
 
 class BaseDispatcher(BaseRouter):
-    def __init__(self, default_priority=DEFAULT_PRIORITY):
+    def __init__(self, *, default_priority=DEFAULT_PRIORITY):
         self._init = list()
         self._shutdown = list()
         self._handlers: List[Handler] = list()
@@ -126,7 +123,7 @@ class BaseDispatcher(BaseRouter):
     def handler(self, handler_func: Callable[['Context'], None]):
         """Registers handler"""
 
-        r = _register(self._handlers, handler_func)
+        r = _register(self._handlers, handler_func, self._default_priority)
 
         # if handler added in runtime - resort handlers
         if len(self._bots):
@@ -137,7 +134,7 @@ class BaseDispatcher(BaseRouter):
     def before(self, handler_func: Callable[['Context'], None]):
         """Registers preprocessor"""
 
-        r = _register(self._pre, handler_func)
+        r = _register(self._pre, handler_func, self._default_priority)
 
         # if handler added in runtime - resort handlers
         if len(self._bots):
@@ -148,7 +145,7 @@ class BaseDispatcher(BaseRouter):
     def after(self, handler_func: Callable[['Context'], None]):
         """Registers postprocessor"""
 
-        r = _register(self._post, handler_func)
+        r = _register(self._post, handler_func, self._default_priority)
 
         # if handler added in runtime - resort handlers
         if len(self._bots):

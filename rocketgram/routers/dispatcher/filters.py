@@ -6,7 +6,7 @@
 from dataclasses import dataclass
 from functools import wraps
 from inspect import signature
-from typing import Union, Callable, Coroutine, Tuple, Dict, TYPE_CHECKING
+from typing import List, Union, Callable, Coroutine, Tuple, Dict, TYPE_CHECKING
 
 FILTERS_ATTR = 'rocketgram_dispatcher_filters'
 PRIORITY_ATTR = 'rocketgram_dispatcher_handler_priority'
@@ -24,9 +24,19 @@ class FilterParams:
     kwargs: Dict
 
 
-# @dataclass
-# class FilterOr:
-#     pass
+@dataclass
+class WaitNext:
+    waiter: Union[Callable, Coroutine]
+    filters: List[FilterParams]
+
+
+def _check_sig(func, *args, **kwargs):
+    try:
+        sig = signature(func)
+        sig.bind(*args, **kwargs)
+        return True
+    except TypeError:
+        return False
 
 
 def make_filter(filter_func: Callable[['Context'], bool]):
@@ -36,24 +46,19 @@ def make_filter(filter_func: Callable[['Context'], bool]):
     def outer(*args, **kwargs):
         def inner(handler_func: Callable):
             # Checking if function is registered in dispatcher or as waiter.
-            if hasattr(handler_func, HANDLER_ASSIGNED_ATTR):
-                raise TypeError('Handler already registered!')
-            if hasattr(handler_func, WAITER_ASSIGNED_ATTR):
-                raise TypeError('Already registered as waiter!')
+            assert not hasattr(handler_func, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
+            assert not hasattr(handler_func, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
 
             # Checking calling signature for filter_func.
             # This prevents runtime errors when wrong
             # arguments passed to filter.
-            try:
-                sig = signature(filter_func)
-                # object() means Context, passing to filter at runtime.
-                sig.bind(object(), *args, **kwargs)
-            except TypeError as e:
-                es = 'Wrong arguments passed to filter `%s`: %s' % (filter_func.__name__, e)
-                raise TypeError(es) from None
+            # object() means Context, passing to filter at runtime.
+            assert _check_sig(filter_func, object(), *args, **kwargs), \
+                'Wrong arguments passed to filter `%s`!' % filter_func.__name__
 
             # Set property to handler function.
             params = getattr(handler_func, FILTERS_ATTR, list())
+            assert isinstance(params, list), 'Handler function has wrong filters!'
             params.insert(0, FilterParams(filter_func, args, kwargs))
             setattr(handler_func, FILTERS_ATTR, params)
 
@@ -64,33 +69,14 @@ def make_filter(filter_func: Callable[['Context'], bool]):
     return outer
 
 
-# def filter_or(handler_func: Callable[['Context', ...], None]):
-#
-#     # Checking if function is registered in dispatcher or as waiter.
-#     if hasattr(handler_func, HANDLER_ASSIGNED_ATTR):
-#         raise TypeError('Handler already registered!')
-#     if hasattr(handler_func, WAITER_ASSIGNED_ATTR):
-#         raise TypeError('Already registered as waiter!')
-#
-#     params = getattr(handler_func, FILTERS_ATTR, list())
-#     params.insert(0, FilterOr())
-#     setattr(handler_func, FILTERS_ATTR, params)
-#
-#     return handler_func
-
-
 def priority(pri: int):
     def inner(handler_func: Callable[['Context'], None]):
-
         # Checking if function is registered in dispatcher or as waiter.
-        if hasattr(handler_func, HANDLER_ASSIGNED_ATTR):
-            raise TypeError('Handler already registered!')
-        if hasattr(handler_func, WAITER_ASSIGNED_ATTR):
-            raise TypeError('Already registered as waiter!')
+        assert not hasattr(handler_func, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
+        assert not hasattr(handler_func, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
 
         # Check if priority already set.
-        if hasattr(handler_func, PRIORITY_ATTR):
-            raise TypeError('Priority already set!')
+        assert not hasattr(handler_func, PRIORITY_ATTR), 'Priority already set!'
 
         setattr(handler_func, PRIORITY_ATTR, pri)
 
@@ -99,27 +85,24 @@ def priority(pri: int):
     return inner
 
 
-def waiter(waiter_func: Callable[['Context'], None]):
+def make_waiter(waiter_func: Callable[['Context'], bool]):
+    """Make waiter"""
+
     # Checking if function is registered in dispatcher or as waiter.
-    if hasattr(waiter_func, HANDLER_ASSIGNED_ATTR):
-        raise TypeError('Already registered as handler!')
-    if hasattr(waiter_func, WAITER_ASSIGNED_ATTR):
-        raise TypeError('Already registered as waiter!')
-    if hasattr(waiter_func, WAITER_ASSIGNED_ATTR):
-        raise TypeError('Already registered as waiter!')
+    assert not hasattr(waiter_func, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
+    assert not hasattr(waiter_func, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
 
     # Priority can't be used in waiters
     if hasattr(waiter_func, PRIORITY_ATTR):
         raise TypeError('Priority can\'t be used in waiters!')
 
-    # Checking calling signature for waiter_func.
-    try:
-        sig = signature(waiter_func)
-        # object() means Context, passing to handler at runtime.
-        sig.bind(object())
-    except TypeError as e:
-        es = 'Waiter `%s` must take exactly one argument `ctx: Context`!' % waiter_func.__name__
-        raise TypeError(es) from None
+    filters = getattr(waiter_func, FILTERS_ATTR, list())
+    assert isinstance(filters, list), 'Waiter function has wrong filters!'
 
     setattr(waiter_func, WAITER_ASSIGNED_ATTR, True)
-    return waiter_func
+
+    @wraps(waiter_func)
+    def inner() -> WaitNext:
+        return WaitNext(waiter_func, filters)
+
+    return inner
