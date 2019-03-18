@@ -86,8 +86,6 @@ class Dispatcher(BaseDispatcher):
         self.__watires_lifetime_check = watires_lifetime_check
         self.__last_waiters_check = int(time())
 
-        # TODO: Set waitings cleaner threshold.
-
     async def __find_waiter(self, ctx: 'Context', scope):
         if scope not in self.__waiters:
             return
