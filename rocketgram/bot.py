@@ -9,11 +9,9 @@ import typing
 from contextlib import suppress
 
 from . import types, update, errors, requests
-from .connectors import AioHttpConnector
 from .context import Context
 from .errors import TelegramSendError
 from .keyboards.keyboard import Keyboard
-from .routers.dispatcher import Dispatcher
 
 if typing.TYPE_CHECKING:
     from .routers import BaseRouter
@@ -43,8 +41,15 @@ class Bot:
         self.__disable_notification = False
         self.__disable_web_page_preview = False
 
-        self.__router = router if router else Dispatcher()
-        self.__connector = connector if connector else AioHttpConnector()
+        self.__router = router
+        if self.__router is None:
+            from .routers.dispatcher import Dispatcher
+            self.__router = Dispatcher()
+
+        self.__connector = connector
+        if self.__connector is None:
+            from .connectors import AioHttpConnector
+            self.__connector = AioHttpConnector()
 
         self.__globals = globals_class()
         self.__context_data_class = context_data_class
@@ -305,9 +310,10 @@ class Bot:
     def send_video_note(self, chat_id, video_note, duration=None, length=None, disable_notification=types.Default,
                         reply_to_message_id=None, reply_markup=None):
         """https://core.telegram.org/bots/api#sendvideonote"""
-        return self.send(requests.SendVideoNote(chat_id=chat_id, video_note=video_note, duration=duration, length=length,
-                                                disable_notification=disable_notification,
-                                                reply_to_message_id=reply_to_message_id, reply_markup=reply_markup))
+        return self.send(
+            requests.SendVideoNote(chat_id=chat_id, video_note=video_note, duration=duration, length=length,
+                                   disable_notification=disable_notification,
+                                   reply_to_message_id=reply_to_message_id, reply_markup=reply_markup))
 
     def send_location(self, chat_id, latitude, longitude, disable_notification=types.Default, reply_to_message_id=None,
                       reply_markup=None):
@@ -383,7 +389,8 @@ class Bot:
         """https://core.telegram.org/bots/api#editmessagetext"""
         return self.send(
             requests.EditMessageText(chat_id=chat_id, message_id=message_id, inline_message_id=inline_message_id,
-                                     text=text, parse_mode=parse_mode, disable_web_page_preview=disable_web_page_preview,
+                                     text=text, parse_mode=parse_mode,
+                                     disable_web_page_preview=disable_web_page_preview,
                                      reply_markup=reply_markup))
 
     def edit_message_caption(self, chat_id=None, message_id=None, inline_message_id=None, caption=None,
