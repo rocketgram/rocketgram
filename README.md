@@ -2,12 +2,19 @@
 
 Modern and powerful asynchronous telegram bot framework.
 
-# Minimal requirements
+## Dependencies
 
-* Python 3.7
+### Required
+
+* Python >= 3.7
 * aiohttp 3.5.4
 
-# Example
+### Optional 
+
+* ujson >= 1.35
+* uvloop >= 0.12.1
+
+## Example
 
 There is a trivial example.
 
