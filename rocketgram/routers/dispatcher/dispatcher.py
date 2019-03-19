@@ -189,12 +189,8 @@ class Dispatcher(BaseDispatcher):
                 self.__last_waiters_check = current
                 _ = asyncio.create_task(self.__waiters_cleanup(current))
 
-        except StopRequest as e:
-            logger.debug('Request was %s interrupted: %s', ctx.update.update_id, e)
         except HandlerNotFoundError:
             logger.warning('Handler not found for update %s', ctx.update.update_id)
-        except:
-            logger.exception('Got exception during processing request')
 
     async def __waiters_cleanup(self, current: int):
         closes = list()
