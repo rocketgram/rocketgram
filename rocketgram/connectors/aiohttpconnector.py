@@ -10,7 +10,7 @@ import aiohttp
 
 try:
     import ujson as json
-except:
+except ModuleNotFoundError:
     import json
 
 from .. import types

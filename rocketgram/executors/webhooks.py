@@ -3,11 +3,15 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 import asyncio
-import json
 import logging
 import signal
 from contextlib import suppress
 from typing import TYPE_CHECKING, Set, Dict
+
+try:
+    import ujson as json
+except ModuleNotFoundError:
+    import json
 
 from aiohttp import web
 

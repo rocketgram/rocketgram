@@ -2,12 +2,15 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
-
-import json
 import logging
 from contextlib import suppress
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar, Optional
+
+try:
+    import ujson as json
+except ModuleNotFoundError:
+    import json
 
 from . import types, update, errors, requests
 from .context import Context
