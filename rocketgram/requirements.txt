@@ -1,0 +1,3 @@
+aiohttp >= 3.5.4
+uvloop[optional] >= 0.12.1
+ujson[optional] >= 1.35
