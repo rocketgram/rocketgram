@@ -48,7 +48,7 @@ def command(ctx: 'Context', *commands: str, case_sensitive=False, separator=' ')
 @make_filter
 def deeplink(ctx: 'Context', *commands: str, case_sensitive=False):
     """Filters deeplinks parameters passed to /start command.
-    If no commands was
+    If no commands was present then all deeplinks will be cached.
     Filters commands for other bots in groups.
     Assumes update_type == message and message_type == text.
 
@@ -149,8 +149,6 @@ def message_type(ctx: 'Context', *types):
     :return: True or False
     """
 
-    m = None
-
     if ctx.update.update_type is UpdateType.message:
         m = ctx.update.message
     elif ctx.update.update_type is UpdateType.edited_message:
@@ -179,8 +177,6 @@ def chat_type(ctx: 'Context', *types):
     :return: True or False
     """
 
-    m = None
-
     if ctx.update.update_type is UpdateType.message:
         m = ctx.update.message
     elif ctx.update.update_type is UpdateType.edited_message:
@@ -192,9 +188,6 @@ def chat_type(ctx: 'Context', *types):
     elif ctx.update.update_type is UpdateType.callback_query:
         m = ctx.update.callback_query.message
     else:
-        return False
-
-    if not m:
         return False
 
     if m.chat.chat_type not in types:
