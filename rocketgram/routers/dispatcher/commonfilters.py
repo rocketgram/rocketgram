@@ -84,7 +84,6 @@ def deeplink(ctx: 'Context', *commands: str, case_sensitive=False):
         text = ctx.update.message.text[7:]
 
     for cmd in commands:
-        print(cmd, text)
         if not case_sensitive:
             cmd = cmd.lower()
         if text.startswith(cmd):
