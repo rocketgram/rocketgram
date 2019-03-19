@@ -185,6 +185,12 @@ def run_updates(bots, drop_updates=False, signals: tuple = (signal.SIGINT,), shu
     :param signals:
     :param shutdown_wait:
     """
+
+    # try to use uvloop
+    with suppress(ModuleNotFoundError):
+        import uvloop
+        uvloop.install()
+
     logger.info('Starting updates executor...')
 
     executor = UpdatesExecutor()

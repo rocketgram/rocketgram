@@ -234,6 +234,11 @@ def run_webhook(bots, base_url: str, base_path: str, *, host='0.0.0.0', port=808
     :param shutdown_wait:
     """
 
+    # try to use uvloop
+    with suppress(ModuleNotFoundError):
+        import uvloop
+        uvloop.install()
+
     logger.info('Starting webhook executor...')
     logger.debug('Using base url: %s', base_url)
     logger.debug('Using base path: %s', base_path)
