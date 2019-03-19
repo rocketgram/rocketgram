@@ -1,6 +1,6 @@
 # rocketgram
 
-Modern asyncio telegram bot framework
+Modern and powerful asynchronous telegram bot framework.
 
 # Minimal requirements
 

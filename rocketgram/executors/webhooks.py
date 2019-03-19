@@ -183,7 +183,6 @@ class WebHooksExecutor(Executor):
         logger.info("Running!")
 
     async def __wait_tasks(self, tasks: Set[asyncio.Task]):
-        print('taaaaaaaaasks!!!!', len(tasks))
         while len(tasks):
             logger.info("Waiting %s tasks...", len(tasks))
             _, tasks = await asyncio.wait(tasks, timeout=1, return_when=asyncio.FIRST_COMPLETED)
