@@ -6,22 +6,23 @@ import asyncio
 import json
 import logging
 import signal
-import typing
 from contextlib import suppress
+from typing import TYPE_CHECKING, Set, Dict
 
 from aiohttp import web
 
 from .executor import Executor
 from ..errors import TelegramSendError
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from ..bot import Bot
 
 logger = logging.getLogger('rocketgram.executors.webhook')
 
 
 class WebHooksExecutor(Executor):
-    def __init__(self, base_url: str, base_path: str, *, host=None, port=8080):
+    def __init__(self, base_url: str, base_path: str, *, detached: bool = False, host: str = 'localhost',
+                 port: int = 8080):
         """
 
         :param base_url:
@@ -38,6 +39,9 @@ class WebHooksExecutor(Executor):
         self.__bots = dict()
         self.__srv = None
         self.__started = False
+        self.__detached = False
+
+        self.__tasks: Dict[Bot, Set[asyncio.Task]] = dict()
 
     @property
     def bots(self):
@@ -81,9 +85,6 @@ class WebHooksExecutor(Executor):
 
         await bot.init()
 
-        self.__bots[full_path] = bot
-        logger.info('Added bot @%s', bot.name)
-
         if drop_updates:
             await bot.delete_webhook()
             offset = 0
@@ -96,11 +97,14 @@ class WebHooksExecutor(Executor):
                         offset = update.update_id
             logger.debug('Updates dropped for @%s', bot.name)
 
+        self.__bots[full_path] = bot
+        logger.info('Added bot @%s', bot.name)
+
         if webhook or drop_updates:
             await bot.set_webhook(full_url, max_connections=max_connections)
             logger.debug('Webhook setup done for bot @%s', bot.name)
 
-    async def remove_bot(self, bot: 'Bot', webhook=False):
+    async def remove_bot(self, bot: 'Bot', webhook=True):
         """
 
         :param bot:
@@ -109,15 +113,22 @@ class WebHooksExecutor(Executor):
         if bot not in self.__bots.values():
             raise TypeError('Bot was not found.')
 
+        self.__bots = {k: v for k, v in self.__bots.items() if v != bot}
+
+        if bot in self.__tasks:
+            tasks = self.__tasks[bot]
+            self.__tasks[bot] = set()
+            await self.__wait_tasks(tasks)
+
         if webhook:
             try:
                 await bot.delete_webhook()
             except TelegramSendError:
                 logger.error('Error while removing webhook for %s.' % bot.name)
 
-        self.__bots = {k: v for k, v in self.__bots.items() if v != bot}
-
         await bot.shutdown()
+
+        logger.info('Removed bot @%s', bot.name)
 
     async def start(self):
         """
@@ -135,7 +146,17 @@ class WebHooksExecutor(Executor):
                 logger.warning("Bot not found for request '%s %s'.", request.method, request.path)
                 return web.Response(status=404, text="Not found.")
 
-            response = await bot.process(await request.read(), webhook=True, webhook_sendfile=False)
+            if not bot in self.__tasks:
+                self.__tasks[bot] = set()
+
+            task = asyncio.create_task(
+                bot.process(await request.read(), webhook=not self.__detached, webhook_sendfile=False))
+            self.__tasks[bot].add(task)
+
+            if self.__detached:
+                return web.Response(status=200)
+
+            response = await task
             if response:
                 if response.send_file:
                     raise RuntimeError('Sending files though webhook-request not supported!')
@@ -143,10 +164,14 @@ class WebHooksExecutor(Executor):
                 data = json.dumps(response.request)
                 return web.Response(body=data, headers={'Content-Type': 'application/json'})
 
+            self.__tasks[bot] = {t for t in self.__tasks[bot] if not t.done()}
+
             return web.Response()
 
         if self.__started:
             return
+
+        self.__started = True
 
         logger.info("Starting with webhooks...")
 
@@ -155,8 +180,13 @@ class WebHooksExecutor(Executor):
         logger.info("Listening on http://%s:%s%s", self.__host, self.__port, self.__base_path)
         self.__srv = await loop.create_server(web.Server(__handler), self.__host, self.__port, backlog=128)
 
-        self.__started = True
         logger.info("Running!")
+
+    async def __wait_tasks(self, tasks: Set[asyncio.Task]):
+        print('taaaaaaaaasks!!!!', len(tasks))
+        while len(tasks):
+            logger.info("Waiting %s tasks...", len(tasks))
+            _, tasks = await asyncio.wait(tasks, timeout=1, return_when=asyncio.FIRST_COMPLETED)
 
     async def stop(self):
         """
@@ -174,6 +204,13 @@ class WebHooksExecutor(Executor):
             self.__srv.close()
             await self.__srv.wait_closed()
             self.__srv = None
+
+        tasks = set()
+        for b, t in self.__tasks.items():
+            tasks.update(t)
+            t.clear()
+
+        await self.__wait_tasks(tasks)
 
         logger.info("Stopped.")
 

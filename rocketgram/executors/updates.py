@@ -5,12 +5,12 @@
 import asyncio
 import logging
 import signal
-import typing
 from contextlib import suppress
+from typing import TYPE_CHECKING, Optional, Dict, List, Set
 
 from .executor import Executor
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from ..bot import Bot
 
 logger = logging.getLogger('rocketgram.executors.updates')
@@ -23,17 +23,17 @@ class UpdatesExecutor(Executor):
         """
         self.__timeout = request_timeout
 
-        self.__bots: typing.List['Bot'] = list()
+        self.__bots: Dict['Bot', Optional[asyncio.Task]] = dict()
         self.__task = None
         self.__started = False
 
     @property
-    def bots(self) -> typing.List['Bot']:
+    def bots(self) -> List['Bot']:
         """
 
         :return:
         """
-        return self.__bots.copy()
+        return list(self.__bots.keys())
 
     @property
     def running(self) -> bool:
@@ -61,7 +61,7 @@ class UpdatesExecutor(Executor):
 
         logger.info('Added bot @%s', bot.name)
 
-        self.__bots.append(bot)
+        self.__bots[bot] = None
 
         await bot.delete_webhook()
 
@@ -76,6 +76,9 @@ class UpdatesExecutor(Executor):
                         offset = update.update_id
             logger.debug('Updates dropped for @%s', bot.name)
 
+        if self.running:
+            self.__start_bot(bot)
+
     async def remove_bot(self, bot: 'Bot'):
         """
 
@@ -84,9 +87,43 @@ class UpdatesExecutor(Executor):
         if bot not in self.__bots:
             raise TypeError('Bot was not found.')
 
-        self.__bots.remove(bot)
+        tasks = self.__bots[bot]
+        del self.__bots[bot]
+
+        if tasks:
+            await self.__wait_tasks({tasks})
 
         await bot.shutdown()
+
+        logger.info('Removed bot @%s', bot.name)
+
+    async def __runner(self, bot: 'Bot') -> Set[asyncio.Task]:
+        offset = 0
+        pending = set()
+        while True:
+            try:
+                resp = await bot.get_updates(offset + 1, timeout=self.__timeout)
+                for update in resp.result:
+                    if offset < update.update_id:
+                        offset = update.update_id
+
+                    task = asyncio.create_task(bot.process(update))
+                    task.done()
+                    pending.add(task)
+
+                pending = {t for t in pending if not t.done()}
+            except asyncio.CancelledError:
+                return pending
+            except:
+                logging.exception('Exception while processing updates')
+
+    def __start_bot(self, bot: 'Bot'):
+        assert bot in self.__bots, 'Unknown bot!'
+        assert self.__bots[bot] is None, 'Bot already started!'
+
+        aw = self.__runner(bot)
+        task = asyncio.create_task(aw)
+        self.__bots[bot] = task
 
     async def start(self):
         """
@@ -96,55 +133,25 @@ class UpdatesExecutor(Executor):
 
         if self.__started:
             return
-
-        async def __run():
-
-            offsets = dict()
-            running = list()
-
-            async def __process(bot):
-                upds = list()
-                resp = await bot.get_updates(offsets.get(bot, 0) + 1, timeout=self.__timeout)
-                for update in resp.result:
-                    if offsets.get(bot, 0) < update.update_id:
-                        offsets[bot] = update.update_id
-
-                    upds.append(bot.process(update))
-
-                await asyncio.gather(*upds)
-
-                return bot
-
-            pending = set()
-
-            try:
-                while True:
-                    for bot in self.__bots:
-                        if bot not in running:
-                            running.append(bot)
-                            pending.add(asyncio.create_task(__process(bot)))
-
-                    if len(pending):
-                        done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
-
-                        for d in done:
-                            running.remove(d.result())
-                    else:
-                        logger.info("Nothing to run. Sleep some time...")
-                        await asyncio.sleep(1)
-
-            except asyncio.CancelledError:
-                for t in pending:
-                    t.cancel()
-                    with suppress(asyncio.CancelledError):
-                        await t
+        self.__started = True
 
         logger.info("Starting with updates...")
 
-        self.__started = True
-        self.__task = asyncio.get_event_loop().create_task(__run())
+        for bot in self.__bots:
+            self.__start_bot(bot)
 
         logger.info("Running!")
+
+    async def __wait_tasks(self, tasks: Set[asyncio.Task]):
+        pending = set()
+        for task in tasks:
+            task.cancel()
+            p = await task
+            pending.update(p)
+
+        while len(pending):
+            logger.info("Waiting %s tasks...", len(pending))
+            _, pending = await asyncio.wait(pending, timeout=1, return_when=asyncio.FIRST_COMPLETED)
 
     async def stop(self):
         """
@@ -155,15 +162,17 @@ class UpdatesExecutor(Executor):
         if not self.__started:
             return
 
-        logger.info("Stopping server...")
-
         self.__started = False
 
-        self.__task.cancel()
-        with suppress(asyncio.CancelledError):
-            await self.__task
+        logger.info("Stopping server...")
 
-        self.__task = None
+        tasks = set()
+        for bot, task in self.__bots.items():
+            self.__bots[bot] = None
+            if task:
+                tasks.add(task)
+
+        await self.__wait_tasks(tasks)
 
         logger.info("Stopped.")
 

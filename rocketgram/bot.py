@@ -171,16 +171,14 @@ class Bot:
 
             for req in ctx.get_webhook_requests():
                 # prepare request
-                if not prepared and webhook:
+                if not send_webhook_request and webhook:
                     prepared = self.prepare_request(req, include_method=True)
                     if webhook_sendfile or not prepared.send_file:
-                        print('prep', prepared.request)
                         send_webhook_request = True
                         continue
 
                 # fallback and send by hands
                 with suppress(Exception):
-                    print('fallback', prepared.request)
                     await self.send(req)
 
             if send_webhook_request:
