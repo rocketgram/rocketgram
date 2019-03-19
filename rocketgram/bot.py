@@ -5,15 +5,16 @@
 
 import json
 import logging
-import typing
 from contextlib import suppress
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, ClassVar, Optional
 
 from . import types, update, errors, requests
 from .context import Context
 from .errors import TelegramSendError
 from .keyboards.keyboard import Keyboard
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from .routers import BaseRouter
     from .connectors import BaseConnector
 
@@ -25,9 +26,15 @@ logger_raw_in = logging.getLogger('rocketgram.raw.in')
 logger_raw_out = logging.getLogger('rocketgram.raw.out')
 
 
+@dataclass
+class PreparedRequest:
+    send_file: bool
+    request: dict
+
+
 class Bot:
     def __init__(self, token: str, *, connector: 'BaseConnector' = None, router: 'BaseRouter' = None,
-                 globals_class: typing.ClassVar = dict, context_data_class: typing.ClassVar = dict,
+                 globals_class: ClassVar = dict, context_data_class: ClassVar = dict,
                  api_url: str = API_URL, api_file_url: str = API_FILE_URL):
 
         self.__token = token
@@ -43,8 +50,8 @@ class Bot:
 
         self.__router = router
         if self.__router is None:
-            from .routers.dispatcher import BaseDispatcher
-            self.__router = BaseDispatcher()
+            from .routers.dispatcher import Dispatcher
+            self.__router = Dispatcher()
 
         self.__connector = connector
         if self.__connector is None:
@@ -123,7 +130,7 @@ class Bot:
         """Bot's globals data storage."""
         return self.__globals
 
-    async def init(self, getme=True):
+    async def init(self):
         """Initializes connector and dispatcher.
         Performs bot initialization authorize bot on telegram and sets bot's name.
 
@@ -146,7 +153,8 @@ class Bot:
         await self.router.shutdown(self)
         await self.connector.shutdown()
 
-    async def process(self, upd, is_webhook: bool = False) -> typing.Union[None, requests.Request]:
+    async def process(self, upd, *, webhook: bool = False,
+                      webhook_sendfile: bool = False) -> Optional[PreparedRequest]:
         try:
             if not isinstance(upd, update.Update):
                 upd = update.Update(json.loads(upd))
@@ -158,37 +166,40 @@ class Bot:
 
             await self.router.process(ctx)
 
-            webhook_request = None
-            send_file = False
+            prepared = None
+            send_webhook_request = False
 
-            whreqs = ctx.get_webhook_requests()
+            for req in ctx.get_webhook_requests():
+                # prepare request
+                if not prepared and webhook:
+                    prepared = self.prepare_request(req, include_method=True)
+                    if webhook_sendfile or not prepared.send_file:
+                        print('prep', prepared.request)
+                        send_webhook_request = True
+                        continue
 
-            # preparing webhook-request
-            if len(whreqs) and is_webhook:
-                req = whreqs.pop(0)
-                send_file, webhook_request = self.prepare_request(req, include_method=True)
-
-            # fallback if requests more than one
-            for r in whreqs:
+                # fallback and send by hands
                 with suppress(Exception):
-                    await self.send(r)
-            if webhook_request:
-                return send_file, webhook_request
+                    print('fallback', prepared.request)
+                    await self.send(req)
 
-        except errors.TelegramStopRequest:
-            logger.debug('TelegramStopRequest for update %s' % upd.update_id)
+            if send_webhook_request:
+                return prepared
+
+        except errors.TelegramStopRequest as e:
+            logger.debug('Request was %s interrupted: %s', upd.update_id, e)
         except Exception:
             logger.exception('Got exception during processing request')
 
     async def send(self, req: requests.Request) -> update.Response:
-        sending_file, data = self.prepare_request(req)
+        prepared = self.prepare_request(req)
 
         url = self.__full_api_url + req.method
 
-        if sending_file:
-            response = await self.__connector.send_file(url, data)
+        if prepared.send_file:
+            response = await self.__connector.send_file(url, prepared.request)
         else:
-            response = await self.__connector.send(url, data)
+            response = await self.__connector.send(url, prepared.request)
 
         if response.status == 200:
             return update.Response(response.data, req.method)
@@ -201,7 +212,7 @@ class Bot:
                 logger.debug("Error from telegram: %s", response.status)
                 raise TelegramSendError(req.method, req, response.status, None)
 
-    def prepare_request(self, req: requests.Request, include_method=False):
+    def prepare_request(self, req: requests.Request, include_method=False) -> PreparedRequest:
         request_data = req.get(include_method=include_method)
 
         if request_data.get('parse_mode') is types.Default:
@@ -214,15 +225,15 @@ class Bot:
         if isinstance(request_data.get('reply_markup'), Keyboard):
             request_data['reply_markup'] = request_data['reply_markup'].render()
 
-        sending_file = False
+        send_file = False
         data = dict()
         for k, v in request_data.items():
             if v is not None:
                 data[k] = v
             if isinstance(v, types.InputFile):
-                sending_file = True
+                send_file = True
 
-        return sending_file, data
+        return PreparedRequest(send_file, data)
 
     def get_updates(self, offset=None, limit=None, timeout=None, allowed_updates=None):
         """https://core.telegram.org/bots/api#getupdates"""

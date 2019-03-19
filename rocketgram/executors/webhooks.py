@@ -135,13 +135,12 @@ class WebHooksExecutor(Executor):
                 logger.warning("Bot not found for request '%s %s'.", request.method, request.path)
                 return web.Response(status=404, text="Not found.")
 
-            response = await bot.process(await request.read(), is_webhook=True)
+            response = await bot.process(await request.read(), webhook=True, webhook_sendfile=False)
             if response:
-                send_file, data = response
-
-                if send_file:
+                if response.send_file:
                     raise RuntimeError('Sending files though webhook-request not supported!')
-                data = json.dumps(data)
+
+                data = json.dumps(response.request)
                 return web.Response(body=data, headers={'Content-Type': 'application/json'})
 
             return web.Response()
