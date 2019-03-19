@@ -42,7 +42,53 @@ def command(ctx: 'Context', *commands: str, case_sensitive=False, separator=' ')
         if text == cmd or text == cmd + '@' + ctx.bot.name:
             return True
 
-    # args = (command, splitted[1:], separator.join(splitted[1:]))
+    return False
+
+
+@make_filter
+def deeplink(ctx: 'Context', *commands: str, case_sensitive=False):
+    """Filters deeplinks parameters passed to /start command.
+    If no commands was
+    Filters commands for other bots in groups.
+    Assumes update_type == message and message_type == text.
+
+    :param ctx:
+    :param commands:
+    :param case_sensitive:
+    :param separator:
+
+    :return: True or False
+    """
+
+    if ctx.update.update_type != UpdateType.message:
+        return False
+    if ctx.update.message.message_type != MessageType.text:
+        return False
+
+    text = ctx.update.message.text
+    text_lw = ctx.update.message.text.lower()
+    lw = '/start@%s ' % ctx.bot.name.lower()
+
+    if not (text.startswith('/start ') or text_lw.startswith(lw)):
+        return False
+
+    if not len(commands):
+        return True
+
+    if not case_sensitive:
+        text = text_lw
+
+    if text.lower().startswith(lw):
+        text = ctx.update.message.text[7 + len(lw):]
+    else:
+        text = ctx.update.message.text[7:]
+
+    for cmd in commands:
+        print(cmd, text)
+        if not case_sensitive:
+            cmd = cmd.lower()
+        if text.startswith(cmd):
+            return True
 
     return False
 
