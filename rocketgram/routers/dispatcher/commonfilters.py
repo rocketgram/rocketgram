@@ -104,7 +104,7 @@ def callback(ctx: 'Context', *commands: str, case_sensitive=False, separator=' '
     :return: True or False
     """
 
-    if ctx.update.update_type != UpdateType.callback_query:
+    if ctx.update.update_type is not UpdateType.callback_query:
         return False
 
     splited = ctx.update.callback_query.data.split(sep=separator)
@@ -167,6 +167,25 @@ def message_type(ctx: 'Context', *types):
 
 
 @make_filter
+def inline_callback(ctx: 'Context'):
+    """Filters callback_query done in messages posted through inline query.
+    Assumes update_type is callback_query.
+
+    :param ctx:
+    :param types:
+    :return: True or False
+    """
+
+    if ctx.update.update_type is not UpdateType.callback_query:
+        return False
+
+    if ctx.update.callback_query.inline_message_id is None:
+        return False
+
+    return True
+
+
+@make_filter
 def chat_type(ctx: 'Context', *types):
     """Filters chat_type with one of selected types.
     Assumes update_type one of message, edited_message, channel_post, edited_channel_post, callback_query.
@@ -187,6 +206,8 @@ def chat_type(ctx: 'Context', *types):
         m = ctx.update.edited_channel_post
     elif ctx.update.update_type is UpdateType.callback_query:
         m = ctx.update.callback_query.message
+        if not m:
+            return False
     else:
         return False
 

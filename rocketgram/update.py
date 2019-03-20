@@ -162,6 +162,13 @@ class Message:
         else:
             self.entities = None
 
+        if data.get('caption_entities') is not None:
+            self.caption_entities = []
+            for p in data.get('caption_entities'):
+                self.caption_entities.append(MessageEntity(p))
+        else:
+            self.caption_entities = None
+
         self.audio = Audio(data['audio']) if data.get('audio') is not None else None
         self.document = Document(data['document']) if data.get('document') is not None else None
         self.animation = Animation(data['animation']) if data.get('animation') is not None else None

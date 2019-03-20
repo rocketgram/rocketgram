@@ -91,20 +91,20 @@ class ForwardMessage(Request):
 class SendPhoto(Request):
     """https://core.telegram.org/bots/api#sendphoto"""
 
-    def __init__(self, chat_id, photo, caption=None, disable_notification=Default, reply_to_message_id=None,
+    def __init__(self, chat_id, photo, caption=None, parse_mode=Default, disable_notification=Default, reply_to_message_id=None,
                  reply_markup=None):
         self._method = "sendPhoto"
-        self._data = dict(chat_id=chat_id, photo=photo, caption=caption, disable_notification=disable_notification,
+        self._data = dict(chat_id=chat_id, photo=photo, caption=caption, parse_mode=parse_mode, disable_notification=disable_notification,
                           reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
 
 
 class SendAudio(Request):
     """https://core.telegram.org/bots/api#sendaudio"""
 
-    def __init__(self, chat_id, audio, caption=None, duration=None, performer=None, title=None,
+    def __init__(self, chat_id, audio, caption=None, parse_mode=Default, duration=None, performer=None, title=None,
                  disable_notification=Default, reply_to_message_id=None, reply_markup=None):
         self._method = "sendAudio"
-        self._data = dict(chat_id=chat_id, audio=audio, caption=caption, duration=duration, performer=performer,
+        self._data = dict(chat_id=chat_id, audio=audio, caption=caption, parse_mode=parse_mode, duration=duration, performer=performer,
                           title=title, disable_notification=disable_notification,
                           reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
 
@@ -112,10 +112,10 @@ class SendAudio(Request):
 class SendDocument(Request):
     """https://core.telegram.org/bots/api#senddocument"""
 
-    def __init__(self, chat_id, document, caption=None, disable_notification=Default, reply_to_message_id=None,
+    def __init__(self, chat_id, document, caption=None, parse_mode=Default, disable_notification=Default, reply_to_message_id=None,
                  reply_markup=None):
         self._method = "sendDocument"
-        self._data = dict(chat_id=chat_id, document=document, caption=caption,
+        self._data = dict(chat_id=chat_id, document=document, caption=caption, parse_mode=parse_mode,
                           disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
                           reply_markup=reply_markup)
 
@@ -123,11 +123,11 @@ class SendDocument(Request):
 class SendAnimation(Request):
     """https://core.telegram.org/bots/api#sendanimation"""
 
-    def __init__(self, chat_id, animation, duration=None, width=None, height=None, caption=None,
+    def __init__(self, chat_id, animation, duration=None, width=None, height=None, caption=None, parse_mode=Default,
                  thumb=None, disable_notification=Default, reply_to_message_id=None, reply_markup=None):
         self._method = "sendAnimation"
         self._data = dict(chat_id=chat_id, animation=animation, duration=duration, width=width, height=height,
-                          thumb=thumb, caption=caption, disable_notification=disable_notification,
+                          thumb=thumb, caption=caption, parse_mode=parse_mode, disable_notification=disable_notification,
                           reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
 
 
@@ -143,10 +143,10 @@ class SendSticker(Request):
 class SendVideo(Request):
     """https://core.telegram.org/bots/api#sendvideo"""
 
-    def __init__(self, chat_id, video, duration=None, width=None, height=None, caption=None,
+    def __init__(self, chat_id, video, duration=None, width=None, height=None, caption=None, parse_mode=Default,
                  disable_notification=Default, reply_to_message_id=None, reply_markup=None):
         self._method = "sendVideo"
-        self._data = dict(chat_id=chat_id, video=video, duration=duration, width=width, height=height, caption=caption,
+        self._data = dict(chat_id=chat_id, video=video, duration=duration, width=width, height=height, caption=caption, parse_mode=parse_mode,
                           disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
                           reply_markup=reply_markup)
 
@@ -154,10 +154,10 @@ class SendVideo(Request):
 class SendVoice(Request):
     """https://core.telegram.org/bots/api#sendvoice"""
 
-    def __init__(self, chat_id, voice, caption=None, duration=None, disable_notification=Default,
+    def __init__(self, chat_id, voice, caption=None, parse_mode=Default, duration=None, disable_notification=Default,
                  reply_to_message_id=None, reply_markup=None):
         self._method = "sendVoice"
-        self._data = dict(chat_id=chat_id, voice=voice, caption=caption, duration=duration,
+        self._data = dict(chat_id=chat_id, voice=voice, caption=caption, parse_mode=parse_mode, duration=duration,
                           disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
                           reply_markup=reply_markup)
 

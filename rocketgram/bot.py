@@ -271,35 +271,42 @@ class Bot:
         return self.send(requests.ForwardMessage(chat_id=chat_id, from_chat_id=from_chat_id, message_id=message_id,
                                                  disable_notification=disable_notification))
 
-    def send_photo(self, chat_id, photo, caption=None, disable_notification=types.Default, reply_to_message_id=None,
+    def send_photo(self, chat_id, photo, caption=None, parse_mode=types.Default, disable_notification=types.Default,
+                   reply_to_message_id=None,
                    reply_markup=None):
         """https://core.telegram.org/bots/api#sendphoto"""
         return self.send(
-            requests.SendPhoto(chat_id=chat_id, photo=photo, caption=caption, disable_notification=disable_notification,
+            requests.SendPhoto(chat_id=chat_id, photo=photo, caption=caption, parse_mode=parse_mode,
+                               disable_notification=disable_notification,
                                reply_to_message_id=reply_to_message_id, reply_markup=reply_markup))
 
-    def send_audio(self, chat_id, audio, caption=None, duration=None, performer=None, title=None,
-                   disable_notification=types.Default, reply_to_message_id=None, reply_markup=None):
+    def send_audio(self, chat_id, audio, caption=None, parse_mode=types.Default, duration=None, performer=None,
+                   title=None, disable_notification=types.Default, reply_to_message_id=None, reply_markup=None):
         """https://core.telegram.org/bots/api#sendaudio"""
         return self.send(
-            requests.SendAudio(chat_id=chat_id, audio=audio, caption=caption, duration=duration, performer=performer,
+            requests.SendAudio(chat_id=chat_id, audio=audio, caption=caption, parse_mode=parse_mode, duration=duration,
+                               performer=performer,
                                title=title, disable_notification=disable_notification,
                                reply_to_message_id=reply_to_message_id, reply_markup=reply_markup))
 
-    def send_document(self, chat_id, document, caption=None, disable_notification=types.Default,
+    def send_document(self, chat_id, document, caption=None, parse_mode=types.Default,
+                      disable_notification=types.Default,
                       reply_to_message_id=None, reply_markup=None):
         """https://core.telegram.org/bots/api#senddocument"""
-        return self.send(requests.SendDocument(chat_id=chat_id, document=document, caption=caption,
-                                               disable_notification=disable_notification,
-                                               reply_to_message_id=reply_to_message_id, reply_markup=reply_markup))
+        return self.send(
+            requests.SendDocument(chat_id=chat_id, document=document, caption=caption, parse_mode=parse_mode,
+                                  disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
+                                  reply_markup=reply_markup))
 
     def send_animation(self, chat_id, animation, duration=None, width=None, height=None, caption=None,
-                       thumb=None, disable_notification=types.Default, reply_to_message_id=None, reply_markup=None):
+                       parse_mode=types.Default, thumb=None, disable_notification=types.Default,
+                       reply_to_message_id=None, reply_markup=None):
         """https://core.telegram.org/bots/api#sendvideo"""
         return self.send(
             requests.SendAnimation(chat_id=chat_id, animation=animation, duration=duration, width=width, height=height,
-                                   thumb=thumb, caption=caption, disable_notification=disable_notification,
-                                   reply_to_message_id=reply_to_message_id, reply_markup=reply_markup))
+                                   thumb=thumb, caption=caption, parse_mode=parse_mode,
+                                   disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
+                                   reply_markup=reply_markup))
 
     def send_sticker(self, chat_id, sticker, disable_notification=types.Default, reply_to_message_id=None,
                      reply_markup=None):
@@ -308,19 +315,22 @@ class Bot:
             requests.SendSticker(chat_id=chat_id, sticker=sticker, disable_notification=disable_notification,
                                  reply_to_message_id=reply_to_message_id, reply_markup=reply_markup))
 
-    def send_video(self, chat_id, video, duration=None, width=None, height=None, caption=None,
+    def send_video(self, chat_id, video, duration=None, width=None, height=None, caption=None, parse_mode=types.Default,
                    disable_notification=types.Default, reply_to_message_id=None, reply_markup=None):
         """https://core.telegram.org/bots/api#sendvideo"""
         return self.send(requests.SendVideo(chat_id=chat_id, video=video, duration=duration, width=width, height=height,
-                                            caption=caption, disable_notification=disable_notification,
-                                            reply_to_message_id=reply_to_message_id, reply_markup=reply_markup))
-
-    def send_voice(self, chat_id, voice, caption=None, duration=None, disable_notification=types.Default,
-                   reply_to_message_id=None, reply_markup=None):
-        """https://core.telegram.org/bots/api#sendvoice"""
-        return self.send(requests.SendVoice(chat_id=chat_id, voice=voice, caption=caption, duration=duration,
+                                            caption=caption, parse_mode=parse_mode,
                                             disable_notification=disable_notification,
                                             reply_to_message_id=reply_to_message_id, reply_markup=reply_markup))
+
+    def send_voice(self, chat_id, voice, caption=None, parse_mode=types.Default, duration=None,
+                   disable_notification=types.Default,
+                   reply_to_message_id=None, reply_markup=None):
+        """https://core.telegram.org/bots/api#sendvoice"""
+        return self.send(
+            requests.SendVoice(chat_id=chat_id, voice=voice, caption=caption, parse_mode=parse_mode, duration=duration,
+                               disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
+                               reply_markup=reply_markup))
 
     def send_video_note(self, chat_id, video_note, duration=None, length=None, disable_notification=types.Default,
                         reply_to_message_id=None, reply_markup=None):
