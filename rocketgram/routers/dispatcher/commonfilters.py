@@ -123,6 +123,81 @@ def callback(ctx: 'Context', *commands: str, case_sensitive=False, separator=' '
 
 
 @make_filter
+def inline_callback(ctx: 'Context'):
+    """Filters callback_query done in messages posted through inline query.
+    Assumes update_type is callback_query.
+
+    :param ctx:
+    :param types:
+    :return: True or False
+    """
+
+    if ctx.update.update_type is not UpdateType.callback_query:
+        return False
+
+    if ctx.update.callback_query.inline_message_id is None:
+        return False
+
+    return True
+
+
+@make_filter
+def inline(ctx: 'Context', *commands: str, case_sensitive=False):
+    """Filters inline_query begins with one of commands.
+    Assumes update_type is inline_query.
+
+    :param ctx:
+    :param commands:
+    :param case_sensitive:
+    :return: True or False
+    """
+
+    if ctx.update.update_type is not UpdateType.inline_query:
+        return False
+
+    text = ctx.update.inline_query.query
+
+    if not case_sensitive:
+        text = text.lower()
+
+    for cmd in commands:
+        if not case_sensitive:
+            cmd = cmd.lower()
+        if text.startswith(cmd):
+            return True
+
+    return False
+
+
+@make_filter
+def chosen(ctx: 'Context', *commands: str, case_sensitive=False):
+    """Filters chosen_inline_result with query begins with one of commands.
+    Assumes update_type is chosen_inline_result.
+
+    :param ctx:
+    :param commands:
+    :param case_sensitive:
+    :return: True or False
+    """
+
+    if ctx.update.update_type is not UpdateType.chosen_inline_result:
+        return False
+
+    text = ctx.update.chosen_inline_result.query
+
+    if not case_sensitive:
+        text = text.lower()
+
+    for cmd in commands:
+        if not case_sensitive:
+            cmd = cmd.lower()
+        if text.startswith(cmd):
+            return True
+
+    return False
+
+
+@make_filter
 def update_type(ctx: 'Context', *types):
     """Filters updates with selected types.
 
@@ -161,25 +236,6 @@ def message_type(ctx: 'Context', *types):
         return False
 
     if m.message_type not in types:
-        return False
-
-    return True
-
-
-@make_filter
-def inline_callback(ctx: 'Context'):
-    """Filters callback_query done in messages posted through inline query.
-    Assumes update_type is callback_query.
-
-    :param ctx:
-    :param types:
-    :return: True or False
-    """
-
-    if ctx.update.update_type is not UpdateType.callback_query:
-        return False
-
-    if ctx.update.callback_query.inline_message_id is None:
         return False
 
     return True

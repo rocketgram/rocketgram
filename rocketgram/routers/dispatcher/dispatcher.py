@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from time import time
 from typing import List, Callable, Coroutine, AsyncGenerator, Union
 
-from .base import BaseDispatcher, DEFAULT_PRIORITY
+from .base import BaseDispatcher, DEFAULT_PRIORITY, _call_or_await
 from .filters import WaitNext, FilterParams, WAITER_ASSIGNED_ATTR
 from ...update import UpdateType
 
@@ -40,13 +40,6 @@ class Waiter:
     handler: Union[Callable, Coroutine, AsyncGenerator]
     waiter: Union[Callable, Coroutine]
     filters: List[FilterParams]
-
-
-async def _call_or_await(func, *args, **kwargs):
-    r = func(*args, **kwargs)
-    if asyncio.iscoroutine(r):
-        return await r
-    return r
 
 
 def _user_scope(ctx: 'Context'):

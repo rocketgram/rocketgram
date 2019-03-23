@@ -2,6 +2,7 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
+import asyncio
 import logging
 from dataclasses import dataclass
 from typing import Callable, Coroutine, AsyncGenerator, Union, List, TYPE_CHECKING
@@ -13,7 +14,6 @@ from ..baserouter import BaseRouter
 if TYPE_CHECKING:
     from ...bot import Bot
     from ...context import Context
-    from .proxy import BaseDispatcherProxy
 
 logger = logging.getLogger('rocketgram.dispatcher')
 
@@ -48,6 +48,13 @@ def _register(what: List[Handler], handler_func: Callable[['Context'], None], de
 
     setattr(handler_func, HANDLER_ASSIGNED_ATTR, True)
     return handler_func
+
+
+async def _call_or_await(func, *args, **kwargs):
+    r = func(*args, **kwargs)
+    if asyncio.iscoroutine(r):
+        return await r
+    return r
 
 
 class BaseDispatcher(BaseRouter):
@@ -90,33 +97,27 @@ class BaseDispatcher(BaseRouter):
         self._bots.append(bot)
 
         for func in self._init:
-            await func(self, bot)
+            await _call_or_await(func, bot)
 
     async def shutdown(self, bot: 'Bot'):
         logger.debug('Performing shutdown...')
 
         for func in reversed(self._shutdown):
-            await func(self, bot)
+            await _call_or_await(func, bot)
 
         self._bots.remove(bot)
 
-    def on_init(self):
+    def on_init(self, func):
         """Registers init"""
 
-        def internal(func):
-            self._init.append(func)
-            return func
+        self._init.append(func)
+        return func
 
-        return internal
-
-    def on_shutdown(self):
+    def on_shutdown(self, func):
         """Registers shutdown"""
 
-        def internal(func):
-            self._shutdown.append(func)
-            return func
-
-        return internal
+        self._shutdown.append(func)
+        return func
 
     def handler(self, handler_func: Callable[['Context'], None]):
         """Registers handler"""
