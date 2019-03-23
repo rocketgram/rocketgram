@@ -5,7 +5,7 @@
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import auto
-from typing import TYPE_CHECKING, Optional, Union, List
+from typing import TYPE_CHECKING, Optional, Union, Dict, List
 
 from .types import InputFile, Enum, EnumAutoName
 
@@ -62,7 +62,7 @@ class Request:
 
     method = None
 
-    def __prepare(self, d: Union[dict, list]) -> Union[dict, list]:
+    def __prepare(self, d: Union[Dict, list]) -> Union[Dict, list]:
         assert isinstance(d, (list, dict))
 
         for k, v in d.items() if isinstance(d, dict) else enumerate(d):
@@ -1012,7 +1012,7 @@ class SetPassportDataErrors(Request):
     method = "setPassportDataErrors"
 
     user_id: str
-    errors: List[dict]  # TODO: PassportElementError
+    errors: List[Dict]  # TODO: PassportElementError
 
 
 @dataclass(frozen=True)
