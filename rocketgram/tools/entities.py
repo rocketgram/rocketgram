@@ -3,9 +3,19 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 import sys
-from collections import namedtuple
+from dataclasses import dataclass
+from typing import Optional, List
 
 from . import escape
+from ..update import User, MessageEntity, EntityType
+
+
+@dataclass(frozen=True)
+class EntityItem:
+    entity_type: Optional[EntityType]
+    text: str
+    url: Optional[str]
+    user: Optional[User]
 
 
 def get(text, entity):
@@ -18,12 +28,9 @@ def get(text, entity):
     return text.decode('utf-16-le')
 
 
-Item = namedtuple('Item', ('type', 'text', 'url', 'user'))
-
-
-def parse(text, entities):
+def parse(text: str, entities: List[MessageEntity]) -> List[EntityItem]:
     if not entities:
-        return [Item('text', text, None, None)]
+        return [EntityItem(None, text, None, None)]
 
     if sys.maxunicode == 0xffff:
         encoded = False
@@ -41,12 +48,12 @@ def parse(text, entities):
             t = text[idx:offset]
             if encoded:
                 t = t.decode('utf-16-le')
-            parsed.append(Item('text', t, None, None))
+            parsed.append(EntityItem(None, t, None, None))
 
         t = text[offset:offset + length]
         if encoded:
             t = t.decode('utf-16-le')
-        parsed.append(Item(e.entity_type, t, e.url, e.user))
+        parsed.append(EntityItem(e.entity_type, t, e.url, e.user))
 
         idx = offset + length
 
@@ -54,12 +61,12 @@ def parse(text, entities):
         t = text[idx:len(text)]
         if encoded:
             t = t.decode('utf-16-le')
-        parsed.append(Item('text', t, None, None))
-
+        parsed.append(EntityItem(None, t, None, None))
+    print(parsed)
     return parsed
 
 
-def to_html(text, entities, escape_html=True):
+def to_html(text: str, entities: List[MessageEntity], escape_html: bool = True) -> str:
     if escape_html:
         escape_func = escape.html
     else:
@@ -69,16 +76,17 @@ def to_html(text, entities, escape_html=True):
 
     result = str()
     for i in parsed:
+        # TODO: add text_mention
         t = escape_func(i.text)
-        if i.type == 'bold':
+        if i.entity_type is EntityType.bold:
             result += '<b>%s</b>' % t
-        elif i.type == 'italic':
+        elif i.entity_type is EntityType.italic:
             result += '<i>%s</i>' % t
-        elif i.type == 'code':
+        elif i.entity_type is EntityType.code:
             result += '<code>%s</code>' % t
-        elif i.type == 'pre':
+        elif i.entity_type is EntityType.pre:
             result += '<pre>%s</pre>' % t
-        elif i.type == 'text_link':
+        elif i.entity_type is EntityType.text_link:
             result += '<a href="%s">%s</a>' % (i.url, t)
         else:
             result += t
@@ -86,7 +94,7 @@ def to_html(text, entities, escape_html=True):
     return result
 
 
-def to_markdown(text, entities, escape_markdown=True):
+def to_markdown(text: str, entities: List[MessageEntity], escape_markdown: bool = True) -> str:
     if escape_markdown:
         escape_func = escape.markdown
     else:
@@ -96,16 +104,17 @@ def to_markdown(text, entities, escape_markdown=True):
 
     result = str()
     for i in parsed:
+        # TODO: add text_mention
         t = escape_func(i.text)
-        if i.type == 'bold':
+        if i.entity_type is EntityType.bold:
             result += '*%s*' % t
-        elif i.type == 'italic':
+        elif i.entity_type is EntityType.italic:
             result += '_%s_' % t
-        elif i.type == 'code':
+        elif i.entity_type is EntityType.code:
             result += '`%s`' % t
-        elif i.type == 'pre':
+        elif i.entity_type is EntityType.pre:
             result += '```\n%s```' % t
-        elif i.type == 'text_link':
+        elif i.entity_type is EntityType.text_link:
             result += '[%s](%s)' % (t, i.url)
         else:
             result += t

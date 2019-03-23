@@ -160,7 +160,7 @@ class Bot:
                       webhook_sendfile: bool = False) -> Optional[PreparedRequest]:
         try:
             if not isinstance(upd, update.Update):
-                upd = update.Update(json.loads(upd))
+                upd = update.Update.parse(json.loads(upd))
 
             logger_raw_in.debug('Raw in: %s', upd.raw)
 

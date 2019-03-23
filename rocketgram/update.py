@@ -2,710 +2,1401 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
+from dataclasses import dataclass
+from datetime import datetime
+from enum import auto
+from typing import Dict, List, Optional, Union
 
-import enum
-
-
-class UpdateType(enum.Enum):
-    message = enum.auto()
-    edited_message = enum.auto()
-    channel_post = enum.auto()
-    edited_channel_post = enum.auto()
-    inline_query = enum.auto()
-    chosen_inline_result = enum.auto()
-    callback_query = enum.auto()
-    shipping_query = enum.auto()
-    pre_checkout_query = enum.auto()
+from .types import EnumAutoName
 
 
+class UpdateType(EnumAutoName):
+    message = auto()
+    edited_message = auto()
+    channel_post = auto()
+    edited_channel_post = auto()
+    inline_query = auto()
+    chosen_inline_result = auto()
+    callback_query = auto()
+    shipping_query = auto()
+    pre_checkout_query = auto()
+
+
+class MessageType(EnumAutoName):
+    text = auto()
+    audio = auto()
+    document = auto()
+    animation = auto()
+    game = auto()
+    photo = auto()
+    sticker = auto()
+    video = auto()
+    voice = auto()
+    video_note = auto()
+    contact = auto()
+    location = auto()
+    venue = auto()
+    new_chat_members = auto()
+    left_chat_member = auto()
+    new_chat_title = auto()
+    new_chat_photo = auto()
+    delete_chat_photo = auto()
+    group_chat_created = auto()
+    supergroup_chat_created = auto()
+    channel_chat_created = auto()
+    migrate_to_chat_id = auto()
+    migrate_from_chat_id = auto()
+    pinned_message = auto()
+    invoice = auto()
+    successful_payment = auto()
+    connected_website = auto()
+    passport_data = auto()
+
+
+class ChatType(EnumAutoName):
+    private = auto()
+    group = auto()
+    supergroup = auto()
+    channel = auto()
+
+
+class EntityType(EnumAutoName):
+    mention = auto()
+    hashtag = auto()
+    cashtag = auto()
+    bot_command = auto()
+    url = auto()
+    email = auto()
+    phone_number = auto()
+    bold = auto()
+    italic = auto()
+    code = auto()
+    pre = auto()
+    text_link = auto()
+    text_mention = auto()
+
+
+class ChatMemberStatusType(EnumAutoName):
+    creator = auto()
+    administrator = auto()
+    member = auto()
+    restricted = auto()
+    left = auto()
+    kicked = auto()
+
+
+class MaskPositionPointType(EnumAutoName):
+    forehead = auto()
+    eyes = auto()
+    mouth = auto()
+    chin = auto()
+
+
+class EncryptedPassportElementType(EnumAutoName):
+    personal_details = auto()
+    passport = auto()
+    driver_license = auto()
+    identity_card = auto()
+    internal_passport = auto()
+    address = auto()
+    utility_bill = auto()
+    bank_statement = auto()
+    rental_agreement = auto()
+    passport_registration = auto()
+    temporary_registration = auto()
+    phone_number = auto()
+    email = auto()
+
+
+@dataclass(frozen=True)
 class Update:
-    """https://core.telegram.org/bots/api#update"""
+    """\
+    Represents Update object:
+    https://core.telegram.org/bots/api#update
 
-    def __init__(self, data: dict):
-        self.raw = data
-        self.update_id = data['update_id']
-        self.update_type = None
+    Additional fields:
+    raw
+    update_type
+    """
 
+    raw: Dict
+    update_id: int
+    update_type: UpdateType
+    message: Optional['Message']
+    edited_message: Optional['Message']
+    channel_post: Optional['Message']
+    edited_channel_post: Optional['Message']
+    inline_query: Optional['InlineQuery']
+    chosen_inline_result: Optional['ChosenInlineResult']
+    callback_query: Optional['CallbackQuery']
+    shipping_query: Optional['ShippingQuery']
+    pre_checkout_query: Optional['PreCheckoutQuery']
+
+    @classmethod
+    def parse(cls, data: Dict) -> 'Update':
+        message = Message.parse(data.get('message'))
+        edited_message = Message.parse(data.get('edited_message'))
+        channel_post = Message.parse(data.get('channel_post'))
+        edited_channel_post = Message.parse(data.get('edited_channel_post'))
+        inline_query = InlineQuery.parse(data.get('inline_query'))
+        chosen_inline_result = ChosenInlineResult.parse(data.get('chosen_inline_result'))
+        callback_query = CallbackQuery.parse(data.get('callback_query'))
+        shipping_query = ShippingQuery.parse(data.get('shipping_query'))
+        pre_checkout_query = PreCheckoutQuery.parse(data.get('pre_checkout_query'))
+
+        update_type = None
         if 'message' in data:
-            self.message = Message(data['message'])
-            self.update_type = UpdateType.message
+            update_type = UpdateType.message
         elif 'edited_message' in data:
-            self.edited_message = Message(data['edited_message'])
-            self.update_type = UpdateType.edited_message
+            update_type = UpdateType.edited_message
         elif 'channel_post' in data:
-            self.channel_post = Message(data['channel_post'])
-            self.update_type = UpdateType.channel_post
+            update_type = UpdateType.channel_post
         elif 'edited_channel_post' in data:
-            self.edited_channel_post = Message(data['edited_channel_post'])
-            self.update_type = UpdateType.edited_channel_post
+            update_type = UpdateType.edited_channel_post
         elif 'inline_query' in data:
-            self.inline_query = InlineQuery(data['inline_query'])
-            self.update_type = UpdateType.inline_query
+            update_type = UpdateType.inline_query
         elif 'chosen_inline_result' in data:
-            self.chosen_inline_result = ChosenInlineResult(data['chosen_inline_result'])
-            self.update_type = UpdateType.chosen_inline_result
+            update_type = UpdateType.chosen_inline_result
         elif 'callback_query' in data:
-            self.callback_query = CallbackQuery(data['callback_query'])
-            self.update_type = UpdateType.callback_query
+            update_type = UpdateType.callback_query
         elif 'shipping_query' in data:
-            self.shipping_query = ShippingQuery(data['shipping_query'])
-            self.update_type = UpdateType.shipping_query
+            update_type = UpdateType.shipping_query
         elif 'pre_checkout_query' in data:
-            self.pre_checkout_query = PreCheckoutQuery(data['pre_checkout_query'])
-            self.update_type = UpdateType.pre_checkout_query
+            update_type = UpdateType.pre_checkout_query
+
+        return cls(data, data['update_id'], update_type, message, edited_message, channel_post, edited_channel_post,
+                   inline_query, chosen_inline_result, callback_query, shipping_query, pre_checkout_query)
 
 
+@dataclass(frozen=True)
 class WebhookInfo:
-    """https://core.telegram.org/bots/api#getwebhookinfo"""
+    """\
+    Represents WebhookInfo object:
+    https://core.telegram.org/bots/api#getwebhookinfo
+    """
 
-    def __init__(self, data: dict):
-        self.url = data['url']
-        self.has_custom_certificate = data['has_custom_certificate']
-        self.pending_update_count = data['pending_update_count']
-        self.last_error_date = data.get('last_error_date')
-        self.last_error_message = data.get('last_error_message')
-        self.max_connections = data.get('max_connections')
-        self.allowed_updates = data.get('allowed_updates')
+    url: str
+    has_custom_certificate: bool
+    pending_update_count: int
+    last_error_date: Optional[datetime]
+    last_error_message: Optional[str]
+    max_connections: Optional[int]
+    allowed_updates: Optional[List['UpdateType']]
+
+    @classmethod
+    def parse(cls, data: Optional[dict]) -> Optional['WebhookInfo']:
+        if data is None:
+            return None
+
+        last_error_date = datetime.utcfromtimestamp(data['last_error_date']) if 'last_error_date' in data else None
+        max_connections = [UpdateType(m) for m in data['max_connections']] if 'max_connections' in data else None
+
+        return cls(data['url'], data['has_custom_certificate'], data['pending_update_count'], last_error_date,
+                   data.get('last_error_message'), data.get('max_connections'), max_connections)
 
 
+@dataclass(frozen=True)
 class User:
-    """https://core.telegram.org/bots/api#user"""
+    """\
+    Represents User object:
+    https://core.telegram.org/bots/api#user
 
-    def __init__(self, data: dict):
-        self.user_id = data['id']
-        self.first_name = data['first_name']
-        self.last_name = data.get('last_name')
-        self.username = data.get('username')
-        self.language_code = data.get('language_code')
+    Differences in field names:
+    id -> user_id
+    """
+
+    user_id: int
+    is_bot: bool
+    first_name: Optional[str]
+    last_name: Optional[str]
+    username: Optional[str]
+    language_code: Optional[str]
+
+    @classmethod
+    def parse(cls, data: Optional[dict]) -> Union['User', None]:
+        if data is None:
+            return None
+
+        return cls(data['id'], data['is_bot'], data['first_name'], data.get('last_name'), data.get('username'),
+                   data.get('language_code'))
 
 
-class ChatType(enum.Enum):
-    private = enum.auto()
-    group = enum.auto()
-    supergroup = enum.auto()
-    channel = enum.auto()
-
-
+@dataclass(frozen=True)
 class Chat:
-    """https://core.telegram.org/bots/api#chat"""
+    """\
+    Represents Chat object:
+    https://core.telegram.org/bots/api#chat
 
-    def __init__(self, data: dict):
-        self.chat_id = data['id']
+    Differences in field names:
+    id -> chat_id
+    type -> chat_type
+    """
 
-        if data['type'] == 'private':
-            self.chat_type = ChatType.private
-        elif data['type'] == 'group':
-            self.chat_type = ChatType.group
-        elif data['type'] == 'supergroup':
-            self.chat_type = ChatType.supergroup
-        elif data['type'] == 'channel':
-            self.chat_type = ChatType.channel
-        else:
-            self.chat_type = None
+    chat_id: int
+    chat_type: ChatType
+    title: Optional[str]
+    username: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    all_members_are_administrators: Optional[bool]
+    photo: Optional['ChatPhoto']
+    description: Optional[str]
+    invite_link: Optional[str]
+    pinned_message: Optional['Message']
+    sticker_set_name: Optional[str]
+    can_set_sticker_set: Optional[bool]
 
-        self.title = data.get('title')
-        self.username = data.get('username')
-        self.first_name = data.get('first_name')
-        self.last_name = data.get('last_name')
-        self.all_members_are_administrators = data.get('all_members_are_administrators')
+    @classmethod
+    def parse(cls, data: Optional[dict]) -> Union['Chat', None]:
+        if data is None:
+            return None
 
-
-class MessageType(enum.Enum):
-    text = enum.auto()
-    audio = enum.auto()
-    document = enum.auto()
-    animation = enum.auto()
-    game = enum.auto()
-    photo = enum.auto()
-    sticker = enum.auto()
-    video = enum.auto()
-    voice = enum.auto()
-    video_note = enum.auto()
-    new_chat_members = enum.auto()
-    contact = enum.auto()
-    location = enum.auto()
-    venue = enum.auto()
-    left_chat_member = enum.auto()
-    new_chat_title = enum.auto()
-    new_chat_photo = enum.auto()
-    delete_chat_photo = enum.auto()
-    group_chat_created = enum.auto()
-    supergroup_chat_created = enum.auto()
-    channel_chat_created = enum.auto()
-    migrate_to_chat_id = enum.auto()
-    migrate_from_chat_id = enum.auto()
-    pinned_message = enum.auto()
-    invoice = enum.auto()
-    successful_payment = enum.auto()
+        return cls(data['id'], ChatType(data['type']), data.get('title'), data.get('username'), data.get('first_name'),
+                   data.get('last_name'), data.get('all_members_are_administrators'),
+                   ChatPhoto.parse(data.get('photo')), data.get('description'), data.get('invite_link'),
+                   Message.parse(data.get('pinned_message')), data.get('sticker_set_name'),
+                   data.get('can_set_sticker_set'))
 
 
+@dataclass(frozen=True)
 class Message:
-    """https://core.telegram.org/bots/api#message"""
+    """\
+    Represents Message object:
+    https://core.telegram.org/bots/api#message
 
-    def __init__(self, data: dict):
-        self.message_id = data['message_id']
-        self.user = User(data['from']) if data.get('from') is not None else None
-        self.date = data['date']
-        self.chat = Chat(data['chat'])
-        self.forward_from = User(data['forward_from']) if data.get('forward_from') is not None else None
-        self.forward_from_chat = Chat(data['forward_from_chat']) if data.get('forward_from_chat') is not None else None
-        self.forward_from_message_id = data.get('forward_from_message_id')
-        self.forward_date = data.get('forward_date')
-        self.reply_to_message = Message(data['reply_to_message']) if data.get('reply_to_message') is not None else None
-        self.edit_date = data.get('edit_date')
-        self.text = data.get('text')
+    Differences in field names:
+    from -> user
 
-        if data.get('entities') is not None:
-            self.entities = []
-            for p in data.get('entities'):
-                self.entities.append(MessageEntity(p))
-        else:
-            self.entities = None
+    Additional fields:
+    message_type
+    """
 
-        if data.get('caption_entities') is not None:
-            self.caption_entities = []
-            for p in data.get('caption_entities'):
-                self.caption_entities.append(MessageEntity(p))
-        else:
-            self.caption_entities = None
+    message_id: int
+    message_type: MessageType
+    user: Optional['User']
+    date: datetime
+    chat: 'Chat'
+    forward_from: Optional['User']
+    forward_from_chat: Optional['Chat']
+    forward_from_message_id: Optional[int]
+    forward_signature: Optional[str]
+    forward_date: Optional[datetime]
+    reply_to_message: Optional['Message']
+    edit_date: Optional[datetime]
+    media_group_id: Optional[str]
+    author_signature: Optional[str]
 
-        self.audio = Audio(data['audio']) if data.get('audio') is not None else None
-        self.document = Document(data['document']) if data.get('document') is not None else None
-        self.animation = Animation(data['animation']) if data.get('animation') is not None else None
-        self.game = Game(data['game']) if data.get('game') is not None else None
+    text: Optional[str]
+    entities: Optional[List['MessageEntity']]
+    caption_entities: Optional[List['MessageEntity']]
 
-        if data.get('photo') is not None:
-            self.photo = []
-            for p in data.get('photo'):
-                self.photo.append(PhotoSize(p))
-        else:
-            self.photo = None
+    audio: Optional['Audio']
+    document: Optional['Document']
+    animation: Optional['Animation']
+    game: Optional['Game']
+    photo: Optional[List['PhotoSize']]
+    sticker: Optional['Sticker']
+    video: Optional['Video']
+    voice: Optional['Voice']
+    video_note: Optional['VideoNote']
 
-        self.sticker = Sticker(data['sticker']) if data.get('sticker') is not None else None
-        self.video = Video(data['video']) if data.get('video') is not None else None
-        self.voice = Voice(data['voice']) if data.get('voice') is not None else None
-        self.video_note = VideoNote(data['video_note']) if data.get('video_note') is not None else None
+    caption: Optional[str]
 
-        if data.get('new_chat_members') is not None:
-            self.new_chat_members = []
-            for p in data.get('new_chat_members'):
-                self.new_chat_members.append(User(p))
-        else:
-            self.new_chat_members = None
+    contact: Optional['Contact']
+    location: Optional['Location']
+    venue: Optional['Venue']
 
-        self.caption = data.get('caption')
-        self.contact = Contact(data['contact']) if data.get('contact') is not None else None
-        self.location = Location(data['location']) if data.get('location') is not None else None
-        self.venue = Venue(data['venue']) if data.get('venue') is not None else None
-        self.left_chat_member = User(data['left_chat_member']) if data.get('left_chat_member') is not None else None
-        self.new_chat_title = data.get('new_chat_title')
+    new_chat_members: Optional[List['User']]
+    left_chat_member: Optional[User]
+    new_chat_title: Optional[str]
+    new_chat_photo: Optional[List['PhotoSize']]
+    delete_chat_photo: Optional[bool]
 
-        if data.get('new_chat_photo') is not None:
-            self.new_chat_photo = []
-            for p in data.get('new_chat_photo'):
-                self.new_chat_photo.append(PhotoSize(p))
-        else:
-            self.new_chat_photo = None
+    group_chat_created: Optional[bool]
+    supergroup_chat_created: Optional[bool]
+    channel_chat_created: Optional[bool]
 
-        self.delete_chat_photo = data.get('delete_chat_photo')
-        self.group_chat_created = data.get('group_chat_created')
-        self.supergroup_chat_created = data.get('supergroup_chat_created')
-        self.channel_chat_created = data.get('channel_chat_created')
-        self.migrate_to_chat_id = data.get('migrate_to_chat_id')
-        self.migrate_from_chat_id = data.get('migrate_from_chat_id')
-        self.pinned_message = Message(data['pinned_message']) if data.get('pinned_message') is not None else None
-        self.invoice = Invoice(data['invoice']) if data.get('invoice') is not None else None
-        self.successful_payment = SuccessfulPayment(data['successful_payment']) if data.get(
-            'successful_payment') is not None else None
+    migrate_to_chat_id: Optional[int]
+    migrate_from_chat_id: Optional[int]
 
-        self.message_type = None
+    pinned_message: Optional['Message']
 
-        if self.text is not None:
-            self.message_type = MessageType.text
-        elif self.audio is not None:
-            self.message_type = MessageType.audio
-        elif self.document is not None and self.animation is None:
-            self.message_type = MessageType.document
-        elif self.animation is not None:
-            self.message_type = MessageType.animation
-        elif self.game is not None:
-            self.message_type = MessageType.game
-        elif self.photo is not None:
-            self.message_type = MessageType.photo
-        elif self.sticker is not None:
-            self.message_type = MessageType.sticker
-        elif self.video is not None:
-            self.message_type = MessageType.video
-        elif self.voice is not None:
-            self.message_type = MessageType.voice
-        elif self.video_note is not None:
-            self.message_type = MessageType.video_note
-        elif self.new_chat_members is not None:
-            self.message_type = MessageType.new_chat_members
-        elif self.contact is not None:
-            self.message_type = MessageType.contact
-        elif self.location is not None:
-            self.message_type = MessageType.location
-        elif self.venue is not None:
-            self.message_type = MessageType.venue
-        elif self.left_chat_member is not None:
-            self.message_type = MessageType.left_chat_member
-        elif self.new_chat_title is not None:
-            self.message_type = MessageType.new_chat_title
-        elif self.new_chat_photo is not None:
-            self.message_type = MessageType.new_chat_photo
-        elif self.delete_chat_photo is not None:
-            self.message_type = MessageType.delete_chat_photo
-        elif self.group_chat_created is not None:
-            self.message_type = MessageType.group_chat_created
-        elif self.supergroup_chat_created is not None:
-            self.message_type = MessageType.supergroup_chat_created
-        elif self.channel_chat_created is not None:
-            self.message_type = MessageType.channel_chat_created
-        elif self.migrate_to_chat_id is not None:
-            self.message_type = MessageType.migrate_to_chat_id
-        elif self.migrate_from_chat_id is not None:
-            self.message_type = MessageType.migrate_from_chat_id
-        elif self.pinned_message is not None:
-            self.message_type = MessageType.pinned_message
-        elif self.invoice is not None:
-            self.message_type = MessageType.invoice
-        elif self.successful_payment is not None:
-            self.message_type = MessageType.successful_payment
+    invoice: Optional['Invoice']
+    successful_payment: Optional['SuccessfulPayment']
+
+    connected_website: Optional[str]
+    passport_data: Optional['PassportData']
+
+    @classmethod
+    def parse(cls, data: Optional[dict]) -> Union['Message', None]:
+        if data is None:
+            return None
+
+        message_id = data['message_id']
+        user = User.parse(data.get('from'))
+        date = datetime.utcfromtimestamp(data['date'])
+        chat = Chat.parse(data['chat'])
+        forward_from = User.parse(data.get('forward_from'))
+        forward_from_chat = Chat.parse(data.get('forward_from_chat'))
+        forward_from_message_id = data.get('forward_from_message_id')
+        forward_signature = data.get('forward_signature')
+        forward_date = datetime.utcfromtimestamp(data['forward_date']) if 'forward_date' in data else None
+        reply_to_message = Message.parse(data.get('reply_to_message'))
+        edit_date = datetime.utcfromtimestamp(data['edit_date']) if 'edit_date' in data else None
+        media_group_id = data.get('media_group_id')
+        author_signature = data.get('author_signature')
+
+        text = data.get('text')
+
+        entities = [MessageEntity.parse(d) for d in data.get('entities')] if 'entities' in data else None
+        caption_entities = [MessageEntity.parse(d) for d in
+                            data.get('caption_entities')] if 'caption_entities' in data else None
+
+        audio = Audio.parse(data.get('audio'))
+        document = Document.parse(data.get('document'))
+        animation = Animation.parse(data.get('animation'))
+        if animation is not None:
+            document = None
+        game = Game.parse(data.get('photo'))
+        photo = [PhotoSize.parse(d) for d in data.get('photo')] if 'photo' in data else None
+        sticker = Sticker.parse(data.get('sticker'))
+        video = Video.parse(data.get('video'))
+        voice = Voice.parse(data.get('voice'))
+        video_note = VideoNote.parse(data.get('video_note'))
+
+        caption = data.get('caption')
+
+        contact = Contact.parse(data.get('contact'))
+        location = Location.parse(data.get('location'))
+        venue = Venue.parse(data.get('venue'))
+
+        new_chat_members = [User.parse(d) for d in
+                            data.get('new_chat_members')] if 'new_chat_members' in data else None
+        left_chat_member = User.parse(data.get('left_chat_member'))
+        new_chat_title = data.get('new_chat_title')
+        new_chat_photo = [PhotoSize.parse(d) for d in
+                          data.get('new_chat_photo')] if 'new_chat_photo' in data else None
+        delete_chat_photo = data.get('delete_chat_photo')
+
+        group_chat_created = data.get('group_chat_created')
+        supergroup_chat_created = data.get('supergroup_chat_created')
+        channel_chat_created = data.get('channel_chat_created')
+
+        migrate_to_chat_id = data.get('migrate_to_chat_id')
+        migrate_from_chat_id = data.get('migrate_from_chat_id')
+
+        pinned_message = Message.parse(data.get('pinned_message'))
+
+        invoice = Invoice.parse(data.get('invoice'))
+        successful_payment = SuccessfulPayment.parse(data.get('successful_payment'))
+
+        connected_website = data.get('connected_website')
+        passport_data = PassportData.parse(data.get('passport_data'))
+
+        message_type = None
+
+        if text is not None:
+            message_type = MessageType.text
+        elif audio is not None:
+            message_type = MessageType.audio
+        elif document is not None and animation is None:
+            message_type = MessageType.document
+        elif animation is not None:
+            message_type = MessageType.animation
+        elif game is not None:
+            message_type = MessageType.game
+        elif photo is not None:
+            message_type = MessageType.photo
+        elif sticker is not None:
+            message_type = MessageType.sticker
+        elif video is not None:
+            message_type = MessageType.video
+        elif voice is not None:
+            message_type = MessageType.voice
+        elif video_note is not None:
+            message_type = MessageType.video_note
+        elif new_chat_members is not None:
+            message_type = MessageType.new_chat_members
+        elif contact is not None:
+            message_type = MessageType.contact
+        elif location is not None:
+            message_type = MessageType.location
+        elif venue is not None:
+            message_type = MessageType.venue
+        elif left_chat_member is not None:
+            message_type = MessageType.left_chat_member
+        elif new_chat_title is not None:
+            message_type = MessageType.new_chat_title
+        elif new_chat_photo is not None:
+            message_type = MessageType.new_chat_photo
+        elif delete_chat_photo is not None:
+            message_type = MessageType.delete_chat_photo
+        elif group_chat_created is not None:
+            message_type = MessageType.group_chat_created
+        elif supergroup_chat_created is not None:
+            message_type = MessageType.supergroup_chat_created
+        elif channel_chat_created is not None:
+            message_type = MessageType.channel_chat_created
+        elif migrate_to_chat_id is not None:
+            message_type = MessageType.migrate_to_chat_id
+        elif migrate_from_chat_id is not None:
+            message_type = MessageType.migrate_from_chat_id
+        elif pinned_message is not None:
+            message_type = MessageType.pinned_message
+        elif invoice is not None:
+            message_type = MessageType.invoice
+        elif successful_payment is not None:
+            message_type = MessageType.successful_payment
+        elif connected_website is not None:
+            message_type = MessageType.connected_website
+        elif passport_data is not None:
+            passport_data = MessageType.passport_data
+
+        return cls(message_id, message_type, user, date, chat, forward_from, forward_from_chat, forward_from_message_id,
+                   forward_signature, forward_date, reply_to_message, edit_date, media_group_id, author_signature, text,
+                   entities, caption_entities, audio, document, animation, game, photo, sticker, video, voice,
+                   video_note, caption, contact, location, venue, new_chat_members, left_chat_member, new_chat_title,
+                   new_chat_photo, delete_chat_photo, group_chat_created, supergroup_chat_created, channel_chat_created,
+                   migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice, successful_payment,
+                   connected_website, passport_data)
 
 
+@dataclass(frozen=True)
 class MessageEntity:
-    """https://core.telegram.org/bots/api#messageentity"""
+    """\
+    Represents MessageEntity object:
+    https://core.telegram.org/bots/api#messageentity
 
-    def __init__(self, data: dict):
-        self.entity_type = data['type']
-        self.offset = data['offset']
-        self.length = data['length']
-        self.url = data.get('url')
-        self.user = User(data['user']) if data.get('user') is not None else None
+    Differences in field names:
+    type -> entity_type
+    """
+
+    entity_type: EntityType
+    offset: int
+    length: int
+    url: Optional[str]
+    user: Optional[User]
+
+    @classmethod
+    def parse(cls, data: dict) -> Union['MessageEntity', None]:
+        if data is None:
+            return None
+
+        return cls(EntityType(data['type']), data['offset'], data['length'], data.get('url'),
+                   User.parse(data.get('user')))
 
 
+@dataclass(frozen=True)
 class PhotoSize:
-    """https://core.telegram.org/bots/api#photosize"""
+    """\
+    Represents PhotoSize object:
+    https://core.telegram.org/bots/api#photosize
+    """
 
-    def __init__(self, data: dict):
-        self.file_id = data['file_id']
-        self.width = data['width']
-        self.height = data['height']
-        self.file_size = data.get('file_size')
+    file_id: str
+    width: int
+    height: int
+    file_size: Optional[int]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['PhotoSize']:
+        if data is None:
+            return None
+
+        return cls(data['file_id'], data['width'], data['height'], data.get('file_size'))
 
 
+@dataclass(frozen=True)
 class Audio:
-    """https://core.telegram.org/bots/api#audio"""
+    """\
+    Represents Audio object:
+    https://core.telegram.org/bots/api#audio
+    """
 
-    def __init__(self, data: dict):
-        self.file_id = data['file_id']
-        self.duration = data['duration']
-        self.performer = data.get('performer')
-        self.title = data.get('title')
-        self.mime_type = data.get('mime_type')
-        self.file_size = data.get('file_size')
+    file_id: str
+    duration: int
+    performer: Optional[str]
+    title: Optional[str]
+    mime_type: Optional[str]
+    file_size: Optional[int]
+    thumb: Optional[PhotoSize]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Audio']:
+        if data is None:
+            return None
+
+        return cls(data['file_id'], data['duration'], data.get('performer'), data.get('title'),
+                   data.get('mime_type'), data.get('file_size'), PhotoSize.parse(data.get('thumb')))
 
 
+@dataclass(frozen=True)
 class Document:
-    """https://core.telegram.org/bots/api#document"""
+    """\
+    Represents Document object:
+    https://core.telegram.org/bots/api#document
+    """
 
-    def __init__(self, data: dict):
-        self.file_id = data['file_id']
-        self.thumb = PhotoSize(data['thumb']) if data.get('thumb') is not None else None
-        self.file_name = data.get('file_name')
-        self.mime_type = data.get('mime_type')
-        self.file_size = data.get('file_size')
+    file_id: str
+    thumb: Optional[PhotoSize]
+    file_name: Optional[str]
+    mime_type: Optional[str]
+    file_size: Optional[int]
 
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Document']:
+        if data is None:
+            return None
 
-class Sticker:
-    """https://core.telegram.org/bots/api#sticker"""
-
-    def __init__(self, data: dict):
-        self.file_id = data['file_id']
-        self.width = data['width']
-        self.height = data['height']
-        self.thumb = PhotoSize(data['thumb']) if data.get('thumb') is not None else None
-        self.emoji = data.get('emoji')
-        self.file_size = data.get('file_size')
+        return cls(data['file_id'], PhotoSize.parse(data.get('thumb')), data.get('file_name'),
+                   data.get('mime_type'), data.get('file_size'))
 
 
+@dataclass(frozen=True)
 class Video:
-    """https://core.telegram.org/bots/api#video"""
+    """\
+    Represents Video object:
+    https://core.telegram.org/bots/api#video
+    """
 
-    def __init__(self, data: dict):
-        self.file_id = data['file_id']
-        self.width = data['width']
-        self.height = data['height']
-        self.duration = data['duration']
-        self.thumb = PhotoSize(data['thumb']) if data.get('thumb') is not None else None
-        self.mime_type = data.get('mime_type')
-        self.file_size = data.get('file_size')
+    file_id: str
+    width: int
+    height: int
+    duration: int
+    thumb: Optional['PhotoSize']
+    mime_type: Optional[str]
+    file_size: Optional[int]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Video']:
+        if data is None:
+            return None
+
+        return cls(data['file_id'], data['width'], data['height'], data['duration'],
+                   PhotoSize.parse(data.get('thumb')), data.get('mime_type'), data.get('file_size'))
 
 
+@dataclass(frozen=True)
 class Animation:
-    """https://core.telegram.org/bots/api#animation"""
+    """\
+    Represents Animation object:
+    https://core.telegram.org/bots/api#animation
+    """
 
-    def __init__(self, data: dict):
-        self.file_id = data['file_id']
-        self.width = data['width']
-        self.height = data['height']
-        self.duration = data['duration']
-        self.thumb = PhotoSize(data['thumb']) if data.get('thumb') is not None else None
-        self.file_name = data.get('file_name')
-        self.mime_type = data.get('mime_type')
-        self.file_size = data.get('file_size')
+    file_id: str
+    width: str
+    height: str
+    duration: str
+    thumb: Optional['PhotoSize']
+    file_name: Optional[str]
+    mime_type: Optional[str]
+    file_size: Optional[int]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Animation']:
+        if data is None:
+            return None
+
+        return cls(data['file_id'], data['width'], data['height'], data['duration'],
+                   PhotoSize.parse(data.get('thumb')), data.get('file_name'),
+                   data.get('mime_type'), data.get('file_size'))
 
 
+@dataclass(frozen=True)
 class Voice:
-    """https://core.telegram.org/bots/api#voice"""
+    """\
+    Represents Voice object:
+    https://core.telegram.org/bots/api#voice
+    """
 
-    def __init__(self, data: dict):
-        self.file_id = data['file_id']
-        self.duration = data['duration']
-        self.mime_type = data.get('mime_type')
-        self.file_size = data.get('file_size')
+    file_id: str
+    duration: int
+    mime_type: Optional[str]
+    file_size: Optional[int]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Voice']:
+        if data is None:
+            return None
+
+        return cls(data['file_id'], data['duration'], data.get('mime_type'), data.get('file_size'))
 
 
+@dataclass(frozen=True)
 class VideoNote:
-    """https://core.telegram.org/bots/api#videonote"""
+    """\
+    Represents VideoNote object:
+    https://core.telegram.org/bots/api#videonote
+    """
 
-    def __init__(self, data: dict):
-        self.file_id = data['file_id']
-        self.length = int(data['length'])
-        self.duration = int(data['duration'])
-        self.thumb = PhotoSize(data['thumb']) if data.get('thumb') is not None else None
-        self.file_size = data.get('file_size')
+    file_id: str
+    length: int
+    duration: int
+    thumb: Optional['PhotoSize']
+    file_size: Optional[int]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['VideoNote']:
+        if data is None:
+            return None
+
+        return cls(data['file_id'], data['length'], data['duration'],
+                   PhotoSize.parse(data.get('thumb')), data.get('file_size'))
 
 
+@dataclass(frozen=True)
 class Contact:
-    """https://core.telegram.org/bots/api#contact"""
+    """\
+    Represents Contact object:
+    https://core.telegram.org/bots/api#contact
+    """
 
-    def __init__(self, data):
-        self.phone_number = data['phone_number']
-        self.first_name = data['first_name']
-        self.last_name = data.get('last_name')
-        self.user_id = data.get('user_id')
+    phone_number: str
+    first_name: str
+    last_name: Optional[str]
+    user_id: Optional[int]
+    vcard: Optional[str]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Contact']:
+        if data is None:
+            return None
+
+        return cls(data['phone_number'], data['first_name'], data.get('last_name'),
+                   data.get('user_id'), data.get('vcard'))
 
 
+@dataclass(frozen=True)
 class Location:
-    """https://core.telegram.org/bots/api#location"""
+    """\
+    Represents Location object:
+    https://core.telegram.org/bots/api#location
+    """
 
-    def __init__(self, data: dict):
-        self.longitude = data['longitude']
-        self.latitude = data['latitude']
+    longitude: float
+    latitude: float
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Location']:
+        if data is None:
+            return None
+
+        return cls(data['longitude'], data['latitude'])
 
 
+@dataclass(frozen=True)
 class Venue:
-    """https://core.telegram.org/bots/api#venue"""
+    """\
+    Represents Venue object:
+    https://core.telegram.org/bots/api#venue
+    """
 
-    def __init__(self, data: dict):
-        self.location = Location(data['location'])
-        self.title = data['title']
-        self.address = data['address']
-        self.foursquare_id = data.get('foursquare_id')
+    location: Location
+    title: str
+    address: str
+    foursquare_id: Optional[str]
+    foursquare_type: Optional[str]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Venue']:
+        if data is None:
+            return None
+
+        return cls(Location.parse(data['location']), data['title'], data['address'],
+                   data.get('foursquare_id'), data.get('foursquare_type'))
 
 
+@dataclass(frozen=True)
 class UserProfilePhotos:
-    """https://core.telegram.org/bots/api#userprofilephotos"""
+    """\
+    Represents UserProfilePhotos object:
+    https://core.telegram.org/bots/api#userprofilephotos
+    """
 
-    def __init__(self, data: dict):
-        self.total_count = data['total_count']
-        self.photos = []
-        for p in data['photos']:
-            photo = []
-            for i in p:
-                photo.append(PhotoSize(i))
-            self.photos.append(photo)
+    total_count: int
+    photos: List[List['PhotoSize']]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['UserProfilePhotos']:
+        if data is None:
+            return None
+
+        photos = [[PhotoSize.parse(i) for i in p] for p in data['photos']]
+
+        return cls(data['total_count'], photos)
 
 
+@dataclass(frozen=True)
 class File:
-    """https://core.telegram.org/bots/api#file"""
+    """\
+    Represents File object:
+    https://core.telegram.org/bots/api#file
+    """
 
-    def __init__(self, data: dict):
-        self.file_id = data['file_id']
-        self.file_size = data.get('file_size')
-        self.file_path = data.get('file_path')
+    file_id: str
+    file_size: Optional[int]
+    file_path: Optional[str]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['File']:
+        if data is None:
+            return None
+
+        return cls(data['file_id'], data.get('file_size'), data.get('file_path'))
 
 
+@dataclass(frozen=True)
 class CallbackQuery:
-    """https://core.telegram.org/bots/api#callbackquery"""
+    """\
+    Represents CallbackQuery object:
+    https://core.telegram.org/bots/api#callbackquery
 
-    def __init__(self, data: dict):
-        self.query_id = data['id']
-        self.user = User(data['from'])
-        self.message = Message(data['message']) if data.get('message') is not None else None
-        self.inline_message_id = data.get('inline_message_id')
-        self.chat_instance = data['chat_instance']
-        self.data = data['data']
-        self.game_short_name = data.get('game_short_name')
+    Differences in field names:
+    id -> query_id
+    from -> user
+    """
+
+    query_id: str
+    user: 'User'
+    message: Optional['Message']
+    inline_message_id: Optional[str]
+    chat_instance: str
+    data: Optional[str]
+    game_short_name: Optional[str]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['CallbackQuery']:
+        if data is None:
+            return None
+
+        return cls(data['id'], User.parse(data['from']), Message.parse(data.get('message')),
+                   data.get('inline_message_id'), data['chat_instance'], data.get('data'), data.get('game_short_name'))
 
 
+@dataclass(frozen=True)
+class ChatPhoto:
+    """\
+    Represents ChatPhoto object:
+    https://core.telegram.org/bots/api#chatphoto
+    """
+
+    small_file_id: str
+    big_file_id: str
+
+    @classmethod
+    def parse(cls, data: Optional[dict]) -> Optional['ChatPhoto']:
+        if data is None:
+            return None
+
+        return cls(data['small_file_id'], data['big_file_id'])
+
+
+@dataclass(frozen=True)
 class ChatMember:
-    """https://core.telegram.org/bots/api#chatmember"""
+    """\
+    Represents ChatMember object:
+    https://core.telegram.org/bots/api#chatmember
+    """
 
-    def __init__(self, data: dict):
-        self.user = User(data['user'])
-        self.status = data['status']
+    user: 'User'
+    status: 'ChatMemberStatusType'
+    until_date: Optional[datetime]
+    can_be_edited: Optional[bool]
+    can_change_info: Optional[bool]
+    can_post_messages: Optional[bool]
+    can_edit_messages: Optional[bool]
+    can_delete_messages: Optional[bool]
+    can_invite_users: Optional[bool]
+    can_restrict_members: Optional[bool]
+    can_pin_messages: Optional[bool]
+    can_promote_members: Optional[bool]
+    can_send_messages: Optional[bool]
+    can_send_media_messages: Optional[bool]
+    can_send_other_messages: Optional[bool]
+    can_add_web_page_previews: Optional[bool]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['ChatMember']:
+        if data is None:
+            return None
+
+        until_date = datetime.utcfromtimestamp(data['until_date']) if 'until_date' in data else None
+
+        return cls(User.parse(data['user']), ChatMemberStatusType(data['status']), until_date,
+                   data.get('can_be_edited'), data.get('can_change_info'), data.get('can_post_messages'),
+                   data.get('can_edit_messages'), data.get('can_delete_messages'), data.get('can_invite_users'),
+                   data.get('can_restrict_members'), data.get('can_pin_messages'), data.get('can_promote_members'),
+                   data.get('can_send_messages'), data.get('can_send_media_messages'),
+                   data.get('can_send_other_messages'), data.get('can_add_web_page_previews'))
 
 
+@dataclass(frozen=True)
 class ResponseParameters:
-    """https://core.telegram.org/bots/api#responseparameters"""
+    """\
+    Represents ResponseParameters object:
+    https://core.telegram.org/bots/api#responseparameters
+    """
 
-    def __init__(self, data: dict):
-        self.migrate_to_chat_id = data.get('migrate_to_chat_id')
-        self.retry_after = data.get('retry_after')
+    migrate_to_chat_id: int
+    retry_after: int
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['ResponseParameters']:
+        if data is None:
+            return None
+
+        return cls(data['migrate_to_chat_id'], data['retry_after'])
 
 
+@dataclass(frozen=True)
+class MaskPosition:
+    """\
+    Represents MaskPosition object:
+    https://core.telegram.org/bots/api#maskposition
+    """
+
+    point: MaskPositionPointType
+    x_shift: float
+    y_shift: float
+    scale: float
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['MaskPosition']:
+        if data is None:
+            return None
+
+        return cls(MaskPositionPointType(data['point']), data['x_shift'], data['y_shift'], data['scale'])
+
+
+@dataclass(frozen=True)
+class StickerSet:
+    """\
+    Represents StickerSet object:
+    https://core.telegram.org/bots/api#stickerset
+    """
+
+    name: str
+    title: str
+    contains_masks: bool
+    stickers: List['Sticker']
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['StickerSet']:
+        if data is None:
+            return None
+
+        stickers = [Sticker.parse(s) for s in data['stickers']]
+
+        return cls(data['name'], data['title'], data['contains_masks'], stickers)
+
+
+@dataclass(frozen=True)
+class Sticker:
+    """\
+    Represents Sticker object:
+    https://core.telegram.org/bots/api#sticker
+    """
+
+    file_id: str
+    width: int
+    height: int
+    thumb: Optional[PhotoSize]
+    emoji: Optional[str]
+    set_name: Optional[str]
+    mask_position: Optional[MaskPosition]
+    file_size: Optional[str]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Sticker']:
+        if data is None:
+            return None
+
+        return cls(data['file_id'], data['width'], data['height'], PhotoSize.parse(data.get('thumb')),
+                   data.get('emoji'), data.get('set_name'), MaskPosition.parse(data.get('mask_position')),
+                   data.get('file_size'))
+
+
+@dataclass(frozen=True)
 class InlineQuery:
-    """https://core.telegram.org/bots/api#inlinequery"""
+    """\
+    Represents InlineQuery object:
+    https://core.telegram.org/bots/api#inlinequery
 
-    def __init__(self, data: dict):
-        self.query_id = data['id']
-        self.user = User(data['from'])
-        self.location = Location(data['location']) if data.get('location') is not None else None
-        self.query = data['query']
-        self.offset = data.get('offset')
+    Differences in field names:
+    id -> query_id
+    from -> user
+    """
+
+    query_id: str
+    user: 'User'
+    location: Optional['Location']
+    query: str
+    offset: str
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['InlineQuery']:
+        if data is None:
+            return None
+
+        return cls(data['id'], User.parse(data['from']), Location.parse(data.get('location')),
+                   data['query'], data['offset'])
 
 
+@dataclass(frozen=True)
 class ChosenInlineResult:
-    """https://core.telegram.org/bots/api#choseninlineresult"""
+    """\
+    Represents ChosenInlineResult object:
+    https://core.telegram.org/bots/api#choseninlineresult
 
-    def __init__(self, data: dict):
-        self.result_id = data['result_id']
-        self.user = User(data['from'])
-        self.location = Location(data['location']) if data.get('location') is not None else None
-        self.inline_message_id = data.get('inline_message_id')
-        self.query = data['query']
+    Differences in field names:
+    from -> user
+    """
+
+    result_id: str
+    user: 'User'
+    location: Optional['Location']
+    inline_message_id: Optional[str]
+    query: str
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['ChosenInlineResult']:
+        if data is None:
+            return None
+
+        return cls(data['result_id'], User.parse(data['from']), Location.parse(data.get('location')),
+                   data.get('inline_message_id'), data['query'])
 
 
+@dataclass(frozen=True)
 class LabeledPrice:
-    """https://core.telegram.org/bots/api#labeledprice"""
+    """\
+    Represents LabeledPrice object:
+    https://core.telegram.org/bots/api#labeledprice
+    """
 
-    def __init__(self, data: dict):
-        self.label = data['label']
-        self.amount = data['amount']
+    label: str
+    amount: int
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['LabeledPrice']:
+        if data is None:
+            return None
+
+        return cls(data['label'], data['amount'])
 
 
+@dataclass(frozen=True)
 class Invoice:
-    """https://core.telegram.org/bots/api#invoice"""
+    """\
+    Represents Invoice object:
+    https://core.telegram.org/bots/api#invoice
+    """
 
-    def __init__(self, data: dict):
-        self.title = data['title']
-        self.description = data['description']
-        self.start_parameter = data['start_parameter']
-        self.currency = data['currency']
-        self.total_amount = data['total_amount']
+    title: str
+    description: str
+    start_parameter: str
+    currency: str
+    total_amount: str
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Invoice']:
+        if data is None:
+            return None
+
+        return cls(data['title'], data['description'], data['start_parameter'], data['currency'], data['total_amount'])
 
 
+@dataclass(frozen=True)
 class ShippingAddress:
-    """https://core.telegram.org/bots/api#shippingaddress"""
+    """\
+    Represents ShippingAddress object:
+    https://core.telegram.org/bots/api#shippingaddress
+    """
 
-    def __init__(self, data: dict):
-        self.country_code = data['country_code']
-        self.state = data['state']
-        self.city = data['city']
-        self.street_line1 = data['street_line1']
-        self.street_line2 = data['street_line2']
-        self.post_code = data['post_code']
+    country_code: str
+    state: str
+    city: str
+    street_line1: str
+    street_line2: str
+    post_code: str
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['ShippingAddress']:
+        if data is None:
+            return None
+
+        return cls(data['country_code'], data['state'], data['city'], data['street_line1'],
+                   data['street_line2'], data['post_code'])
 
 
+@dataclass(frozen=True)
 class OrderInfo:
-    """https://core.telegram.org/bots/api#orderinfo"""
+    """\
+    Represents OrderInfo object:
+    https://core.telegram.org/bots/api#orderinfo
+    """
 
-    def __init__(self, data: dict):
-        self.name = data.get('name')
-        self.phone_number = data.get('phone_number')
-        self.email = data.get('email')
-        self.shipping_address = ShippingAddress(data['shipping_address']) if data.get(
-            'shipping_address') is not None else None
+    name: Optional[str]
+    phone_number: Optional[str]
+    email: Optional[str]
+    shipping_address: Optional['ShippingAddress']
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['OrderInfo']:
+        if data is None:
+            return None
+
+        return cls(data.get('name'), data.get('phone_number'), data.get('email'),
+                   ShippingAddress.parse(data.get('shipping_address')))
 
 
+@dataclass(frozen=True)
 class ShippingOption:
-    """https://core.telegram.org/bots/api#shippingoption"""
+    """\
+    Represents ShippingOption object:
+    https://core.telegram.org/bots/api#shippingoption
 
-    def __init__(self, data: dict):
-        self.id = data['id']
-        self.title = data['title']
+    Differences in field names:
+    id -> shipping_option_id
+    """
 
-        if data.get('prices') is not None:
-            self.prices = []
-            for p in data.get('prices'):
-                self.prices.append(LabeledPrice(p))
-        else:
-            self.prices = None
+    shipping_option_id: str
+    title: str
+    prices: List['LabeledPrice']
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['ShippingOption']:
+        if data is None:
+            return None
+
+        prices = [LabeledPrice.parse(s) for s in data['prices']]
+
+        return cls(data['id'], data['title'], prices)
 
 
+@dataclass(frozen=True)
 class SuccessfulPayment:
-    """https://core.telegram.org/bots/api#successfulpayment"""
+    """\
+    Represents SuccessfulPayment object:
+    https://core.telegram.org/bots/api#successfulpayment
+    """
 
-    def __init__(self, data: dict):
-        self.currency = data['currency']
-        self.total_amount = data['total_amount']
-        self.invoice_payload = data['invoice_payload']
-        self.shipping_option_id = data.get('shipping_option_id')
-        self.order_info = OrderInfo(data['order_info']) if data.get('order_info') is not None else None
-        self.telegram_payment_charge_id = data['telegram_payment_charge_id']
-        self.provider_payment_charge_id = data['provider_payment_charge_id']
+    currency: str
+    total_amount: int
+    invoice_payload: str
+    shipping_option_id: Optional[str]
+    order_info: Optional['OrderInfo']
+    telegram_payment_charge_id: str
+    provider_payment_charge_id: str
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['SuccessfulPayment']:
+        if data is None:
+            return None
+
+        return cls(data['currency'], data['total_amount'], data['invoice_payload'], data.get('shipping_option_id'),
+                   OrderInfo.parse(data.get('order_info')), data['telegram_payment_charge_id'],
+                   data['provider_payment_charge_id'])
 
 
+@dataclass(frozen=True)
 class ShippingQuery:
-    """https://core.telegram.org/bots/api#successfulpayment"""
+    """\
+    Represents ShippingQuery object:
+    https://core.telegram.org/bots/api#successfulpayment
 
-    def __init__(self, data: dict):
-        self.query_id = data['id']
-        self.user = User(data['from'])
-        self.invoice_payload = data['invoice_payload']
-        self.shipping_address = ShippingAddress(data['shipping_address'])
+    Differences in field names:
+    from -> user
+    """
+
+    query_id: str
+    user: 'User'
+    invoice_payload: str
+    shipping_address: 'ShippingAddress'
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['ShippingQuery']:
+        if data is None:
+            return None
+
+        return cls(data['id'], User.parse(data['from']), data['invoice_payload'],
+                   ShippingAddress.parse(data['shipping_address']))
 
 
+@dataclass(frozen=True)
 class PreCheckoutQuery:
-    """https://core.telegram.org/bots/api#precheckoutquery"""
+    """\
+    Represents PreCheckoutQuery object:
+    https://core.telegram.org/bots/api#precheckoutquery
 
-    def __init__(self, data: dict):
-        self.query_id = data['id']
-        self.user = User(data['from'])
-        self.currency = data['currency']
-        self.total_amount = data['total_amount']
-        self.invoice_payload = data['invoice_payload']
-        self.shipping_option_id = data.get('shipping_option_id')
-        self.order_info = OrderInfo(data['order_info']) if data.get('order_info') is not None else None
+    Differences in field names:
+    id -> query_id
+    from -> user
+    """
+
+    query_id: str
+    user: 'User'
+    currency: str
+    total_amount: int
+    invoice_payload: str
+    shipping_option_id: Optional[str]
+    order_info: Optional['OrderInfo']
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['PreCheckoutQuery']:
+        if data is None:
+            return None
+
+        return cls(data['id'], User.parse(data['from']), data['currency'], data['total_amount'],
+                   data['invoice_payload'], data.get('shipping_option_id'),
+                   OrderInfo.parse(data.get('order_info')))
 
 
+@dataclass(frozen=True)
+class PassportData:
+    """\
+    Represents PassportData object:
+    https://core.telegram.org/bots/api#passportdata
+    """
+
+    data: List['EncryptedPassportElement']
+    credentials: 'EncryptedCredentials'
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['PassportData']:
+        if data is None:
+            return None
+
+        list_data = [EncryptedPassportElement.parse(s) for s in data['data']]
+        credentials = EncryptedCredentials.parse(data['credentials'])
+
+        return cls(list_data, credentials)
+
+
+@dataclass(frozen=True)
+class PassportFile:
+    """\
+    Represents PassportFile object:
+    https://core.telegram.org/bots/api#passportfile
+    """
+
+    file_id: str
+    file_size: int
+    file_date: datetime
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['PassportFile']:
+        if data is None:
+            return None
+
+        return cls(data['file_id'], data['file_size'], datetime.utcfromtimestamp(data['file_date']))
+
+
+@dataclass(frozen=True)
+class EncryptedPassportElement:
+    """\
+    Represents EncryptedPassportElement object:
+    https://core.telegram.org/bots/api#encryptedpassportelement
+
+    Differences in field names:
+    type -> encrypted_passport_element_type
+    """
+
+    encrypted_passport_element_type: 'EncryptedPassportElementType'
+    data: Optional[str]
+    phone_number: Optional[str]
+    email: Optional[str]
+    files: Optional[List['PassportFile']]
+    front_side: Optional['PassportFile']
+    reverse_side: Optional['PassportFile']
+    selfie: Optional['PassportFile']
+    translation: Optional[List['PassportFile']]
+    hash: str
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['EncryptedPassportElement']:
+        if data is None:
+            return None
+
+        files = [PassportFile.parse(s) for s in data['files']] if 'files' in data else None
+        translation = [PassportFile.parse(s) for s in data['translation']] if 'translation' in data else None
+
+        return cls(EncryptedPassportElementType(data['type']), data.get('data'), data.get('phone_number'),
+                   data.get('email'), files, PassportFile.parse(data.get('front_side')),
+                   PassportFile.parse(data.get('reverse_side')), PassportFile.parse(data.get('selfie')), translation,
+                   data['hash'])
+
+
+@dataclass(frozen=True)
+class EncryptedCredentials:
+    """\
+    Represents EncryptedCredentials object:
+    https://core.telegram.org/bots/api#encryptedcredentials
+    """
+
+    data: str
+    hash: str
+    secret: str
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['EncryptedCredentials']:
+        if data is None:
+            return None
+
+        return cls(data['data'], data['hash'], data['secret'])
+
+
+@dataclass(frozen=True)
 class Game:
-    """https://core.telegram.org/bots/api#game"""
+    """\
+    Represents Game object:
+    https://core.telegram.org/bots/api#game
+    """
 
-    def __init__(self, data: dict):
-        self.title = data['title']
-        self.description = data['description']
+    title: str
+    description: str
+    photo: List['PhotoSize']
+    text: Optional[str]
+    text_entities: Optional[List['MessageEntity']]
+    animation: Optional['Animation']
 
-        if data.get('photo') is not None:
-            self.photo = []
-            for p in data.get('photo'):
-                self.photo.append(PhotoSize(p))
-        else:
-            self.photo = None
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Game']:
+        if data is None:
+            return None
 
-        self.text = data.get('text')
+        photo = [PhotoSize.parse(s) for s in data['photo']]
+        text_entities = [MessageEntity.parse(s) for s in data['text_entities']] if 'text_entities' in data else None
 
-        if data.get('text_entities') is not None:
-            self.text_entities = []
-            for p in data.get('text_entities'):
-                self.text_entities.append(MessageEntity(p))
-        else:
-            self.text_entities = None
-
-        self.animation = Animation(data['animation']) if data.get('animation') is not None else None
-
-
-class Animation:
-    """https://core.telegram.org/bots/api#animation"""
-
-    def __init__(self, data: dict):
-        self.file_id = data['file_id']
-        self.thumb = PhotoSize(data['thumb']) if data.get('thumb') is not None else None
-        self.file_name = data.get('file_name')
-        self.mime_type = data.get('mime_type')
-        self.file_size = data.get('file_size')
+        return cls(data['title'], data['description'], photo, data.get('text'),
+                   text_entities, Animation.parse(data.get('animation')))
 
 
+@dataclass(frozen=True)
 class GameHighScore:
-    """https://core.telegram.org/bots/api#gamehighscore"""
+    """\
+    Represents GameHighScore object:
+    https://core.telegram.org/bots/api#gamehighscore
+    """
 
-    def __init__(self, data: dict):
-        self.position = data['position']
-        self.user = User(data['user'])
-        self.score = data['score']
+    position: int
+    user: 'User'
+    score: int
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['GameHighScore']:
+        if data is None:
+            return None
+
+        return cls(data['position'], User.parse(data['user']), data.get('score'))
 
 
+@dataclass(frozen=True)
 class Response:
-    def __init__(self, data: dict, method: str):
-        self.ok = data['ok']
-        self.description = data.get('description')
-        self.error_code = data.get('error_code')
-        self.result_raw = data
-        self.result = None
+    """\
+    Represents Response object:
+    https://core.telegram.org/bots/api#making-requests
 
-        if self.error_code:
-            return
+    Additional fields:
+    method
+    raw
+    """
 
-        if method is 'getMe':
-            self.result = User(data['result'])
-        elif method is 'getUpdates':
-            self.result = list()
-            for update in data['result']:
-                self.result.append(Update(update))
-        elif method is 'setWebhook':
-            self.result = data['result']
-        elif method is 'deleteWebhook':
-            self.result = data['result']
-        elif method is 'getWebhookInfo':
-            self.result = WebhookInfo(data['result'])
-        elif method is 'sendMessage':
-            self.result = Message(data['result'])
-        elif method is 'sendPhoto':
-            self.result = Message(data['result'])
-        elif method is 'sendAudio':
-            self.result = Message(data['result'])
-        elif method is 'sendDocument':
-            self.result = Message(data['result'])
-        elif method is 'sendAnimation':
-            self.result = Message(data['result'])
-        elif method is 'sendSticker':
-            self.result = Message(data['result'])
-        elif method is 'sendVideo':
-            self.result = Message(data['result'])
-        elif method is 'sendVoice':
-            self.result = Message(data['result'])
-        elif method is 'sendVideoNote':
-            self.result = Message(data['result'])
-        elif method is 'sendLocation':
-            self.result = Message(data['result'])
-        elif method is 'sendVenue':
-            self.result = Message(data['result'])
-        elif method is 'sendContact':
-            self.result = Message(data['result'])
-        elif method is 'sendChatAction':
-            self.result = data['result']
-        elif method is 'getUserProfilePhotos':
-            self.result = UserProfilePhotos(data['result'])
-        elif method is 'getFile':
-            self.result = File(data['result'])
-        elif method is 'kickChatMember':
-            self.result = data['result']
-        elif method is 'leaveChat':
-            self.result = data['result']
-        elif method is 'unbanChatMember':
-            self.result = data['result']
-        elif method is 'getChat':
-            self.result = Chat(data['result'])
-        elif method is 'getChatAdministrators':
-            self.result = list()
-            for member in data['result']:
-                self.result.append(ChatMember(member))
-        elif method is 'getChatMember':
-            self.result = ChatMember(data['result'])
-        elif method is 'answerCallbackQuery':
-            self.result = data['result']
-        elif method is 'editMessageText':
-            if data['result'] is True:
-                self.result = data['result']
-            else:
-                self.result = Message(data['result'])
-        elif method is 'editMessageCaption':
-            if data['result'] is True:
-                self.result = data['result']
-            else:
-                self.result = Message(data['result'])
-        elif method is 'editMessageReplyMarkup':
-            if data['result'] is True:
-                self.result = data['result']
-            else:
-                self.result = Message(data['result'])
-        elif method is 'answerInlineQuery':
-            self.result = data['result']
+    method: str
+    raw: dict
+    ok: bool
+    error_code: Optional[int]
+    description: Optional[str]
+    result: Optional[Union[bool, int, str, 'Chat', 'ChatMember', 'File', 'Message', List['GameHighScore'],
+                           List['Update'], 'StickerSet', 'User', 'WebhookInfo', 'UserProfilePhotos', List['ChatMember']]]
+    parameters: Optional[ResponseParameters]
 
-        self.R = self.result
+    @classmethod
+    def parse(cls, data: dict, method: str) -> Optional['Response']:
+        if data is None:
+            return None
 
-    def __repr__(self):
-        return "Response: ok=%s, error_code=%s, description=%s" % (self.ok, self.error_code, self.description)
+        ok = data['ok']
+        error_code = data.get('error_code')
+        description = data.get('description')
+        parameters = ResponseParameters.parse(data.get('parameters'))
+
+        result = None
+        if error_code is None:
+            if method is 'getMe':
+                result = User.parse(data['result'])
+            elif method is 'getUpdates':
+                result = list()
+                for update in data['result']:
+                    result.append(Update.parse(update))
+            elif method is 'setWebhook':
+                result = data['result']
+            elif method is 'deleteWebhook':
+                result = data['result']
+            elif method is 'getWebhookInfo':
+                result = WebhookInfo.parse(data['result'])
+            elif method is 'sendMessage':
+                result = Message.parse(data['result'])
+            elif method is 'sendPhoto':
+                result = Message.parse(data['result'])
+            elif method is 'sendAudio':
+                result = Message.parse(data['result'])
+            elif method is 'sendDocument':
+                result = Message.parse(data['result'])
+            elif method is 'sendAnimation':
+                result = Message.parse(data['result'])
+            elif method is 'sendSticker':
+                result = Message.parse(data['result'])
+            elif method is 'sendVideo':
+                result = Message.parse(data['result'])
+            elif method is 'sendVoice':
+                result = Message.parse(data['result'])
+            elif method is 'sendVideoNote':
+                result = Message.parse(data['result'])
+            elif method is 'sendLocation':
+                result = Message.parse(data['result'])
+            elif method is 'sendVenue':
+                result = Message.parse(data['result'])
+            elif method is 'sendContact':
+                result = Message.parse(data['result'])
+            elif method is 'sendChatAction':
+                result = data['result']
+            elif method is 'getUserProfilePhotos':
+                result = UserProfilePhotos.parse(data['result'])
+            elif method is 'getFile':
+                result = File.parse(data['result'])
+            elif method is 'kickChatMember':
+                result = data['result']
+            elif method is 'leaveChat':
+                result = data['result']
+            elif method is 'unbanChatMember':
+                result = data['result']
+            elif method is 'getChat':
+                result = Chat.parse(data['result'])
+            elif method is 'getChatAdministrators':
+                result = list()
+                for member in data['result']:
+                    result.append(ChatMember.parse(member))
+            elif method is 'getChatMember':
+                result = ChatMember.parse(data['result'])
+            elif method is 'answerCallbackQuery':
+                result = data['result']
+            elif method is 'editMessageText':
+                if data['result'] is True:
+                    result = data['result']
+                else:
+                    result = Message.parse(data['result'])
+            elif method is 'editMessageCaption':
+                if data['result'] is True:
+                    result = data['result']
+                else:
+                    result = Message.parse(data['result'])
+            elif method is 'editMessageReplyMarkup':
+                if data['result'] is True:
+                    result = data['result']
+                else:
+                    result = Message.parse(data['result'])
+            elif method is 'answerInlineQuery':
+                result = data['result']
+
+        return cls(method, data, ok, error_code, description, result, parameters)
