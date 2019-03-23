@@ -2,404 +2,1021 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
+from dataclasses import dataclass, asdict
+from datetime import datetime
+from enum import auto
+from typing import TYPE_CHECKING, Optional, Union, List
 
-from .types import Default
+from .types import InputFile, EnumAutoName
+
+if TYPE_CHECKING:
+    from .update import UpdateType
 
 
+class ParseModeType(EnumAutoName):
+    """\
+    Formatting options type:
+    https://core.telegram.org/bots/api#formatting-options
+    """
+
+    html = auto()
+    markdown = auto()
+
+
+class ChatActionType(EnumAutoName):
+    """\
+    Formatting options type:
+    https://core.telegram.org/bots/api#formatting-options
+    """
+
+    typing = auto()
+    upload_photo = auto()
+    record_video = auto()
+    upload_video = auto()
+    record_audio = auto()
+    upload_audio = auto()
+    upload_document = auto()
+    find_location = auto()
+    record_video_note = auto()
+    upload_video_note = auto()
+
+
+@dataclass(frozen=True)
 class Request:
-    def __init__(self):
-        self._method = None
-        self._data = None
-        raise NotImplementedError
+    """\
+    Base class for all request objects.
+    """
 
-    @property
-    def method(self):
-        return self._method
+    method = None
 
-    @property
-    def data(self):
-        return self._data
+    def render(self, with_method=False) -> dict:
+        d = asdict(self)
 
-    def get(self, include_method=False):
-        if include_method:
-            d = dict(method=self.method)
-            d.update(self.data)
-            return d
-        return self.data
+        if with_method:
+            d['method'] = self.method
+
+        # TODO: process datetime ?
+
+        return {k: v for k, v in d.items() if v is not None}
 
 
+@dataclass(frozen=True)
 class GetUpdates(Request):
-    """https://core.telegram.org/bots/api#getupdates"""
+    """\
+    Represents GetUpdates request object:
+    https://core.telegram.org/bots/api#getupdates
+    """
 
-    def __init__(self, offset=None, limit=None, timeout=None, allowed_updates=None):
-        self._method = "getUpdates"
-        self._data = dict(offset=offset, limit=limit, timeout=timeout, allowed_updates=allowed_updates)
+    method = "getUpdates"
+
+    offset: Optional[int] = None
+    limit: Optional[int] = None
+    timeout: Optional[int] = None
+    allowed_updates: Optional[List['UpdateType']] = None
 
 
+@dataclass(frozen=True)
 class SetWebhook(Request):
-    """https://core.telegram.org/bots/api#setwebhook"""
+    """\
+    Represents SetWebhook request object:
+    https://core.telegram.org/bots/api#setwebhook 
+    """
 
-    def __init__(self, url, max_connections=None, allowed_updates=None):
-        self._method = "setWebhook"
-        self._data = dict(url=url, max_connections=max_connections, allowed_updates=allowed_updates)
+    method = "setWebhook"
+
+    url: str
+    certificate: Optional[Union[InputFile, str]] = None
+    max_connections: Optional[int] = None
+    allowed_updates: Optional[List['UpdateType']] = None
 
 
+@dataclass(frozen=True)
 class DeleteWebhook(Request):
-    """https://core.telegram.org/bots/api#deletewebhook"""
+    """\
+    Represents DeleteWebhook request object:
+    https://core.telegram.org/bots/api#deletewebhook
+    """
 
-    def __init__(self):
-        self._method = "deleteWebhook"
-        self._data = dict()
+    method = "deleteWebhook"
 
 
+@dataclass(frozen=True)
 class GetWebhookInfo(Request):
-    """https://core.telegram.org/bots/api#getwebhookinfo"""
+    """\
+    Represents GetWebhookInfo request object:
+    https://core.telegram.org/bots/api#getwebhookinfo
+    """
 
-    def __init__(self):
-        self._method = "getWebhookInfo"
-        self._data = dict()
+    method = "getWebhookInfo"
 
 
+@dataclass(frozen=True)
 class GetMe(Request):
-    """https://core.telegram.org/bots/api#getme"""
+    """\
+    Represents GetMe request object:
+    https://core.telegram.org/bots/api#getme
+    """
 
-    def __init__(self):
-        self._method = "getMe"
-        self._data = dict()
+    method = "getMe"
 
 
+@dataclass(frozen=True)
 class SendMessage(Request):
-    """https://core.telegram.org/bots/api#sendmessage"""
+    """\
+    Represents SendMessage request object:
+    https://core.telegram.org/bots/api#sendmessage
+    """
 
-    def __init__(self, chat_id, text, parse_mode=Default, disable_web_page_preview=Default,
-                 disable_notification=Default, reply_to_message_id=None, reply_markup=None):
-        self._method = "sendMessage"
-        self._data = dict(chat_id=chat_id, text=text, parse_mode=parse_mode,
-                          disable_web_page_preview=disable_web_page_preview, disable_notification=disable_notification,
-                          reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+    method = "sendMessage"
+
+    chat_id: Union[int, str]
+    text: str
+    parse_mode: Optional[ParseModeType] = None
+    disable_web_page_preview: Optional[bool] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
 class ForwardMessage(Request):
-    """https://core.telegram.org/bots/api#forwardmessage"""
+    """\
+    Represents ForwardMessage request object:
+    https://core.telegram.org/bots/api#forwardmessage
+    """
 
-    def __init__(self, chat_id, from_chat_id, message_id, disable_notification=Default):
-        self._method = "forwardMessage"
-        self._data = dict(chat_id=chat_id, from_chat_id=from_chat_id, message_id=message_id,
-                          disable_notification=disable_notification)
+    method = "forwardMessage"
+
+    chat_id: Union[int, str]
+    from_chat_id: Union[int, str]
+    message_id: int
+    disable_notification: Optional[bool] = None
 
 
+@dataclass(frozen=True)
 class SendPhoto(Request):
-    """https://core.telegram.org/bots/api#sendphoto"""
+    """\
+    Represents SendPhoto request object:
+    https://core.telegram.org/bots/api#sendphoto
+    """
 
-    def __init__(self, chat_id, photo, caption=None, parse_mode=Default, disable_notification=Default, reply_to_message_id=None,
-                 reply_markup=None):
-        self._method = "sendPhoto"
-        self._data = dict(chat_id=chat_id, photo=photo, caption=caption, parse_mode=parse_mode, disable_notification=disable_notification,
-                          reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+    method = "sendPhoto"
+
+    chat_id: Union[int, str]
+    photo: Union[InputFile, str]
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
 class SendAudio(Request):
-    """https://core.telegram.org/bots/api#sendaudio"""
+    """\
+    Represents SendAudio request object:
+    https://core.telegram.org/bots/api#sendaudio
+    """
 
-    def __init__(self, chat_id, audio, caption=None, parse_mode=Default, duration=None, performer=None, title=None,
-                 disable_notification=Default, reply_to_message_id=None, reply_markup=None):
-        self._method = "sendAudio"
-        self._data = dict(chat_id=chat_id, audio=audio, caption=caption, parse_mode=parse_mode, duration=duration, performer=performer,
-                          title=title, disable_notification=disable_notification,
-                          reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+    method = "sendAudio"
+
+    chat_id: Union[int, str]
+    audio: Union[InputFile, str]
+    duration: Optional[int] = None
+    performer: Optional[str] = None
+    title: Optional[str] = None
+    thumb: Optional[Union[int, str]] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
 class SendDocument(Request):
-    """https://core.telegram.org/bots/api#senddocument"""
+    """\
+    Represents SendDocument request object:
+    https://core.telegram.org/bots/api#senddocument
+    """
 
-    def __init__(self, chat_id, document, caption=None, parse_mode=Default, disable_notification=Default, reply_to_message_id=None,
-                 reply_markup=None):
-        self._method = "sendDocument"
-        self._data = dict(chat_id=chat_id, document=document, caption=caption, parse_mode=parse_mode,
-                          disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
-                          reply_markup=reply_markup)
+    method = "sendDocument"
 
-
-class SendAnimation(Request):
-    """https://core.telegram.org/bots/api#sendanimation"""
-
-    def __init__(self, chat_id, animation, duration=None, width=None, height=None, caption=None, parse_mode=Default,
-                 thumb=None, disable_notification=Default, reply_to_message_id=None, reply_markup=None):
-        self._method = "sendAnimation"
-        self._data = dict(chat_id=chat_id, animation=animation, duration=duration, width=width, height=height,
-                          thumb=thumb, caption=caption, parse_mode=parse_mode, disable_notification=disable_notification,
-                          reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+    chat_id: Union[int, str]
+    document: Union[InputFile, str]
+    thumb: Optional[Union[int, str]] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
 
 
-class SendSticker(Request):
-    """https://core.telegram.org/bots/api#sendsticker"""
-
-    def __init__(self, chat_id, sticker, disable_notification=Default, reply_to_message_id=None, reply_markup=None):
-        self._method = "sendSticker"
-        self._data = dict(chat_id=chat_id, sticker=sticker, disable_notification=disable_notification,
-                          reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
-
-
+@dataclass(frozen=True)
 class SendVideo(Request):
-    """https://core.telegram.org/bots/api#sendvideo"""
+    """\
+    Represents SendVideo request object:
+    https://core.telegram.org/bots/api#sendvideo
+    """
 
-    def __init__(self, chat_id, video, duration=None, width=None, height=None, caption=None, parse_mode=Default,
-                 disable_notification=Default, reply_to_message_id=None, reply_markup=None):
-        self._method = "sendVideo"
-        self._data = dict(chat_id=chat_id, video=video, duration=duration, width=width, height=height, caption=caption, parse_mode=parse_mode,
-                          disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
-                          reply_markup=reply_markup)
+    method = "sendVideo"
+
+    chat_id: Union[int, str]
+    video: Union[InputFile, str]
+    duration: Optional[int] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+    supports_streaming: Optional[bool] = None
+    thumb: Optional[Union[int, str]] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
+class SendAnimation(Request):
+    """\
+    Represents SendAnimation request object:
+    https://core.telegram.org/bots/api#sendanimation
+    """
+
+    method = "sendAnimation"
+
+    chat_id: Union[int, str]
+    animation: Union[InputFile, str]
+    duration: Optional[int] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+    thumb: Optional[Union[int, str]] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
+
+
+@dataclass(frozen=True)
 class SendVoice(Request):
-    """https://core.telegram.org/bots/api#sendvoice"""
+    """\
+    Represents SendVoice request object:
+    https://core.telegram.org/bots/api#sendvoice
+    """
 
-    def __init__(self, chat_id, voice, caption=None, parse_mode=Default, duration=None, disable_notification=Default,
-                 reply_to_message_id=None, reply_markup=None):
-        self._method = "sendVoice"
-        self._data = dict(chat_id=chat_id, voice=voice, caption=caption, parse_mode=parse_mode, duration=duration,
-                          disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
-                          reply_markup=reply_markup)
+    method = "sendVoice"
+
+    chat_id: Union[int, str]
+    voice: Union[InputFile, str]
+    duration: Optional[int] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
 class SendVideoNote(Request):
-    """https://core.telegram.org/bots/api#sendvideonote"""
+    """\
+    Represents SendVideoNote request object:
+    https://core.telegram.org/bots/api#sendvideonote
+    """
 
-    def __init__(self, chat_id, video_note, duration=None, length=None, disable_notification=Default,
-                 reply_to_message_id=None, reply_markup=None):
-        self._method = "sendVideoNote"
-        self._data = dict(chat_id=chat_id, video_note=video_note, duration=duration, length=length,
-                          disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
-                          reply_markup=reply_markup)
+    method = "sendVideoNote"
+
+    chat_id: Union[int, str]
+    video_note: Union[InputFile, str]
+    duration: Optional[int] = None
+    length: Optional[int] = None
+    thumb: Union[InputFile, str] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
+class SendMediaGroup(Request):
+    """\
+    Represents SendMediaGroup request object:
+    https://core.telegram.org/bots/api#sendmediagroup
+    """
+
+    method = "sendMediaGroup"
+
+    chat_id: Union[int, str]
+    media: List[str]  # TODO: need types for MediaGropus
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+
+
+@dataclass(frozen=True)
 class SendLocation(Request):
-    """https://core.telegram.org/bots/api#sendlocation"""
+    """\
+    Represents SendLocation request object:
+    https://core.telegram.org/bots/api#sendlocation
+    """
 
-    def __init__(self, chat_id, latitude, longitude, disable_notification=Default, reply_to_message_id=None,
-                 reply_markup=None):
-        self._method = "sendLocation"
-        self._data = dict(chat_id=chat_id, latitude=latitude, longitude=longitude,
-                          disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
-                          reply_markup=reply_markup)
+    method = "sendLocation"
+
+    chat_id: Union[int, str]
+    latitude: float
+    longitude: float
+    live_period: Optional[int] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
+class EditMessageLiveLocation(Request):
+    """\
+    Represents EditMessageLiveLocation request object:
+    https://core.telegram.org/bots/api#editmessagelivelocation
+    """
+
+    method = "editMessageLiveLocation"
+
+    latitude: float
+    longitude: float
+    chat_id: Optional[Union[int, str]] = None
+    message_id: Optional[int] = None
+    inline_message_id: Optional[str] = None
+    reply_markup: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class StopMessageLiveLocation(Request):
+    """\
+    Represents StopMessageLiveLocation request object:
+    https://core.telegram.org/bots/api#stopmessagelivelocation
+    """
+
+    method = "stopMessageLiveLocation"
+
+    chat_id: Optional[Union[int, str]] = None
+    message_id: Optional[int] = None
+    inline_message_id: Optional[str] = None
+    reply_markup: Optional[str] = None
+
+
+@dataclass(frozen=True)
 class SendVenue(Request):
-    """https://core.telegram.org/bots/api#sendvenue"""
+    """\
+    Represents SendVenue request object:
+    https://core.telegram.org/bots/api#sendvenue
+    """
 
-    def __init__(self, chat_id, latitude, longitude, title, address, foursquare_id=None, disable_notification=Default,
-                 reply_to_message_id=None, reply_markup=None):
-        self._method = "sendVenue"
-        self._data = dict(chat_id=chat_id, latitude=latitude, longitude=longitude, title=title, address=address,
-                          foursquare_id=foursquare_id, disable_notification=disable_notification,
-                          reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+    method = "sendVenue"
+
+    chat_id: Union[int, str]
+    latitude: float
+    longitude: float
+    title: str
+    address: str
+    foursquare_id: Optional[str] = None
+    foursquare_type: Optional[str] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
 class SendContact(Request):
-    """https://core.telegram.org/bots/api#sendcontact"""
+    """\
+    Represents SendContact request object:
+    https://core.telegram.org/bots/api#sendcontact
+    """
 
-    def __init__(self, chat_id, phone_number, first_name, last_name=None, disable_notification=Default,
-                 reply_to_message_id=None, reply_markup=None):
-        self._method = "sendContact"
-        self._data = dict(chat_id=chat_id, phone_number=phone_number, first_name=first_name, last_name=last_name,
-                          disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
-                          reply_markup=reply_markup)
+    method = "sendContact"
+
+    chat_id: Union[int, str]
+    phone_number: str
+    first_name: str
+    last_name: Optional[str] = None
+    vcard: Optional[str] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
 class SendChatAction(Request):
-    """https://core.telegram.org/bots/api#sendchataction"""
+    """\
+    Represents SendChatAction request object:
+    https://core.telegram.org/bots/api#sendchataction
+    """
 
-    def __init__(self, chat_id, action):
-        self._method = "sendChatAction"
-        self._data = dict(chat_id=chat_id, action=action)
+    method = "sendChatAction"
+
+    chat_id: Union[int, str]
+    action: ChatActionType
 
 
+@dataclass(frozen=True)
 class GetUserProfilePhotos(Request):
-    """https://core.telegram.org/bots/api#getuserprofilephotos"""
+    """\
+    Represents GetUserProfilePhotos request object:
+    https://core.telegram.org/bots/api#getuserprofilephotos
+    """
 
-    def __init__(self, chat_id, offset=None, limit=None):
-        self._method = "getUserProfilePhotos"
-        self._data = dict(chat_id=chat_id, offset=offset, limit=limit)
+    method = "getUserProfilePhotos"
+
+    user_id: int
+    offset: Optional[int] = None
+    limit: Optional[int] = None
 
 
+@dataclass(frozen=True)
 class GetFile(Request):
-    """https://core.telegram.org/bots/api#getfile"""
+    """\
+    Represents GetFile request object:
+    https://core.telegram.org/bots/api#getfile
+    """
 
-    def __init__(self, file_id):
-        self._method = "getFile"
-        self._data = dict(file_id=file_id)
+    method = "getFile"
+
+    file_id: str
 
 
+@dataclass(frozen=True)
 class KickChatMember(Request):
-    """https://core.telegram.org/bots/api#kickchatmember"""
+    """\
+    Represents KickChatMember request object:
+    https://core.telegram.org/bots/api#kickchatmember
+    """
 
-    def __init__(self, chat_id, user_id):
-        self._method = "kickChatMember"
-        self._data = dict(chat_id=chat_id, user_id=user_id)
+    method = "kickChatMember"
+
+    chat_id: Union[int, str]
+    user_id: int
+    until_date: Optional[datetime] = None
 
 
+@dataclass(frozen=True)
 class UnbanChatMember(Request):
-    """https://core.telegram.org/bots/api#unbanchatmember"""
+    """\
+    Represents UnbanChatMember request object:
+    https://core.telegram.org/bots/api#unbanchatmember
+    """
 
-    def __init__(self, chat_id, user_id):
-        self._method = "unbanChatMember"
-        self._data = dict(chat_id=chat_id, user_id=user_id)
+    method = "unbanChatMember"
+
+    chat_id: Union[int, str]
+    user_id: int
+    until_date: Optional[datetime] = None
 
 
+@dataclass(frozen=True)
+class RestrictChatMember(Request):
+    """\
+    Represents RestrictChatMember request object:
+    https://core.telegram.org/bots/api#restrictchatmember
+    """
+
+    method = "restrictChatMember"
+
+    chat_id: Union[int, str]
+    user_id: int
+    until_date: Optional[datetime] = None
+    can_send_messages: Optional[bool] = None
+    can_send_media_messages: Optional[bool] = None
+    can_send_other_messages: Optional[bool] = None
+    can_add_web_page_previews: Optional[bool] = None
+
+
+@dataclass(frozen=True)
+class PromoteChatMember(Request):
+    """\
+    Represents PromoteChatMember request object:
+    https://core.telegram.org/bots/api#promotechatmember
+    """
+
+    method = "promoteChatMember"
+
+    chat_id: Union[int, str]
+    user_id: int
+    can_change_info: Optional[bool] = None
+    can_post_messages: Optional[bool] = None
+    can_edit_messages: Optional[bool] = None
+    can_delete_messages: Optional[bool] = None
+    can_invite_users: Optional[bool] = None
+    can_restrict_members: Optional[bool] = None
+    can_pin_messages: Optional[bool] = None
+    can_promote_members: Optional[bool] = None
+
+
+@dataclass(frozen=True)
+class ExportChatInviteLink(Request):
+    """\
+    Represents ExportChatInviteLink request object:
+    https://core.telegram.org/bots/api#exportchatinvitelink
+    """
+
+    method = "exportChatInviteLink"
+
+    chat_id: Union[int, str]
+
+
+@dataclass(frozen=True)
+class SetChatPhoto(Request):
+    """\
+    Represents SetChatPhoto request object:
+    https://core.telegram.org/bots/api#setchatphoto
+    """
+
+    method = "setChatPhoto"
+
+    chat_id: Union[int, str]
+    photo: Union[InputFile, str]
+
+
+@dataclass(frozen=True)
+class DeleteChatPhoto(Request):
+    """\
+    Represents DeleteChatPhoto request object:
+    https://core.telegram.org/bots/api#deletechatphoto
+    """
+
+    method = "deleteChatPhoto"
+
+    chat_id: Union[int, str]
+
+
+@dataclass(frozen=True)
+class SetChatTitle(Request):
+    """\
+    Represents SetChatTitle request object:
+    https://core.telegram.org/bots/api#setchattitle
+    """
+
+    method = "setChatTitle"
+
+    chat_id: Union[int, str]
+    title: str
+
+
+@dataclass(frozen=True)
+class SetChatDescription(Request):
+    """\
+    Represents SetChatDescription request object:
+    https://core.telegram.org/bots/api#setchatdescription
+    """
+
+    method = "setChatDescription"
+
+    chat_id: Union[int, str]
+    description: Optional[str]
+
+
+@dataclass(frozen=True)
+class PinChatMessage(Request):
+    """\
+    Represents PinChatMessage request object:
+    https://core.telegram.org/bots/api#pinchatmessage
+    """
+
+    method = "pinChatMessage"
+
+    chat_id: Union[int, str]
+    message_id: int
+    disable_notification: Optional[bool] = None
+
+
+@dataclass(frozen=True)
+class UnpinChatMessage(Request):
+    """\
+    Represents UnpinChatMessage request object:
+    https://core.telegram.org/bots/api#unpinchatmessage
+    """
+
+    method = "unpinChatMessage"
+
+    chat_id: Union[int, str]
+
+
+@dataclass(frozen=True)
 class LeaveChat(Request):
-    """https://core.telegram.org/bots/api#leavechat"""
+    """\
+    Represents LeaveChat request object:
+    https://core.telegram.org/bots/api#leavechat
+    """
 
-    def __init__(self, chat_id):
-        self._method = "leaveChat"
-        self._data = dict(chat_id=chat_id)
+    method = "leaveChat"
+
+    chat_id: Union[int, str]
 
 
+@dataclass(frozen=True)
 class GetChat(Request):
-    """https://core.telegram.org/bots/api#getchat"""
+    """\
+    Represents GetChat request object:
+    https://core.telegram.org/bots/api#getchat
+    """
 
-    def __init__(self, chat_id):
-        self._method = "getChat"
-        self._data = dict(chat_id=chat_id)
+    method = "getChat"
+
+    chat_id: Union[int, str]
 
 
+@dataclass(frozen=True)
 class GetChatAdministrators(Request):
-    """https://core.telegram.org/bots/api#getchatadministrators"""
+    """\
+    Represents GetChatAdministrators request object:
+    https://core.telegram.org/bots/api#getchatadministrators
+    """
 
-    def __init__(self, chat_id):
-        self._method = "getChatAdministrators"
-        self._data = dict(chat_id=chat_id)
+    method = "getChatAdministrators"
+
+    chat_id: Union[int, str]
 
 
+@dataclass(frozen=True)
 class GetChatMembersCount(Request):
-    """https://core.telegram.org/bots/api#getchatmemberscount"""
+    """\
+    Represents GetChatMembersCount request object:
+    https://core.telegram.org/bots/api#getchatmemberscount
+    """
 
-    def __init__(self, chat_id):
-        self._method = "getChatMembersCount"
-        self._data = dict(chat_id=chat_id)
+    method = "getChatMembersCount"
+
+    chat_id: Union[int, str]
 
 
+@dataclass(frozen=True)
 class GetChatMember(Request):
-    """https://core.telegram.org/bots/api#getchatmember"""
+    """\
+    Represents GetChatMember request object:
+    https://core.telegram.org/bots/api#getchatmember
+    """
 
-    def __init__(self, chat_id, user_id):
-        self._method = "getChatMember"
-        self._data = dict(chat_id=chat_id, user_id=user_id)
+    method = "getChatMember"
+
+    chat_id: Union[int, str]
+    user_id: int
 
 
+@dataclass(frozen=True)
+class SetChatStickerSet(Request):
+    """\
+    Represents SetChatStickerSet request object:
+    https://core.telegram.org/bots/api#setchatstickerset
+    """
+
+    method = "setChatStickerSet"
+
+    chat_id: Union[int, str]
+    sticker_set_name: str
+
+
+@dataclass(frozen=True)
+class DeleteChatStickerSet(Request):
+    """\
+    Represents DeleteChatStickerSet request object:
+    https://core.telegram.org/bots/api#deletechatstickerset
+    """
+
+    method = "deleteChatStickerSet"
+
+    chat_id: Union[int, str]
+    sticker_set_name: str
+
+
+@dataclass(frozen=True)
 class AnswerCallbackQuery(Request):
-    """https://core.telegram.org/bots/api#answercallbackquery"""
+    """\
+    Represents AnswerCallbackQuery request object:
+    https://core.telegram.org/bots/api#answercallbackquery
+    """
 
-    def __init__(self, callback_query_id, text=None, show_alert=None, url=None, cache_time=None):
-        self._method = "answerCallbackQuery"
-        self._data = dict(callback_query_id=callback_query_id, text=text, show_alert=show_alert, url=url,
-                          cache_time=cache_time)
+    method = "answerCallbackQuery"
+
+    callback_query_id: str
+    text: Optional[str] = None
+    show_alert: Optional[bool] = None
+    url: Optional[str] = None
+    cache_time: Optional[int] = None
 
 
+@dataclass(frozen=True)
 class EditMessageText(Request):
-    """https://core.telegram.org/bots/api#editmessagetext"""
+    """\
+    Represents EditMessageText request object:
+    https://core.telegram.org/bots/api#editmessagetext
+    """
 
-    def __init__(self, chat_id=None, message_id=None, inline_message_id=None, text=None, parse_mode=Default,
-                 disable_web_page_preview=Default, reply_markup=None):
-        self._method = "editMessageText"
-        self._data = dict(chat_id=chat_id, message_id=message_id, inline_message_id=inline_message_id, text=text,
-                          parse_mode=parse_mode, disable_web_page_preview=disable_web_page_preview,
-                          reply_markup=reply_markup)
+    method = "editMessageText"
+
+    text: str
+    chat_id: Optional[Union[int, str]] = None
+    message_id: Optional[int] = None
+    inline_message_id: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    disable_web_page_preview: Optional[bool] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
 class EditMessageCaption(Request):
-    """https://core.telegram.org/bots/api#editmessagecaption"""
+    """\
+    Represents EditMessageCaption request object:
+    https://core.telegram.org/bots/api#editmessagecaption
+    """
 
-    def __init__(self, chat_id=None, message_id=None, inline_message_id=None, caption=None, reply_markup=None):
-        self._method = "editMessageCaption"
-        self._data = dict(chat_id=chat_id, message_id=message_id, inline_message_id=inline_message_id, caption=caption,
-                          reply_markup=reply_markup)
+    method = "editMessageCaption"
+
+    chat_id: Optional[Union[int, str]] = None
+    message_id: Optional[int] = None
+    inline_message_id: Optional[str] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    disable_web_page_preview: Optional[bool] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
+class EditMessageMedia(Request):
+    """\
+    Represents EditMessageMedia request object:
+    https://core.telegram.org/bots/api#editmessagemedia
+    """
+
+    method = "editMessageMedia"
+
+    media: str  # TODO: need types for MediaGropus
+    chat_id: Optional[Union[int, str]] = None
+    message_id: Optional[int] = None
+    inline_message_id: Optional[str] = None
+    disable_web_page_preview: Optional[bool] = None
+    reply_markup: Optional[str] = None
+
+
+@dataclass(frozen=True)
 class EditMessageReplyMarkup(Request):
-    """https://core.telegram.org/bots/api#editmessagereplymarkup"""
+    """\
+    Represents EditMessageReplyMarkup request object:
+    https://core.telegram.org/bots/api#editmessagereplymarkup
+    """
 
-    def __init__(self, chat_id=None, message_id=None, inline_message_id=None, reply_markup=None):
-        self._method = "editMessageReplyMarkup"
-        self._data = dict(chat_id=chat_id, message_id=message_id, inline_message_id=inline_message_id,
-                          reply_markup=reply_markup)
+    method = "editMessageReplyMarkup"
+
+    chat_id: Optional[Union[int, str]] = None
+    message_id: Optional[int] = None
+    inline_message_id: Optional[str] = None
+    disable_web_page_preview: Optional[bool] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
 class DeleteMessage(Request):
-    """https://core.telegram.org/bots/api#deletemessage"""
+    """\
+    Represents DeleteMessage request object:
+    https://core.telegram.org/bots/api#deletemessage
+    """
 
-    def __init__(self, chat_id=None, message_id=None):
-        self._method = "deleteMessage"
-        self._data = dict(chat_id=chat_id, message_id=message_id)
+    method = "deleteMessage"
+
+    chat_id: Union[int, str] = None
+    message_id: int = None
 
 
+@dataclass(frozen=True)
+class SendSticker(Request):
+    """\
+    Represents SendSticker request object:
+    https://core.telegram.org/bots/api#sendsticker
+    """
+
+    method = "sendSticker"
+
+    chat_id: Union[int, str]
+    sticker: Union[InputFile, str]
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class GetStickerSet(Request):
+    """\
+    Represents GetStickerSet request object:
+    https://core.telegram.org/bots/api#getstickerset
+    """
+
+    method = "getStickerSet"
+
+    name: str
+
+
+@dataclass(frozen=True)
+class UploadStickerFile(Request):
+    """\
+    Represents UploadStickerFile request object:
+    https://core.telegram.org/bots/api#uploadstickerfile
+    """
+
+    method = "uploadStickerFile"
+
+    user_id: int
+    png_sticker: InputFile
+
+
+@dataclass(frozen=True)
+class CreateNewStickerSet(Request):
+    """\
+    Represents CreateNewStickerSet request object:
+    https://core.telegram.org/bots/api#createnewstickerset
+    """
+
+    method = "createNewStickerSet"
+
+    user_id: int
+    name: str
+    title: str
+    png_sticker: Union[InputFile, str]
+    emojis: str
+    contains_masks: Optional[bool] = None
+    mask_position: Optional[str] = None  # TODO: Add MaskPosition type
+
+
+@dataclass(frozen=True)
+class AddStickerToSet(Request):
+    """\
+    Represents AddStickerToSet request object:
+    https://core.telegram.org/bots/api#addstickertoset
+    """
+
+    method = "addStickerToSet"
+
+    user_id: int
+    name: str
+    png_sticker: Union[InputFile, str]
+    emojis: str
+    mask_position: Optional[str] = None  # TODO: Add MaskPosition type
+
+
+@dataclass(frozen=True)
+class SetStickerPositionInSet(Request):
+    """\
+    Represents SetStickerPositionInSet request object:
+    https://core.telegram.org/bots/api#setstickerpositioninset
+    """
+
+    method = "setStickerPositionInSet"
+
+    sticker: str
+    position: int
+
+
+@dataclass(frozen=True)
+class DeleteStickerFromSet(Request):
+    """\
+    Represents DeleteStickerFromSet request object:
+    https://core.telegram.org/bots/api#deletestickerfromset
+    """
+
+    method = "deleteStickerFromSet"
+
+    sticker: str
+
+
+@dataclass(frozen=True)
 class AnswerInlineQuery(Request):
-    """https://core.telegram.org/bots/api#answerinlinequery"""
+    """\
+    Represents AnswerInlineQuery request object:
+    https://core.telegram.org/bots/api#answerinlinequery
+    """
 
-    def __init__(self, inline_query_id, results, cache_time=None, is_personal=None, next_offset=None,
-                 switch_pm_text=None, switch_pm_parameter=None):
-        self._method = "answerInlineQuery"
-        self._data = dict(inline_query_id=inline_query_id, results=results, cache_time=cache_time,
-                          is_personal=is_personal, next_offset=next_offset, switch_pm_text=switch_pm_text,
-                          switch_pm_parameter=switch_pm_parameter)
+    method = "answerInlineQuery"
+
+    inline_query_id: str
+    results: List[str]  # TODO: actualize InlineQueryResult
+    cache_time: Optional[int] = None
+    is_personal: Optional[bool] = None
+    next_offset: Optional[str] = None
+    switch_pm_text: Optional[str] = None
+    switch_pm_parameter: Optional[str] = None
 
 
 class SendInvoice(Request):
-    """https://core.telegram.org/bots/api#sendinvoice"""
+    """\
+    Represents SendInvoice request object:
+    https://core.telegram.org/bots/api#sendinvoice
+    """
 
-    def __init__(self, chat_id, title, description, payload, provider_token, start_parameter, currency, prices,
-                 photo_url=None, photo_size=None, photo_width=None, photo_height=None, need_name=None,
-                 need_phone_number=None, need_email=None, need_shipping_address=None, is_flexible=None,
-                 disable_notification=Default, reply_to_message_id=None, reply_markup=None):
-        self._method = "sendInvoice"
-        self._data = dict(chat_id=chat_id, title=title, description=description, payload=payload,
-                          provider_token=provider_token, start_parameter=start_parameter, currency=currency,
-                          prices=prices, photo_url=photo_url, photo_size=photo_size, photo_width=photo_width,
-                          photo_height=photo_height, need_name=need_name, need_phone_number=need_phone_number,
-                          need_email=need_email, need_shipping_address=need_shipping_address, is_flexible=is_flexible,
-                          disable_notification=disable_notification, reply_to_message_id=reply_to_message_id,
-                          reply_markup=reply_markup)
+    method = "sendInvoice"
+
+    chat_id: int
+    title: str
+    description: str
+    payload: str
+    provider_token: str
+    start_parameter: str
+    currency: str
+    prices: List[str]  # Add LabeledPrice type
+    provider_data: Optional[str] = None
+    photo_url: Optional[str] = None
+    photo_size: Optional[int] = None
+    photo_width: Optional[int] = None
+    photo_height: Optional[int] = None
+    need_name: Optional[bool] = None
+    need_phone_number: Optional[bool] = None
+    need_email: Optional[bool] = None
+    need_shipping_address: Optional[bool] = None
+    send_phone_number_to_provider: Optional[bool] = None
+    send_email_to_provider: Optional[bool] = None
+    is_flexible: Optional[bool] = None
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[bool] = None
+    reply_markup: Optional[str] = None  # TODO
 
 
+@dataclass(frozen=True)
 class AnswerShippingQuery(Request):
-    """https://core.telegram.org/bots/api#answershippingquery"""
+    """\
+    Represents AnswerShippingQuery request object:
+    https://core.telegram.org/bots/api#answershippingquery
+    """
 
-    def __init__(self, shipping_query_id, ok, shipping_options=None, error_message=None):
-        self._method = "answerShippingQuery"
-        self._data = dict(shipping_query_id=shipping_query_id, ok=ok, shipping_options=shipping_options,
-                          error_message=error_message)
+    method = "answerShippingQuery"
+
+    shipping_query_id: str
+    ok: bool
+    shipping_options: Optional[List[str]]  # TODO: add ShippingOption
+    error_message: Optional[str]
 
 
+@dataclass(frozen=True)
 class AnswerPreCheckoutQuery(Request):
-    """https://core.telegram.org/bots/api#answerprecheckoutquery"""
+    """\
+    Represents AnswerPreCheckoutQuery request object:
+    https://core.telegram.org/bots/api#answerprecheckoutquery
+    """
 
-    def __init__(self, pre_checkout_query_id, ok, error_message=None):
-        self._method = "answerPreCheckoutQuery"
-        self._data = dict(pre_checkout_query_id=pre_checkout_query_id, ok=ok, error_message=error_message)
+    method = "answerPreCheckoutQuery"
+
+    pre_checkout_query_id: str
+    ok: bool
+    error_message: Optional[str]
 
 
+@dataclass(frozen=True)
+class SetPassportDataErrors(Request):
+    """\
+    Represents SetPassportDataErrors request object:
+    https://core.telegram.org/bots/api#answerprecheckoutquery
+    """
+
+    method = "setPassportDataErrors"
+
+    user_id: str
+    errors: List[str]  # TODO: PassportElementError
+
+
+@dataclass(frozen=True)
 class SendGame(Request):
-    """https://core.telegram.org/bots/api#sendgame"""
+    """\
+    Represents SendGame request object:
+    https://core.telegram.org/bots/api#sendgame
+    """
 
-    def __init__(self, chat_id, game_short_name, disable_notification=Default, reply_to_message_id=None,
-                 reply_markup=None):
-        self._method = "sendGame"
-        self._data = dict(chat_id=chat_id, game_short_name=game_short_name, disable_notification=disable_notification,
-                          reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
+    method = "sendGame"
+
+    chat_id: int
+    game_short_name: str
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[str] = None
 
 
+@dataclass(frozen=True)
 class SetGameScore(Request):
-    """https://core.telegram.org/bots/api#setgamescore"""
+    """\
+    Represents SetGameScore request object:
+    https://core.telegram.org/bots/api#setgamescore
+    """
 
-    def __init__(self, user_id, score, force=None, disable_edit_message=None, chat_id=None, message_id=None,
-                 inline_message_id=None):
-        self._method = "setGameScore"
-        self._data = dict(user_id=user_id, score=score, force=force, disable_edit_message=disable_edit_message,
-                          chat_id=chat_id, message_id=message_id, inline_message_id=inline_message_id)
+    method = "setGameScore"
+
+    user_id: int
+    score: int
+    force: Optional[bool] = None
+    disable_edit_message: Optional[bool] = None
+    chat_id: Optional[int] = None
+    message_id: Optional[int] = None
+    inline_message_id: Optional[str] = None
 
 
+@dataclass(frozen=True)
 class GetGameHighScores(Request):
-    """https://core.telegram.org/bots/api#getgamehighscores"""
+    """\
+    Represents GetGameHighScores request object:
+    https://core.telegram.org/bots/api#getgamehighscores
+    """
 
-    def __init__(self, user_id, chat_id=None, message_id=None, inline_message_id=None):
-        self._method = "getGameHighScores"
-        self._data = dict(user_id=user_id, chat_id=chat_id, message_id=message_id, inline_message_id=inline_message_id)
+    method = "getGameHighScores"
+
+    user_id: int
+    chat_id: Optional[int] = None
+    message_id: Optional[int] = None
+    inline_message_id: Optional[str] = None
