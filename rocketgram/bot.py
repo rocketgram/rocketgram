@@ -40,10 +40,8 @@ def _make_method(request: type(requests.Request)) -> Callable:
         return self.send(request(*args, **kwargs))
 
     for prop in ('__name__', '__qualname__', '__doc__', '__annotations__'):
-        if hasattr(request, prop):
-            attr = getattr(request, prop)
-            setattr(method, prop, attr)
-            continue
+        if hasattr(method, prop) and hasattr(request, prop):
+            setattr(method, prop, getattr(request, prop))
 
     return method
 
