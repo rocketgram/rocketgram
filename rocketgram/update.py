@@ -7,6 +7,16 @@ from datetime import datetime
 from enum import auto
 from typing import Dict, List, Optional, Union
 
+from .requests import GetUpdates, SetWebhook, DeleteWebhook, SendChatAction, KickChatMember, UnbanChatMember, \
+    RestrictChatMember, PromoteChatMember, SetChatPhoto, DeleteChatPhoto, SetChatTitle, SetChatDescription, \
+    PinChatMessage, UnpinChatMessage, LeaveChat, SetChatStickerSet, DeleteChatStickerSet, DeleteMessage, \
+    CreateNewStickerSet, AddStickerToSet, SetStickerPositionInSet, DeleteStickerFromSet, SetPassportDataErrors, \
+    SetGameScore, ExportChatInviteLink, GetChatMembersCount, AnswerCallbackQuery, AnswerInlineQuery, \
+    AnswerPreCheckoutQuery, AnswerShippingQuery, GetWebhookInfo, GetMe, SendMessage, ForwardMessage, SendPhoto, \
+    SendAudio, SendDocument, SendVideo, SendAnimation, SendVoice, SendVideoNote, SendLocation, SendVenue, SendContact, \
+    SendSticker, SendInvoice, SendGame, EditMessageLiveLocation, StopMessageLiveLocation, EditMessageText, \
+    EditMessageCaption, EditMessageMedia, EditMessageReplyMarkup, SendMediaGroup, GetUserProfilePhotos, GetFile, \
+    UploadStickerFile, GetChat, GetChatMember, GetChatAdministrators, GetStickerSet, GetGameHighScores
 from .types import EnumAutoName
 
 
@@ -109,6 +119,90 @@ class EncryptedPassportElementType(EnumAutoName):
 
 
 @dataclass(frozen=True)
+class Response:
+    """\
+    Represents Response object:
+    https://core.telegram.org/bots/api#making-requests
+
+    Additional fields:
+    method
+    raw
+    """
+
+    method: 'Request'
+    raw: dict
+    ok: bool
+    error_code: Optional[int]
+    description: Optional[str]
+    result: Optional[Union[bool, int, str, 'Chat', 'ChatMember', 'File', 'Message', List['GameHighScore'],
+                           List['Update'], 'StickerSet', 'User', 'WebhookInfo', 'UserProfilePhotos',
+                           List['ChatMember']]]
+    parameters: Optional['ResponseParameters']
+
+    @classmethod
+    def parse(cls, data: dict, method: 'Request') -> Optional['Response']:
+        if data is None:
+            return None
+
+        ok = data['ok']
+        error_code = data.get('error_code')
+        description = data.get('description')
+        parameters = ResponseParameters.parse(data.get('parameters'))
+
+        if error_code is not None:
+            return cls(method, data, ok, error_code, description, None, parameters)
+
+        result = None
+
+        if isinstance(method, GetUpdates):
+            result = Update.parse(data['result'])
+        elif isinstance(method, (SetWebhook, DeleteWebhook, SendChatAction, KickChatMember, UnbanChatMember,
+                                 RestrictChatMember, PromoteChatMember, SetChatPhoto, DeleteChatPhoto, SetChatTitle,
+                                 SetChatDescription, PinChatMessage, UnpinChatMessage, LeaveChat, SetChatStickerSet,
+                                 DeleteChatStickerSet, DeleteMessage, CreateNewStickerSet, AddStickerToSet,
+                                 SetStickerPositionInSet, DeleteStickerFromSet, SetPassportDataErrors, SetGameScore,
+                                 ExportChatInviteLink, GetChatMembersCount, AnswerCallbackQuery, AnswerInlineQuery,
+                                 AnswerPreCheckoutQuery, AnswerShippingQuery)):
+            result = data['result']
+        elif isinstance(method, GetWebhookInfo):
+            result = WebhookInfo.parse(data['result'])
+        elif isinstance(method, GetMe):
+            result = User.parse(data['result'])
+        elif isinstance(method, (SendMessage, ForwardMessage, SendPhoto, SendAudio, SendDocument, SendVideo,
+                                 SendAnimation, SendVoice, SendVideoNote, SendLocation, SendVenue, SendContact,
+                                 SendSticker, SendInvoice, SendGame)):
+            result = Message.parse(data['result'])
+        elif isinstance(method, (EditMessageLiveLocation, StopMessageLiveLocation, EditMessageText, EditMessageCaption,
+                                 EditMessageMedia, EditMessageReplyMarkup)):
+            r = data['result']
+            if isinstance(r, bool):
+                result = r
+            else:
+                result = Message.parse(r)
+        elif isinstance(method, SendMediaGroup):
+            result = [Message.parse(r) for r in data['result']]
+        elif isinstance(method, GetUserProfilePhotos):
+            result = UserProfilePhotos.parse(data['result'])
+        elif isinstance(method, (GetFile, UploadStickerFile)):
+            result = File.parse(data['result'])
+        elif isinstance(method, GetChat):
+            result = Chat.parse(data['result'])
+        elif isinstance(method, GetChatMember):
+            result = ChatMember.parse(data['result'])
+        elif isinstance(method, GetChatAdministrators):
+            result = [ChatMember.parse(r) for r in data['result']]
+        elif isinstance(method, GetStickerSet):
+            result = StickerSet.parse(data['result'])
+        elif isinstance(method, GetGameHighScores):
+            # result = GameHighScores.parse(data['result']) # TODO create GameHighScores object
+            result = data['result']
+
+        assert result, "Should have value here! This probably means api was changed."
+
+        return cls(method, data, ok, error_code, description, result, parameters)
+
+
+@dataclass(frozen=True)
 class Update:
     """\
     Represents Update object:
@@ -184,7 +278,7 @@ class WebhookInfo:
     allowed_updates: Optional[List['UpdateType']]
 
     @classmethod
-    def parse(cls, data: Optional[dict]) -> Optional['WebhookInfo']:
+    def parse(cls, data: Optional[Dict]) -> Optional['WebhookInfo']:
         if data is None:
             return None
 
@@ -213,7 +307,7 @@ class User:
     language_code: Optional[str]
 
     @classmethod
-    def parse(cls, data: Optional[dict]) -> Union['User', None]:
+    def parse(cls, data: Optional[Dict]) -> Union['User', None]:
         if data is None:
             return None
 
@@ -247,7 +341,7 @@ class Chat:
     can_set_sticker_set: Optional[bool]
 
     @classmethod
-    def parse(cls, data: Optional[dict]) -> Union['Chat', None]:
+    def parse(cls, data: Optional[Dict]) -> Union['Chat', None]:
         if data is None:
             return None
 
@@ -328,7 +422,7 @@ class Message:
     passport_data: Optional['PassportData']
 
     @classmethod
-    def parse(cls, data: Optional[dict]) -> Union['Message', None]:
+    def parse(cls, data: Optional[Dict]) -> Union['Message', None]:
         if data is None:
             return None
 
@@ -784,7 +878,7 @@ class ChatPhoto:
     big_file_id: str
 
     @classmethod
-    def parse(cls, data: Optional[dict]) -> Optional['ChatPhoto']:
+    def parse(cls, data: Optional[Dict]) -> Optional['ChatPhoto']:
         if data is None:
             return None
 
@@ -1289,114 +1383,3 @@ class GameHighScore:
             return None
 
         return cls(data['position'], User.parse(data['user']), data.get('score'))
-
-
-@dataclass(frozen=True)
-class Response:
-    """\
-    Represents Response object:
-    https://core.telegram.org/bots/api#making-requests
-
-    Additional fields:
-    method
-    raw
-    """
-
-    method: str
-    raw: dict
-    ok: bool
-    error_code: Optional[int]
-    description: Optional[str]
-    result: Optional[Union[bool, int, str, 'Chat', 'ChatMember', 'File', 'Message', List['GameHighScore'],
-                           List['Update'], 'StickerSet', 'User', 'WebhookInfo', 'UserProfilePhotos', List['ChatMember']]]
-    parameters: Optional[ResponseParameters]
-
-    @classmethod
-    def parse(cls, data: dict, method: str) -> Optional['Response']:
-        if data is None:
-            return None
-
-        ok = data['ok']
-        error_code = data.get('error_code')
-        description = data.get('description')
-        parameters = ResponseParameters.parse(data.get('parameters'))
-
-        result = None
-        if error_code is None:
-            if method is 'getMe':
-                result = User.parse(data['result'])
-            elif method is 'getUpdates':
-                result = list()
-                for update in data['result']:
-                    result.append(Update.parse(update))
-            elif method is 'setWebhook':
-                result = data['result']
-            elif method is 'deleteWebhook':
-                result = data['result']
-            elif method is 'getWebhookInfo':
-                result = WebhookInfo.parse(data['result'])
-            elif method is 'sendMessage':
-                result = Message.parse(data['result'])
-            elif method is 'sendPhoto':
-                result = Message.parse(data['result'])
-            elif method is 'sendAudio':
-                result = Message.parse(data['result'])
-            elif method is 'sendDocument':
-                result = Message.parse(data['result'])
-            elif method is 'sendAnimation':
-                result = Message.parse(data['result'])
-            elif method is 'sendSticker':
-                result = Message.parse(data['result'])
-            elif method is 'sendVideo':
-                result = Message.parse(data['result'])
-            elif method is 'sendVoice':
-                result = Message.parse(data['result'])
-            elif method is 'sendVideoNote':
-                result = Message.parse(data['result'])
-            elif method is 'sendLocation':
-                result = Message.parse(data['result'])
-            elif method is 'sendVenue':
-                result = Message.parse(data['result'])
-            elif method is 'sendContact':
-                result = Message.parse(data['result'])
-            elif method is 'sendChatAction':
-                result = data['result']
-            elif method is 'getUserProfilePhotos':
-                result = UserProfilePhotos.parse(data['result'])
-            elif method is 'getFile':
-                result = File.parse(data['result'])
-            elif method is 'kickChatMember':
-                result = data['result']
-            elif method is 'leaveChat':
-                result = data['result']
-            elif method is 'unbanChatMember':
-                result = data['result']
-            elif method is 'getChat':
-                result = Chat.parse(data['result'])
-            elif method is 'getChatAdministrators':
-                result = list()
-                for member in data['result']:
-                    result.append(ChatMember.parse(member))
-            elif method is 'getChatMember':
-                result = ChatMember.parse(data['result'])
-            elif method is 'answerCallbackQuery':
-                result = data['result']
-            elif method is 'editMessageText':
-                if data['result'] is True:
-                    result = data['result']
-                else:
-                    result = Message.parse(data['result'])
-            elif method is 'editMessageCaption':
-                if data['result'] is True:
-                    result = data['result']
-                else:
-                    result = Message.parse(data['result'])
-            elif method is 'editMessageReplyMarkup':
-                if data['result'] is True:
-                    result = data['result']
-                else:
-                    result = Message.parse(data['result'])
-            elif method is 'answerInlineQuery':
-                result = data['result']
-
-        return cls(method, data, ok, error_code, description, result, parameters)
