@@ -175,7 +175,7 @@ class Bot:
             for req in ctx.get_webhook_requests():
                 # prepare request
                 if not send_webhook_request and webhook:
-                    prepared = self.prepare_request(req, include_method=True)
+                    prepared = self.prepare_request(req, with_method=True)
                     if webhook_sendfile or not prepared.send_file:
                         send_webhook_request = True
                         continue
@@ -213,8 +213,8 @@ class Bot:
                 logger.debug("Error from telegram: %s", response.status)
                 raise TelegramSendError(req.method, req, response.status, None)
 
-    def prepare_request(self, req: requests.Request, include_method=False) -> PreparedRequest:
-        request_data = req.get(include_method=include_method)
+    def prepare_request(self, req: requests.Request, with_method=False) -> PreparedRequest:
+        request_data = req.render(with_method=with_method)
 
         if request_data.get('parse_mode') is types.Default:
             request_data['parse_mode'] = self.parse_mode
