@@ -203,7 +203,7 @@ class Bot:
             response = await self.__connector.send(url, prepared.request)
 
         if response.status == 200:
-            return update.Response.parse(response.data, req.method)
+            return update.Response.parse(response.data, req)
         else:
             r = update.Response.parse(response.data, req.method)
             if r:
