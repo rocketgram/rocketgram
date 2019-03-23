@@ -7,7 +7,7 @@ import inspect
 import logging
 import typing
 from contextlib import suppress
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from time import time
 from typing import List, Callable, Coroutine, AsyncGenerator, Union
 
@@ -155,7 +155,7 @@ class Dispatcher(BaseDispatcher):
 
             # No handlers found. Exiting.
             if not handler:
-                raise HandlerNotFoundError()
+                raise HandlerNotFoundError
 
             # Run handler...
             if inspect.isasyncgenfunction(handler.handler) or inspect.isasyncgen(handler.handler):
@@ -183,7 +183,7 @@ class Dispatcher(BaseDispatcher):
                 _ = asyncio.create_task(self.__waiters_cleanup(current))
 
         except HandlerNotFoundError:
-            logger.warning('Handler not found for update %s', ctx.update.update_id)
+            logger.warning('Handler not found for update:\n%s', replace(ctx.update, raw=None))
 
     async def __waiters_cleanup(self, current: int):
         closes = list()
