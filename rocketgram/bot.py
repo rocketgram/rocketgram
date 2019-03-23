@@ -203,9 +203,9 @@ class Bot:
             response = await self.__connector.send(url, prepared.request)
 
         if response.status == 200:
-            return update.Response(response.data, req.method)
+            return update.Response.parse(response.data, req.method)
         else:
-            r = update.Response(response.data, req.method) if response.data else None
+            r = update.Response.parse(response.data, req.method)
             if r:
                 logger.debug("Error from telegram: %s '%s'", response.status, r.description)
                 raise TelegramSendError(req.method, req, response.status, r)
