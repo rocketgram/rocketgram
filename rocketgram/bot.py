@@ -212,16 +212,13 @@ class Bot:
         else:
             response = await self.__connector.send(url, prepared.request)
 
+        r = update.Response.parse(response.data, req)
+
         if response.status == 200:
-            return update.Response.parse(response.data, req)
-        else:
-            r = update.Response.parse(response.data, req.method)
-            if r:
-                logger.debug("Error from telegram: %s '%s'", response.status, r.description)
-                raise TelegramSendError(req.method, req, response.status, r)
-            else:
-                logger.debug("Error from telegram: %s", response.status)
-                raise TelegramSendError(req.method, req, response.status, None)
+            return r
+
+        logger.debug("Error from telegram: %s '%s'", response.status, r.description if r else '')
+        raise TelegramSendError(req.method, req, response.status, r)
 
     def prepare_request(self, req: requests.Request, with_method=False) -> PreparedRequest:
         request_data = req.render(with_method=with_method)
