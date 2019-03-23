@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Optional, Union, List
 from .types import InputFile, Enum, EnumAutoName
 
 if TYPE_CHECKING:
+    from .keyboards import InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply
     from .update import UpdateType, ShippingOption
 
 
@@ -40,6 +41,7 @@ class ChatActionType(EnumAutoName):
     record_video_note = auto()
     upload_video_note = auto()
 
+
 @dataclass(frozen=True)
 class MaskPosition:
     """\
@@ -60,7 +62,7 @@ class Request:
 
     method = None
 
-    def __prepare(self, d: Union[dict, list]):
+    def __prepare(self, d: Union[dict, list]) -> Union[dict, list]:
         assert isinstance(d, (list, dict))
 
         for k, v in d.items() if isinstance(d, dict) else enumerate(d):
@@ -71,19 +73,21 @@ class Request:
                 d[k] = int(v.timestamp())
                 continue
             if isinstance(v, (list, dict)):
-                self.__prepare(v)
+                d[k] = self.__prepare(v)
+
+        if isinstance(d, dict):
+            return {k: v for k, v in d.items() if v is not None}
+        return [v for v in d if v is not None]
 
     def render(self, with_method=False) -> dict:
         d = asdict(self)
 
         assert 'method' not in d
 
-        self.__prepare(d)
-
         if with_method:
             d['method'] = self.method
 
-        return {k: v for k, v in d.items() if v is not None}
+        return self.__prepare(d)
 
 
 @dataclass(frozen=True)
@@ -105,7 +109,7 @@ class GetUpdates(Request):
 class SetWebhook(Request):
     """\
     Represents SetWebhook request object:
-    https://core.telegram.org/bots/api#setwebhook 
+    https://core.telegram.org/bots/api#setwebhook
     """
 
     method = "setWebhook"
@@ -161,7 +165,8 @@ class SendMessage(Request):
     disable_web_page_preview: Optional[bool] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -194,7 +199,8 @@ class SendPhoto(Request):
     parse_mode: Optional[ParseModeType] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -216,7 +222,8 @@ class SendAudio(Request):
     parse_mode: Optional[ParseModeType] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -235,7 +242,8 @@ class SendDocument(Request):
     parse_mode: Optional[ParseModeType] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -258,7 +266,8 @@ class SendVideo(Request):
     parse_mode: Optional[ParseModeType] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -280,7 +289,8 @@ class SendAnimation(Request):
     parse_mode: Optional[ParseModeType] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -299,7 +309,8 @@ class SendVoice(Request):
     parse_mode: Optional[ParseModeType] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -318,7 +329,8 @@ class SendVideoNote(Request):
     thumb: Union[InputFile, str] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -351,7 +363,8 @@ class SendLocation(Request):
     live_period: Optional[int] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -368,7 +381,7 @@ class EditMessageLiveLocation(Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
 @dataclass(frozen=True)
@@ -383,7 +396,7 @@ class StopMessageLiveLocation(Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
 @dataclass(frozen=True)
@@ -404,7 +417,8 @@ class SendVenue(Request):
     foursquare_type: Optional[str] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -423,7 +437,8 @@ class SendContact(Request):
     vcard: Optional[str] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -739,7 +754,7 @@ class EditMessageText(Request):
     inline_message_id: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     disable_web_page_preview: Optional[bool] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
 @dataclass(frozen=True)
@@ -757,7 +772,7 @@ class EditMessageCaption(Request):
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     disable_web_page_preview: Optional[bool] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
 @dataclass(frozen=True)
@@ -774,7 +789,7 @@ class EditMessageMedia(Request):
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
     disable_web_page_preview: Optional[bool] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
 @dataclass(frozen=True)
@@ -790,7 +805,7 @@ class EditMessageReplyMarkup(Request):
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
     disable_web_page_preview: Optional[bool] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
 @dataclass(frozen=True)
@@ -819,7 +834,8 @@ class SendSticker(Request):
     sticker: Union[InputFile, str]
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
 
 @dataclass(frozen=True)
@@ -954,7 +970,7 @@ class SendInvoice(Request):
     is_flexible: Optional[bool] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[bool] = None
-    reply_markup: Optional[dict] = None  # TODO
+    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
 @dataclass(frozen=True)
@@ -1012,7 +1028,7 @@ class SendGame(Request):
     game_short_name: str
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[dict] = None
+    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
 @dataclass(frozen=True)

@@ -4,48 +4,49 @@
 
 
 from .keyboard import Keyboard
+from .types import ReplyKeyboardMarkup, KeyboardButton
 
 
 class ReplyKeyboard(Keyboard):
     def __init__(self, *, selective=False, one_time=False, resize=False):
         super().__init__()
-        self._keyboard_type = 'keyboard'
-        self.set_selective(selective)
-        self.set_one_time(one_time)
-        self.set_resize(resize)
+
+        self.__selective = selective
+        self.__one_time = one_time
+        self.__resize = resize
 
     def set_selective(self, selective=False):
-        if selective:
-            self._options['selective'] = True
-        elif 'selective' in self._options:
-            del self._options['selective']
-        return self
+        self.__selective = selective
 
-    def set_one_time(self, one_time_keyboard=False):
-        if one_time_keyboard:
-            self._options['one_time_keyboard'] = True
-        elif 'one_time_keyboard' in self._options:
-            del self._options['one_time_keyboard']
-        return self
+    selective = property(fget=lambda self: self.__selective, fset=set_selective)
 
-    def set_resize(self, resize_keyboard=False):
-        if resize_keyboard:
-            self._options['resize_keyboard'] = True
-        elif 'resize_keyboard' in self._options:
-            del self._options['resize_keyboard']
-        return self
+    def set_one_time(self, one_time=False):
+        self.__one_time = one_time
+
+    one_time = property(fget=lambda self: self.__one_time, fset=set_one_time)
+
+    def set_resize(self, resize=False):
+        self.__resize = resize
+
+    resize = property(fget=lambda self: self.__resize, fset=set_resize)
 
     def text(self, text):
-        btn = {'text': text}
-        self._buttons.append(btn)
+        self.add(KeyboardButton(text=text))
         return self
 
     def contact(self, text):
-        btn = {'text': text, 'request_contact': True}
-        self._buttons.append(btn)
+        self.add(KeyboardButton(text=text, request_contact=True))
         return self
 
     def location(self, text):
-        btn = {'text': text, 'request_location': True}
-        self._buttons.append(btn)
+        self.add(KeyboardButton(text=text, request_location=True))
         return self
+
+    def row(self) -> 'ReplyKeyboard':
+        return super().row()
+
+    def render(self) -> ReplyKeyboardMarkup:
+        return ReplyKeyboardMarkup(super().render(),
+                                   resize_keyboard=self.resize if self.resize else None,
+                                   one_time_keyboard=self.one_time if self.one_time else None,
+                                   selective=self.selective if self.selective else None)

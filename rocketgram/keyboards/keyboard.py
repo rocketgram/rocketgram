@@ -4,6 +4,7 @@
 
 
 from itertools import accumulate, chain, cycle, repeat
+from typing import List
 
 from . import exceptions
 
@@ -11,33 +12,28 @@ MIN_BUTTONS = 1
 MAX_BUTTONS = 8
 
 
+def _check_scheme_values(*args):
+    for l in args:
+        for i in l:
+            if i < MIN_BUTTONS or i > MAX_BUTTONS:
+                return False
+    return True
+
+
+def _check_scheme_types(*args):
+    for i in args:
+        if not isinstance(i, (list, tuple)):
+            return False
+    return True
+
+
 class Keyboard:
     def __init__(self):
         self._buttons = list()
-        self._options = dict()
-        self._keyboard_type = None
-
-    def row(self):
-        if len(self._buttons) and self._buttons[-1]:
-            self._buttons.append(None)
-        return self
 
     def __assing_buttons(self, keyboard):
         btns = chain.from_iterable([p + q for p, q in zip(keyboard, repeat([None]))])
         self._buttons = list(btns)[:-1]
-
-    def __check_scheme_values(self, *args):
-        for l in args:
-            for i in l:
-                if i < MIN_BUTTONS or i > MAX_BUTTONS:
-                    return False
-        return True
-
-    def __check_scheme_types(self, *args):
-        for i in args:
-            if type(i) not in (list, tuple):
-                return False
-        return True
 
     def arrange_scheme(self, head=None, middle=None, tail=None):
         if not head:
@@ -47,10 +43,10 @@ class Keyboard:
         if not tail:
             tail = []
 
-        if not self.__check_scheme_types(head, middle, tail):
+        if not _check_scheme_types(head, middle, tail):
             raise TypeError('Scheme values must be list or tuple')
 
-        if not self.__check_scheme_values(head, middle, tail):
+        if not _check_scheme_values(head, middle, tail):
             raise exceptions.KeyboardTooManyButtonsError('Too many buttons in a row. Must be from 1 to 8')
 
         btns = [b for b in self._buttons if b]
@@ -92,7 +88,12 @@ class Keyboard:
 
         return self
 
-    def render(self):
+    def row(self):
+        if len(self._buttons) and self._buttons[-1]:
+            self._buttons.append(None)
+        return self
+
+    def render(self) -> List[List]:
         keyboard = list(list())
         cnt = 0
         for b in self._buttons:
@@ -106,6 +107,7 @@ class Keyboard:
             else:
                 cnt += 1
 
-        keyboard = {self._keyboard_type: keyboard}
-        keyboard.update(self._options)
         return keyboard
+
+    def add(self, button):
+        self._buttons.append(button)
