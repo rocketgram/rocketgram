@@ -62,7 +62,6 @@ def parse(text: str, entities: List[MessageEntity]) -> List[EntityItem]:
         if encoded:
             t = t.decode('utf-16-le')
         parsed.append(EntityItem(None, t, None, None))
-    print(parsed)
     return parsed
 
 
