@@ -65,7 +65,10 @@ def parse(text: str, entities: List[MessageEntity]) -> List[EntityItem]:
     return parsed
 
 
-def to_html(text: str, entities: List[MessageEntity], escape_html: bool = True) -> str:
+def to_html(text: Optional[str], entities: List[MessageEntity], escape_html: bool = True) -> Optional[str]:
+    if text is None:
+        return None
+
     if escape_html:
         escape_func = escape.html
     else:
@@ -93,7 +96,10 @@ def to_html(text: str, entities: List[MessageEntity], escape_html: bool = True) 
     return result
 
 
-def to_markdown(text: str, entities: List[MessageEntity], escape_markdown: bool = True) -> str:
+def to_markdown(text: Optional[str], entities: List[MessageEntity], escape_markdown: bool = True) -> Optional[str]:
+    if text is None:
+        return None
+
     if escape_markdown:
         escape_func = escape.markdown
     else:
