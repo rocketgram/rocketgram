@@ -452,7 +452,7 @@ class Message:
         animation = Animation.parse(data.get('animation'))
         if animation is not None:
             document = None
-        game = Game.parse(data.get('photo'))
+        game = Game.parse(data.get('game'))
         photo = [PhotoSize.parse(d) for d in data.get('photo')] if 'photo' in data else None
         sticker = Sticker.parse(data.get('sticker'))
         video = Video.parse(data.get('video'))
