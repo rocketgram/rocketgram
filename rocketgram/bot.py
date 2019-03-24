@@ -4,12 +4,7 @@
 
 import logging
 from contextlib import suppress
-from typing import TYPE_CHECKING, ClassVar, Optional, Callable, Awaitable
-
-try:
-    import ujson as json
-except ModuleNotFoundError:
-    import json
+from typing import ClassVar, Callable, Awaitable
 
 from .requests import *
 from .update import Update, Response
@@ -21,9 +16,6 @@ if TYPE_CHECKING:
     from .executors import Executor
     from .routers import BaseRouter
     from .connectors import BaseConnector
-
-API_URL = "https://api.telegram.org/bot%s/"
-API_FILE_URL = "https://api.telegram.org/file/bot%s/"
 
 logger = logging.getLogger('rocketgram.bot')
 logger_raw_in = logging.getLogger('rocketgram.raw.in')
