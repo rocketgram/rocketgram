@@ -5,28 +5,18 @@
 
 import asyncio
 import logging
-from collections import namedtuple
+from ..requests import Request
+from ..update import Response
 
 logger = logging.getLogger('rocketgram.connectors.baseconnector')
 
-Response = namedtuple('Response', ('status', 'data'))
 
-
-class BaseConnector():
-    def __init__(self, loop: asyncio.AbstractEventLoop = None):
-        if not loop:
-            loop = asyncio.get_event_loop()
-
-        self._loop = loop
-
+class BaseConnector:
     async def init(self):
         raise NotImplementedError
 
     async def shutdown(self):
         raise NotImplementedError
 
-    async def send(self, url: str, data):
-        raise NotImplementedError
-
-    async def send_file(self, url: str, data):
+    async def send(self, url: str, request: Request) -> Response:
         raise NotImplementedError

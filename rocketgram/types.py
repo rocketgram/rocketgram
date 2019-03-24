@@ -7,11 +7,8 @@ import typing
 from dataclasses import dataclass
 from enum import Enum
 
-
-@dataclass(frozen=True)
-class Default:
-    """Default value indicator."""
-    pass
+API_URL = "https://api.telegram.org/bot%s/"
+API_FILE_URL = "https://api.telegram.org/file/bot%s/"
 
 
 @dataclass(frozen=True)
@@ -24,5 +21,6 @@ class InputFile:
 
 class EnumAutoName(Enum):
     """Class for enums."""
+
     def _generate_next_value_(name, start, count, last_values):
         return name

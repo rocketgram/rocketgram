@@ -15,8 +15,11 @@ except ModuleNotFoundError:
 
 from aiohttp import web
 
+from ..types import InputFile
 from .executor import Executor
-from ..errors import TelegramSendError
+from ..requests import Request
+from ..update import Update
+from ..errors import RocketgramRequestError
 
 if TYPE_CHECKING:
     from ..bot import Bot
@@ -25,7 +28,7 @@ logger = logging.getLogger('rocketgram.executors.webhook')
 
 
 class WebHooksExecutor(Executor):
-    def __init__(self, base_url: str, base_path: str, *, detached: bool = False, host: str = 'localhost',
+    def __init__(self, base_url: str, base_path: str, *, host: str = 'localhost',
                  port: int = 8080):
         """
 
@@ -43,7 +46,6 @@ class WebHooksExecutor(Executor):
         self.__bots = dict()
         self.__srv = None
         self.__started = False
-        self.__detached = False
 
         self.__tasks: Dict[Bot, Set[asyncio.Task]] = dict()
 
@@ -62,6 +64,13 @@ class WebHooksExecutor(Executor):
         :rtype: object
         """
         return self.__started
+
+    def can_process_webhook_request(self, request: Request) -> bool:
+        for k, v in request.render().items():
+            if isinstance(v, InputFile):
+                return False
+
+        return True
 
     async def add_bot(self, bot: 'Bot', *, suffix=None, webhook=True, drop_updates=False,
                       max_connections=None):
@@ -127,7 +136,7 @@ class WebHooksExecutor(Executor):
         if webhook:
             try:
                 await bot.delete_webhook()
-            except TelegramSendError:
+            except RocketgramRequestError:
                 logger.error('Error while removing webhook for %s.' % bot.name)
 
         await bot.shutdown()
@@ -153,24 +162,22 @@ class WebHooksExecutor(Executor):
             if not bot in self.__tasks:
                 self.__tasks[bot] = set()
 
+            parsed = Update.parse(json.loads(await request.read()))
+
             task = asyncio.create_task(
-                bot.process(await request.read(), webhook=not self.__detached, webhook_sendfile=False))
+                bot.process(self, parsed))
             self.__tasks[bot].add(task)
 
-            if self.__detached:
-                return web.Response(status=200)
-
-            response = await task
+            response: Request = await task
             if response:
-                if response.send_file:
-                    raise RuntimeError('Sending files though webhook-request not supported!')
-
-                data = json.dumps(response.request)
+                print(response)
+                data = json.dumps(response.render(with_method=True))
+                print('data', type(data), data)
                 return web.Response(body=data, headers={'Content-Type': 'application/json'})
 
             self.__tasks[bot] = {t for t in self.__tasks[bot] if not t.done()}
 
-            return web.Response()
+            return web.Response(status=200)
 
         if self.__started:
             return

@@ -3,8 +3,7 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-from .exceptions import KeyboardTooManyButtonsError
-from .exceptions import NotEnoughButtonsError
+from .errors import NotEnoughButtonsError
+from .errors import TooManyButtonsError
 from .inline import InlineKeyboard
 from .reply import ReplyKeyboard
-from .types import *

@@ -3,9 +3,12 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-class KeyboardTooManyButtonsError(Exception):
+from ..errors import RocketgramError
+
+
+class TooManyButtonsError(RocketgramError):
     pass
 
 
-class NotEnoughButtonsError(Exception):
+class NotEnoughButtonsError(RocketgramError):
     pass

@@ -14,16 +14,21 @@ except ModuleNotFoundError:
     import json
 
 from .. import types
-from .baseconnector import BaseConnector, Response
-from ..errors import TelegramConnectionError, TelegramTimeoutError, TelegramParseError
+from .baseconnector import BaseConnector
+from ..requests import Request
+from ..update import Response
+from ..errors import RocketgramNetworkError, RocketgramParseError
 
 logger = logging.getLogger('rocketgram.connectors.aiohttpconnector')
 
 
 class AioHttpConnector(BaseConnector):
-    def __init__(self, loop: asyncio.AbstractEventLoop = None, timeout: int = 0):
-        super().__init__(loop)
-        self._session = aiohttp.ClientSession(loop=self._loop)
+    def __init__(self, loop: asyncio.AbstractEventLoop = None, timeout: int = 30,
+                 api_url: str = types.API_URL):
+        if not loop:
+            loop = asyncio.get_event_loop()
+        self._api_url = api_url
+        self._session = aiohttp.ClientSession(loop=loop)
         self._timeout = timeout
 
     async def init(self):
@@ -32,36 +37,35 @@ class AioHttpConnector(BaseConnector):
     async def shutdown(self):
         await self._session.close()
 
-    async def send(self, url: str, data: dict):
-        headers = {'Content-Type': 'application/json'}
-
+    async def send(self, token: str, request: Request) -> Response:
         try:
-            response = await self._session.post(url, data=json.dumps(data), headers=headers, timeout=self._timeout)
-            return Response(response.status, json.loads(await response.read()))
-        except aiohttp.ClientConnectionError:
-            raise TelegramConnectionError
-        except aiohttp.ServerTimeoutError:
-            raise TelegramTimeoutError
-        except json.decoder.JSONDecodeError:
-            raise TelegramParseError
+            url = self._api_url % token + request.method
 
-    async def send_file(self, url: str, data: dict):
-        d = aiohttp.FormData()
+            request_data = request.render()
+            send_file = False
+            data = dict()
+            for k, v in request_data.items():
+                if v is not None:
+                    data[k] = v
+                if isinstance(v, types.InputFile):
+                    send_file = True
 
-        for name, field in data.items():
-            if isinstance(field, types.InputFile):
-                d.add_field(name, field.file, filename=field.file_name, content_type=field.content_type)
-            elif isinstance(field, dict) or isinstance(field, list):
-                d.add_field(name, json.dumps(field), content_type='application/json')
+            if send_file:
+                data = aiohttp.FormData()
+                for name, field in request_data.items():
+                    if isinstance(field, types.InputFile):
+                        data.add_field(name, field.file, filename=field.file_name, content_type=field.content_type)
+                    elif isinstance(field, dict) or isinstance(field, list):
+                        data.add_field(name, json.dumps(field), content_type='application/json')
+                    else:
+                        data.add_field(name, str(field), content_type='text/plain')
+                response = await self._session.post(url, data=data, timeout=self._timeout)
             else:
-                d.add_field(name, str(field), content_type='text/plain')
+                headers = {'Content-Type': 'application/json'}
+                response = await self._session.post(url, data=json.dumps(request_data), headers=headers, timeout=self._timeout)
 
-        try:
-            response = await self._session.post(url, data=d, timeout=self._timeout)
-            return Response(response.status, json.loads(await response.read()))
-        except aiohttp.ClientConnectionError:
-            raise TelegramConnectionError
-        except aiohttp.ServerTimeoutError:
-            raise TelegramTimeoutError
-        except json.decoder.JSONDecodeError:
-            raise TelegramParseError
+            return Response.parse(json.loads(await response.read()), request)
+        except json.decoder.JSONDecodeError as e:
+            raise RocketgramParseError(e)
+        except Exception as e:
+            raise RocketgramNetworkError(e)

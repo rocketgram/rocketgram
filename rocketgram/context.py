@@ -6,7 +6,6 @@
 import logging
 import typing
 
-from .types import Default
 from .update import Update
 from .update import UpdateType
 
@@ -46,7 +45,7 @@ class Context:
     def get_webhook_requests(self):
         return self.__webhook_requests
 
-    def send_message(self, text, parse_mode=Default, disable_web_page_preview=Default, disable_notification=Default,
+    def send_message(self, text, parse_mode=None, disable_web_page_preview=None, disable_notification=None,
                      reply_to_message_id=None, reply_markup=None):
         """https://core.telegram.org/bots/api#sendmessage"""
 
@@ -72,7 +71,7 @@ class Context:
                                      disable_notification=disable_notification,
                                      reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
 
-    def reply_message(self, text, parse_mode=Default, disable_web_page_preview=Default, disable_notification=Default,
+    def reply_message(self, text, parse_mode=None, disable_web_page_preview=None, disable_notification=None,
                       reply_markup=None):
         """https://core.telegram.org/bots/api#sendmessage"""
 
@@ -109,7 +108,7 @@ class Context:
                                               url=url,
                                               cache_time=cache_time)
 
-    def send_or_answer(self, text, parse_mode=Default, disable_web_page_preview=Default, disable_notification=Default,
+    def send_or_answer(self, text, parse_mode=None, disable_web_page_preview=None, disable_notification=None,
                        reply_to_message_id=None, reply_markup=None, show_alert=None, url=None, cache_time=None):
         """https://core.telegram.org/bots/api#sendmessage
         https://core.telegram.org/bots/api#answercallbackquery"""
@@ -139,7 +138,7 @@ class Context:
                                      disable_notification=disable_notification,
                                      reply_to_message_id=reply_to_message_id, reply_markup=reply_markup)
 
-    def send_or_edit(self, text, parse_mode=Default, disable_web_page_preview=Default, disable_notification=Default,
+    def send_or_edit(self, text, parse_mode=None, disable_web_page_preview=None, disable_notification=None,
                      reply_to_message_id=None, reply_markup=None):
         """https://core.telegram.org/bots/api#sendmessage
         https://core.telegram.org/bots/api#editmessagetext"""
@@ -156,7 +155,7 @@ class Context:
                                               disable_web_page_preview=disable_web_page_preview,
                                               reply_markup=reply_markup)
 
-    def edit_message_text(self, text, parse_mode=Default, disable_web_page_preview=Default, reply_markup=None):
+    def edit_message_text(self, text, parse_mode=None, disable_web_page_preview=None, reply_markup=None):
         """https://core.telegram.org/bots/api#editmessagetext"""
 
         if not self.update.update_type is UpdateType.callback_query:

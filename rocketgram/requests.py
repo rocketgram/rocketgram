@@ -5,12 +5,11 @@
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import auto
-from typing import TYPE_CHECKING, Optional, Union, Dict, List
+from typing import TYPE_CHECKING, Union, Dict
 
-from .types import Default, InputFile, Enum, EnumAutoName
+from .types import InputFile, Enum, EnumAutoName
 
 if TYPE_CHECKING:
-    from .keyboards import InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply
     from .update import UpdateType, ShippingOption
 
 
@@ -54,12 +53,88 @@ class MaskPosition:
     scale: float
 
 
+from dataclasses import dataclass
+from typing import Optional, List
+
+
+@dataclass(frozen=True)
+class KeyboardButton:
+    """\
+    Represents KeyboardButton keyboard object:
+    https://core.telegram.org/bots/api#keyboardbutton
+    """
+
+    text: str
+    request_contact: Optional[bool] = None
+    request_location: Optional[bool] = None
+
+
+@dataclass(frozen=True)
+class InlineKeyboardButton:
+    """\
+    Represents InlineKeyboardButton keyboard object:
+    https://core.telegram.org/bots/api#inlinekeyboardbutton
+    """
+
+    text: str
+    url: Optional[str] = None
+    callback_data: Optional[str] = None
+    switch_inline_query: Optional[str] = None
+    switch_inline_query_current_chat: Optional[str] = None
+    callback_game: Optional[dict] = None  # TODO: CallbackGame
+    pay: Optional[bool] = None
+
+
+@dataclass(frozen=True)
+class ReplyKeyboardMarkup:
+    """\
+    Represents ReplyKeyboardMarkup keyboard object:
+    https://core.telegram.org/bots/api#replykeyboardmarkup
+    """
+
+    keyboard: List[List[KeyboardButton]]
+    resize_keyboard: Optional[bool] = None
+    one_time_keyboard: Optional[bool] = None
+    selective: Optional[bool] = None
+
+
+@dataclass(frozen=True)
+class InlineKeyboardMarkup:
+    """\
+    Represents InlineKeyboardMarkup keyboard object:
+    https://core.telegram.org/bots/api#inlinekeyboardmarkup
+    """
+
+    inline_keyboard: List[List[InlineKeyboardButton]]
+
+
+@dataclass(frozen=True)
+class ReplyKeyboardRemove:
+    """\
+    Represents ReplyKeyboardRemove keyboard object:
+    https://core.telegram.org/bots/api#replykeyboardremove
+    """
+
+    selective: bool = False
+    remove_keyboard: bool = True
+
+
+@dataclass(frozen=True)
+class ForceReply:
+    """\
+    Represents ForceReply keyboard object:
+    https://core.telegram.org/bots/api#forcereply
+    """
+
+    selective: bool = False
+    force_reply: bool = True
+
+
 @dataclass(frozen=True)
 class Request:
     """\
     Base class for all request objects.
     """
-
     method = None
 
     def __prepare(self, d: Union[Dict, list]) -> Union[Dict, list]:
@@ -161,9 +236,9 @@ class SendMessage(Request):
 
     chat_id: Union[int, str]
     text: str
-    parse_mode: Optional[Union[Default, ParseModeType]] = Default
-    disable_web_page_preview: Optional[Union[Default, bool]] = Default
-    disable_notification: Optional[Union[Default, bool]] = Default
+    parse_mode: Optional[ParseModeType] = None
+    disable_web_page_preview: Optional[bool] = None
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -181,7 +256,7 @@ class ForwardMessage(Request):
     chat_id: Union[int, str]
     from_chat_id: Union[int, str]
     message_id: int
-    disable_notification: Optional[Union[Default, bool]] = Default
+    disable_notification: Optional[bool] = None
 
 
 @dataclass(frozen=True)
@@ -196,8 +271,8 @@ class SendPhoto(Request):
     chat_id: Union[int, str]
     photo: Union[InputFile, str]
     caption: Optional[str] = None
-    parse_mode: Optional[Union[Default, ParseModeType]] = Default
-    disable_notification: Optional[Union[Default, bool]] = Default
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -219,8 +294,8 @@ class SendAudio(Request):
     title: Optional[str] = None
     thumb: Optional[Union[int, str]] = None
     caption: Optional[str] = None
-    parse_mode: Optional[Union[Default, ParseModeType]] = Default
-    disable_notification: Optional[Union[Default, bool]] = Default
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -239,8 +314,8 @@ class SendDocument(Request):
     document: Union[InputFile, str]
     thumb: Optional[Union[int, str]] = None
     caption: Optional[str] = None
-    parse_mode: Optional[Union[Default, ParseModeType]] = Default
-    disable_notification: Optional[Union[Default, bool]] = Default
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -263,8 +338,8 @@ class SendVideo(Request):
     supports_streaming: Optional[bool] = None
     thumb: Optional[Union[int, str]] = None
     caption: Optional[str] = None
-    parse_mode: Optional[Union[Default, ParseModeType]] = Default
-    disable_notification: Optional[Union[Default, bool]] = Default
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -286,8 +361,8 @@ class SendAnimation(Request):
     height: Optional[int] = None
     thumb: Optional[Union[int, str]] = None
     caption: Optional[str] = None
-    parse_mode: Optional[Union[Default, ParseModeType]] = Default
-    disable_notification: Optional[Union[Default, bool]] = Default
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -306,8 +381,8 @@ class SendVoice(Request):
     voice: Union[InputFile, str]
     duration: Optional[int] = None
     caption: Optional[str] = None
-    parse_mode: Optional[Union[Default, ParseModeType]] = Default
-    disable_notification: Optional[Union[Default, bool]] = Default
+    parse_mode: Optional[ParseModeType] = None
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -327,7 +402,7 @@ class SendVideoNote(Request):
     duration: Optional[int] = None
     length: Optional[int] = None
     thumb: Union[InputFile, str] = None
-    disable_notification: Optional[Union[Default, bool]] = Default
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -344,7 +419,7 @@ class SendMediaGroup(Request):
 
     chat_id: Union[int, str]
     media: List[str]  # TODO: need types for MediaGropus
-    disable_notification: Optional[Union[Default, bool]] = Default
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
 
 
@@ -361,7 +436,7 @@ class SendLocation(Request):
     latitude: float
     longitude: float
     live_period: Optional[int] = None
-    disable_notification: Optional[Union[Default, bool]] = Default
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -415,7 +490,7 @@ class SendVenue(Request):
     address: str
     foursquare_id: Optional[str] = None
     foursquare_type: Optional[str] = None
-    disable_notification: Optional[Union[Default, bool]] = Default
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -435,7 +510,7 @@ class SendContact(Request):
     first_name: str
     last_name: Optional[str] = None
     vcard: Optional[str] = None
-    disable_notification: Optional[Union[Default, bool]] = Default
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -621,7 +696,7 @@ class PinChatMessage(Request):
 
     chat_id: Union[int, str]
     message_id: int
-    disable_notification: Optional[Union[Default, bool]] = Default
+    disable_notification: Optional[bool] = None
 
 
 @dataclass(frozen=True)
@@ -752,8 +827,8 @@ class EditMessageText(Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    parse_mode: Optional[Union[Default, ParseModeType]] = Default
-    disable_web_page_preview: Optional[Union[Default, bool]] = Default
+    parse_mode: Optional[ParseModeType] = None
+    disable_web_page_preview: Optional[bool] = None
     reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
@@ -770,8 +845,8 @@ class EditMessageCaption(Request):
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
     caption: Optional[str] = None
-    parse_mode: Optional[Union[Default, ParseModeType]] = Default
-    disable_web_page_preview: Optional[Union[Default, bool]] = Default
+    parse_mode: Optional[ParseModeType] = None
+    disable_web_page_preview: Optional[bool] = None
     reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
@@ -788,7 +863,7 @@ class EditMessageMedia(Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    disable_web_page_preview: Optional[Union[Default, bool]] = Default
+    disable_web_page_preview: Optional[bool] = None
     reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
@@ -804,7 +879,7 @@ class EditMessageReplyMarkup(Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    disable_web_page_preview: Optional[Union[Default, bool]] = Default
+    disable_web_page_preview: Optional[bool] = None
     reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 
@@ -832,7 +907,7 @@ class SendSticker(Request):
 
     chat_id: Union[int, str]
     sticker: Union[InputFile, str]
-    disable_notification: Optional[Union[Default, bool]] = Default
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
@@ -968,7 +1043,7 @@ class SendInvoice(Request):
     send_phone_number_to_provider: Optional[bool] = None
     send_email_to_provider: Optional[bool] = None
     is_flexible: Optional[bool] = None
-    disable_notification: Optional[Union[Default, bool]] = Default
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[bool] = None
     reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
@@ -1026,7 +1101,7 @@ class SendGame(Request):
 
     chat_id: int
     game_short_name: str
-    disable_notification: Optional[Union[Default, bool]] = Default
+    disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 

@@ -6,7 +6,7 @@
 from itertools import accumulate, chain, cycle, repeat
 from typing import List
 
-from . import exceptions
+from . import errors
 
 MIN_BUTTONS = 1
 MAX_BUTTONS = 8
@@ -47,12 +47,12 @@ class Keyboard:
             raise TypeError('Scheme values must be list or tuple')
 
         if not _check_scheme_values(head, middle, tail):
-            raise exceptions.KeyboardTooManyButtonsError('Too many buttons in a row. Must be from 1 to 8')
+            raise errors.TooManyButtonsError('Too many buttons in a row. Must be from 1 to 8')
 
         btns = [b for b in self._buttons if b]
 
         if sum(head) + sum(tail) > len(btns):
-            raise exceptions.NotEnoughButtonsError('Not egnought buttons to render scheme')
+            raise errors.NotEnoughButtonsError('Not egnought buttons to render scheme')
 
         head_btns = btns[:sum(head)]
         middle_btns = btns[sum(head):-sum(tail) if sum(tail) > 0 else None]
@@ -78,7 +78,7 @@ class Keyboard:
 
     def arrange_simple(self, row=8):
         if row < MIN_BUTTONS or row > MAX_BUTTONS:
-            raise exceptions.KeyboardTooManyButtonsError('Too many buttons in a row')
+            raise errors.TooManyButtonsError('Too many buttons in a row')
 
         btns = [b for b in self._buttons if b]
         l = len(btns) if len(btns) < row else row
@@ -103,7 +103,7 @@ class Keyboard:
                 keyboard[cnt].append(b)
 
                 if len(keyboard[cnt]) > MAX_BUTTONS:
-                    raise exceptions.KeyboardTooManyButtonsError('Too many buttons in a row')
+                    raise errors.TooManyButtonsError('Too many buttons in a row')
             else:
                 cnt += 1
 

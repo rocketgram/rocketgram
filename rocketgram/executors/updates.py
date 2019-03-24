@@ -9,6 +9,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING, Optional, Dict, List, Set
 
 from .executor import Executor
+from ..requests import Request
 
 if TYPE_CHECKING:
     from ..bot import Bot
@@ -42,6 +43,9 @@ class UpdatesExecutor(Executor):
         :rtype: object
         """
         return self.__started
+
+    def can_process_webhook_request(self, request: Request) -> bool:
+        return False
 
     async def add_bot(self, bot: 'Bot', *, drop_updates=False):
         """
