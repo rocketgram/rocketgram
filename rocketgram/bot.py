@@ -2,20 +2,23 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
+
+import inspect
 import logging
 from contextlib import suppress
 from typing import ClassVar, Callable, Awaitable
 
+from .context import Context
+from .errors import RocketgramRequest429Error, RocketgramStopRequest
+from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
 from .requests import *
 from .update import Update, Response
-from .context import Context
-from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
-from .errors import RocketgramRequest429Error, RocketgramStopRequest
 
 if TYPE_CHECKING:
     from .executors import Executor
     from .routers import BaseRouter
     from .connectors import BaseConnector
+    from .middlewares import Middleware
 
 logger = logging.getLogger('rocketgram.bot')
 logger_raw_in = logging.getLogger('rocketgram.raw.in')
@@ -41,6 +44,7 @@ class Bot:
 
         self.__name = None
         self.__user_id = int(self.__token.split(':')[0])
+        self.__middlewares: List['Middleware'] = list()
 
         self.__router = router
         if self.__router is None:
@@ -64,16 +68,13 @@ class Bot:
 
         return self.__token
 
-    def get_name(self):
-        return self.__name
-
     def set_name(self, name):
         if self.__name is not None:
             raise TypeError('Bot''s name can be set one time.')
 
         self.__name = name
 
-    name = property(fget=get_name, fset=set_name, doc="Bot's username. Can be set one time.")
+    name = property(fget=lambda self: self.__name, fset=set_name, doc="Bot's username. Can be set one time.")
 
     @property
     def user_id(self):
@@ -98,6 +99,11 @@ class Bot:
         """Bot's globals data storage."""
         return self.__globals
 
+    def middleware(self, middleware: 'Middleware'):
+        """Registers middleware."""
+
+        self.__middlewares.append(middleware)
+
     async def init(self):
         """Initializes connector and dispatcher.
         Performs bot initialization authorize bot on telegram and sets bot's name.
@@ -107,6 +113,12 @@ class Bot:
         logger.debug('Performing init...')
 
         await self.connector.init()
+
+        for md in self.__middlewares:
+            m = md.init(self)
+            if inspect.isawaitable(m):
+                await m
+
         await self.router.init(self)
 
         return True
@@ -119,14 +131,25 @@ class Bot:
         logger.debug('Performing shutdown...')
 
         await self.router.shutdown(self)
+
+        for md in reversed(self.__middlewares):
+            m = md.init(self)
+            if inspect.isawaitable(m):
+                await m
+
         await self.connector.shutdown()
 
     async def process(self, executor: 'Executor', update: Update) -> Optional[Request]:
-        try:
-            logger_raw_in.debug('Raw in: %s', update.raw)
+        logger_raw_in.debug('Raw in: %s', update.raw)
 
-            context_data = self.__context_data_class()
-            ctx = Context(self, update, context_data)
+        context_data = self.__context_data_class()
+        ctx = Context(self, update, context_data)
+
+        try:
+            for md in self.__middlewares:
+                ctx = md.process(ctx)
+                if inspect.isawaitable(ctx):
+                    ctx = await ctx
 
             await self.router.process(ctx)
 
@@ -135,6 +158,10 @@ class Bot:
             for req in ctx.get_webhook_requests():
                 # set request to return if it can be processed
                 if webhook_request is None and executor.can_process_webhook_request(req):
+                    for md in self.__middlewares:
+                        req = md.before_request(self, req)
+                        if inspect.isawaitable(req):
+                            req = await req
                     webhook_request = req
                     continue
 
@@ -146,21 +173,45 @@ class Bot:
 
         except RocketgramStopRequest as e:
             logger.debug('Request `%s` was interrupted: `%s`', update.update_id, e)
-        except Exception:
+        except Exception as error:
+
+            for md in self.__middlewares:
+                with suppress(Exception):
+                    m = md.process_error(ctx, error)
+                    if inspect.isawaitable(m):
+                        await m
+
             logger.exception('Got exception during processing request:')
 
     async def send(self, request: Request) -> Response:
-        response = await self.__connector.send(self.token, request)
+        try:
+            for md in self.__middlewares:
+                request = md.before_request(self, request)
+                if inspect.isawaitable(request):
+                    request = await request
 
-        if response.ok:
-            return response
-        if response.error_code == 400:
-            raise RocketgramRequest400Error(request, response)
-        elif response.error_code == 401:
-            raise RocketgramRequest401Error(request, response)
-        elif response.error_code == 429:
-            raise RocketgramRequest429Error(request, response)
-        raise RocketgramRequestError(request, response)
+            response = await self.__connector.send(self.token, request)
+
+            for md in reversed(self.__middlewares):
+                response = md.after_request(self, request, response)
+                if inspect.isawaitable(request):
+                    response = await response
+
+            if response.ok:
+                return response
+            if response.error_code == 400:
+                raise RocketgramRequest400Error(request, response)
+            elif response.error_code == 401:
+                raise RocketgramRequest401Error(request, response)
+            elif response.error_code == 429:
+                raise RocketgramRequest429Error(request, response)
+            raise RocketgramRequestError(request, response)
+        except Exception as error:
+            for md in reversed(self.__middlewares):
+                m = md.request_error(self, request, error)
+                if inspect.isawaitable(m):
+                    await m
+            raise
 
     get_updates = _make_method(GetUpdates)
     set_webhook = _make_method(SetWebhook)

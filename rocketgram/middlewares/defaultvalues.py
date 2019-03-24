@@ -1,0 +1,34 @@
+# Copyright (C) 2015-2019 by Vd.
+# This file is part of RocketGram, the modern Telegram bot framework.
+# RocketGram is released under the MIT License (see LICENSE).
+
+
+import typing
+from dataclasses import replace
+
+from .middleware import EmptyMiddleware
+
+if typing.TYPE_CHECKING:
+    from ..bot import Bot
+    from ..requests import Request
+
+
+class DefaultValuesMiddleware(EmptyMiddleware):
+    def __init__(self, **defaults):
+        self.__defaults = defaults
+
+    @property
+    def defaults(self):
+        return self.__defaults.copy()
+
+    def before_request(self, bot: 'Bot', request: 'Request') -> 'Request':
+        replaces = dict()
+
+        for k, v in self.__defaults.items():
+            if hasattr(request, k) and getattr(request, k) is None:
+                replaces[k] = v
+
+        if len(replaces):
+            return replace(request, **replaces)
+
+        return request
