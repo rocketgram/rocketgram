@@ -62,7 +62,8 @@ class AioHttpConnector(BaseConnector):
                 response = await self._session.post(url, data=data, timeout=self._timeout)
             else:
                 headers = {'Content-Type': 'application/json'}
-                response = await self._session.post(url, data=json.dumps(request_data), headers=headers, timeout=self._timeout)
+                response = await self._session.post(url, data=json.dumps(request_data), headers=headers,
+                                                    timeout=self._timeout)
 
             return Response.parse(json.loads(await response.read()), request)
         except json.decoder.JSONDecodeError as e:

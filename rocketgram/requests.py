@@ -2,6 +2,7 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
+
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import auto

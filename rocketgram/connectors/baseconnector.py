@@ -3,8 +3,8 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-import asyncio
 import logging
+
 from ..requests import Request
 from ..update import Response
 

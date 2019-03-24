@@ -2,6 +2,7 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
+
 import asyncio
 import logging
 import signal
@@ -170,9 +171,7 @@ class WebHooksExecutor(Executor):
 
             response: Request = await task
             if response:
-                print(response)
                 data = json.dumps(response.render(with_method=True))
-                print('data', type(data), data)
                 return web.Response(body=data, headers={'Content-Type': 'application/json'})
 
             self.__tasks[bot] = {t for t in self.__tasks[bot] if not t.done()}
