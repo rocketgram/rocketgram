@@ -35,7 +35,7 @@ class Middleware:
         raise NotImplementedError
 
 
-class EmptyMiddleware:
+class EmptyMiddleware(Middleware):
     def init(self, bot: 'Bot'):
         pass
 
