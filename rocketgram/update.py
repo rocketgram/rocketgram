@@ -6,7 +6,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from enum import auto
-from typing import Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 from .requests import GetUpdates, SetWebhook, DeleteWebhook, SendChatAction, KickChatMember, UnbanChatMember, \
     RestrictChatMember, PromoteChatMember, SetChatPhoto, DeleteChatPhoto, SetChatTitle, SetChatDescription, \
@@ -19,6 +19,9 @@ from .requests import GetUpdates, SetWebhook, DeleteWebhook, SendChatAction, Kic
     EditMessageCaption, EditMessageMedia, EditMessageReplyMarkup, SendMediaGroup, GetUserProfilePhotos, GetFile, \
     UploadStickerFile, GetChat, GetChatMember, GetChatAdministrators, GetStickerSet, GetGameHighScores
 from .types import EnumAutoName
+
+if TYPE_CHECKING:
+    from .requests import Request
 
 
 class UpdateType(EnumAutoName):

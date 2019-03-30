@@ -13,8 +13,8 @@ from .context import Context
 from .middlewares import *
 from .routers import *
 from .executors import *
+from . import tools
 
 
-@property
 def version():
     return "2019.03"
