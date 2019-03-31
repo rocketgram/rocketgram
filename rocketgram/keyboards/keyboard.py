@@ -28,6 +28,8 @@ def _check_scheme_types(*args):
 
 
 class Keyboard:
+    __slots__ = ('_buttons',)
+
     def __init__(self):
         self._buttons = list()
 

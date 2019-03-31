@@ -8,6 +8,8 @@ from ..requests import InlineKeyboardMarkup, InlineKeyboardButton
 
 
 class InlineKeyboard(Keyboard):
+    __slots__ = ()
+
     def url(self, text, url) -> 'InlineKeyboard':
         self.add(InlineKeyboardButton(text=text, url=url))
         return self

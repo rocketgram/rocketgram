@@ -59,6 +59,8 @@ async def _call_or_await(func, *args, **kwargs):
 
 
 class BaseDispatcher(BaseRouter):
+    __slots__ = ('_init', '_shutdown', '_handlers', '_pre', '_post', '_default_priority', '_bots')
+
     def __init__(self, *, default_priority=DEFAULT_PRIORITY):
         self._init = list()
         self._shutdown = list()

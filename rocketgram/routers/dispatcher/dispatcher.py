@@ -70,6 +70,8 @@ async def _run_filters(ctx, filters):
 
 
 class Dispatcher(BaseDispatcher):
+    __slots__ = ('__waiters', '__watires_lifetime', '__watires_lifetime_check', '__last_waiters_check')
+
     def __init__(self, *, default_priority=DEFAULT_PRIORITY,
                  watires_lifetime=DEFAULT_WATIRES_LIFETIME,
                  watires_lifetime_check=DEFAULT_WATIRES_LIFETIME_CHECK):

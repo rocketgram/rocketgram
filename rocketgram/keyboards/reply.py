@@ -8,6 +8,8 @@ from ..requests import ReplyKeyboardMarkup, KeyboardButton
 
 
 class ReplyKeyboard(Keyboard):
+    __slots__ = ('__selective', '__one_time', '__resize')
+
     def __init__(self, *, selective=False, one_time=False, resize=False):
         super().__init__()
 

@@ -37,6 +37,9 @@ def _make_method(request: type(Request)) -> Callable:
 
 
 class Bot:
+    __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router', '__connector', '__globals',
+                 '__context_data_class')
+
     def __init__(self, token: str, *, connector: 'BaseConnector' = None, router: 'BaseRouter' = None,
                  globals_class: ClassVar = dict, context_data_class: ClassVar = dict):
 

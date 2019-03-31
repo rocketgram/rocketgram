@@ -17,6 +17,8 @@ logger = logging.getLogger('rocketgram.context')
 
 
 class Context:
+    __slots__ = ('__bot', '__update', '__webhook_requests', '__data')
+
     def __init__(self, bot: 'Bot', update: 'Update', context_data):
         self.__bot = bot
         self.__update = update
