@@ -148,6 +148,9 @@ class Request:
             if isinstance(v, datetime):
                 d[k] = int(v.timestamp())
                 continue
+            if isinstance(v, InputFile):
+                d[k] = 'attach://%s' % v.file_name
+                continue
             if isinstance(v, (list, dict)):
                 d[k] = self.__prepare(v)
 
@@ -164,6 +167,9 @@ class Request:
             d['method'] = self.method
 
         return self.__prepare(d)
+
+    def files(self) -> List[InputFile]:
+        return list()
 
 
 @dataclass(frozen=True)
@@ -194,6 +200,11 @@ class SetWebhook(Request):
     certificate: Optional[Union[InputFile, str]] = None
     max_connections: Optional[int] = None
     allowed_updates: Optional[List['UpdateType']] = None
+
+    def files(self) -> List[InputFile]:
+        if isinstance(self.certificate, InputFile):
+            return [self.certificate]
+        return list()
 
 
 @dataclass(frozen=True)
@@ -278,6 +289,11 @@ class SendPhoto(Request):
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
+    def files(self) -> List[InputFile]:
+        if isinstance(self.photo, InputFile):
+            return [self.photo]
+        return list()
+
 
 @dataclass(frozen=True)
 class SendAudio(Request):
@@ -293,13 +309,21 @@ class SendAudio(Request):
     duration: Optional[int] = None
     performer: Optional[str] = None
     title: Optional[str] = None
-    thumb: Optional[Union[int, str]] = None
+    thumb: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+
+    def files(self) -> List[InputFile]:
+        l = list()
+        if isinstance(self.audio, InputFile):
+            l.append(self.audio)
+        if isinstance(self.thumb, InputFile):
+            l.append(self.thumb)
+        return l
 
 
 @dataclass(frozen=True)
@@ -313,7 +337,7 @@ class SendDocument(Request):
 
     chat_id: Union[int, str]
     document: Union[InputFile, str]
-    thumb: Optional[Union[int, str]] = None
+    thumb: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     disable_notification: Optional[bool] = None
@@ -321,6 +345,13 @@ class SendDocument(Request):
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
+    def files(self) -> List[InputFile]:
+        l = list()
+        if isinstance(self.document, InputFile):
+            l.append(self.document)
+        if isinstance(self.thumb, InputFile):
+            l.append(self.thumb)
+        return l
 
 @dataclass(frozen=True)
 class SendVideo(Request):
@@ -337,7 +368,7 @@ class SendVideo(Request):
     width: Optional[int] = None
     height: Optional[int] = None
     supports_streaming: Optional[bool] = None
-    thumb: Optional[Union[int, str]] = None
+    thumb: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     disable_notification: Optional[bool] = None
@@ -345,6 +376,13 @@ class SendVideo(Request):
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
+    def files(self) -> List[InputFile]:
+        l = list()
+        if isinstance(self.video, InputFile):
+            l.append(self.video)
+        if isinstance(self.thumb, InputFile):
+            l.append(self.thumb)
+        return l
 
 @dataclass(frozen=True)
 class SendAnimation(Request):
@@ -360,13 +398,21 @@ class SendAnimation(Request):
     duration: Optional[int] = None
     width: Optional[int] = None
     height: Optional[int] = None
-    thumb: Optional[Union[int, str]] = None
+    thumb: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+
+    def files(self) -> List[InputFile]:
+        l = list()
+        if isinstance(self.animation, InputFile):
+            l.append(self.animation)
+        if isinstance(self.thumb, InputFile):
+            l.append(self.thumb)
+        return l
 
 
 @dataclass(frozen=True)
@@ -388,6 +434,11 @@ class SendVoice(Request):
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
+    def files(self) -> List[InputFile]:
+        if isinstance(self.voice, InputFile):
+            return [self.voice]
+        return list()
+
 
 @dataclass(frozen=True)
 class SendVideoNote(Request):
@@ -407,6 +458,14 @@ class SendVideoNote(Request):
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+
+    def files(self) -> List[InputFile]:
+        l = list()
+        if isinstance(self.video_note, InputFile):
+            l.append(self.video_note)
+        if isinstance(self.thumb, InputFile):
+            l.append(self.thumb)
+        return l
 
 
 @dataclass(frozen=True)
@@ -646,6 +705,11 @@ class SetChatPhoto(Request):
 
     chat_id: Union[int, str]
     photo: Union[InputFile, str]
+
+    def files(self) -> List[InputFile]:
+        if isinstance(self.photo, InputFile):
+            return [self.photo]
+        return list()
 
 
 @dataclass(frozen=True)
@@ -913,6 +977,10 @@ class SendSticker(Request):
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
+    def files(self) -> List[InputFile]:
+        if isinstance(self.sticker, InputFile):
+            return [self.sticker]
+        return list()
 
 @dataclass(frozen=True)
 class GetStickerSet(Request):
@@ -938,6 +1006,11 @@ class UploadStickerFile(Request):
     user_id: int
     png_sticker: InputFile
 
+    def files(self) -> List[InputFile]:
+        if isinstance(self.png_sticker, InputFile):
+            return [self.png_sticker]
+        return list()
+
 
 @dataclass(frozen=True)
 class CreateNewStickerSet(Request):
@@ -956,6 +1029,11 @@ class CreateNewStickerSet(Request):
     contains_masks: Optional[bool] = None
     mask_position: Optional[MaskPosition] = None
 
+    def files(self) -> List[InputFile]:
+        if isinstance(self.png_sticker, InputFile):
+            return [self.png_sticker]
+        return list()
+
 
 @dataclass(frozen=True)
 class AddStickerToSet(Request):
@@ -971,6 +1049,11 @@ class AddStickerToSet(Request):
     png_sticker: Union[InputFile, str]
     emojis: str
     mask_position: Optional[MaskPosition] = None
+
+    def files(self) -> List[InputFile]:
+        if isinstance(self.png_sticker, InputFile):
+            return [self.png_sticker]
+        return list()
 
 
 @dataclass(frozen=True)

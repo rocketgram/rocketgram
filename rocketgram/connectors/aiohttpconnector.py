@@ -42,23 +42,20 @@ class AioHttpConnector(BaseConnector):
             url = self._api_url % token + request.method
 
             request_data = request.render()
-            send_file = False
-            data = dict()
-            for k, v in request_data.items():
-                if v is not None:
-                    data[k] = v
-                if isinstance(v, types.InputFile):
-                    send_file = True
 
-            if send_file:
+            files = request.files()
+
+            if len(files):
                 data = aiohttp.FormData()
                 for name, field in request_data.items():
-                    if isinstance(field, types.InputFile):
-                        data.add_field(name, field.file, filename=field.file_name, content_type=field.content_type)
-                    elif isinstance(field, dict) or isinstance(field, list):
+                    if isinstance(field, (dict, list)):
                         data.add_field(name, json.dumps(field), content_type='application/json')
-                    else:
-                        data.add_field(name, str(field), content_type='text/plain')
+                        continue
+                    data.add_field(name, str(field), content_type='text/plain')
+
+                for file in files:
+                    data.add_field(file.file_name, file.data, filename=file.file_name, content_type=file.content_type)
+
                 response = await self._session.post(url, data=data, timeout=self._timeout)
             else:
                 headers = {'Content-Type': 'application/json'}

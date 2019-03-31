@@ -4,19 +4,40 @@
 
 
 import typing
-from dataclasses import dataclass
 from enum import Enum
 
 API_URL = "https://api.telegram.org/bot%s/"
 API_FILE_URL = "https://api.telegram.org/file/bot%s/"
 
 
-@dataclass(frozen=True)
 class InputFile:
-    """Represents file to be send to telegram."""
-    file_name: str
-    content_type: str
-    file: typing.BinaryIO
+    """\
+    Represents InputFile request object:
+    https://core.telegram.org/bots/api#inputfile
+    """
+
+    def __init__(self, file_name: str, content_type: str, data: typing.BinaryIO):
+        self.__file_name = file_name
+        self.__content_type = content_type
+        self.__data = data
+
+    @property
+    def file_name(self) -> str:
+        return self.__file_name
+
+    @property
+    def content_type(self) -> str:
+        return self.__content_type
+
+    @property
+    def data(self) -> typing.BinaryIO:
+        return self.__data
+
+    def __repr__(self):
+        return "%s(%s, %s, %s)" % (self.__class__.__name__,
+                                   repr(self.__file_name),
+                                   repr(self.__content_type),
+                                   repr(self.__data))
 
 
 class EnumAutoName(Enum):
