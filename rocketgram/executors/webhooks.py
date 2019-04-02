@@ -268,12 +268,16 @@ def run_webhook(bots, base_url: str, base_path: str, *, host='0.0.0.0', port=808
     loop.run_until_complete(run())
 
     for s in signals:
-        loop.add_signal_handler(s, loop.stop)
+        try:
+            loop.add_signal_handler(s, loop.stop)
+        except NotImplementedError:
+            signal.signal(s, lambda sig, frame: loop.stop())
 
     loop.run_forever()
 
-    for s in signals:
-        loop.remove_signal_handler(s)
+    with suppress(NotImplementedError):
+        for s in signals:
+            loop.remove_signal_handler(s)
 
     logger.info('Shutting down...')
 

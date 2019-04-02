@@ -6,6 +6,7 @@
 import asyncio
 import logging
 import signal
+import os
 from contextlib import suppress
 from typing import TYPE_CHECKING, Optional, Dict, List, Set
 
@@ -220,12 +221,16 @@ def run_updates(bots, drop_updates=False, signals: tuple = (signal.SIGINT,), shu
     loop.run_until_complete(run())
 
     for s in signals:
-        loop.add_signal_handler(s, loop.stop)
+        try:
+            loop.add_signal_handler(s, loop.stop)
+        except NotImplementedError:
+            signal.signal(s, lambda sig, frame: loop.stop())
 
     loop.run_forever()
 
-    for s in signals:
-        loop.remove_signal_handler(s)
+    with suppress(NotImplementedError):
+        for s in signals:
+            loop.remove_signal_handler(s)
 
     logger.info('Shutting down...')
 
