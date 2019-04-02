@@ -6,12 +6,11 @@
 import asyncio
 import logging
 import signal
-import os
 from contextlib import suppress
 from typing import TYPE_CHECKING, Optional, Dict, List, Set
 
-from ..errors import RocketgramNetworkError
 from .executor import Executor
+from ..errors import RocketgramNetworkError
 from ..requests import Request
 
 if TYPE_CHECKING:

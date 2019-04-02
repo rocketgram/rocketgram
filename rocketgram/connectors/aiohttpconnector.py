@@ -65,5 +65,7 @@ class AioHttpConnector(BaseConnector):
             return Response.parse(json.loads(await response.read()), request)
         except json.decoder.JSONDecodeError as e:
             raise RocketgramParseError(e)
+        except asyncio.CancelledError:
+            raise
         except Exception as e:
             raise RocketgramNetworkError(e)

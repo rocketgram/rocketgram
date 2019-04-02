@@ -5,6 +5,7 @@
 
 import inspect
 import logging
+import asyncio
 from contextlib import suppress
 from typing import ClassVar, Callable, Awaitable
 
@@ -209,6 +210,8 @@ class Bot:
             elif response.error_code == 429:
                 raise RocketgramRequest429Error(request, response)
             raise RocketgramRequestError(request, response)
+        except asyncio.CancelledError:
+            raise
         except Exception as error:
             for md in reversed(self.__middlewares):
                 m = md.request_error(self, request, error)
