@@ -16,5 +16,4 @@ from .executors import *
 from . import tools
 
 
-def version():
-    return "2019.03"
+from .version import version

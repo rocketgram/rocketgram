@@ -7,11 +7,11 @@ from os.path import join, dirname
 
 import setuptools
 
-import rocketgram
+from rocketgram.version import version
 
 setuptools.setup(
     name='rocketgram',
-    version=rocketgram.version(),
+    version=version(),
     author='Vd',
     author_email='vd@vd2.org',
     url='https://github.com/vd2org/rocketgram',
