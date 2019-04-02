@@ -7,7 +7,9 @@ from os.path import join, dirname
 
 import setuptools
 
-from rocketgram.version import version
+with open(join(dirname(__file__), 'rocketgram/version.py')) as f:
+    version = lambda: None
+    exec(f.read())
 
 setuptools.setup(
     name='rocketgram',
