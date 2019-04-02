@@ -159,7 +159,7 @@ class Response:
         result = None
 
         if isinstance(method, GetUpdates):
-            result = Update.parse(data['result'])
+            result = [Update.parse(r) for r in data['result']]
         elif isinstance(method, (SetWebhook, DeleteWebhook, SendChatAction, KickChatMember, UnbanChatMember,
                                  RestrictChatMember, PromoteChatMember, SetChatPhoto, DeleteChatPhoto, SetChatTitle,
                                  SetChatDescription, PinChatMessage, UnpinChatMessage, LeaveChat, SetChatStickerSet,
@@ -201,7 +201,7 @@ class Response:
             # result = GameHighScores.parse(data['result']) # TODO create GameHighScores object
             result = data['result']
 
-        assert result, "Should have value here! This probably means api was changed."
+        assert result is not None, "Should have value here! This probably means api was changed."
 
         return cls(method, data, ok, error_code, description, result, parameters)
 

@@ -23,7 +23,7 @@ logger = logging.getLogger('rocketgram.connectors.aiohttpconnector')
 
 
 class AioHttpConnector(BaseConnector):
-    def __init__(self, loop: asyncio.AbstractEventLoop = None, timeout: int = 30,
+    def __init__(self, loop: asyncio.AbstractEventLoop = None, timeout: int = 35,
                  api_url: str = types.API_URL):
         if not loop:
             loop = asyncio.get_event_loop()

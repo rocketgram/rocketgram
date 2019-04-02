@@ -9,6 +9,7 @@ import signal
 from contextlib import suppress
 from typing import TYPE_CHECKING, Optional, Dict, List, Set
 
+from ..errors import RocketgramNetworkError
 from .executor import Executor
 from ..requests import Request
 
@@ -112,11 +113,13 @@ class UpdatesExecutor(Executor):
                     if offset < update.update_id:
                         offset = update.update_id
 
-                    task = asyncio.create_task(bot.process(update))
+                    task = asyncio.create_task(bot.process(self, update))
                     task.done()
                     pending.add(task)
 
                 pending = {t for t in pending if not t.done()}
+            except RocketgramNetworkError:
+                logging.exception('Exception while processing updates')
             except asyncio.CancelledError:
                 return pending
             except:
