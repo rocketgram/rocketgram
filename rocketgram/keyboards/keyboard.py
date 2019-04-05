@@ -4,7 +4,7 @@
 
 
 from itertools import accumulate, chain, cycle, repeat
-from typing import List
+from typing import List, Tuple, Union
 
 from . import errors
 
@@ -37,13 +37,17 @@ class Keyboard:
         btns = chain.from_iterable([p + q for p, q in zip(keyboard, repeat([None]))])
         self._buttons = list(btns)[:-1]
 
-    def arrange_scheme(self, head=None, middle=None, tail=None):
-        if not head:
-            head = []
-        if not middle:
-            middle = [1]
-        if not tail:
-            tail = []
+    def arrange_scheme(self, head: Union[None, int, List, Tuple] = None,
+                       middle: Union[None, int, List, Tuple] = 1,
+                       tail: Union[None, int, List, Tuple] = None):
+
+        head = [] if head is None else head
+        middle = [] if middle is None else middle
+        tail = [] if tail is None else tail
+
+        head = [head] if isinstance(head, int) else head
+        middle = [middle] if isinstance(middle, int) else middle
+        tail = [tail] if isinstance(tail, int) else tail
 
         if not _check_scheme_types(head, middle, tail):
             raise TypeError('Scheme values must be list or tuple')
@@ -78,7 +82,7 @@ class Keyboard:
 
         return self
 
-    def arrange_simple(self, row=8):
+    def arrange_simple(self, row: int = 8):
         if row < MIN_BUTTONS or row > MAX_BUTTONS:
             raise errors.TooManyButtonsError('Too many buttons in a row')
 
