@@ -136,7 +136,7 @@ class Dispatcher(BaseDispatcher):
             # Run preprocessors...
             for pre in self._pre:
                 if await _run_filters(ctx, pre.filters):
-                    await pre.handler(ctx)
+                    await _call_or_await(pre.handler, ctx)
 
             anext = False
             scope = _user_scope(ctx)
@@ -177,7 +177,7 @@ class Dispatcher(BaseDispatcher):
             # Run postprocessors...
             for post in self._post:
                 if await _run_filters(ctx, post.filters):
-                    await post.handler(ctx)
+                    await _call_or_await(post.handler, ctx)
 
             # Cleanup waiters:
             current = int(time())
