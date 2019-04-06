@@ -8,7 +8,6 @@ from .bot import Bot
 from .context import Context
 from .errors import *
 from .executors import *
-from .inlineresults import *
 from .keyboards import *
 from .middlewares import *
 from .requests import *
