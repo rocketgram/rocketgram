@@ -225,7 +225,7 @@ class WebHooksExecutor(Executor):
 
 
 def run_webhook(bots, base_url: str, base_path: str, *, host='0.0.0.0', port=8080, webhook_setup=True,
-                webhook_delete=True, drop_updates=False, signals: tuple = (signal.SIGINT, signal.SIGTERM),
+                webhook_remove=True, drop_updates=False, signals: tuple = (signal.SIGINT, signal.SIGTERM),
                 shutdown_wait=3):
     """
 
@@ -235,7 +235,7 @@ def run_webhook(bots, base_url: str, base_path: str, *, host='0.0.0.0', port=808
     :param host:
     :param port:
     :param webhook_setup:
-    :param webhook_delete:
+    :param webhook_remove:
     :param drop_updates:
     :param signals:
     :param shutdown_wait:
@@ -264,7 +264,7 @@ def run_webhook(bots, base_url: str, base_path: str, *, host='0.0.0.0', port=808
     async def stop():
         await executor.stop()
         for bot in executor.bots:
-            await executor.remove_bot(bot, webhook=webhook_delete)
+            await executor.remove_bot(bot, webhook=webhook_remove)
 
     loop.run_until_complete(run())
 
