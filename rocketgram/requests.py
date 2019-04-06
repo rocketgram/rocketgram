@@ -2,11 +2,10 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
-
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from datetime import datetime
 from enum import auto
-from typing import TYPE_CHECKING, Union, Dict
+from typing import TYPE_CHECKING, Union, Dict, Optional, List
 
 from .types import InputFile, Enum, EnumAutoName
 
@@ -52,10 +51,6 @@ class MaskPosition:
     x_shift: float
     y_shift: float
     scale: float
-
-
-from dataclasses import dataclass
-from typing import Optional, List
 
 
 @dataclass(frozen=True)
@@ -353,6 +348,7 @@ class SendDocument(Request):
             l.append(self.thumb)
         return l
 
+
 @dataclass(frozen=True)
 class SendVideo(Request):
     """\
@@ -383,6 +379,7 @@ class SendVideo(Request):
         if isinstance(self.thumb, InputFile):
             l.append(self.thumb)
         return l
+
 
 @dataclass(frozen=True)
 class SendAnimation(Request):
@@ -982,6 +979,7 @@ class SendSticker(Request):
             return [self.sticker]
         return list()
 
+
 @dataclass(frozen=True)
 class GetStickerSet(Request):
     """\
@@ -1091,12 +1089,477 @@ class AnswerInlineQuery(Request):
     method = "answerInlineQuery"
 
     inline_query_id: str
-    results: List[str]  # TODO: actualize InlineQueryResult
+    results: List['InlineQueryResult']
     cache_time: Optional[int] = None
     is_personal: Optional[bool] = None
     next_offset: Optional[str] = None
     switch_pm_text: Optional[str] = None
     switch_pm_parameter: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResult:
+    """\
+    Represents InlineQueryResult object:
+    https://core.telegram.org/bots/api#inlinequeryresult
+    """
+
+
+@dataclass(frozen=True)
+class InlineQueryResultArticle(InlineQueryResult):
+    """\
+    Represents InlineQueryResultArticle object:
+    https://core.telegram.org/bots/api#inlinequeryresultarticle
+    """
+
+    type: str = field(init=False, default='article')
+
+    id: str
+    title: str
+    input_message_content: 'InputMessageContent'
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    url: Optional[str] = None
+    hide_url: Optional[bool] = None
+    description: Optional[str] = None
+    thumb_url: Optional[str] = None
+    thumb_width: Optional[int] = None
+    thumb_height: Optional[int] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultPhoto(InlineQueryResult):
+    """\
+    Represents InlineQueryResultPhoto object:
+    https://core.telegram.org/bots/api#inlinequeryresultphoto
+    """
+
+    type: str = field(init=False, default='photo')
+
+    id: str
+    photo_url: str
+    thumb_url: str
+    photo_width: Optional[int] = None
+    photo_height: Optional[int] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultGif(InlineQueryResult):
+    """\
+    Represents InlineQueryResultGif object:
+    https://core.telegram.org/bots/api#inlinequeryresultgif
+    """
+
+    type: str = field(init=False, default='gif')
+
+    id: str
+    gif_url: str
+    thumb_url: str
+    gif_width: Optional[int] = None
+    gif_height: Optional[int] = None
+    gif_duration: Optional[int] = None
+    title: Optional[str] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultMpeg4Gif(InlineQueryResult):
+    """\
+    Represents InlineQueryResultMpeg4Gif object:
+    https://core.telegram.org/bots/api#inlinequeryresultmpeg4gif
+    """
+
+    type: str = field(init=False, default='mpeg4_gif')
+
+    id: str
+    mpeg4_url: str
+    thumb_url: str
+    mpeg4_width: Optional[int] = None
+    mpeg4_height: Optional[int] = None
+    mpeg4_duration: Optional[int] = None
+    title: Optional[str] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultVideo(InlineQueryResult):
+    """\
+    Represents InlineQueryResultMpeg4Gif object:
+    https://core.telegram.org/bots/api#inlinequeryresultmpeg4gif
+    """
+
+    type: str = field(init=False, default='mpeg4_gif')
+
+    id: str
+    video_url: str
+    mime_type: str
+    thumb_url: str
+    title: str
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    video_width: Optional[int] = None
+    video_height: Optional[int] = None
+    video_duration: Optional[int] = None
+    description: Optional[str] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultAudio(InlineQueryResult):
+    """\
+    Represents InlineQueryResultAudio object:
+    https://core.telegram.org/bots/api#inlinequeryresultaudio
+    """
+
+    type: str = field(init=False, default='audio')
+
+    id: str
+    audio_url: str
+    title: str
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    performer: Optional[str] = None
+    audio_duration: Optional[int] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultVoice(InlineQueryResult):
+    """\
+    Represents InlineQueryResultVoice object:
+    https://core.telegram.org/bots/api#inlinequeryresultvoice
+    """
+
+    type: str = field(init=False, default='voice')
+
+    id: str
+    voice_url: str
+    title: str
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    voice_duration: Optional[int] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultDocument(InlineQueryResult):
+    """\
+    Represents InlineQueryResultDocument object:
+    https://core.telegram.org/bots/api#inlinequeryresultdocument
+    """
+
+    type: str = field(init=False, default='document')
+
+    id: str
+    title: str
+    document_url: str
+    mime_type: str
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    description: Optional[str] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+    thumb_url: Optional[str] = None
+    thumb_width: Optional[int] = None
+    thumb_height: Optional[int] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultLocation(InlineQueryResult):
+    """\
+    Represents InlineQueryResultLocation object:
+    https://core.telegram.org/bots/api#inlinequeryresultlocation
+    """
+
+    type: str = field(init=False, default='location')
+
+    id: str
+    latitude: float
+    longitude: float
+    title: str
+    live_period: Optional[int] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+    thumb_url: Optional[str] = None
+    thumb_width: Optional[int] = None
+    thumb_height: Optional[int] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultVenue(InlineQueryResult):
+    """\
+    Represents InlineQueryResultVenue object:
+    https://core.telegram.org/bots/api#inlinequeryresultvenue
+    """
+
+    type: str = field(init=False, default='venue')
+
+    id: str
+    latitude: float
+    longitude: float
+    title: str
+    address: str
+    foursquare_id: Optional[str] = None
+    foursquare_type: Optional[str] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+    thumb_url: Optional[str] = None
+    thumb_width: Optional[int] = None
+    thumb_height: Optional[int] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultContact(InlineQueryResult):
+    """\
+    Represents InlineQueryResultContact object:
+    https://core.telegram.org/bots/api#inlinequeryresultcontact
+    """
+
+    type: str = field(init=False, default='contact')
+
+    id: str
+    phone_number: str
+    first_name: str
+    last_name: Optional[str] = None
+    vcard: Optional[str] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+    thumb_url: Optional[str] = None
+    thumb_width: Optional[int] = None
+    thumb_height: Optional[int] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultGame(InlineQueryResult):
+    """\
+    Represents InlineQueryResultGame object:
+    https://core.telegram.org/bots/api#inlinequeryresultgame
+    """
+
+    type: str = field(init=False, default='game')
+
+    id: str
+    game_short_name: str
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultCachedPhoto(InlineQueryResult):
+    """\
+    Represents InlineQueryResultCachedPhoto object:
+    https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
+    """
+
+    type: str = field(init=False, default='photo')
+
+    id: str
+    photo_file_id: str
+    title: Optional[str] = None
+    description: Optional[str] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultCachedGif(InlineQueryResult):
+    """\
+    Represents InlineQueryResultCachedGif object:
+    https://core.telegram.org/bots/api#inlinequeryresultcachedgif
+    """
+
+    type: str = field(init=False, default='gif')
+
+    id: str
+    gif_file_id: str
+    title: Optional[str] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
+    """\
+    Represents InlineQueryResultCachedMpeg4Gif object:
+    https://core.telegram.org/bots/api#inlinequeryresultcachedmpeg4gif
+    """
+
+    type: str = field(init=False, default='mpeg4_gif')
+
+    id: str
+    mpeg4_file_id: str
+    title: Optional[str] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultCachedSticker(InlineQueryResult):
+    """\
+    Represents InlineQueryResultCachedSticker object:
+    https://core.telegram.org/bots/api#inlinequeryresultcachedsticker
+    """
+
+    type: str = field(init=False, default='sticker')
+
+    id: str
+    sticker_file_id: str
+    parse_mode: Optional[ParseModeType] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultCachedDocument(InlineQueryResult):
+    """\
+    Represents InlineQueryResultCachedDocument object:
+    https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
+    """
+
+    type: str = field(init=False, default='document')
+
+    id: str
+    document_file_id: str
+    title: str
+    description: Optional[str] = None
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultCachedVideo(InlineQueryResult):
+    """\
+    Represents InlineQueryResultCachedVideo object:
+    https://core.telegram.org/bots/api#inlinequeryresultcachedvideo
+    """
+
+    type: str = field(init=False, default='video')
+
+    id: str
+    video_file_id: str
+    title: str
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultCachedVoice(InlineQueryResult):
+    """\
+    Represents InlineQueryResultCachedVoice object:
+    https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
+    """
+
+    type: str = field(init=False, default='voice')
+
+    id: str
+    voice_file_id: str
+    title: str
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InlineQueryResultCachedAudio(InlineQueryResult):
+    """\
+    Represents InlineQueryResultCachedAudio object:
+    https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
+    """
+
+    type: str = field(init=False, default='audio')
+
+    id: str
+    audio_file_id: str
+    caption: Optional[str] = None
+    parse_mode: Optional[ParseModeType] = None
+    reply_markup: Optional[InlineKeyboardMarkup] = None
+    input_message_content: Optional['InputMessageContent'] = None
+
+
+@dataclass(frozen=True)
+class InputMessageContent:
+    """\
+    Represents InputMessageContent object:
+    https://core.telegram.org/bots/api#inputmessagecontent
+    """
+
+
+@dataclass(frozen=True)
+class InputTextMessageContent(InputMessageContent):
+    """\
+    Represents InputTextMessageContent object:
+    https://core.telegram.org/bots/api#inputtextmessagecontent
+    """
+
+    message_text: str
+    parse_mode: Optional[ParseModeType] = None
+    disable_web_page_preview: Optional[bool] = None
+
+
+@dataclass(frozen=True)
+class InputLocationMessageContent(InputMessageContent):
+    """\
+    Represents InputLocationMessageContent object:
+    https://core.telegram.org/bots/api#inputlocationmessagecontent
+    """
+
+    latitude: float
+    longitude: float
+    live_period: Optional[int] = None
+
+
+@dataclass(frozen=True)
+class InputVenueMessageContent(InputMessageContent):
+    """\
+    Represents InputVenueMessageContent object:
+    https://core.telegram.org/bots/api#inputvenuemessagecontent
+    """
+
+    latitude: float
+    longitude: float
+    title: str
+    address: str
+    foursquare_id: Optional[str] = None
+    foursquare_type: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class InputContactMessageContent(InputMessageContent):
+    """\
+    Represents InputContactMessageContent object:
+    https://core.telegram.org/bots/api#inputcontactmessagecontent
+    """
+
+    latitude: float
+    longitude: float
+    title: str
+    address: str
+    foursquare_id: Optional[str] = None
+    foursquare_type: Optional[str] = None
 
 
 class SendInvoice(Request):
@@ -1114,7 +1577,7 @@ class SendInvoice(Request):
     provider_token: str
     start_parameter: str
     currency: str
-    prices: List[str]  # Add LabeledPrice type
+    prices: List[str]  # TODO: Add LabeledPrice type
     provider_data: Optional[str] = None
     photo_url: Optional[str] = None
     photo_size: Optional[int] = None
