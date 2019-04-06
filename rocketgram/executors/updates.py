@@ -185,7 +185,7 @@ class UpdatesExecutor(Executor):
         logger.info("Stopped.")
 
 
-def run_updates(bots, drop_updates=False, signals: tuple = (signal.SIGINT,), shutdown_wait=5):
+def run_updates(bots, drop_updates=False, signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait=5):
     """
 
     :param bots:

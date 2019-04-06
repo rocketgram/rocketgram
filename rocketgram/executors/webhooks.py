@@ -225,7 +225,8 @@ class WebHooksExecutor(Executor):
 
 
 def run_webhook(bots, base_url: str, base_path: str, *, host='0.0.0.0', port=8080, webhook_setup=True,
-                webhook_delete=True, drop_updates=False, signals: tuple = (signal.SIGINT,), shutdown_wait=3):
+                webhook_delete=True, drop_updates=False, signals: tuple = (signal.SIGINT, signal.SIGTERM),
+                shutdown_wait=3):
     """
 
     :param bots:
