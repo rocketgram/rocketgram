@@ -21,8 +21,6 @@ if typing.TYPE_CHECKING:
 
 logger = logging.getLogger('rocketgram.dispatcher')
 
-SCOPE = '%s-%s-%s'
-
 DEFAULT_WATIRES_LIFETIME = 60 * 60 * 24  # 1 day
 DEFAULT_WATIRES_LIFETIME_CHECK = 60 * 30  # 30 minutes
 
@@ -49,13 +47,12 @@ def _user_scope(ctx: 'Context'):
     Valid user scope can be only for message or callback query in chats and groups."""
 
     if ctx.update.update_type == UpdateType.message:
-        return SCOPE % (id(ctx.bot), ctx.update.message.chat.chat_id, ctx.update.message.user.user_id)
-    elif ctx.update.update_type == UpdateType.callback_query:
+        return f"{id(ctx.bot)}-{ctx.update.message.chat.chat_id}-{ctx.update.message.user.user_id}"
+    if ctx.update.update_type == UpdateType.callback_query:
         if ctx.update.callback_query.message is None:
             return None
-        return SCOPE % (id(ctx.bot),
-                        ctx.update.callback_query.message.chat.chat_id,
-                        ctx.update.callback_query.user.user_id)
+        return \
+            f"{id(ctx.bot)}-{ctx.update.callback_query.message.chat.chat_id}-{ctx.update.callback_query.user.user_id}"
 
 
 async def _run_filters(ctx, filters):
