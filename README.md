@@ -2,6 +2,12 @@
 
 Modern and powerful asynchronous telegram bot framework.
 
+## How to install
+
+```bash
+pip install -e git+https://github.com/vd2org/rocketgram.git#egg=rocketgram
+```
+
 ## Dependencies
 
 ### Required
