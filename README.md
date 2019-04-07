@@ -1,4 +1,4 @@
-# rocketgram
+# Rocketgram
 
 Modern and powerful asynchronous telegram bot framework.
 
