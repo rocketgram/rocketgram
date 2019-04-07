@@ -16,7 +16,8 @@ Modern and powerful asynchronous telegram bot framework.
 
 ## Example
 
-There is a trivial example.
+There is a trivial example below.
+[Here](https://github.com/vd2org/rocketgram-template) is useful bot template.
 
 ```python
 from rocketgram import Bot, Context, Dispatcher, commonfilters, run_updates
