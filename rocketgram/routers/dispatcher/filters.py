@@ -6,15 +6,15 @@
 from dataclasses import dataclass
 from functools import wraps
 from inspect import signature
-from typing import List, Union, Callable, Coroutine, Tuple, Dict, TYPE_CHECKING
+from typing import Union, Callable, Coroutine, Tuple, Dict, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ...context import Context
 
 FILTERS_ATTR = 'rocketgram_dispatcher_filters'
 PRIORITY_ATTR = 'rocketgram_dispatcher_handler_priority'
 HANDLER_ASSIGNED_ATTR = 'rocketgram_dispatcher_handler_assigned'
 WAITER_ASSIGNED_ATTR = 'rocketgram_dispatcher_waiter_assigned'
-
-if TYPE_CHECKING:
-    from ...context import Context
 
 
 @dataclass(frozen=True)
@@ -22,14 +22,6 @@ class FilterParams:
     func: Union[Callable, Coroutine]
     args: Tuple
     kwargs: Dict
-
-
-@dataclass(frozen=True)
-class WaitNext:
-    waiter: Union[Callable, Coroutine]
-    args: Tuple
-    kwargs: Dict
-    filters: List[FilterParams]
 
 
 def _check_sig(func, *args, **kwargs):
@@ -83,32 +75,5 @@ def priority(pri: int):
         setattr(handler_func, PRIORITY_ATTR, pri)
 
         return handler_func
-
-    return inner
-
-
-def make_waiter(waiter_func: Callable[['Context'], bool]):
-    """Make waiter"""
-
-    # Checking if function is registered in dispatcher or as waiter.
-    assert not hasattr(waiter_func, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
-    assert not hasattr(waiter_func, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
-
-    # Priority can't be used with waiters
-    if hasattr(waiter_func, PRIORITY_ATTR):
-        raise TypeError('Priority can\'t be used in waiters!')
-
-    filters = getattr(waiter_func, FILTERS_ATTR, list())
-    assert isinstance(filters, list), 'Waiter function has wrong filters!'
-
-    setattr(waiter_func, WAITER_ASSIGNED_ATTR, True)
-
-    @wraps(waiter_func)
-    def inner(*args, **kwargs) -> WaitNext:
-
-        assert _check_sig(waiter_func, object(), *args, **kwargs), \
-            'Wrong arguments passed to waiter `%s`!' % waiter_func.__name__
-
-        return WaitNext(waiter_func, args, kwargs, filters)
 
     return inner

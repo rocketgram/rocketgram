@@ -13,7 +13,8 @@ from time import time
 from typing import Tuple, List, Dict, Callable, Coroutine, AsyncGenerator, Union
 
 from .base import BaseDispatcher, DEFAULT_PRIORITY, _call_or_await
-from .filters import WaitNext, FilterParams, WAITER_ASSIGNED_ATTR
+from .filters import FilterParams, WAITER_ASSIGNED_ATTR
+from .waiters import WaitNext
 from ...update import UpdateType
 
 if typing.TYPE_CHECKING:
