@@ -10,7 +10,7 @@ import typing
 from contextlib import suppress
 from dataclasses import dataclass, replace
 from time import time
-from typing import List, Callable, Coroutine, AsyncGenerator, Union
+from typing import Tuple, List, Dict, Callable, Coroutine, AsyncGenerator, Union
 
 from .base import BaseDispatcher, DEFAULT_PRIORITY, _call_or_await
 from .filters import WaitNext, FilterParams, WAITER_ASSIGNED_ATTR
@@ -33,11 +33,13 @@ class HandlerNotFoundError(Exception):
     pass
 
 
-@dataclass
+@dataclass(frozen=True)
 class Waiter:
     created: int
     handler: Union[Callable, Coroutine, AsyncGenerator]
     waiter: Union[Callable, Coroutine]
+    args: Tuple
+    kwargs: Dict
     filters: List[FilterParams]
 
 
@@ -87,7 +89,7 @@ class Dispatcher(BaseDispatcher):
 
         if not await _run_filters(ctx, waiter.filters):
             return
-        wr = await _call_or_await(waiter.waiter, ctx)
+        wr = await _call_or_await(waiter.waiter, ctx, *waiter.args, **waiter.kwargs)
 
         assert isinstance(wr, bool), \
             'Waiter `%s` returns `%s` while `bool` is expected!' % (waiter.waiter.__name__, type(wr))
@@ -122,7 +124,7 @@ class Dispatcher(BaseDispatcher):
 
         # If new wait exist set it for scope otherwise remove scope from waiters
         if wait is not None:
-            self.__waiters[scope] = Waiter(int(time()), gen, wait.waiter, wait.filters)
+            self.__waiters[scope] = Waiter(int(time()), gen, wait.waiter, wait.args, wait.kwargs, wait.filters)
         elif scope in self.__waiters:
             del self.__waiters[scope]
 

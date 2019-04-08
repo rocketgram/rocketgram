@@ -17,16 +17,18 @@ if TYPE_CHECKING:
     from ...context import Context
 
 
-@dataclass
+@dataclass(frozen=True)
 class FilterParams:
     func: Union[Callable, Coroutine]
     args: Tuple
     kwargs: Dict
 
 
-@dataclass
+@dataclass(frozen=True)
 class WaitNext:
     waiter: Union[Callable, Coroutine]
+    args: Tuple
+    kwargs: Dict
     filters: List[FilterParams]
 
 
@@ -92,7 +94,7 @@ def make_waiter(waiter_func: Callable[['Context'], bool]):
     assert not hasattr(waiter_func, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
     assert not hasattr(waiter_func, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
 
-    # Priority can't be used in waiters
+    # Priority can't be used with waiters
     if hasattr(waiter_func, PRIORITY_ATTR):
         raise TypeError('Priority can\'t be used in waiters!')
 
@@ -102,7 +104,11 @@ def make_waiter(waiter_func: Callable[['Context'], bool]):
     setattr(waiter_func, WAITER_ASSIGNED_ATTR, True)
 
     @wraps(waiter_func)
-    def inner() -> WaitNext:
-        return WaitNext(waiter_func, filters)
+    def inner(*args, **kwargs) -> WaitNext:
+
+        assert _check_sig(waiter_func, object(), *args, **kwargs), \
+            'Wrong arguments passed to waiter `%s`!' % waiter_func.__name__
+
+        return WaitNext(waiter_func, args, kwargs, filters)
 
     return inner
