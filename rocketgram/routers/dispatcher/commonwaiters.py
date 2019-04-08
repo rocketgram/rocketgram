@@ -19,7 +19,7 @@ def next_message(ctx: 'Context', *message_types: MessageType):
     """\
     Waits next message.
 
-    :param ctx: Context.
+    :param ctx: `Context`.
     :param message_types: Wanted `MessageType`. Default `MessageType.text`.
     :return:
     """
