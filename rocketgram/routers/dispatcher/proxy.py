@@ -3,7 +3,12 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
+from typing import TYPE_CHECKING
+
 from .base import BaseDispatcher
+
+if TYPE_CHECKING:
+    from ...context import Context
 
 
 class DispatcherProxy(BaseDispatcher):
