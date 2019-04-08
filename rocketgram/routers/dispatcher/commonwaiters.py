@@ -6,7 +6,7 @@
 import typing
 
 from . import commonfilters
-from .filters import make_waiter
+from .waiters import make_waiter
 from ...update import UpdateType, MessageType
 
 if typing.TYPE_CHECKING:
