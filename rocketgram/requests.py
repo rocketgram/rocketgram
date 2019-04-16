@@ -574,6 +574,24 @@ class SendContact(Request):
 
 
 @dataclass(frozen=True)
+class SendPoll(Request):
+    """\
+    Represents SendPoll request object:
+    https://core.telegram.org/bots/api#sendpoll
+    """
+
+    method = "sendPoll"
+
+    chat_id: Union[int, str]
+    question: str
+    options: List[str]
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[
+        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+
+
+@dataclass(frozen=True)
 class SendChatAction(Request):
     """\
     Represents SendChatAction request object:
@@ -942,6 +960,20 @@ class EditMessageReplyMarkup(Request):
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
     disable_web_page_preview: Optional[bool] = None
+    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
+
+
+@dataclass(frozen=True)
+class StopPoll(Request):
+    """\
+    Represents StopPoll request object:
+    https://core.telegram.org/bots/api#stoppoll
+    """
+
+    method = "stopPoll"
+
+    chat_id: Optional[Union[int, str]] = None
+    message_id: Optional[int] = None
     reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
 

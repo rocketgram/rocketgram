@@ -15,9 +15,10 @@ from .requests import GetUpdates, SetWebhook, DeleteWebhook, SendChatAction, Kic
     SetGameScore, ExportChatInviteLink, GetChatMembersCount, AnswerCallbackQuery, AnswerInlineQuery, \
     AnswerPreCheckoutQuery, AnswerShippingQuery, GetWebhookInfo, GetMe, SendMessage, ForwardMessage, SendPhoto, \
     SendAudio, SendDocument, SendVideo, SendAnimation, SendVoice, SendVideoNote, SendLocation, SendVenue, SendContact, \
-    SendSticker, SendInvoice, SendGame, EditMessageLiveLocation, StopMessageLiveLocation, EditMessageText, \
-    EditMessageCaption, EditMessageMedia, EditMessageReplyMarkup, SendMediaGroup, GetUserProfilePhotos, GetFile, \
-    UploadStickerFile, GetChat, GetChatMember, GetChatAdministrators, GetStickerSet, GetGameHighScores
+    SendPoll, SendSticker, SendInvoice, SendGame, EditMessageLiveLocation, StopPoll, EditMessageText, \
+    EditMessageCaption, EditMessageMedia, EditMessageReplyMarkup, SendMediaGroup, \
+    GetUserProfilePhotos, GetFile, UploadStickerFile, GetChat, GetChatMember, GetChatAdministrators, GetStickerSet, \
+    GetGameHighScores
 from .types import EnumAutoName
 
 if TYPE_CHECKING:
@@ -34,6 +35,7 @@ class UpdateType(EnumAutoName):
     callback_query = auto()
     shipping_query = auto()
     pre_checkout_query = auto()
+    poll = auto()
 
 
 class MessageType(EnumAutoName):
@@ -174,7 +176,7 @@ class Response:
             result = User.parse(data['result'])
         elif isinstance(method, (SendMessage, ForwardMessage, SendPhoto, SendAudio, SendDocument, SendVideo,
                                  SendAnimation, SendVoice, SendVideoNote, SendLocation, SendVenue, SendContact,
-                                 SendSticker, SendInvoice, SendGame)):
+                                 SendPoll, SendSticker, SendInvoice, SendGame)):
             result = Message.parse(data['result'])
         elif isinstance(method, (EditMessageLiveLocation, StopMessageLiveLocation, EditMessageText, EditMessageCaption,
                                  EditMessageMedia, EditMessageReplyMarkup)):
@@ -183,6 +185,8 @@ class Response:
                 result = r
             else:
                 result = Message.parse(r)
+        elif isinstance(method, StopPoll):
+            result = Poll.parse(data['result'])
         elif isinstance(method, SendMediaGroup):
             result = [Message.parse(r) for r in data['result']]
         elif isinstance(method, GetUserProfilePhotos):
@@ -229,6 +233,7 @@ class Update:
     callback_query: Optional['CallbackQuery']
     shipping_query: Optional['ShippingQuery']
     pre_checkout_query: Optional['PreCheckoutQuery']
+    poll: Optional['Poll']
 
     @classmethod
     def parse(cls, data: Dict) -> 'Update':
@@ -241,6 +246,7 @@ class Update:
         callback_query = CallbackQuery.parse(data.get('callback_query'))
         shipping_query = ShippingQuery.parse(data.get('shipping_query'))
         pre_checkout_query = PreCheckoutQuery.parse(data.get('pre_checkout_query'))
+        poll = Poll.parse(data.get('poll'))
 
         update_type = None
         if 'message' in data:
@@ -261,9 +267,11 @@ class Update:
             update_type = UpdateType.shipping_query
         elif 'pre_checkout_query' in data:
             update_type = UpdateType.pre_checkout_query
+        elif 'poll' in data:
+            update_type = UpdateType.poll
 
         return cls(data, data['update_id'], update_type, message, edited_message, channel_post, edited_channel_post,
-                   inline_query, chosen_inline_result, callback_query, shipping_query, pre_checkout_query)
+                   inline_query, chosen_inline_result, callback_query, shipping_query, pre_checkout_query, poll)
 
 
 @dataclass(frozen=True)
@@ -311,7 +319,7 @@ class User:
     language_code: Optional[str]
 
     @classmethod
-    def parse(cls, data: Optional[Dict]) -> Union['User', None]:
+    def parse(cls, data: Optional[Dict]) -> Optional['User']:
         if data is None:
             return None
 
@@ -345,7 +353,7 @@ class Chat:
     can_set_sticker_set: Optional[bool]
 
     @classmethod
-    def parse(cls, data: Optional[Dict]) -> Union['Chat', None]:
+    def parse(cls, data: Optional[Dict]) -> Optional['Chat']:
         if data is None:
             return None
 
@@ -378,6 +386,7 @@ class Message:
     forward_from_chat: Optional['Chat']
     forward_from_message_id: Optional[int]
     forward_signature: Optional[str]
+    forward_sender_name: Optional[str]
     forward_date: Optional[datetime]
     reply_to_message: Optional['Message']
     edit_date: Optional[datetime]
@@ -403,6 +412,7 @@ class Message:
     contact: Optional['Contact']
     location: Optional['Location']
     venue: Optional['Venue']
+    poll: Optional['Poll']
 
     new_chat_members: Optional[List['User']]
     left_chat_member: Optional[User]
@@ -426,7 +436,7 @@ class Message:
     passport_data: Optional['PassportData']
 
     @classmethod
-    def parse(cls, data: Optional[Dict]) -> Union['Message', None]:
+    def parse(cls, data: Optional[Dict]) -> Optional['Message']:
         if data is None:
             return None
 
@@ -437,6 +447,7 @@ class Message:
         forward_from = User.parse(data.get('forward_from'))
         forward_from_chat = Chat.parse(data.get('forward_from_chat'))
         forward_from_message_id = data.get('forward_from_message_id')
+        forward_sender_name = data.get('forward_sender_name')
         forward_signature = data.get('forward_signature')
         forward_date = datetime.utcfromtimestamp(data['forward_date']) if 'forward_date' in data else None
         reply_to_message = Message.parse(data.get('reply_to_message'))
@@ -467,6 +478,7 @@ class Message:
         contact = Contact.parse(data.get('contact'))
         location = Location.parse(data.get('location'))
         venue = Venue.parse(data.get('venue'))
+        poll = Poll.parse(data.get('poll'))
 
         new_chat_members = [User.parse(d) for d in
                             data.get('new_chat_members')] if 'new_chat_members' in data else None
@@ -521,6 +533,8 @@ class Message:
             message_type = MessageType.location
         elif venue is not None:
             message_type = MessageType.venue
+        elif poll is not None:
+            message_type = MessageType.poll
         elif left_chat_member is not None:
             message_type = MessageType.left_chat_member
         elif new_chat_title is not None:
@@ -551,12 +565,12 @@ class Message:
             passport_data = MessageType.passport_data
 
         return cls(message_id, message_type, user, date, chat, forward_from, forward_from_chat, forward_from_message_id,
-                   forward_signature, forward_date, reply_to_message, edit_date, media_group_id, author_signature, text,
-                   entities, caption_entities, audio, document, animation, game, photo, sticker, video, voice,
-                   video_note, caption, contact, location, venue, new_chat_members, left_chat_member, new_chat_title,
-                   new_chat_photo, delete_chat_photo, group_chat_created, supergroup_chat_created, channel_chat_created,
-                   migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice, successful_payment,
-                   connected_website, passport_data)
+                   forward_signature, forward_sender_name, forward_date, reply_to_message, edit_date, media_group_id,
+                   author_signature, text, entities, caption_entities, audio, document, animation, game, photo, sticker,
+                   video, voice, video_note, caption, contact, location, venue, poll, new_chat_members,
+                   left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo, group_chat_created,
+                   supergroup_chat_created, channel_chat_created, migrate_to_chat_id, migrate_from_chat_id,
+                   pinned_message, invoice, successful_payment, connected_website, passport_data)
 
 
 @dataclass(frozen=True)
@@ -576,7 +590,7 @@ class MessageEntity:
     user: Optional[User]
 
     @classmethod
-    def parse(cls, data: dict) -> Union['MessageEntity', None]:
+    def parse(cls, data: dict) -> Optional['MessageEntity']:
         if data is None:
             return None
 
@@ -805,6 +819,46 @@ class Venue:
 
 
 @dataclass(frozen=True)
+class PollOption:
+    """\
+    Represents PollOption object:
+    https://core.telegram.org/bots/api#polloption
+    """
+
+    text: str
+    voter_count: int
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['PollOption']:
+        if data is None:
+            return None
+
+        return cls(data['text'], data['voter_count'])
+
+
+@dataclass(frozen=True)
+class Poll:
+    """\
+    Represents Poll object:
+    https://core.telegram.org/bots/api#poll
+    """
+
+    pool_id: str
+    question: str
+    options: List['PollOption']
+    is_closed: bool
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Poll']:
+        if data is None:
+            return None
+
+        options = [PollOption.parse(i) for i in data['options']]
+
+        return cls(data['id'], data['question'], options, data['is_closed'])
+
+
+@dataclass(frozen=True)
 class UserProfilePhotos:
     """\
     Represents UserProfilePhotos object:
@@ -908,6 +962,7 @@ class ChatMember:
     can_restrict_members: Optional[bool]
     can_pin_messages: Optional[bool]
     can_promote_members: Optional[bool]
+    is_member: Optional[bool]
     can_send_messages: Optional[bool]
     can_send_media_messages: Optional[bool]
     can_send_other_messages: Optional[bool]
@@ -924,7 +979,7 @@ class ChatMember:
                    data.get('can_be_edited'), data.get('can_change_info'), data.get('can_post_messages'),
                    data.get('can_edit_messages'), data.get('can_delete_messages'), data.get('can_invite_users'),
                    data.get('can_restrict_members'), data.get('can_pin_messages'), data.get('can_promote_members'),
-                   data.get('can_send_messages'), data.get('can_send_media_messages'),
+                   data.get('is_member'), data.get('can_send_messages'), data.get('can_send_media_messages'),
                    data.get('can_send_other_messages'), data.get('can_add_web_page_previews'))
 
 
