@@ -15,8 +15,8 @@ from .requests import GetUpdates, SetWebhook, DeleteWebhook, SendChatAction, Kic
     SetGameScore, ExportChatInviteLink, GetChatMembersCount, AnswerCallbackQuery, AnswerInlineQuery, \
     AnswerPreCheckoutQuery, AnswerShippingQuery, GetWebhookInfo, GetMe, SendMessage, ForwardMessage, SendPhoto, \
     SendAudio, SendDocument, SendVideo, SendAnimation, SendVoice, SendVideoNote, SendLocation, SendVenue, SendContact, \
-    SendPoll, SendSticker, SendInvoice, SendGame, EditMessageLiveLocation, StopPoll, EditMessageText, \
-    EditMessageCaption, EditMessageMedia, EditMessageReplyMarkup, SendMediaGroup, \
+    SendPoll, SendSticker, SendInvoice, SendGame, EditMessageLiveLocation, StopMessageLiveLocation, StopPoll, \
+    EditMessageText, EditMessageCaption, EditMessageMedia, EditMessageReplyMarkup, SendMediaGroup, \
     GetUserProfilePhotos, GetFile, UploadStickerFile, GetChat, GetChatMember, GetChatAdministrators, GetStickerSet, \
     GetGameHighScores
 from .types import EnumAutoName
