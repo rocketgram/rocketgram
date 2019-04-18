@@ -4,4 +4,5 @@
 
 
 from .defaultvalues import DefaultValuesMiddleware
+from .limiter import LimiterMiddleware
 from .middleware import Middleware, EmptyMiddleware
