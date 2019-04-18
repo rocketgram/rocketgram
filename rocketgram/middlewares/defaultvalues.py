@@ -15,7 +15,7 @@ if typing.TYPE_CHECKING:
 
 class DefaultValuesMiddleware(EmptyMiddleware):
 
-    __slots__ = ('__defaults')
+    __slots__ = ('__defaults', )
 
     def __init__(self, **defaults):
         self.__defaults = defaults
