@@ -177,6 +177,8 @@ class Bot:
 
         except RocketgramStopRequest as e:
             logger.debug('Request `%s` was interrupted: `%s`', update.update_id, e)
+        except asyncio.CancelledError:
+            raise
         except Exception as error:
 
             for md in self.__middlewares:
