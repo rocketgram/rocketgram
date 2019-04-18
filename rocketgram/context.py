@@ -4,12 +4,12 @@
 
 
 import logging
-import typing
+from typing import TYPE_CHECKING, List
 
 from .update import Update
 from .update import UpdateType
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from .bot import Bot
     from .requests import Request
 
@@ -34,17 +34,17 @@ class Context:
         return self.__data
 
     @property
-    def bot(self):
+    def bot(self) -> 'Bot':
         return self.__bot
 
     @property
-    def update(self):
+    def update(self) -> 'Update':
         return self.__update
 
     def webhook_request(self, request: 'Request'):
         self.__webhook_requests.append(request)
 
-    def get_webhook_requests(self):
+    def get_webhook_requests(self) -> List['Request']:
         return self.__webhook_requests
 
     def send_message(self, text, parse_mode=None, disable_web_page_preview=None, disable_notification=None,

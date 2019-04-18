@@ -32,14 +32,13 @@ def command(ctx: 'Context', *commands: str, case_sensitive=False, separator=' ')
         return False
 
     splitted = ctx.update.message.text.split(sep=separator)
-    text = splitted[0]
-    if not case_sensitive:
-        text = text.lower()
+    text = splitted[0] if case_sensitive else splitted[0].lower()
+    botname = ctx.bot.name if case_sensitive else ctx.bot.name.lower()
 
     for cmd in commands:
         if not case_sensitive:
             cmd = cmd.lower()
-        if text == cmd or text == cmd + '@' + ctx.bot.name:
+        if text == cmd or text == cmd + '@' + botname:
             return True
 
     return False
