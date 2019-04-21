@@ -27,7 +27,7 @@ logger_raw_out = logging.getLogger('rocketgram.raw.out')
 
 
 def _make_method(request: type(Request)) -> Callable:
-    def method(self, *args, **kwargs) -> Awaitable:
+    def method(self: 'Bot', *args, **kwargs) -> Awaitable:
         return self.send(request(*args, **kwargs))
 
     for prop in ('__name__', '__qualname__', '__doc__', '__annotations__'):
@@ -67,12 +67,12 @@ class Bot:
         self.__context_data_class = context_data_class
 
     @property
-    def token(self):
+    def token(self) -> str:
         """Bot's token."""
 
         return self.__token
 
-    def set_name(self, name):
+    def set_name(self, name: str):
         if self.__name is not None:
             raise TypeError('Bot''s name can be set one time.')
 
@@ -81,19 +81,19 @@ class Bot:
     name = property(fget=lambda self: self.__name, fset=set_name, doc="Bot's username. Can be set one time.")
 
     @property
-    def user_id(self):
+    def user_id(self) -> int:
         """Bot's user_id."""
 
         return self.__user_id
 
     @property
-    def router(self):
+    def router(self) -> 'BaseRouter':
         """Bot's dispatcher."""
 
         return self.__router
 
     @property
-    def connector(self):
+    def connector(self) -> 'BaseConnector':
         """Bot's connector."""
 
         return self.__connector
