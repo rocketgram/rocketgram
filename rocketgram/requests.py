@@ -133,10 +133,11 @@ class Request:
     """
     method = None
 
-    def __prepare(self, d: Union[Dict, list]) -> Union[Dict, list]:
+    def __prepare(self, d: Union[Dict, List]) -> Union[Dict, List]:
         assert isinstance(d, (list, dict))
 
         for k, v in d.items() if isinstance(d, dict) else enumerate(d):
+            print(k, v)
             if isinstance(v, Enum):
                 d[k] = v.value
                 continue
@@ -144,7 +145,7 @@ class Request:
                 d[k] = int(v.timestamp())
                 continue
             if isinstance(v, InputFile):
-                d[k] = 'attach://%s' % v.file_name
+                d[k] = f'attach://{v.file_name}'
                 continue
             if isinstance(v, (list, dict)):
                 d[k] = self.__prepare(v)
