@@ -3,7 +3,7 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-import typing
+import io
 from enum import Enum
 
 API_URL = "https://api.telegram.org/bot%s/"
@@ -16,7 +16,7 @@ class InputFile:
     https://core.telegram.org/bots/api#inputfile
     """
 
-    def __init__(self, file_name: str, content_type: str, data: typing.BinaryIO):
+    def __init__(self, file_name: str, content_type: str, data: io.IOBase):
         self.__file_name = file_name
         self.__content_type = content_type
         self.__data = data
@@ -30,8 +30,14 @@ class InputFile:
         return self.__content_type
 
     @property
-    def data(self) -> typing.BinaryIO:
+    def data(self) -> io.IOBase:
         return self.__data
+
+    def __copy__(self):
+        return self
+
+    def __deepcopy__(self, memo):
+        return self
 
     def __repr__(self):
         return "%s(%s, %s, %s)" % (self.__class__.__name__,
