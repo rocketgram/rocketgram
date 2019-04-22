@@ -137,7 +137,6 @@ class Request:
         assert isinstance(d, (list, dict))
 
         for k, v in d.items() if isinstance(d, dict) else enumerate(d):
-            print(k, v)
             if isinstance(v, Enum):
                 d[k] = v.value
                 continue
