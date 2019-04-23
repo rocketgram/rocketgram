@@ -172,6 +172,7 @@ class Request:
 
     async def webhook(self):
         context.webhook_request(self)
+        return self
 
 
 @dataclass(frozen=True)
