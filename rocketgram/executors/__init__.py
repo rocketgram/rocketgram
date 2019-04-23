@@ -4,5 +4,5 @@
 
 
 from .executor import Executor
-from .updates import UpdatesExecutor, run_updates
-from .webhooks import WebHooksExecutor, run_webhook
+from .updates import UpdatesExecutor
+from .webhooks import WebHooksExecutor

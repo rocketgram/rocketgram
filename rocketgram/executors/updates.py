@@ -6,12 +6,11 @@
 import asyncio
 import logging
 import signal
-from contextlib import suppress
-from typing import TYPE_CHECKING, Optional, Dict, List, Set
+from typing import TYPE_CHECKING, Union, Optional, Dict, List, Set
 
 from .executor import Executor
 from ..errors import RocketgramNetworkError
-from ..requests import Request
+from ..requests import Request, GetMe, GetUpdates, DeleteWebhook
 
 if TYPE_CHECKING:
     from ..bot import Bot
@@ -24,6 +23,7 @@ class UpdatesExecutor(Executor):
         """
 
         """
+
         self.__timeout = request_timeout
 
         self.__bots: Dict['Bot', Optional[asyncio.Task]] = dict()
@@ -59,7 +59,7 @@ class UpdatesExecutor(Executor):
             raise TypeError('Bot already added.')
 
         if bot.name is None:
-            response = await bot.get_me()
+            response = await bot.send(GetMe())
             bot.name = response.result.username
             logger.info('Bot authorized as @%s', response.result.username)
 
@@ -69,12 +69,12 @@ class UpdatesExecutor(Executor):
 
         self.__bots[bot] = None
 
-        await bot.delete_webhook()
+        await bot.send(DeleteWebhook())
 
         if drop_updates:
             offset = 0
             while True:
-                resp = await bot.get_updates(offset + 1)
+                resp = await bot.send(GetUpdates(offset + 1))
                 if not len(resp.result):
                     break
                 for update in resp.result:
@@ -108,7 +108,7 @@ class UpdatesExecutor(Executor):
         pending = set()
         while True:
             try:
-                resp = await bot.get_updates(offset + 1, timeout=self.__timeout)
+                resp = await bot.send(GetUpdates(offset + 1, timeout=self.__timeout))
                 for update in resp.result:
                     if offset < update.update_id:
                         offset = update.update_id
@@ -184,70 +184,26 @@ class UpdatesExecutor(Executor):
 
         logger.info("Stopped.")
 
+    @classmethod
+    def run(cls, bots: Union['Bot', List['Bot']], *, drop_updates=False,
+            signals: tuple = (signal.SIGINT, signal.SIGTERM),
+            request_timeout=30, shutdown_wait=10):
+        """
 
-def run_updates(bots, drop_updates=False, signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait=5):
-    """
+        :param bots:
+        :param drop_updates:
+        :param signals:
+        :param shutdown_wait:
+        """
 
-    :param bots:
-    :param drop_updates:
-    :param signals:
-    :param shutdown_wait:
-    """
+        executor = cls(request_timeout=request_timeout)
 
-    # try to use uvloop
-    with suppress(ModuleNotFoundError):
-        import uvloop
-        uvloop.install()
+        def add(bot: 'Bot'):
+            return executor.add_bot(bot, drop_updates=drop_updates)
 
-    logger.info('Starting updates executor...')
+        def remove(bot: 'Bot'):
+            return executor.remove_bot(bot)
 
-    executor = UpdatesExecutor()
-    loop = asyncio.get_event_loop()
+        logger.info('Starting updates executor...')
 
-    if not isinstance(bots, (list, tuple)):
-        bots = (bots,)
-
-    async def run():
-        for bot in bots:
-            await executor.add_bot(bot, drop_updates=drop_updates)
-        await executor.start()
-
-    async def stop():
-        await executor.stop()
-        for bot in executor.bots:
-            await executor.remove_bot(bot)
-
-    loop.run_until_complete(run())
-
-    for s in signals:
-        try:
-            loop.add_signal_handler(s, loop.stop)
-        except NotImplementedError:
-            signal.signal(s, lambda sig, frame: loop.stop())
-
-    loop.run_forever()
-
-    with suppress(NotImplementedError):
-        for s in signals:
-            loop.remove_signal_handler(s)
-
-    logger.info('Shutting down...')
-
-    loop.run_until_complete(stop())
-
-    pending = asyncio.Task.all_tasks()
-    waits = asyncio.wait_for(asyncio.shield(asyncio.gather(*pending)), shutdown_wait)
-
-    with suppress(asyncio.TimeoutError):
-        loop.run_until_complete(waits)
-
-    pending = asyncio.Task.all_tasks()
-    for t in pending:
-        if not t.done():
-            logger.error('Cancelled pending task during shutdown: %s', t)
-            t.cancel()
-
-    with suppress(asyncio.CancelledError, asyncio.TimeoutError):
-        loop.run_until_complete(asyncio.gather(*pending))
-
-    logger.info('Bye!')
+        cls._run(executor, add, remove, bots, signals, )

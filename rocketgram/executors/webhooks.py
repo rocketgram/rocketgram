@@ -6,8 +6,7 @@
 import asyncio
 import logging
 import signal
-from contextlib import suppress
-from typing import TYPE_CHECKING, Set, Dict
+from typing import TYPE_CHECKING, Union, Dict, List, Set
 
 try:
     import ujson as json
@@ -18,7 +17,7 @@ from aiohttp import web
 
 from ..types import InputFile
 from .executor import Executor
-from ..requests import Request
+from ..requests import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
 from ..update import Update
 from ..errors import RocketgramRequestError
 
@@ -93,17 +92,17 @@ class WebHooksExecutor(Executor):
         full_url = self.__base_url + suffix
 
         if bot.name is None:
-            response = await bot.get_me()
+            response = await bot.send(GetMe())
             bot.name = response.result.username
             logger.info('Bot authorized as @%s', response.result.username)
 
         await bot.init()
 
         if drop_updates:
-            await bot.delete_webhook()
+            await bot.send(DeleteWebhook())
             offset = 0
             while True:
-                resp = await bot.get_updates(offset + 1)
+                resp = await bot.send(GetUpdates(offset + 1))
                 if not len(resp.result):
                     break
                 for update in resp.result:
@@ -115,7 +114,7 @@ class WebHooksExecutor(Executor):
         logger.info('Added bot @%s', bot.name)
 
         if webhook or drop_updates:
-            await bot.set_webhook(full_url, max_connections=max_connections)
+            await bot.send(SetWebhook(full_url, max_connections=max_connections))
             logger.debug('Webhook setup done for bot @%s', bot.name)
 
     async def remove_bot(self, bot: 'Bot', webhook=True):
@@ -136,7 +135,7 @@ class WebHooksExecutor(Executor):
 
         if webhook:
             try:
-                await bot.delete_webhook()
+                await bot.send(DeleteWebhook())
             except RocketgramRequestError:
                 logger.error('Error while removing webhook for %s.' % bot.name)
 
@@ -223,80 +222,30 @@ class WebHooksExecutor(Executor):
 
         logger.info("Stopped.")
 
+    @classmethod
+    def run(cls, bots: Union['Bot', List['Bot']], base_url: str, base_path: str, *, host='0.0.0.0', port=8080,
+            webhook_setup=True, webhook_remove=True, drop_updates=False,
+            signals: tuple = (signal.SIGINT, signal.SIGTERM), request_timeout=30, shutdown_wait=10):
 
-def run_webhook(bots, base_url: str, base_path: str, *, host='0.0.0.0', port=8080, webhook_setup=True,
-                webhook_remove=True, drop_updates=False, signals: tuple = (signal.SIGINT, signal.SIGTERM),
-                shutdown_wait=3):
-    """
+        """
 
-    :param bots:
-    :param base_url:
-    :param base_path:
-    :param host:
-    :param port:
-    :param webhook_setup:
-    :param webhook_remove:
-    :param drop_updates:
-    :param signals:
-    :param shutdown_wait:
-    """
+        :param bots:
+        :param drop_updates:
+        :param signals:
+        :param request_timeout:
+        :param shutdown_wait:
+        """
 
-    # try to use uvloop
-    with suppress(ModuleNotFoundError):
-        import uvloop
-        uvloop.install()
+        executor = cls(base_url, base_path, host=host, port=port)
 
-    logger.info('Starting webhook executor...')
-    logger.debug('Using base url: %s', base_url)
-    logger.debug('Using base path: %s', base_path)
+        def add(bot: 'Bot'):
+            return executor.add_bot(bot, webhook=webhook_setup, drop_updates=drop_updates)
 
-    executor = WebHooksExecutor(base_url, base_path, host=host, port=port)
-    loop = asyncio.get_event_loop()
+        def remove(bot: 'Bot'):
+            return executor.remove_bot(bot, webhook=webhook_remove)
 
-    if not isinstance(bots, (list, tuple)):
-        bots = (bots,)
+        logger.info('Starting webhook executor...')
+        logger.debug('Using base url: %s', base_url)
+        logger.debug('Using base path: %s', base_path)
 
-    async def run():
-        for bot in bots:
-            await executor.add_bot(bot, webhook=webhook_setup, drop_updates=drop_updates)
-        await executor.start()
-
-    async def stop():
-        await executor.stop()
-        for bot in executor.bots:
-            await executor.remove_bot(bot, webhook=webhook_remove)
-
-    loop.run_until_complete(run())
-
-    for s in signals:
-        try:
-            loop.add_signal_handler(s, loop.stop)
-        except NotImplementedError:
-            signal.signal(s, lambda sig, frame: loop.stop())
-
-    loop.run_forever()
-
-    with suppress(NotImplementedError):
-        for s in signals:
-            loop.remove_signal_handler(s)
-
-    logger.info('Shutting down...')
-
-    loop.run_until_complete(stop())
-
-    pending = asyncio.Task.all_tasks()
-    waits = asyncio.wait_for(asyncio.shield(asyncio.gather(*pending)), shutdown_wait)
-
-    with suppress(asyncio.TimeoutError):
-        loop.run_until_complete(waits)
-
-    pending = asyncio.Task.all_tasks()
-    for t in pending:
-        if not t.done():
-            logger.error('Cancelled pending task during shutdown: %s', t)
-            t.cancel()
-
-    with suppress(asyncio.CancelledError):
-        loop.run_until_complete(asyncio.gather(*pending))
-
-    logger.info('Bye!')
+        cls._run(executor, add, remove, bots, signals, )
