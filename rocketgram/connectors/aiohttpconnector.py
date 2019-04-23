@@ -14,7 +14,7 @@ except ModuleNotFoundError:
     import json
 
 from .. import types
-from .baseconnector import BaseConnector
+from .connector import Connector
 from ..requests import Request
 from ..update import Response
 from ..errors import RocketgramNetworkError, RocketgramParseError
@@ -22,7 +22,7 @@ from ..errors import RocketgramNetworkError, RocketgramParseError
 logger = logging.getLogger('rocketgram.connectors.aiohttpconnector')
 
 
-class AioHttpConnector(BaseConnector):
+class AioHttpConnector(Connector):
     def __init__(self, loop: asyncio.AbstractEventLoop = None, timeout: int = 35,
                  api_url: str = types.API_URL):
         if not loop:

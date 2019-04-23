@@ -4,4 +4,4 @@
 
 
 from .aiohttpconnector import AioHttpConnector
-from .baseconnector import BaseConnector
+from .connector import Connector

@@ -3,12 +3,13 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
+import asyncio
 import inspect
 import logging
-import asyncio
 from contextlib import suppress
 from typing import ClassVar, Callable, Awaitable
 
+from . import context
 from .context import Context
 from .errors import RocketgramRequest429Error, RocketgramStopRequest
 from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
@@ -18,7 +19,7 @@ from .update import Update, Response
 if TYPE_CHECKING:
     from .executors import Executor
     from .routers import BaseRouter
-    from .connectors import BaseConnector
+    from .connectors import Connector
     from .middlewares import Middleware
 
 logger = logging.getLogger('rocketgram.bot')
@@ -41,7 +42,7 @@ class Bot:
     __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router', '__connector', '__globals',
                  '__context_data_class')
 
-    def __init__(self, token: str, *, connector: 'BaseConnector' = None, router: 'BaseRouter' = None,
+    def __init__(self, token: str, *, connector: 'Connector' = None, router: 'BaseRouter' = None,
                  globals_class: ClassVar = dict, context_data_class: ClassVar = dict):
 
         self.__token = token
@@ -93,7 +94,7 @@ class Bot:
         return self.__router
 
     @property
-    def connector(self) -> 'BaseConnector':
+    def connector(self) -> 'Connector':
         """Bot's connector."""
 
         return self.__connector
@@ -143,11 +144,15 @@ class Bot:
 
         await self.connector.shutdown()
 
-    async def process(self, executor: 'Executor', update: Update) -> Optional[Request]:
+    async def process(self, executor: 'Executor', update: Update, d={}) -> Optional[Request]:
         logger_raw_in.debug('Raw in: %s', update.raw)
 
         context_data = self.__context_data_class()
         ctx = Context(self, update, context_data)
+
+        context.current_executor.set(self.__connector)
+        context.current_executor.set(self.__connector)
+        context.current_bot.set(self)
 
         try:
             for md in self.__middlewares:

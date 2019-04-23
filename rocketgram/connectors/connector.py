@@ -8,10 +8,10 @@ import logging
 from ..requests import Request
 from ..update import Response
 
-logger = logging.getLogger('rocketgram.connectors.baseconnector')
+logger = logging.getLogger('rocketgram.connectors.connector')
 
 
-class BaseConnector:
+class Connector:
     async def init(self):
         raise NotImplementedError
 

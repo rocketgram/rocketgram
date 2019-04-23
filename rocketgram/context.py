@@ -4,6 +4,7 @@
 
 
 import logging
+from contextvars import ContextVar
 from typing import TYPE_CHECKING, List
 
 from .update import Update
@@ -12,8 +13,31 @@ from .update import UpdateType
 if TYPE_CHECKING:
     from .bot import Bot
     from .requests import Request
+    from .executors import Executor
+    from .connectors import Connector
 
 logger = logging.getLogger('rocketgram.context')
+
+current_executor = ContextVar('executor')
+current_bot = ContextVar('bot')
+
+
+def executor() -> 'Executor':
+    v = current_executor.get()
+    assert v, "`executor` should not be accessed outside context."
+    return v
+
+
+def connector() -> 'Connector':
+    v = current_bot.get()
+    assert v, "`connector` should not be accessed outside context."
+    return v.connector
+
+
+def bot() -> 'Bot':
+    v = current_bot.get()
+    assert v, "`bot` should not be accessed outside context."
+    return v
 
 
 class Context:
