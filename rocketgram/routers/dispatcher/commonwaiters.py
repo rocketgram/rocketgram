@@ -3,17 +3,15 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-import typing
-
-from ... import context
 from . import commonfilters
 from .waiters import make_waiter
+from ... import context
 from ...update import UpdateType, MessageType
 
 
 @make_waiter
 @commonfilters.update_type(UpdateType.message)
-def next_message( *message_types: MessageType):
+def next_message(*message_types: MessageType):
     """\
     Waits next message.
 

@@ -9,13 +9,11 @@ from dataclasses import replace
 from .middleware import EmptyMiddleware
 
 if typing.TYPE_CHECKING:
-    from ..bot import Bot
     from ..requests import Request
 
 
 class DefaultValuesMiddleware(EmptyMiddleware):
-
-    __slots__ = ('__defaults', )
+    __slots__ = ('__defaults',)
 
     def __init__(self, **defaults):
         self.__defaults = defaults

@@ -3,12 +3,9 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-import typing
-
-from ... import context
 from .filters import make_filter
+from ... import context
 from ...update import UpdateType, MessageType
-
 
 
 @make_filter

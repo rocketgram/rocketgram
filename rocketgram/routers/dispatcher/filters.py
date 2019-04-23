@@ -6,9 +6,7 @@
 from dataclasses import dataclass
 from functools import wraps
 from inspect import signature
-from typing import Union, Callable, Coroutine, Tuple, Dict, TYPE_CHECKING
-
-from ... import context
+from typing import Union, Callable, Coroutine, Tuple, Dict
 
 FILTERS_ATTR = 'rocketgram_dispatcher_filters'
 PRIORITY_ATTR = 'rocketgram_dispatcher_handler_priority'
