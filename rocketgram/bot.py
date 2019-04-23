@@ -7,9 +7,8 @@ import asyncio
 import inspect
 import logging
 from contextlib import suppress
-from typing import ClassVar, Callable, Awaitable
+from typing import ClassVar
 
-from . import context
 from .errors import RocketgramRequest429Error, RocketgramStopRequest
 from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
 from .requests import *
@@ -24,17 +23,6 @@ if TYPE_CHECKING:
 logger = logging.getLogger('rocketgram.bot')
 logger_raw_in = logging.getLogger('rocketgram.raw.in')
 logger_raw_out = logging.getLogger('rocketgram.raw.out')
-
-
-def _make_method(request: type(Request)) -> Callable:
-    def method(self: 'Bot', *args, **kwargs) -> Awaitable:
-        return self.send(request(*args, **kwargs))
-
-    for prop in ('__name__', '__qualname__', '__doc__', '__annotations__'):
-        if hasattr(method, prop) and hasattr(request, prop):
-            setattr(method, prop, getattr(request, prop))
-
-    return method
 
 
 class Bot:
@@ -219,68 +207,3 @@ class Bot:
                 if inspect.isawaitable(m):
                     await m
             raise
-
-    get_updates = _make_method(GetUpdates)
-    set_webhook = _make_method(SetWebhook)
-    delete_webhook = _make_method(DeleteWebhook)
-    get_webhook_info = _make_method(GetWebhookInfo)
-    get_me = _make_method(GetMe)
-    send_message = _make_method(SendMessage)
-    forward_message = _make_method(ForwardMessage)
-    send_photo = _make_method(SendPhoto)
-    send_audio = _make_method(SendAudio)
-    send_document = _make_method(SendDocument)
-    send_video = _make_method(SendVideo)
-    send_animation = _make_method(SendAnimation)
-    send_voice = _make_method(SendVoice)
-    send_video_note = _make_method(SendVideoNote)
-    send_media_group = _make_method(SendMediaGroup)
-    send_location = _make_method(SendLocation)
-    edit_message_live_location = _make_method(EditMessageLiveLocation)
-    stop_message_live_location = _make_method(StopMessageLiveLocation)
-    send_venue = _make_method(SendVenue)
-    send_contact = _make_method(SendContact)
-    send_poll = _make_method(SendPoll)
-    send_chat_action = _make_method(SendChatAction)
-    get_user_profile_photos = _make_method(GetUserProfilePhotos)
-    get_file = _make_method(GetFile)
-    kick_chat_member = _make_method(KickChatMember)
-    unban_chat_member = _make_method(UnbanChatMember)
-    restrict_chat_member = _make_method(RestrictChatMember)
-    promote_chat_member = _make_method(PromoteChatMember)
-    export_chat_invite_link = _make_method(ExportChatInviteLink)
-    set_chat_photo = _make_method(SetChatPhoto)
-    delete_chat_photo = _make_method(DeleteChatPhoto)
-    set_chat_title = _make_method(SetChatTitle)
-    set_chat_description = _make_method(SetChatDescription)
-    pin_chat_message = _make_method(PinChatMessage)
-    unpin_chat_message = _make_method(UnpinChatMessage)
-    leave_chat = _make_method(LeaveChat)
-    get_chat = _make_method(GetChat)
-    get_chat_administrators = _make_method(GetChatAdministrators)
-    get_chat_members_count = _make_method(GetChatMembersCount)
-    get_chat_member = _make_method(GetChatMember)
-    set_chat_sticker_set = _make_method(SetChatStickerSet)
-    delete_shat_sticker_set = _make_method(DeleteChatStickerSet)
-    answer_callback_query = _make_method(AnswerCallbackQuery)
-    edit_message_text = _make_method(EditMessageText)
-    edit_message_caption = _make_method(EditMessageCaption)
-    edit_message_media = _make_method(EditMessageMedia)
-    edit_message_reply_markup = _make_method(EditMessageReplyMarkup)
-    stop_poll = _make_method(StopPoll)
-    delete_message = _make_method(DeleteMessage)
-    send_sticker = _make_method(SendSticker)
-    get_sticker_set = _make_method(GetStickerSet)
-    upload_sticker_file = _make_method(UploadStickerFile)
-    create_new_sticker_set = _make_method(CreateNewStickerSet)
-    add_sticker_to_set = _make_method(AddStickerToSet)
-    set_sticker_position_in_set = _make_method(SetStickerPositionInSet)
-    delete_sticker_from_set = _make_method(DeleteStickerFromSet)
-    answer_inline_query = _make_method(AnswerInlineQuery)
-    send_invoice = _make_method(SendInvoice)
-    answer_shipping_query = _make_method(AnswerShippingQuery)
-    answer_pre_checkout_query = _make_method(AnswerPreCheckoutQuery)
-    set_passport_data_errors = _make_method(SetPassportDataErrors)
-    send_game = _make_method(SendGame)
-    set_game_score = _make_method(SetGameScore)
-    get_game_high_scores = _make_method(GetGameHighScores)
