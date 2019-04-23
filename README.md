@@ -26,7 +26,9 @@ There is a trivial example below.
 [Here](https://github.com/vd2org/rocketgram-template) is useful bot template.
 
 ```python
-from rocketgram import Bot, context, Dispatcher, commonfilters, run_updates
+from rocketgram import Bot, Dispatcher, UpdatesExecutor
+from rocketgram import commonfilters
+from rocketgram import SendMessage
 
 token = 'YOUR_BOT_TOKEN'
 
@@ -36,12 +38,12 @@ bot = Bot(token, router=router)
 @router.handler
 @commonfilters.command('/start')
 async def start_command():
-    await context.bot().send_message('Hello there!')
+    await SendMessage('Hello there!').send()
     
 @router.handler
 @commonfilters.command('/help')
 async def start_command():
-    await context.bot().send_message('Some userful help!')
+    await SendMessage('Some userful help!').send()
     
-run_updates(bot)
+UpdatesExecutor.run(bot)
 ```
