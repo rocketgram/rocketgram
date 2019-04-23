@@ -170,7 +170,7 @@ class Request:
     async def send(self) -> 'Response':
         return await context.bot().send(self)
 
-    async def webhook(self):
+    def webhook(self):
         context.webhook_request(self)
         return self
 
