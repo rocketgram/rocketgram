@@ -7,7 +7,6 @@ import typing
 
 if typing.TYPE_CHECKING:
     from ..bot import Bot
-    from ..context import Context
     from ..update import Response
     from ..requests import Request
 
@@ -19,19 +18,19 @@ class Middleware:
     def shutdown(self, bot: 'Bot'):
         raise NotImplementedError
 
-    def process(self, context: 'Context') -> 'Context':
+    def process(self):
         raise NotImplementedError
 
-    def process_error(self, context: 'Context', error: Exception):
+    def process_error(self, error: Exception):
         raise NotImplementedError
 
-    def before_request(self, bot: 'Bot', request: 'Request') -> 'Request':
+    def before_request(self, request: 'Request') -> 'Request':
         raise NotImplementedError
 
-    def after_request(self, bot: 'Bot', request: 'Request', response: 'Response') -> 'Response':
+    def after_request(self, request: 'Request', response: 'Response') -> 'Response':
         raise NotImplementedError
 
-    def request_error(self, bot: 'Bot', request: 'Request', error: Exception):
+    def request_error(self, request: 'Request', error: Exception):
         raise NotImplementedError
 
 
@@ -42,17 +41,17 @@ class EmptyMiddleware(Middleware):
     def shutdown(self, bot: 'Bot'):
         pass
 
-    def process(self, context: 'Context') -> 'Context':
-        return context
-
-    def process_error(self, context: 'Context', error: Exception):
+    def process(self):
         pass
 
-    def before_request(self, bot: 'Bot', request: 'Request') -> 'Request':
+    def process_error(self, error: Exception):
+        pass
+
+    def before_request(self, request: 'Request') -> 'Request':
         return request
 
-    def after_request(self, bot: 'Bot', request: 'Request', response: 'Response') -> 'Response':
+    def after_request(self, request: 'Request', response: 'Response') -> 'Response':
         return response
 
-    def request_error(self, bot: 'Bot', request: 'Request', error: Exception):
+    def request_error(self, request: 'Request', error: Exception):
         pass

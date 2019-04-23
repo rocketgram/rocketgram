@@ -8,8 +8,7 @@ from functools import wraps
 from inspect import signature
 from typing import Union, Callable, Coroutine, Tuple, Dict, TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from ...context import Context
+from ... import context
 
 FILTERS_ATTR = 'rocketgram_dispatcher_filters'
 PRIORITY_ATTR = 'rocketgram_dispatcher_handler_priority'
@@ -33,7 +32,7 @@ def _check_sig(func, *args, **kwargs):
         return False
 
 
-def make_filter(filter_func: Callable[['Context'], bool]):
+def make_filter(filter_func: Callable[..., bool]):
     """Make filter"""
 
     @wraps(filter_func)
@@ -46,8 +45,7 @@ def make_filter(filter_func: Callable[['Context'], bool]):
             # Checking calling signature for filter_func.
             # This prevents runtime errors when wrong
             # arguments passed to filter.
-            # object() means Context, passing to filter at runtime.
-            assert _check_sig(filter_func, object(), *args, **kwargs), \
+            assert _check_sig(filter_func, *args, **kwargs), \
                 'Wrong arguments passed to filter `%s`!' % filter_func.__name__
 
             # Set property to handler function.
@@ -64,7 +62,7 @@ def make_filter(filter_func: Callable[['Context'], bool]):
 
 
 def priority(pri: int):
-    def inner(handler_func: Callable[['Context'], None]):
+    def inner(handler_func: Callable[..., None]):
         # Checking if function is registered in dispatcher or as waiter.
         assert not hasattr(handler_func, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
         assert not hasattr(handler_func, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'

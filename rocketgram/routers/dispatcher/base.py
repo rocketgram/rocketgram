@@ -14,7 +14,6 @@ from ..baserouter import BaseRouter
 
 if TYPE_CHECKING:
     from ...bot import Bot
-    from ...context import Context
     from .proxy import DispatcherProxy
 
 logger = logging.getLogger('rocketgram.dispatcher')
@@ -30,11 +29,10 @@ class Handler:
 DEFAULT_PRIORITY = 1024
 
 
-def _register(what: List[Handler], handler_func: Callable[['Context'], None], default_priority: int):
+def _register(what: List[Handler], handler_func: Callable[..., None], default_priority: int):
     # Checking calling signature for handler_func.
-    # object() means Context, passing to handler at runtime.
-    assert _check_sig(handler_func, object()), \
-        'Handler `%s` must take exactly one argument `ctx: Context`!' % handler_func.__name__
+    assert _check_sig(handler_func), \
+        'Handler `%s` must not take any arguments!' % handler_func.__name__
 
     assert not hasattr(handler_func, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
     assert not hasattr(handler_func, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
@@ -123,7 +121,7 @@ class BaseDispatcher(BaseRouter):
         self._shutdown.append(func)
         return func
 
-    def handler(self, handler_func: Callable[['Context'], None]):
+    def handler(self, handler_func: Callable[..., None]):
         """Registers handler"""
 
         r = _register(self._handlers, handler_func, self._default_priority)
@@ -134,7 +132,7 @@ class BaseDispatcher(BaseRouter):
 
         return r
 
-    def before(self, handler_func: Callable[['Context'], None]):
+    def before(self, handler_func: Callable[..., None]):
         """Registers preprocessor"""
 
         r = _register(self._pre, handler_func, self._default_priority)
@@ -145,7 +143,7 @@ class BaseDispatcher(BaseRouter):
 
         return r
 
-    def after(self, handler_func: Callable[['Context'], None]):
+    def after(self, handler_func: Callable[..., None]):
         """Registers postprocessor"""
 
         r = _register(self._post, handler_func, self._default_priority)
@@ -156,7 +154,7 @@ class BaseDispatcher(BaseRouter):
 
         return r
 
-    async def process(self, ctx: 'Context'):
+    async def process(self):
         """Process new request."""
 
         raise NotImplementedError

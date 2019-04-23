@@ -3,12 +3,7 @@
 # RocketGram is released under the MIT License (see LICENSE).
 
 
-from typing import TYPE_CHECKING
-
 from .base import BaseDispatcher
-
-if TYPE_CHECKING:
-    from ...context import Context
 
 
 class DispatcherProxy(BaseDispatcher):
@@ -32,7 +27,7 @@ class DispatcherProxy(BaseDispatcher):
     def afters(self):
         return self._post
 
-    async def process(self, ctx: 'Context'):
+    async def process(self):
         """Process new request."""
 
         raise NotImplementedError

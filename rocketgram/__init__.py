@@ -5,7 +5,7 @@
 
 from . import tools
 from .bot import Bot
-from .context import Context
+from . import context
 from .errors import *
 from .executors import *
 from .keyboards import *

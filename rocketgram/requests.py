@@ -7,10 +7,11 @@ from datetime import datetime
 from enum import auto
 from typing import TYPE_CHECKING, Union, Dict, Optional, List
 
+from . import context
 from .types import InputFile, Enum, EnumAutoName
 
 if TYPE_CHECKING:
-    from .update import UpdateType, ShippingOption
+    from .update import Response, UpdateType, ShippingOption
 
 
 class ParseModeType(EnumAutoName):
@@ -165,6 +166,12 @@ class Request:
 
     def files(self) -> List[InputFile]:
         return list()
+
+    async def send(self) -> 'Response':
+        return await context.bot().send(self)
+
+    async def webhook(self):
+        context.webhook_request(self)
 
 
 @dataclass(frozen=True)

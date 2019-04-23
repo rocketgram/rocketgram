@@ -24,7 +24,7 @@ class DefaultValuesMiddleware(EmptyMiddleware):
     def defaults(self):
         return self.__defaults.copy()
 
-    def before_request(self, bot: 'Bot', request: 'Request') -> 'Request':
+    def before_request(self, request: 'Request') -> 'Request':
         replaces = dict()
 
         for k, v in self.__defaults.items():

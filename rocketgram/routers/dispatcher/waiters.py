@@ -11,7 +11,7 @@ from .filters import FILTERS_ATTR, PRIORITY_ATTR, HANDLER_ASSIGNED_ATTR, WAITER_
 from .filters import _check_sig, FilterParams
 
 if TYPE_CHECKING:
-    from ...context import Context
+    pass
 
 
 @dataclass(frozen=True)
@@ -22,7 +22,7 @@ class WaitNext:
     filters: List[FilterParams]
 
 
-def make_waiter(waiter_func: Callable[['Context'], bool]):
+def make_waiter(waiter_func: Callable[..., bool]):
     """Make waiter"""
 
     # Checking if function is registered in dispatcher or as waiter.
@@ -40,7 +40,7 @@ def make_waiter(waiter_func: Callable[['Context'], bool]):
 
     @wraps(waiter_func)
     def inner(*args, **kwargs) -> WaitNext:
-        assert _check_sig(waiter_func, object(), *args, **kwargs), \
+        assert _check_sig(waiter_func, *args, **kwargs), \
             'Wrong arguments passed to waiter `%s`!' % waiter_func.__name__
 
         return WaitNext(waiter_func, args, kwargs, filters)

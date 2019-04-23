@@ -7,7 +7,6 @@ import typing
 
 if typing.TYPE_CHECKING:
     from ..bot import Bot
-    from ..context import Context
 
 
 class BaseRouter:
@@ -17,5 +16,5 @@ class BaseRouter:
     async def shutdown(self, bot: 'Bot'):
         raise NotImplementedError
 
-    async def process(self, ctx: 'Context'):
+    async def process(self):
         raise NotImplementedError

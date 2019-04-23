@@ -10,7 +10,6 @@ from contextlib import suppress
 from typing import ClassVar, Callable, Awaitable
 
 from . import context
-from .context import Context
 from .errors import RocketgramRequest429Error, RocketgramStopRequest
 from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
 from .requests import *
@@ -39,8 +38,7 @@ def _make_method(request: type(Request)) -> Callable:
 
 
 class Bot:
-    __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router', '__connector', '__globals',
-                 '__context_data_class')
+    __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router', '__connector', '__globals')
 
     def __init__(self, token: str, *, connector: 'Connector' = None, router: 'BaseRouter' = None,
                  globals_class: ClassVar = dict, context_data_class: ClassVar = dict):
@@ -62,10 +60,8 @@ class Bot:
             self.__connector = AioHttpConnector()
 
         assert issubclass(globals_class, dict), "`globals_class` must be `dict` or subcalss of `dict`!"
-        assert issubclass(context_data_class, dict), "`context_data_class` must be `dict` or subcalss of `dict`!"
 
         self.__globals = globals_class()
-        self.__context_data_class = context_data_class
 
     @property
     def token(self) -> str:
@@ -138,37 +134,35 @@ class Bot:
         await self.router.shutdown(self)
 
         for md in reversed(self.__middlewares):
-            m = md.init(self)
+            m = md.shutdown(self)
             if inspect.isawaitable(m):
                 await m
 
         await self.connector.shutdown()
 
-    async def process(self, executor: 'Executor', update: Update, d={}) -> Optional[Request]:
+    async def process(self, executor: 'Executor', update: Update) -> Optional[Request]:
         logger_raw_in.debug('Raw in: %s', update.raw)
 
-        context_data = self.__context_data_class()
-        ctx = Context(self, update, context_data)
-
-        context.current_executor.set(self.__connector)
-        context.current_executor.set(self.__connector)
+        context.current_executor.set(executor)
         context.current_bot.set(self)
+        context.current_update.set(update)
+        context.current_webhook_requests.set(list())
 
         try:
             for md in self.__middlewares:
-                ctx = md.process(ctx)
-                if inspect.isawaitable(ctx):
-                    ctx = await ctx
+                mw = md.process()
+                if inspect.isawaitable(mw):
+                    await mw
 
-            await self.router.process(ctx)
+            await self.router.process()
 
             webhook_request = None
 
-            for req in ctx.get_webhook_requests():
+            for req in context.get_webhook_requests():
                 # set request to return if it can be processed
                 if webhook_request is None and executor.can_process_webhook_request(req):
                     for md in self.__middlewares:
-                        req = md.before_request(self, req)
+                        req = md.before_request(req)
                         if inspect.isawaitable(req):
                             req = await req
                     webhook_request = req
@@ -188,7 +182,7 @@ class Bot:
 
             for md in self.__middlewares:
                 with suppress(Exception):
-                    m = md.process_error(ctx, error)
+                    m = md.process_error(error)
                     if inspect.isawaitable(m):
                         await m
 
@@ -197,14 +191,14 @@ class Bot:
     async def send(self, request: Request) -> Response:
         try:
             for md in self.__middlewares:
-                request = md.before_request(self, request)
+                request = md.before_request(request)
                 if inspect.isawaitable(request):
                     request = await request
 
             response = await self.__connector.send(self.token, request)
 
             for md in reversed(self.__middlewares):
-                response = md.after_request(self, request, response)
+                response = md.after_request(request, response)
                 if inspect.isawaitable(request):
                     response = await response
 
@@ -221,7 +215,7 @@ class Bot:
             raise
         except Exception as error:
             for md in reversed(self.__middlewares):
-                m = md.request_error(self, request, error)
+                m = md.request_error(request, error)
                 if inspect.isawaitable(m):
                     await m
             raise

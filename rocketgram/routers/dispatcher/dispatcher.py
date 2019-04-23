@@ -15,10 +15,8 @@ from typing import Tuple, List, Dict, Callable, Coroutine, AsyncGenerator, Union
 from .base import BaseDispatcher, DEFAULT_PRIORITY, _call_or_await
 from .filters import FilterParams, WAITER_ASSIGNED_ATTR
 from .waiters import WaitNext
+from ... import context
 from ...update import UpdateType
-
-if typing.TYPE_CHECKING:
-    from ...context import Context
 
 logger = logging.getLogger('rocketgram.dispatcher')
 
@@ -44,23 +42,24 @@ class Waiter:
     filters: List[FilterParams]
 
 
-def _user_scope(ctx: 'Context'):
+def _user_scope():
     """Finds user scope for waits.
 
     Valid user scope can be only for message or callback query in chats and groups."""
 
-    if ctx.update.update_type == UpdateType.message:
-        return f"{id(ctx.bot)}-{ctx.update.message.chat.chat_id}-{ctx.update.message.user.user_id}"
-    if ctx.update.update_type == UpdateType.callback_query:
-        if ctx.update.callback_query.message is None:
+    if context.update().update_type == UpdateType.message:
+        return f"{id(context.bot())}-{context.update().message.chat.chat_id}-{context.update().message.user.user_id}"
+    if context.update().update_type == UpdateType.callback_query:
+        if context.update().callback_query.message is None:
             return None
-        return \
-            f"{id(ctx.bot)}-{ctx.update.callback_query.message.chat.chat_id}-{ctx.update.callback_query.user.user_id}"
+        return f"{id(context.bot())}-" \
+            f"{context.update().callback_query.message.chat.chat_id}-" \
+            f"{context.update().callback_query.user.user_id}"
 
 
-async def _run_filters(ctx, filters):
+async def _run_filters(filters):
     for fltr in filters:
-        fr = await _call_or_await(fltr.func, ctx, *fltr.args, **fltr.kwargs)
+        fr = await _call_or_await(fltr.func, *fltr.args, **fltr.kwargs)
         assert isinstance(fr, bool), \
             'Filter `%s` returns `%s` while `bool` is expected!' % (fltr.func.__name__, type(fr))
         if not fr:
@@ -82,15 +81,15 @@ class Dispatcher(BaseDispatcher):
         self.__watires_lifetime_check = watires_lifetime_check
         self.__last_waiters_check = int(time())
 
-    async def __find_waiter(self, ctx: 'Context', scope):
+    async def __find_waiter(self, scope):
         if scope not in self.__waiters:
             return
 
         waiter = self.__waiters[scope]
 
-        if not await _run_filters(ctx, waiter.filters):
+        if not await _run_filters(waiter.filters):
             return
-        wr = await _call_or_await(waiter.waiter, ctx, *waiter.args, **waiter.kwargs)
+        wr = await _call_or_await(waiter.waiter, *waiter.args, **waiter.kwargs)
 
         assert isinstance(wr, bool), \
             'Waiter `%s` returns `%s` while `bool` is expected!' % (waiter.waiter.__name__, type(wr))
@@ -100,16 +99,14 @@ class Dispatcher(BaseDispatcher):
 
         return waiter
 
-    async def __run_generator(self, anext: bool, ctx, handler, scope):
+    async def __run_generator(self, anext: bool, handler, scope):
         wait = None
 
         with suppress(StopAsyncIteration):
+            gen = handler.handler
             if not anext:
-                gen = handler.handler(ctx)
-                wait = await gen.asend(None)
-            else:
-                gen = handler.handler
-                wait = await gen.asend(ctx)
+                gen = gen()
+            wait = await gen.asend(None)
 
         assert not (wait and not isinstance(wait, WaitNext)), \
             'Handler `%s` sends `%s` while WaitNext is expected!' % (gen.__name__, type(wait))
@@ -120,7 +117,7 @@ class Dispatcher(BaseDispatcher):
         # Check if other waiter for scope already exist
         if scope in self.__waiters and self.__waiters[scope].handler != gen:
             logger.warning('Overriding old wait in `%s` by `%s` handler for update %s.',
-                           self.__waiters[scope].handler.__name__, gen.__name__, ctx.update.update_id)
+                           self.__waiters[scope].handler.__name__, gen.__name__, context.update().update_id)
             await self.__waiters[scope].handler.aclose()
 
         # If new wait exist set it for scope otherwise remove scope from waiters
@@ -129,30 +126,30 @@ class Dispatcher(BaseDispatcher):
         elif scope in self.__waiters:
             del self.__waiters[scope]
 
-    async def process(self, ctx: 'Context'):
+    async def process(self):
         """Process new request."""
 
         try:
             # Run preprocessors...
             for pre in self._pre:
-                if await _run_filters(ctx, pre.filters):
-                    await _call_or_await(pre.handler, ctx)
+                if await _run_filters(pre.filters):
+                    await _call_or_await(pre.handler)
 
             anext = False
-            scope = _user_scope(ctx)
+            scope = _user_scope()
             handler = None
 
             # if have user scope, try find handler that wait continue
             # processing through async generators mechanism.
             if scope:
-                handler = await self.__find_waiter(ctx, scope)
+                handler = await self.__find_waiter(scope)
             if handler:
                 anext = True
 
             # Find handler from handlers list.
             if not handler:
                 for hdlr in self._handlers:
-                    if await _run_filters(ctx, hdlr.filters):
+                    if await _run_filters(hdlr.filters):
                         handler = hdlr
                         break
 
@@ -165,19 +162,19 @@ class Dispatcher(BaseDispatcher):
                 # handler is async generator...
                 if not scope:
                     emsg = 'Found async generatro `%s` but user_scope' \
-                           'is undefined for update %s' % (handler.handler.__name__, ctx.update.update_id)
+                           'is undefined for update %s' % (handler.handler.__name__, context.update().update_id)
                     raise TypeError(emsg)
-                await self.__run_generator(anext, ctx, handler, scope)
+                await self.__run_generator(anext, handler, scope)
             else:
                 # This is normal handler.
-                r = handler.handler(ctx)
+                r = handler.handler()
                 if inspect.isawaitable(r):
                     await r
 
             # Run postprocessors...
             for post in self._post:
-                if await _run_filters(ctx, post.filters):
-                    await _call_or_await(post.handler, ctx)
+                if await _run_filters(post.filters):
+                    await _call_or_await(post.handler)
 
             # Cleanup waiters:
             current = int(time())
@@ -186,7 +183,7 @@ class Dispatcher(BaseDispatcher):
                 _ = asyncio.create_task(self.__waiters_cleanup(current))
 
         except HandlerNotFoundError:
-            logger.warning('Handler not found for update:\n%s', replace(ctx.update, raw=None))
+            logger.warning('Handler not found for update:\n%s', replace(context.update(), raw=dict()))
 
     async def __waiters_cleanup(self, current: int):
         closes = list()
