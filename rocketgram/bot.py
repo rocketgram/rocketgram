@@ -16,7 +16,7 @@ from .update import Update, Response
 
 if TYPE_CHECKING:
     from .executors import Executor
-    from .routers import BaseRouter
+    from .routers import Router
     from .connectors import Connector
     from .middlewares import Middleware
 
@@ -28,7 +28,7 @@ logger_raw_out = logging.getLogger('rocketgram.raw.out')
 class Bot:
     __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router', '__connector', '__globals')
 
-    def __init__(self, token: str, *, connector: 'Connector' = None, router: 'BaseRouter' = None,
+    def __init__(self, token: str, *, connector: 'Connector' = None, router: 'Router' = None,
                  globals_class: ClassVar = dict, context_data_class: ClassVar = dict):
 
         self.__token = token
@@ -72,7 +72,7 @@ class Bot:
         return self.__user_id
 
     @property
-    def router(self) -> 'BaseRouter':
+    def router(self) -> 'Router':
         """Bot's dispatcher."""
 
         return self.__router

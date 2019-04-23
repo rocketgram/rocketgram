@@ -9,7 +9,7 @@ if typing.TYPE_CHECKING:
     from ..bot import Bot
 
 
-class BaseRouter:
+class Router:
     async def init(self, bot: 'Bot'):
         raise NotImplementedError
 

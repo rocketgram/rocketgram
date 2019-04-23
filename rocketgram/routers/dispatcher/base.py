@@ -10,7 +10,7 @@ from typing import Callable, Coroutine, AsyncGenerator, Union, List, TYPE_CHECKI
 
 from .filters import FILTERS_ATTR, PRIORITY_ATTR, WAITER_ASSIGNED_ATTR, HANDLER_ASSIGNED_ATTR
 from .filters import FilterParams, _check_sig
-from ..baserouter import BaseRouter
+from ..router import Router
 
 if TYPE_CHECKING:
     from ...bot import Bot
@@ -57,7 +57,7 @@ async def _call_or_await(func, *args, **kwargs):
     return r
 
 
-class BaseDispatcher(BaseRouter):
+class Dispatcher(Router):
     __slots__ = ('_init', '_shutdown', '_handlers', '_pre', '_post', '_default_priority', '_bots')
 
     def __init__(self, *, default_priority=DEFAULT_PRIORITY):
