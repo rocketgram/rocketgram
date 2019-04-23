@@ -172,7 +172,6 @@ class Request:
 
     def webhook(self):
         context.webhook_request(self)
-        return self
 
 
 @dataclass(frozen=True)
