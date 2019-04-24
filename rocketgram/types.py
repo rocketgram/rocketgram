@@ -221,7 +221,7 @@ class InlineKeyboardButton:
     callback_data: Optional[str] = None
     switch_inline_query: Optional[str] = None
     switch_inline_query_current_chat: Optional[str] = None
-    callback_game: Optional[dict] = None  # TODO: CallbackGame
+    callback_game: Optional[str] = None
     pay: Optional[bool] = None
 
 
@@ -290,7 +290,7 @@ class InputMedia:
 
 
 @dataclass(frozen=True)
-class InputMediaPhoto:
+class InputMediaPhoto(InputMedia):
     """\
     Represents InputMediaPhoto object:
     https://core.telegram.org/bots/api#inputmediaphoto
@@ -304,7 +304,7 @@ class InputMediaPhoto:
 
 
 @dataclass(frozen=True)
-class InputMediaVideo:
+class InputMediaVideo(InputMedia):
     """\
     Represents InputMediaVideo object:
     https://core.telegram.org/bots/api#inputmediavideo
@@ -323,7 +323,7 @@ class InputMediaVideo:
 
 
 @dataclass(frozen=True)
-class InputMediaAnimation:
+class InputMediaAnimation(InputMedia):
     """\
     Represents InputMediaAnimation object:
     https://core.telegram.org/bots/api#inputmediaanimation
@@ -341,7 +341,7 @@ class InputMediaAnimation:
 
 
 @dataclass(frozen=True)
-class InputMediaAudio:
+class InputMediaAudio(InputMedia):
     """\
     Represents InputMediaAudio object:
     https://core.telegram.org/bots/api#inputmediaaudio
@@ -359,7 +359,7 @@ class InputMediaAudio:
 
 
 @dataclass(frozen=True)
-class InputMediaDocument:
+class InputMediaDocument(InputMedia):
     """\
     Represents InputMediaDocument object:
     https://core.telegram.org/bots/api#inputmediadocument
