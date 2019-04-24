@@ -1115,13 +1115,13 @@ class AnswerPreCheckoutQuery(Request):
 class SetPassportDataErrors(Request):
     """\
     Represents SetPassportDataErrors request object:
-    https://core.telegram.org/bots/api#answerprecheckoutquery
+    https://core.telegram.org/bots/api#setpassportdataerrors
     """
 
     method = "setPassportDataErrors"
 
     user_id: str
-    errors: List[Dict]  # TODO: PassportElementError
+    errors: List['PassportElementError']
 
 
 @dataclass(frozen=True)

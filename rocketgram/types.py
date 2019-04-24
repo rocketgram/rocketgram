@@ -836,3 +836,133 @@ class InputContactMessageContent(InputMessageContent):
     address: str
     foursquare_id: Optional[str] = None
     foursquare_type: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class PassportElementError:
+    """\
+    Represents PassportElementError object:
+    https://core.telegram.org/bots/api#passportelementerror
+    """
+
+
+@dataclass(frozen=True)
+class PassportElementErrorDataField(PassportElementError):
+    """\
+    Represents PassportElementErrorDataField object:
+    https://core.telegram.org/bots/api#passportelementerrordatafield
+    """
+
+    source: str = field(init=False, default='data')
+
+    type: 'EncryptedPassportElementType'
+    field_name: str
+    data_hash: str
+    message: str
+
+
+@dataclass(frozen=True)
+class PassportElementErrorFrontSide(PassportElementError):
+    """\
+    Represents PassportElementErrorFrontSide object:
+    https://core.telegram.org/bots/api#passportelementerrorfrontside
+    """
+
+    source: str = field(init=False, default='front_side')
+
+    type: 'EncryptedPassportElementType'
+    file_hash: str
+    message: str
+
+
+@dataclass(frozen=True)
+class PassportElementErrorReverseSide(PassportElementError):
+    """\
+    Represents PassportElementErrorReverseSide object:
+    https://core.telegram.org/bots/api#passportelementerrorreverseside
+    """
+
+    source: str = field(init=False, default='reverse_side')
+
+    type: 'EncryptedPassportElementType'
+    file_hash: str
+    message: str
+
+
+@dataclass(frozen=True)
+class PassportElementErrorSelfie(PassportElementError):
+    """\
+    Represents PassportElementErrorSelfie object:
+    https://core.telegram.org/bots/api#passportelementerrorselfie
+    """
+
+    source: str = field(init=False, default='selfie')
+
+    type: 'EncryptedPassportElementType'
+    file_hash: str
+    message: str
+
+
+@dataclass(frozen=True)
+class PassportElementErrorFile(PassportElementError):
+    """\
+    Represents PassportElementErrorFile object:
+    https://core.telegram.org/bots/api#passportelementerrorfile
+    """
+    source: str = field(init=False, default='file')
+
+    type: 'EncryptedPassportElementType'
+    file_hash: str
+    message: str
+
+
+@dataclass(frozen=True)
+class PassportElementErrorFiles(PassportElementError):
+    """\
+    Represents PassportElementErrorFiles object:
+    https://core.telegram.org/bots/api#passportelementerrorfiles
+    """
+    source: str = field(init=False, default='files')
+
+    type: 'EncryptedPassportElementType'
+    file_hashes: List[str]
+    message: str
+
+
+@dataclass(frozen=True)
+class PassportElementErrorTranslationFile(PassportElementError):
+    """\
+    Represents PassportElementErrorTranslationFile object:
+    https://core.telegram.org/bots/api#passportelementerrortranslationfile
+    """
+    source: str = field(init=False, default='translation_file')
+
+    type: 'EncryptedPassportElementType'
+    file_hash: str
+    message: str
+
+
+@dataclass(frozen=True)
+class PassportElementErrorTranslationFiles(PassportElementError):
+    """\
+    Represents PassportElementErrorTranslationFiles object:
+    https://core.telegram.org/bots/api#passportelementerrortranslationfiles
+    """
+    source: str = field(init=False, default='translation_files')
+
+    type: 'EncryptedPassportElementType'
+    file_hashes: List[str]
+    message: str
+
+
+@dataclass(frozen=True)
+class PassportElementErrorUnspecified(PassportElementError):
+    """\
+    Represents PassportElementErrorUnspecified object:
+    https://core.telegram.org/bots/api#passportelementerrorunspecified
+    """
+    source: str = field(init=False, default='unspecified')
+
+    type: 'EncryptedPassportElementType'
+    element_hash: str
+    message: str
