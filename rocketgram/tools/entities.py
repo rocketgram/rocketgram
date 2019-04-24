@@ -19,16 +19,6 @@ class EntityItem:
     user: Optional[User]
 
 
-def get(text, entity):
-    if sys.maxunicode == 0xffff:
-        return text[entity.offset:entity.offset + entity.length]
-
-    text = text.encode('utf-16-le')
-    text = text[entity.offset * 2:(entity.offset + entity.length) * 2]
-
-    return text.decode('utf-16-le')
-
-
 def parse(text: str, entities: List[MessageEntity]) -> List[EntityItem]:
     if not entities:
         return [EntityItem(None, text, None, None)]
@@ -70,27 +60,23 @@ def to_html(text: Optional[str], entities: List[MessageEntity], escape_html: boo
     if text is None:
         return None
 
-    if escape_html:
-        escape_func = escape.html
-    else:
-        escape_func = lambda t: t
-
-    parsed = parse(text, entities)
+    esc = escape.html if escape_html else lambda tx: tx
 
     result = str()
-    for i in parsed:
-        # TODO: add text_mention
-        t = escape_func(i.text)
-        if i.entity_type is EntityType.bold:
-            result += '<b>%s</b>' % t
-        elif i.entity_type is EntityType.italic:
-            result += '<i>%s</i>' % t
-        elif i.entity_type is EntityType.code:
-            result += '<code>%s</code>' % t
-        elif i.entity_type is EntityType.pre:
-            result += '<pre>%s</pre>' % t
-        elif i.entity_type is EntityType.text_link:
-            result += '<a href="%s">%s</a>' % (i.url, t)
+    for m in parse(text, entities):
+        t = esc(m.text)
+        if m.entity_type is EntityType.bold:
+            result += f'<b>{t}</b>'
+        elif m.entity_type is EntityType.italic:
+            result += f'<i>{t}</i>'
+        elif m.entity_type is EntityType.code:
+            result += f'<code>{t}</code>'
+        elif m.entity_type is EntityType.pre:
+            result += f'<pre>{t}</pre>'
+        elif m.entity_type is EntityType.text_link:
+            result += f'<a href="{m.url}">{t}</a>'
+        elif m.entity_type is EntityType.text_mention:
+            result += f'<a href="tg://user?id={m.user.user_id}">{t}</a>'
         else:
             result += t
 
@@ -101,27 +87,23 @@ def to_markdown(text: Optional[str], entities: List[MessageEntity], escape_markd
     if text is None:
         return None
 
-    if escape_markdown:
-        escape_func = escape.markdown
-    else:
-        escape_func = lambda t: t
-
-    parsed = parse(text, entities)
+    esc = escape.markdown if escape_markdown else lambda tx: tx
 
     result = str()
-    for i in parsed:
-        # TODO: add text_mention
-        t = escape_func(i.text)
-        if i.entity_type is EntityType.bold:
-            result += '*%s*' % t
-        elif i.entity_type is EntityType.italic:
-            result += '_%s_' % t
-        elif i.entity_type is EntityType.code:
-            result += '`%s`' % t
-        elif i.entity_type is EntityType.pre:
-            result += '```\n%s```' % t
-        elif i.entity_type is EntityType.text_link:
-            result += '[%s](%s)' % (t, i.url)
+    for m in parse(text, entities):
+        t = esc(m.text)
+        if m.entity_type is EntityType.bold:
+            result += f'*{t}*'
+        elif m.entity_type is EntityType.italic:
+            result += f'_{t}_'
+        elif m.entity_type is EntityType.code:
+            result += f'`{t}`'
+        elif m.entity_type is EntityType.pre:
+            result += f'```\n{t}```'
+        elif m.entity_type is EntityType.text_link:
+            result += f'[{t}]({m.url})'
+        elif m.entity_type is EntityType.text_mention:
+            result += f'[{t}](tg://user?id={m.user.user_id})'
         else:
             result += t
 
