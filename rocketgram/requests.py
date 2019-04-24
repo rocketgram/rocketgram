@@ -11,7 +11,7 @@ from . import context
 
 if TYPE_CHECKING:
     from .types import *
-    from .update import Response, UpdateType, ShippingOption
+    from .update import Response, UpdateType
 
 
 @dataclass(frozen=True)
@@ -856,13 +856,12 @@ class EditMessageMedia(Request):
 
     def files(self) -> List['InputFile']:
         out = list()
+        media = self.media
 
-        for e in self.media:
-            if hasattr(e, 'media') and isinstance(e.media, InputFile):
-                out.append(e.media)
-                continue
-            if hasattr(e, 'thumb') and isinstance(e.thumb, InputFile):
-                out.append(e.thumb)
+        if hasattr(media, 'media') and isinstance(media.media, InputFile):
+            out.append(media.media)
+        if hasattr(media, 'thumb') and isinstance(media.thumb, InputFile):
+            out.append(media.thumb)
 
         return out
 
@@ -1064,7 +1063,7 @@ class SendInvoice(Request):
     provider_token: str
     start_parameter: str
     currency: str
-    prices: List[str]  # TODO: Add LabeledPrice type
+    prices: List['LabeledPrice']
     provider_data: Optional[str] = None
     photo_url: Optional[str] = None
     photo_size: Optional[int] = None

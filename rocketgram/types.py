@@ -839,6 +839,30 @@ class InputContactMessageContent(InputMessageContent):
 
 
 @dataclass(frozen=True)
+class LabeledPrice:
+    """\
+    Represents LabeledPrice object:
+    https://core.telegram.org/bots/api#labeledprice
+    """
+
+    label: str
+    amount: int
+
+
+@dataclass(frozen=True)
+class ShippingOption:
+    """\
+    Represents ShippingOption object:
+    https://core.telegram.org/bots/api#shippingoption
+
+    """
+
+    id: str
+    title: str
+    prices: List['LabeledPrice']
+
+
+@dataclass(frozen=True)
 class PassportElementError:
     """\
     Represents PassportElementError object:

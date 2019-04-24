@@ -1021,24 +1021,6 @@ class ChosenInlineResult:
 
 
 @dataclass(frozen=True)
-class LabeledPrice:
-    """\
-    Represents LabeledPrice object:
-    https://core.telegram.org/bots/api#labeledprice
-    """
-
-    label: str
-    amount: int
-
-    @classmethod
-    def parse(cls, data: dict) -> Optional['LabeledPrice']:
-        if data is None:
-            return None
-
-        return cls(data['label'], data['amount'])
-
-
-@dataclass(frozen=True)
 class Invoice:
     """\
     Represents Invoice object:
@@ -1101,30 +1083,6 @@ class OrderInfo:
 
         return cls(data.get('name'), data.get('phone_number'), data.get('email'),
                    ShippingAddress.parse(data.get('shipping_address')))
-
-
-@dataclass(frozen=True)
-class ShippingOption:
-    """\
-    Represents ShippingOption object:
-    https://core.telegram.org/bots/api#shippingoption
-
-    Differences in field names:
-    id -> shipping_option_id
-    """
-
-    shipping_option_id: str
-    title: str
-    prices: List['LabeledPrice']
-
-    @classmethod
-    def parse(cls, data: dict) -> Optional['ShippingOption']:
-        if data is None:
-            return None
-
-        prices = [LabeledPrice.parse(s) for s in data['prices']]
-
-        return cls(data['id'], data['title'], prices)
 
 
 @dataclass(frozen=True)
