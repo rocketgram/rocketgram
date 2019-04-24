@@ -5,7 +5,6 @@
 
 from dataclasses import dataclass
 from datetime import datetime
-from enum import auto
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 from .requests import GetUpdates, SetWebhook, DeleteWebhook, SendChatAction, KickChatMember, UnbanChatMember, \
@@ -19,110 +18,11 @@ from .requests import GetUpdates, SetWebhook, DeleteWebhook, SendChatAction, Kic
     EditMessageText, EditMessageCaption, EditMessageMedia, EditMessageReplyMarkup, SendMediaGroup, \
     GetUserProfilePhotos, GetFile, UploadStickerFile, GetChat, GetChatMember, GetChatAdministrators, GetStickerSet, \
     GetGameHighScores
-from .types import EnumAutoName
+from .types import UpdateType, MessageType, ChatType, EntityType, ChatMemberStatusType, MaskPositionPointType, \
+    EncryptedPassportElementType, MaskPosition
 
 if TYPE_CHECKING:
     from .requests import Request
-
-
-class UpdateType(EnumAutoName):
-    message = auto()
-    edited_message = auto()
-    channel_post = auto()
-    edited_channel_post = auto()
-    inline_query = auto()
-    chosen_inline_result = auto()
-    callback_query = auto()
-    shipping_query = auto()
-    pre_checkout_query = auto()
-    poll = auto()
-
-
-class MessageType(EnumAutoName):
-    text = auto()
-    audio = auto()
-    document = auto()
-    animation = auto()
-    game = auto()
-    photo = auto()
-    sticker = auto()
-    video = auto()
-    voice = auto()
-    video_note = auto()
-    contact = auto()
-    location = auto()
-    venue = auto()
-    poll = auto()
-    new_chat_members = auto()
-    left_chat_member = auto()
-    new_chat_title = auto()
-    new_chat_photo = auto()
-    delete_chat_photo = auto()
-    group_chat_created = auto()
-    supergroup_chat_created = auto()
-    channel_chat_created = auto()
-    migrate_to_chat_id = auto()
-    migrate_from_chat_id = auto()
-    pinned_message = auto()
-    invoice = auto()
-    successful_payment = auto()
-    connected_website = auto()
-    passport_data = auto()
-
-
-class ChatType(EnumAutoName):
-    private = auto()
-    group = auto()
-    supergroup = auto()
-    channel = auto()
-
-
-class EntityType(EnumAutoName):
-    mention = auto()
-    hashtag = auto()
-    cashtag = auto()
-    bot_command = auto()
-    url = auto()
-    email = auto()
-    phone_number = auto()
-    bold = auto()
-    italic = auto()
-    code = auto()
-    pre = auto()
-    text_link = auto()
-    text_mention = auto()
-
-
-class ChatMemberStatusType(EnumAutoName):
-    creator = auto()
-    administrator = auto()
-    member = auto()
-    restricted = auto()
-    left = auto()
-    kicked = auto()
-
-
-class MaskPositionPointType(EnumAutoName):
-    forehead = auto()
-    eyes = auto()
-    mouth = auto()
-    chin = auto()
-
-
-class EncryptedPassportElementType(EnumAutoName):
-    personal_details = auto()
-    passport = auto()
-    driver_license = auto()
-    identity_card = auto()
-    internal_passport = auto()
-    address = auto()
-    utility_bill = auto()
-    bank_statement = auto()
-    rental_agreement = auto()
-    passport_registration = auto()
-    temporary_registration = auto()
-    phone_number = auto()
-    email = auto()
 
 
 @dataclass(frozen=True)

@@ -2,129 +2,16 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
-from dataclasses import dataclass, asdict, field
+
+from dataclasses import dataclass, asdict
 from datetime import datetime
-from enum import auto
 from typing import TYPE_CHECKING, Union, Dict, Optional, List
 
 from . import context
-from .types import InputFile, Enum, EnumAutoName
 
 if TYPE_CHECKING:
+    from .types import *
     from .update import Response, UpdateType, ShippingOption
-
-
-class ParseModeType(EnumAutoName):
-    """\
-    Formatting options type:
-    https://core.telegram.org/bots/api#formatting-options
-    """
-
-    html = auto()
-    markdown = auto()
-
-
-class ChatActionType(EnumAutoName):
-    """\
-    Formatting options type:
-    https://core.telegram.org/bots/api#formatting-options
-    """
-
-    typing = auto()
-    upload_photo = auto()
-    record_video = auto()
-    upload_video = auto()
-    record_audio = auto()
-    upload_audio = auto()
-    upload_document = auto()
-    find_location = auto()
-    record_video_note = auto()
-    upload_video_note = auto()
-
-
-@dataclass(frozen=True)
-class MaskPosition:
-    """\
-    Represents MaskPosition object:
-    https://core.telegram.org/bots/api#maskposition
-    """
-    point: str
-    x_shift: float
-    y_shift: float
-    scale: float
-
-
-@dataclass(frozen=True)
-class KeyboardButton:
-    """\
-    Represents KeyboardButton keyboard object:
-    https://core.telegram.org/bots/api#keyboardbutton
-    """
-
-    text: str
-    request_contact: Optional[bool] = None
-    request_location: Optional[bool] = None
-
-
-@dataclass(frozen=True)
-class InlineKeyboardButton:
-    """\
-    Represents InlineKeyboardButton keyboard object:
-    https://core.telegram.org/bots/api#inlinekeyboardbutton
-    """
-
-    text: str
-    url: Optional[str] = None
-    callback_data: Optional[str] = None
-    switch_inline_query: Optional[str] = None
-    switch_inline_query_current_chat: Optional[str] = None
-    callback_game: Optional[dict] = None  # TODO: CallbackGame
-    pay: Optional[bool] = None
-
-
-@dataclass(frozen=True)
-class ReplyKeyboardMarkup:
-    """\
-    Represents ReplyKeyboardMarkup keyboard object:
-    https://core.telegram.org/bots/api#replykeyboardmarkup
-    """
-
-    keyboard: List[List[KeyboardButton]]
-    resize_keyboard: Optional[bool] = None
-    one_time_keyboard: Optional[bool] = None
-    selective: Optional[bool] = None
-
-
-@dataclass(frozen=True)
-class InlineKeyboardMarkup:
-    """\
-    Represents InlineKeyboardMarkup keyboard object:
-    https://core.telegram.org/bots/api#inlinekeyboardmarkup
-    """
-
-    inline_keyboard: List[List[InlineKeyboardButton]]
-
-
-@dataclass(frozen=True)
-class ReplyKeyboardRemove:
-    """\
-    Represents ReplyKeyboardRemove keyboard object:
-    https://core.telegram.org/bots/api#replykeyboardremove
-    """
-
-    selective: bool = False
-    remove_keyboard: bool = True
-
-
-@dataclass(frozen=True)
-class ForceReply:
-    """\
-    Represents ForceReply keyboard object:
-    https://core.telegram.org/bots/api#forcereply
-    """
-
-    selective: bool = False
-    force_reply: bool = True
 
 
 @dataclass(frozen=True)
@@ -155,6 +42,8 @@ class Request:
         return [v for v in d if v is not None]
 
     def render(self, with_method=False) -> dict:
+        assert self.method
+
         d = asdict(self)
 
         assert 'method' not in d
@@ -164,7 +53,7 @@ class Request:
 
         return self.__prepare(d)
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> List['InputFile']:
         return list()
 
     async def send(self) -> 'Response':
@@ -203,7 +92,7 @@ class SetWebhook(Request):
     max_connections: Optional[int] = None
     allowed_updates: Optional[List['UpdateType']] = None
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> List['InputFile']:
         if isinstance(self.certificate, InputFile):
             return [self.certificate]
         return list()
@@ -250,7 +139,7 @@ class SendMessage(Request):
 
     chat_id: Union[int, str]
     text: str
-    parse_mode: Optional[ParseModeType] = None
+    parse_mode: Optional['ParseModeType'] = None
     disable_web_page_preview: Optional[bool] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
@@ -285,13 +174,13 @@ class SendPhoto(Request):
     chat_id: Union[int, str]
     photo: Union[InputFile, str]
     caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
+    parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> List['InputFile']:
         if isinstance(self.photo, InputFile):
             return [self.photo]
         return list()
@@ -313,19 +202,19 @@ class SendAudio(Request):
     title: Optional[str] = None
     thumb: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
+    parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
-    def files(self) -> List[InputFile]:
-        l = list()
+    def files(self) -> List['InputFile']:
+        out = list()
         if isinstance(self.audio, InputFile):
-            l.append(self.audio)
+            out.append(self.audio)
         if isinstance(self.thumb, InputFile):
-            l.append(self.thumb)
-        return l
+            out.append(self.thumb)
+        return out
 
 
 @dataclass(frozen=True)
@@ -341,19 +230,19 @@ class SendDocument(Request):
     document: Union[InputFile, str]
     thumb: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
+    parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
-    def files(self) -> List[InputFile]:
-        l = list()
+    def files(self) -> List['InputFile']:
+        out = list()
         if isinstance(self.document, InputFile):
-            l.append(self.document)
+            out.append(self.document)
         if isinstance(self.thumb, InputFile):
-            l.append(self.thumb)
-        return l
+            out.append(self.thumb)
+        return out
 
 
 @dataclass(frozen=True)
@@ -373,19 +262,19 @@ class SendVideo(Request):
     supports_streaming: Optional[bool] = None
     thumb: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
+    parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
-    def files(self) -> List[InputFile]:
-        l = list()
+    def files(self) -> List['InputFile']:
+        out = list()
         if isinstance(self.video, InputFile):
-            l.append(self.video)
+            out.append(self.video)
         if isinstance(self.thumb, InputFile):
-            l.append(self.thumb)
-        return l
+            out.append(self.thumb)
+        return out
 
 
 @dataclass(frozen=True)
@@ -404,19 +293,19 @@ class SendAnimation(Request):
     height: Optional[int] = None
     thumb: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
+    parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
-    def files(self) -> List[InputFile]:
-        l = list()
+    def files(self) -> List['InputFile']:
+        out = list()
         if isinstance(self.animation, InputFile):
-            l.append(self.animation)
+            out.append(self.animation)
         if isinstance(self.thumb, InputFile):
-            l.append(self.thumb)
-        return l
+            out.append(self.thumb)
+        return out
 
 
 @dataclass(frozen=True)
@@ -432,13 +321,13 @@ class SendVoice(Request):
     voice: Union[InputFile, str]
     duration: Optional[int] = None
     caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
+    parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> List['InputFile']:
         if isinstance(self.voice, InputFile):
             return [self.voice]
         return list()
@@ -463,13 +352,13 @@ class SendVideoNote(Request):
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
-    def files(self) -> List[InputFile]:
-        l = list()
+    def files(self) -> List['InputFile']:
+        out = list()
         if isinstance(self.video_note, InputFile):
-            l.append(self.video_note)
+            out.append(self.video_note)
         if isinstance(self.thumb, InputFile):
-            l.append(self.thumb)
-        return l
+            out.append(self.thumb)
+        return out
 
 
 @dataclass(frozen=True)
@@ -482,9 +371,21 @@ class SendMediaGroup(Request):
     method = "sendMediaGroup"
 
     chat_id: Union[int, str]
-    media: List[str]  # TODO: need types for MediaGropus
+    media: List['InputMedia']
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
+
+    def files(self) -> List['InputFile']:
+        out = list()
+
+        for e in self.media:
+            if hasattr(e, 'media') and isinstance(e.media, InputFile):
+                out.append(e.media)
+                continue
+            if hasattr(e, 'thumb') and isinstance(e.thumb, InputFile):
+                out.append(e.thumb)
+
+        return out
 
 
 @dataclass(frozen=True)
@@ -608,7 +509,7 @@ class SendChatAction(Request):
     method = "sendChatAction"
 
     chat_id: Union[int, str]
-    action: ChatActionType
+    action: 'ChatActionType'
 
 
 @dataclass(frozen=True)
@@ -728,7 +629,7 @@ class SetChatPhoto(Request):
     chat_id: Union[int, str]
     photo: Union[InputFile, str]
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> List['InputFile']:
         if isinstance(self.photo, InputFile):
             return [self.photo]
         return list()
@@ -914,7 +815,7 @@ class EditMessageText(Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
+    parse_mode: Optional['ParseModeType'] = None
     disable_web_page_preview: Optional[bool] = None
     reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
@@ -932,7 +833,7 @@ class EditMessageCaption(Request):
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
     caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
+    parse_mode: Optional['ParseModeType'] = None
     disable_web_page_preview: Optional[bool] = None
     reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
 
@@ -946,12 +847,24 @@ class EditMessageMedia(Request):
 
     method = "editMessageMedia"
 
-    media: str  # TODO: need types for MediaGropus
+    media: 'InputMedia'
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
     disable_web_page_preview: Optional[bool] = None
     reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
+
+    def files(self) -> List['InputFile']:
+        out = list()
+
+        for e in self.media:
+            if hasattr(e, 'media') and isinstance(e.media, InputFile):
+                out.append(e.media)
+                continue
+            if hasattr(e, 'thumb') and isinstance(e.thumb, InputFile):
+                out.append(e.thumb)
+
+        return out
 
 
 @dataclass(frozen=True)
@@ -1013,7 +926,7 @@ class SendSticker(Request):
     reply_markup: Optional[
         Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> List['InputFile']:
         if isinstance(self.sticker, InputFile):
             return [self.sticker]
         return list()
@@ -1043,7 +956,7 @@ class UploadStickerFile(Request):
     user_id: int
     png_sticker: InputFile
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> List['InputFile']:
         if isinstance(self.png_sticker, InputFile):
             return [self.png_sticker]
         return list()
@@ -1061,12 +974,12 @@ class CreateNewStickerSet(Request):
     user_id: int
     name: str
     title: str
-    png_sticker: Union[InputFile, str]
+    png_sticker: Union['InputFile', str]
     emojis: str
     contains_masks: Optional[bool] = None
-    mask_position: Optional[MaskPosition] = None
+    mask_position: Optional['MaskPosition'] = None
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> List['InputFile']:
         if isinstance(self.png_sticker, InputFile):
             return [self.png_sticker]
         return list()
@@ -1085,9 +998,9 @@ class AddStickerToSet(Request):
     name: str
     png_sticker: Union[InputFile, str]
     emojis: str
-    mask_position: Optional[MaskPosition] = None
+    mask_position: Optional['MaskPosition'] = None
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> List['InputFile']:
         if isinstance(self.png_sticker, InputFile):
             return [self.png_sticker]
         return list()
@@ -1134,471 +1047,6 @@ class AnswerInlineQuery(Request):
     next_offset: Optional[str] = None
     switch_pm_text: Optional[str] = None
     switch_pm_parameter: Optional[str] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResult:
-    """\
-    Represents InlineQueryResult object:
-    https://core.telegram.org/bots/api#inlinequeryresult
-    """
-
-
-@dataclass(frozen=True)
-class InlineQueryResultArticle(InlineQueryResult):
-    """\
-    Represents InlineQueryResultArticle object:
-    https://core.telegram.org/bots/api#inlinequeryresultarticle
-    """
-
-    type: str = field(init=False, default='article')
-
-    id: str
-    title: str
-    input_message_content: 'InputMessageContent'
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    url: Optional[str] = None
-    hide_url: Optional[bool] = None
-    description: Optional[str] = None
-    thumb_url: Optional[str] = None
-    thumb_width: Optional[int] = None
-    thumb_height: Optional[int] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultPhoto(InlineQueryResult):
-    """\
-    Represents InlineQueryResultPhoto object:
-    https://core.telegram.org/bots/api#inlinequeryresultphoto
-    """
-
-    type: str = field(init=False, default='photo')
-
-    id: str
-    photo_url: str
-    thumb_url: str
-    photo_width: Optional[int] = None
-    photo_height: Optional[int] = None
-    title: Optional[str] = None
-    description: Optional[str] = None
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultGif(InlineQueryResult):
-    """\
-    Represents InlineQueryResultGif object:
-    https://core.telegram.org/bots/api#inlinequeryresultgif
-    """
-
-    type: str = field(init=False, default='gif')
-
-    id: str
-    gif_url: str
-    thumb_url: str
-    gif_width: Optional[int] = None
-    gif_height: Optional[int] = None
-    gif_duration: Optional[int] = None
-    title: Optional[str] = None
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultMpeg4Gif(InlineQueryResult):
-    """\
-    Represents InlineQueryResultMpeg4Gif object:
-    https://core.telegram.org/bots/api#inlinequeryresultmpeg4gif
-    """
-
-    type: str = field(init=False, default='mpeg4_gif')
-
-    id: str
-    mpeg4_url: str
-    thumb_url: str
-    mpeg4_width: Optional[int] = None
-    mpeg4_height: Optional[int] = None
-    mpeg4_duration: Optional[int] = None
-    title: Optional[str] = None
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultVideo(InlineQueryResult):
-    """\
-    Represents InlineQueryResultMpeg4Gif object:
-    https://core.telegram.org/bots/api#inlinequeryresultmpeg4gif
-    """
-
-    type: str = field(init=False, default='mpeg4_gif')
-
-    id: str
-    video_url: str
-    mime_type: str
-    thumb_url: str
-    title: str
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    video_width: Optional[int] = None
-    video_height: Optional[int] = None
-    video_duration: Optional[int] = None
-    description: Optional[str] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultAudio(InlineQueryResult):
-    """\
-    Represents InlineQueryResultAudio object:
-    https://core.telegram.org/bots/api#inlinequeryresultaudio
-    """
-
-    type: str = field(init=False, default='audio')
-
-    id: str
-    audio_url: str
-    title: str
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    performer: Optional[str] = None
-    audio_duration: Optional[int] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultVoice(InlineQueryResult):
-    """\
-    Represents InlineQueryResultVoice object:
-    https://core.telegram.org/bots/api#inlinequeryresultvoice
-    """
-
-    type: str = field(init=False, default='voice')
-
-    id: str
-    voice_url: str
-    title: str
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    voice_duration: Optional[int] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultDocument(InlineQueryResult):
-    """\
-    Represents InlineQueryResultDocument object:
-    https://core.telegram.org/bots/api#inlinequeryresultdocument
-    """
-
-    type: str = field(init=False, default='document')
-
-    id: str
-    title: str
-    document_url: str
-    mime_type: str
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    description: Optional[str] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-    thumb_url: Optional[str] = None
-    thumb_width: Optional[int] = None
-    thumb_height: Optional[int] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultLocation(InlineQueryResult):
-    """\
-    Represents InlineQueryResultLocation object:
-    https://core.telegram.org/bots/api#inlinequeryresultlocation
-    """
-
-    type: str = field(init=False, default='location')
-
-    id: str
-    latitude: float
-    longitude: float
-    title: str
-    live_period: Optional[int] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-    thumb_url: Optional[str] = None
-    thumb_width: Optional[int] = None
-    thumb_height: Optional[int] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultVenue(InlineQueryResult):
-    """\
-    Represents InlineQueryResultVenue object:
-    https://core.telegram.org/bots/api#inlinequeryresultvenue
-    """
-
-    type: str = field(init=False, default='venue')
-
-    id: str
-    latitude: float
-    longitude: float
-    title: str
-    address: str
-    foursquare_id: Optional[str] = None
-    foursquare_type: Optional[str] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-    thumb_url: Optional[str] = None
-    thumb_width: Optional[int] = None
-    thumb_height: Optional[int] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultContact(InlineQueryResult):
-    """\
-    Represents InlineQueryResultContact object:
-    https://core.telegram.org/bots/api#inlinequeryresultcontact
-    """
-
-    type: str = field(init=False, default='contact')
-
-    id: str
-    phone_number: str
-    first_name: str
-    last_name: Optional[str] = None
-    vcard: Optional[str] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-    thumb_url: Optional[str] = None
-    thumb_width: Optional[int] = None
-    thumb_height: Optional[int] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultGame(InlineQueryResult):
-    """\
-    Represents InlineQueryResultGame object:
-    https://core.telegram.org/bots/api#inlinequeryresultgame
-    """
-
-    type: str = field(init=False, default='game')
-
-    id: str
-    game_short_name: str
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultCachedPhoto(InlineQueryResult):
-    """\
-    Represents InlineQueryResultCachedPhoto object:
-    https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
-    """
-
-    type: str = field(init=False, default='photo')
-
-    id: str
-    photo_file_id: str
-    title: Optional[str] = None
-    description: Optional[str] = None
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultCachedGif(InlineQueryResult):
-    """\
-    Represents InlineQueryResultCachedGif object:
-    https://core.telegram.org/bots/api#inlinequeryresultcachedgif
-    """
-
-    type: str = field(init=False, default='gif')
-
-    id: str
-    gif_file_id: str
-    title: Optional[str] = None
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
-    """\
-    Represents InlineQueryResultCachedMpeg4Gif object:
-    https://core.telegram.org/bots/api#inlinequeryresultcachedmpeg4gif
-    """
-
-    type: str = field(init=False, default='mpeg4_gif')
-
-    id: str
-    mpeg4_file_id: str
-    title: Optional[str] = None
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultCachedSticker(InlineQueryResult):
-    """\
-    Represents InlineQueryResultCachedSticker object:
-    https://core.telegram.org/bots/api#inlinequeryresultcachedsticker
-    """
-
-    type: str = field(init=False, default='sticker')
-
-    id: str
-    sticker_file_id: str
-    parse_mode: Optional[ParseModeType] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultCachedDocument(InlineQueryResult):
-    """\
-    Represents InlineQueryResultCachedDocument object:
-    https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
-    """
-
-    type: str = field(init=False, default='document')
-
-    id: str
-    document_file_id: str
-    title: str
-    description: Optional[str] = None
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultCachedVideo(InlineQueryResult):
-    """\
-    Represents InlineQueryResultCachedVideo object:
-    https://core.telegram.org/bots/api#inlinequeryresultcachedvideo
-    """
-
-    type: str = field(init=False, default='video')
-
-    id: str
-    video_file_id: str
-    title: str
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultCachedVoice(InlineQueryResult):
-    """\
-    Represents InlineQueryResultCachedVoice object:
-    https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
-    """
-
-    type: str = field(init=False, default='voice')
-
-    id: str
-    voice_file_id: str
-    title: str
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InlineQueryResultCachedAudio(InlineQueryResult):
-    """\
-    Represents InlineQueryResultCachedAudio object:
-    https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
-    """
-
-    type: str = field(init=False, default='audio')
-
-    id: str
-    audio_file_id: str
-    caption: Optional[str] = None
-    parse_mode: Optional[ParseModeType] = None
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    input_message_content: Optional['InputMessageContent'] = None
-
-
-@dataclass(frozen=True)
-class InputMessageContent:
-    """\
-    Represents InputMessageContent object:
-    https://core.telegram.org/bots/api#inputmessagecontent
-    """
-
-
-@dataclass(frozen=True)
-class InputTextMessageContent(InputMessageContent):
-    """\
-    Represents InputTextMessageContent object:
-    https://core.telegram.org/bots/api#inputtextmessagecontent
-    """
-
-    message_text: str
-    parse_mode: Optional[ParseModeType] = None
-    disable_web_page_preview: Optional[bool] = None
-
-
-@dataclass(frozen=True)
-class InputLocationMessageContent(InputMessageContent):
-    """\
-    Represents InputLocationMessageContent object:
-    https://core.telegram.org/bots/api#inputlocationmessagecontent
-    """
-
-    latitude: float
-    longitude: float
-    live_period: Optional[int] = None
-
-
-@dataclass(frozen=True)
-class InputVenueMessageContent(InputMessageContent):
-    """\
-    Represents InputVenueMessageContent object:
-    https://core.telegram.org/bots/api#inputvenuemessagecontent
-    """
-
-    latitude: float
-    longitude: float
-    title: str
-    address: str
-    foursquare_id: Optional[str] = None
-    foursquare_type: Optional[str] = None
-
-
-@dataclass(frozen=True)
-class InputContactMessageContent(InputMessageContent):
-    """\
-    Represents InputContactMessageContent object:
-    https://core.telegram.org/bots/api#inputcontactmessagecontent
-    """
-
-    latitude: float
-    longitude: float
-    title: str
-    address: str
-    foursquare_id: Optional[str] = None
-    foursquare_type: Optional[str] = None
 
 
 class SendInvoice(Request):
