@@ -103,8 +103,7 @@ class Response:
         elif isinstance(method, GetStickerSet):
             result = StickerSet.parse(data['result'])
         elif isinstance(method, GetGameHighScores):
-            # result = GameHighScores.parse(data['result']) # TODO create GameHighScores object
-            result = data['result']
+            result = [GameHighScore.parse(r) for r in data['result']]
 
         assert result is not None, "Should have value here! This probably means api was changed."
 
