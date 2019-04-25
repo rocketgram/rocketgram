@@ -44,9 +44,19 @@ class Bot:
         self.__connector = connector
 
         if self.__connector is None:
-            from .connectors import AioHttpConnector
+            with suppress(ModuleNotFoundError):
+                from .connectors import AioHttpConnector
             self.__own_connector = True
             self.__connector = AioHttpConnector()
+
+        if self.__connector is None:
+            with suppress(ModuleNotFoundError):
+                from .connectors import TornadoConnector
+            self.__own_connector = True
+            self.__connector = TornadoConnector()
+
+        if self.__connector is None:
+            raise RuntimeError("Can't create Connector object. Tornado or AioHttp should be installed.")
 
     @property
     def token(self) -> str:
