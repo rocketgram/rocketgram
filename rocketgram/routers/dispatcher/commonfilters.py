@@ -95,6 +95,7 @@ def callback(*commands: str, case_sensitive: bool = False, separator=' '):
     :param commands:
     :param case_sensitive:
     :param separator:
+
     :return: True or False
     """
 
@@ -121,6 +122,7 @@ def inline_callback():
     Assumes update_type is callback_query.
 
     :param types:
+
     :return: True or False
     """
 
@@ -167,6 +169,7 @@ def chosen(*commands: str, case_sensitive: bool = False):
 
     :param commands:
     :param case_sensitive:
+
     :return: True or False
     """
 
@@ -194,6 +197,7 @@ def update_type(*types: UpdateType):
     :param update_types:
     :param message_types:
     :param from_inline:
+
     :return: True or False
     """
 
@@ -224,6 +228,7 @@ def chat_type(*types: ChatType):
     Note: For callbacks it not works for callbacks from messages posted through inline query.
 
     :param types:
+    
     :return: True or False
     """
 

@@ -16,7 +16,8 @@ def next_message(*message_types: MessageType):
     Waits next message.
 
     :param message_types: Wanted `MessageType`. Default `MessageType.text`.
-    :return:
+
+    :return: True or False
     """
     if not message_types:
         message_types = (MessageType.text,)
