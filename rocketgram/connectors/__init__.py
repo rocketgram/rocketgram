@@ -2,6 +2,11 @@
 # This file is part of RocketGram, the modern Telegram bot framework.
 # RocketGram is released under the MIT License (see LICENSE).
 
+from contextlib import suppress
 
-from .aiohttpconnector import AioHttpConnector
+with suppress(ModuleNotFoundError):
+    from .aiohttpconnector import AioHttpConnector
+with suppress(ModuleNotFoundError):
+    from .tornadoconnector import TornadoConnector
+
 from .connector import Connector
