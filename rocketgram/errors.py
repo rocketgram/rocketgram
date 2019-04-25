@@ -1,6 +1,6 @@
 # Copyright (C) 2015-2019 by Vd.
-# This file is part of RocketGram, the modern Telegram bot framework.
-# RocketGram is released under the MIT License (see LICENSE).
+# This file is part of Rocketgram, the modern Telegram bot framework.
+# Rocketgram is released under the MIT License (see LICENSE).
 
 
 from typing import TYPE_CHECKING
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class RocketgramError(Exception):
-    """Base exception for all RocketGramErrors"""
+    """Base exception for all RocketgramErrors"""
     pass
 
 

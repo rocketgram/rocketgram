@@ -1,6 +1,6 @@
 # Copyright (C) 2015-2019 by Vd.
-# This file is part of RocketGram, the modern Telegram bot framework.
-# RocketGram is released under the MIT License (see LICENSE).
+# This file is part of Rocketgram, the modern Telegram bot framework.
+# Rocketgram is released under the MIT License (see LICENSE).
 
 
 from .filters import make_filter
