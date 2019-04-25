@@ -132,9 +132,44 @@ class Bot:
         logger_raw_in.debug('Raw in: %s', update.raw)
 
         context.current_executor.set(executor)
+        context.current_executor.set(executor)
         context.current_bot.set(self)
-        context.current_update.set(update)
         context.current_webhook_requests.set(list())
+
+        context.current_update.set(update)
+        context.current_message.set(None)
+        context.current_chat.set(None)
+        context.current_user.set(None)
+
+        if update.update_type is UpdateType.message:
+            context.current_message.set(update.message)
+            context.current_chat.set(update.message.chat)
+            context.current_user.set(update.message.user)
+        elif update.update_type is UpdateType.edited_message:
+            context.current_message.set(update.edited_message)
+            context.current_chat.set(update.edited_message.chat)
+            context.current_user.set(update.edited_message.user)
+        elif update.update_type is UpdateType.channel_post:
+            context.current_message.set(update.channel_post)
+            context.current_chat.set(update.channel_post.chat)
+            context.current_user.set(update.channel_post.user)
+        elif update.update_type is UpdateType.edited_channel_post:
+            context.current_message.set(update.edited_channel_post)
+            context.current_chat.set(update.edited_channel_post.chat)
+            context.current_user.set(update.edited_channel_post.user)
+        elif update.update_type is UpdateType.inline_query:
+            context.current_user.set(update.inline_query.user)
+        elif update.update_type is UpdateType.chosen_inline_result:
+            context.current_user.set(update.chosen_inline_result.user)
+        elif update.update_type is UpdateType.callback_query:
+            context.current_message.set(update.callback_query.message)
+            if update.callback_query.message:
+                context.current_chat.set(update.callback_query.message.chat)
+            context.current_user.set(update.callback_query.user)
+        elif update.update_type is UpdateType.shipping_query:
+            context.current_user.set(update.shipping_query.user)
+        elif update.update_type is UpdateType.pre_checkout_query:
+            context.current_user.set(update.pre_checkout_query.user)
 
         try:
             for md in self.__middlewares:
