@@ -56,7 +56,7 @@ class UpdatesExecutor(Executor):
         :param drop_updates:
         """
         if bot in self.__bots:
-            raise TypeError('Bot already added.')
+            raise ValueError('Bot already added.')
 
         if bot.name is None:
             response = await bot.send(GetMe())
@@ -91,7 +91,7 @@ class UpdatesExecutor(Executor):
         :param bot:
         """
         if bot not in self.__bots:
-            raise TypeError('Bot was not found.')
+            raise ValueError('Bot was not found.')
 
         tasks = self.__bots[bot]
         del self.__bots[bot]

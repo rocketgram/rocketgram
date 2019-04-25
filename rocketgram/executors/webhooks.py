@@ -83,7 +83,7 @@ class WebHooksExecutor(Executor):
         :param max_connections:
         """
         if bot in self.__bots.values():
-            raise TypeError('Bot already added.')
+            raise ValueError('Bot already added.')
 
         if not suffix:
             suffix = bot.token
@@ -124,7 +124,7 @@ class WebHooksExecutor(Executor):
         :param webhook:
         """
         if bot not in self.__bots.values():
-            raise TypeError('Bot was not found.')
+            raise ValueError('Bot was not found.')
 
         self.__bots = {k: v for k, v in self.__bots.items() if v != bot}
 
