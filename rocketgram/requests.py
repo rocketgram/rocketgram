@@ -20,6 +20,7 @@ class Request:
     """\
     Base class for all request objects.
     """
+
     method = None
 
     def __prepare(self, d: Union[Dict, List]) -> Union[Dict, List]:
