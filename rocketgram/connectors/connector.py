@@ -5,7 +5,7 @@
 
 import logging
 
-from .. import version
+from ..version import version
 from ..requests import Request
 from ..update import Response
 
