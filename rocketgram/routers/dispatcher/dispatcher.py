@@ -12,7 +12,7 @@ from dataclasses import dataclass, replace
 from time import time
 from typing import Tuple, List, Dict, Callable, Coroutine, AsyncGenerator, Union
 
-from .base import Dispatcher, DEFAULT_PRIORITY, _call_or_await
+from .base import BaseDispatcher, DEFAULT_PRIORITY, _call_or_await
 from .filters import FilterParams, WAITER_ASSIGNED_ATTR
 from .waiters import WaitNext
 from ... import context
@@ -68,7 +68,7 @@ async def _run_filters(filters):
     return True
 
 
-class Dispatcher(Dispatcher):
+class Dispatcher(BaseDispatcher):
     __slots__ = ('__waiters', '__watires_lifetime', '__watires_lifetime_check', '__last_waiters_check')
 
     def __init__(self, *, default_priority=DEFAULT_PRIORITY,

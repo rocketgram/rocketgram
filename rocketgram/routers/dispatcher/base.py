@@ -14,7 +14,7 @@ from ..router import Router
 
 if TYPE_CHECKING:
     from ...bot import Bot
-    from .proxy import DispatcherProxy
+    from .proxy import BaseDispatcherProxy
 
 logger = logging.getLogger('rocketgram.dispatcher')
 
@@ -57,7 +57,7 @@ async def _call_or_await(func, *args, **kwargs):
     return r
 
 
-class Dispatcher(Router):
+class BaseDispatcher(Router):
     __slots__ = ('_init', '_shutdown', '_handlers', '_pre', '_post', '_default_priority', '_bots')
 
     def __init__(self, *, default_priority=DEFAULT_PRIORITY):
@@ -79,7 +79,7 @@ class Dispatcher(Router):
         self._pre = sorted(self._pre, key=lambda handler: handler.priority)
         self._post = sorted(self._post, key=lambda handler: handler.priority)
 
-    def from_proxy(self, proxy: 'DispatcherProxy'):
+    def from_proxy(self, proxy: 'BaseDispatcherProxy'):
         self._init.extend(proxy.inits())
         self._shutdown.extend(proxy.shutdowns())
         self._handlers.extend(proxy.handlers())

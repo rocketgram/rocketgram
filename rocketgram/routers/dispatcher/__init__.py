@@ -5,7 +5,7 @@
 
 from . import commonfilters
 from . import commonwaiters
-from .dispatcher import Dispatcher
+from .dispatcher import BaseDispatcher
 from .filters import make_filter, priority
-from .proxy import DispatcherProxy
+from .proxy import BaseDispatcherProxy
 from .waiters import make_waiter
