@@ -5,11 +5,11 @@
 
 from .filters import make_filter
 from ... import context
-from ...update import UpdateType, MessageType
+from ...update import UpdateType, MessageType, ChatType
 
 
 @make_filter
-def command(*commands: str, case_sensitive=False, separator=' '):
+def command(*commands: str, case_sensitive: bool = False, separator: str = ' '):
     """Filters message begins with one of commands.
     Filters commands for other bots in groups.
     Assumes update_type == message and message_type == text.
@@ -21,12 +21,13 @@ def command(*commands: str, case_sensitive=False, separator=' '):
     :return: True or False
     """
 
-    if context.update().update_type != UpdateType.message:
+    msg = context.message()
+    if not msg:
         return False
-    if context.update().message.message_type != MessageType.text:
+    if msg.message_type is not MessageType.text:
         return False
 
-    splitted = context.update().message.text.split(sep=separator)
+    splitted = msg.text.split(sep=separator)
     text = splitted[0] if case_sensitive else splitted[0].lower()
     botname = context.bot().name if case_sensitive else context.bot().name.lower()
 
@@ -40,7 +41,7 @@ def command(*commands: str, case_sensitive=False, separator=' '):
 
 
 @make_filter
-def deeplink(*commands: str, case_sensitive=False):
+def deeplink(*commands: str, case_sensitive: bool = False):
     """Filters deeplinks parameters passed to /start command.
     If no commands was present then all deeplinks will be cached.
     Filters commands for other bots in groups.
@@ -53,13 +54,14 @@ def deeplink(*commands: str, case_sensitive=False):
     :return: True or False
     """
 
-    if context.update().update_type != UpdateType.message:
+    msg = context.message()
+    if not msg:
         return False
-    if context.update().message.message_type != MessageType.text:
+    if msg.message_type is not MessageType.text:
         return False
 
-    text = context.update().message.text
-    text_lw = context.update().message.text.lower()
+    text = msg.text
+    text_lw = msg.text.lower()
     lw = '/start@%s ' % context.bot().name.lower()
 
     if not (text.startswith('/start ') or text_lw.startswith(lw)):
@@ -72,9 +74,9 @@ def deeplink(*commands: str, case_sensitive=False):
         text = text_lw
 
     if text.lower().startswith(lw):
-        text = context.update().message.text[7 + len(lw):]
+        text = msg.text[7 + len(lw):]
     else:
-        text = context.update().message.text[7:]
+        text = msg.text[7:]
 
     for cmd in commands:
         if not case_sensitive:
@@ -86,7 +88,7 @@ def deeplink(*commands: str, case_sensitive=False):
 
 
 @make_filter
-def callback(*commands: str, case_sensitive=False, separator=' '):
+def callback(*commands: str, case_sensitive: bool = False, separator=' '):
     """Filters callback query begins with one of commands.
     Assumes update_type == callback_query.
 
@@ -108,7 +110,6 @@ def callback(*commands: str, case_sensitive=False, separator=' '):
         if not case_sensitive:
             cmd = cmd.lower()
         if text == cmd:
-            # args = (command, splited[1:], separator.join(splited[1:]))
             return True
 
     return False
@@ -133,7 +134,7 @@ def inline_callback():
 
 
 @make_filter
-def inline(*commands: str, case_sensitive=False):
+def inline(*commands: str, case_sensitive: bool = False):
     """Filters inline_query begins with one of commands.
     Assumes update_type is inline_query.
 
@@ -160,7 +161,7 @@ def inline(*commands: str, case_sensitive=False):
 
 
 @make_filter
-def chosen(*commands: str, case_sensitive=False):
+def chosen(*commands: str, case_sensitive: bool = False):
     """Filters chosen_inline_result with query begins with one of commands.
     Assumes update_type is chosen_inline_result.
 
@@ -187,7 +188,7 @@ def chosen(*commands: str, case_sensitive=False):
 
 
 @make_filter
-def update_type(*types):
+def update_type(*types: UpdateType):
     """Filters updates with selected types.
 
     :param update_types:
@@ -196,14 +197,11 @@ def update_type(*types):
     :return: True or False
     """
 
-    if context.update().update_type in types:
-        return True
-
-    return False
+    return context.update().update_type in types
 
 
 @make_filter
-def message_type(*types):
+def message_type(*types: UpdateType):
     """Filters massage_type with one of selected types.
     Assumes update_type one of message, edited_message, channel_post, edited_channel_post.
 
@@ -211,25 +209,16 @@ def message_type(*types):
     :return: True or False
     """
 
-    if context.update().update_type is UpdateType.message:
-        m = context.update().message
-    elif context.update().update_type is UpdateType.edited_message:
-        m = context.update().edited_message
-    elif context.update().update_type is UpdateType.channel_post:
-        m = context.update().channel_post
-    elif context.update().update_type is UpdateType.edited_channel_post:
-        m = context.update().edited_channel_post
-    else:
+    msg = context.message()
+
+    if not msg:
         return False
 
-    if m.message_type not in types:
-        return False
-
-    return True
+    return context.message().message_type in types
 
 
 @make_filter
-def chat_type(*types):
+def chat_type(*types: ChatType):
     """Filters chat_type with one of selected types.
     Assumes update_type one of message, edited_message, channel_post, edited_channel_post, callback_query.
     Note: For callbacks it not works for callbacks from messages posted through inline query.
@@ -238,25 +227,12 @@ def chat_type(*types):
     :return: True or False
     """
 
-    if context.update().update_type is UpdateType.message:
-        m = context.update().message
-    elif context.update().update_type is UpdateType.edited_message:
-        m = context.update().edited_message
-    elif context.update().update_type is UpdateType.channel_post:
-        m = context.update().channel_post
-    elif context.update().update_type is UpdateType.edited_channel_post:
-        m = context.update().edited_channel_post
-    elif context.update().update_type is UpdateType.callback_query:
-        m = context.update().callback_query.message
-        if not m:
-            return False
-    else:
+    ch = context.chat()
+
+    if not ch:
         return False
 
-    if m.chat.chat_type not in types:
-        return False
-
-    return True
+    return ch.chat_type in types
 
 
 @make_filter
