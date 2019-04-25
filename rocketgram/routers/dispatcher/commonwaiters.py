@@ -4,7 +4,7 @@
 
 
 from . import commonfilters
-from .waiters import make_waiter
+from .waiters import make_waiter, DropWaiter
 from ... import context
 from ...update import UpdateType, MessageType
 
@@ -26,3 +26,13 @@ def next_message(*message_types: MessageType):
         return True
 
     return False
+
+
+def drop_waiter() -> DropWaiter:
+    """\
+    Drops current waiter.
+
+    :return: DropWaiter instance
+    """
+
+    return DropWaiter()

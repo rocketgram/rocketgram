@@ -22,6 +22,11 @@ class WaitNext:
     filters: List[FilterParams]
 
 
+@dataclass(frozen=True)
+class DropWaiter:
+    pass
+
+
 def make_waiter(waiter_func: Callable[..., bool]):
     """Make waiter"""
 
@@ -41,7 +46,7 @@ def make_waiter(waiter_func: Callable[..., bool]):
     @wraps(waiter_func)
     def inner(*args, **kwargs) -> WaitNext:
         assert _check_sig(waiter_func, *args, **kwargs), \
-            'Wrong arguments passed to waiter `%s`!' % waiter_func.__name__
+            f'Wrong arguments passed to waiter `{waiter_func.__name__}`!'
 
         return WaitNext(waiter_func, args, kwargs, filters)
 

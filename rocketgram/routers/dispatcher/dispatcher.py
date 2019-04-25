@@ -14,7 +14,7 @@ from typing import Tuple, List, Dict, Callable, Coroutine, AsyncGenerator, Union
 
 from .base import BaseDispatcher, DEFAULT_PRIORITY, _call_or_await
 from .filters import FilterParams, WAITER_ASSIGNED_ATTR
-from .waiters import WaitNext
+from .waiters import WaitNext, DropWaiter
 from ... import context
 from ...update import UpdateType
 
@@ -61,7 +61,7 @@ async def _run_filters(filters):
     for fltr in filters:
         fr = await _call_or_await(fltr.func, *fltr.args, **fltr.kwargs)
         assert isinstance(fr, bool), \
-            'Filter `%s` returns `%s` while `bool` is expected!' % (fltr.func.__name__, type(fr))
+            f'Filter `{fltr.func.__name__}` returns `{type(fr)}` while `bool` is expected!'
         if not fr:
             return False
 
@@ -92,7 +92,7 @@ class Dispatcher(BaseDispatcher):
         wr = await _call_or_await(waiter.waiter, *waiter.args, **waiter.kwargs)
 
         assert isinstance(wr, bool), \
-            'Waiter `%s` returns `%s` while `bool` is expected!' % (waiter.waiter.__name__, type(wr))
+            f'Waiter `{waiter.waiter.__name__}` returns `{type(wr)}` while `bool` is expected!'
 
         if not wr:
             return
@@ -108,11 +108,19 @@ class Dispatcher(BaseDispatcher):
                 gen = gen()
             wait = await gen.asend(None)
 
-        assert not (wait and not isinstance(wait, WaitNext)), \
-            'Handler `%s` sends `%s` while WaitNext is expected!' % (gen.__name__, type(wait))
+        assert not (wait and not isinstance(wait, (WaitNext, DropWaiter))), \
+            f'Handler `{gen.__name__}` sends `{type(wait)}` while WaitNext or DropWaiter is expected!'
+
+        if isinstance(wait, DropWaiter):
+            # drop current waiter
+            if scope in self.__waiters:
+                del self.__waiters[scope]
+            # re-run generator again
+            await self.__run_generator(True, Waiter(int(time()), gen, lambda: True, (), {}, []), scope)
+            return
 
         assert not (wait and not hasattr(wait.waiter, WAITER_ASSIGNED_ATTR)), \
-            'Handler `%s` sends waiting function not registered as waiter!' % handler.handler.__name__
+            f'Handler `{handler.handler.__name__}` sends waiting function not registered as waiter!'
 
         # Check if other waiter for scope already exist
         if scope in self.__waiters and self.__waiters[scope].handler != gen:
@@ -161,8 +169,8 @@ class Dispatcher(BaseDispatcher):
             if inspect.isasyncgenfunction(handler.handler) or inspect.isasyncgen(handler.handler):
                 # handler is async generator...
                 if not scope:
-                    emsg = 'Found async generatro `%s` but user_scope' \
-                           'is undefined for update %s' % (handler.handler.__name__, context.update().update_id)
+                    emsg = f'Found async generator `{handler.handler.__name__}` but user_scope' \
+                        f'is undefined for update `{context.update().update_id}`'
                     raise TypeError(emsg)
                 await self.__run_generator(anext, handler, scope)
             else:
