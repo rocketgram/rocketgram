@@ -23,6 +23,9 @@ logger = logging.getLogger('rocketgram.connectors.aiohttpconnector')
 
 
 class AioHttpConnector(Connector):
+
+    __slots__ = ('_api_url', '_session', '_timeout')
+
     def __init__(self, *, timeout: int = 35, api_url: str = types.API_URL):
         self._api_url = api_url
         self._session = aiohttp.ClientSession(loop=asyncio.get_event_loop())
