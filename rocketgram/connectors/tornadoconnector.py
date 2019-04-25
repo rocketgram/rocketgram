@@ -6,7 +6,7 @@
 import asyncio
 import logging
 
-from tornado.httpclient123 import AsyncHTTPClient, HTTPRequest
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
 try:
     import ujson as json
