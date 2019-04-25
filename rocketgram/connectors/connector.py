@@ -18,5 +18,5 @@ class Connector:
     async def shutdown(self):
         raise NotImplementedError
 
-    async def send(self, url: str, request: Request) -> Response:
+    async def send(self, token: str, request: Request) -> Response:
         raise NotImplementedError
