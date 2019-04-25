@@ -14,16 +14,17 @@ except ModuleNotFoundError:
     import json
 
 from .. import types
-from .connector import Connector
+from .connector import Connector, USER_AGENT
 from ..requests import Request
 from ..update import Response
 from ..errors import RocketgramNetworkError, RocketgramParseError
 
 logger = logging.getLogger('rocketgram.connectors.aiohttpconnector')
 
+HEADERS = {'Content-Type': 'application/json', 'User-Agent': USER_AGENT}
+
 
 class AioHttpConnector(Connector):
-
     __slots__ = ('_api_url', '_session', '_timeout')
 
     def __init__(self, *, timeout: int = 35, api_url: str = types.API_URL):
@@ -58,8 +59,7 @@ class AioHttpConnector(Connector):
 
                 response = await self._session.post(url, data=data, timeout=self._timeout)
             else:
-                headers = {'Content-Type': 'application/json'}
-                response = await self._session.post(url, data=json.dumps(request_data), headers=headers,
+                response = await self._session.post(url, data=json.dumps(request_data), headers=HEADERS,
                                                     timeout=self._timeout)
 
             return Response.parse(json.loads(await response.read()), request)
