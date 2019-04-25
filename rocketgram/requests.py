@@ -5,8 +5,9 @@
 
 from dataclasses import dataclass, asdict
 from datetime import datetime
+from enum import Enum
 from typing import TYPE_CHECKING, Union, Dict, Optional, List
-
+from .types import InputFile
 from . import context
 
 if TYPE_CHECKING:

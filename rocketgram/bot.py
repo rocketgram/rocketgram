@@ -12,7 +12,7 @@ from typing import ClassVar
 from .errors import RocketgramRequest429Error, RocketgramStopRequest
 from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
 from .requests import *
-from .update import Update, Response
+from .update import Update, UpdateType, Response
 
 if TYPE_CHECKING:
     from .executors import Executor

@@ -4,7 +4,7 @@
 
 
 from .keyboard import Keyboard
-from ..requests import InlineKeyboardMarkup, InlineKeyboardButton
+from ..types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
 class InlineKeyboard(Keyboard):

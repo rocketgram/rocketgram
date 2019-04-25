@@ -4,7 +4,7 @@
 
 
 from .keyboard import Keyboard
-from ..requests import ReplyKeyboardMarkup, KeyboardButton
+from ..types import ReplyKeyboardMarkup, KeyboardButton
 
 
 class ReplyKeyboard(Keyboard):
