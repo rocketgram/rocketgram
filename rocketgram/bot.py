@@ -29,7 +29,7 @@ class Bot:
     __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router', '__connector', '__globals')
 
     def __init__(self, token: str, *, connector: 'Connector' = None, router: 'Router' = None,
-                 globals_class: ClassVar = dict, context_data_class: ClassVar = dict):
+                 globals_class: ClassVar = dict):
 
         self.__token = token
 
@@ -101,14 +101,16 @@ class Bot:
 
         logger.debug('Performing init...')
 
+        context.current_bot.set(self)
+
         await self.connector.init()
 
         for md in self.__middlewares:
-            m = md.init(self)
+            m = md.init()
             if inspect.isawaitable(m):
                 await m
 
-        await self.router.init(self)
+        await self.router.init()
 
         return True
 
@@ -119,10 +121,12 @@ class Bot:
 
         logger.debug('Performing shutdown...')
 
-        await self.router.shutdown(self)
+        context.current_bot.set(self)
+
+        await self.router.shutdown()
 
         for md in reversed(self.__middlewares):
-            m = md.shutdown(self)
+            m = md.shutdown()
             if inspect.isawaitable(m):
                 await m
 

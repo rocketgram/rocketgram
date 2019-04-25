@@ -10,10 +10,10 @@ if typing.TYPE_CHECKING:
 
 
 class Router:
-    async def init(self, bot: 'Bot'):
+    async def init(self):
         raise NotImplementedError
 
-    async def shutdown(self, bot: 'Bot'):
+    async def shutdown(self):
         raise NotImplementedError
 
     async def process(self):

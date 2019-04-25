@@ -6,16 +6,15 @@
 import typing
 
 if typing.TYPE_CHECKING:
-    from ..bot import Bot
     from ..update import Response
     from ..requests import Request
 
 
 class Middleware:
-    def init(self, bot: 'Bot'):
+    def init(self):
         raise NotImplementedError
 
-    def shutdown(self, bot: 'Bot'):
+    def shutdown(self):
         raise NotImplementedError
 
     def process(self):
@@ -35,10 +34,10 @@ class Middleware:
 
 
 class EmptyMiddleware(Middleware):
-    def init(self, bot: 'Bot'):
+    def init(self):
         pass
 
-    def shutdown(self, bot: 'Bot'):
+    def shutdown(self):
         pass
 
     def process(self):
