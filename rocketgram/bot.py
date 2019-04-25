@@ -26,7 +26,8 @@ logger_raw_out = logging.getLogger('rocketgram.raw.out')
 
 
 class Bot:
-    __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router', '__connector', '__globals')
+    __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router',
+                 '__own_connector', '__connector', '__globals')
 
     def __init__(self, token: str, *, connector: 'Connector' = None, router: 'Router' = None,
                  globals_class: ClassVar = dict):
@@ -42,9 +43,12 @@ class Bot:
             from .routers.dispatcher import Dispatcher
             self.__router = Dispatcher()
 
+        self.__own_connector = False
         self.__connector = connector
+
         if self.__connector is None:
             from .connectors import AioHttpConnector
+            self.__own_connector = True
             self.__connector = AioHttpConnector()
 
         assert issubclass(globals_class, dict), "`globals_class` must be `dict` or subcalss of `dict`!"
@@ -103,7 +107,8 @@ class Bot:
 
         context.current_bot.set(self)
 
-        await self.connector.init()
+        if self.__own_connector:
+            await self.connector.init()
 
         for md in self.__middlewares:
             m = md.init()
@@ -123,7 +128,8 @@ class Bot:
 
         context.current_bot.set(self)
 
-        await self.router.shutdown()
+        if self.__own_connector:
+            await self.router.shutdown()
 
         for md in reversed(self.__middlewares):
             m = md.shutdown()
