@@ -2,14 +2,11 @@
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
-
 from os.path import join, dirname
 
 import setuptools
 
-with open(join(dirname(__file__), 'rocketgram/version.py')) as f:
-    version = lambda: None
-    exec(f.read())
+from rocketgram.version import version
 
 setuptools.setup(
     name='rocketgram',
@@ -22,18 +19,29 @@ setuptools.setup(
     long_description=open(join(dirname(__file__), 'README.md')).read(),
     long_description_content_type='text/markdown',
     packages=['rocketgram'],
-    install_requires=open(join(dirname(__file__), 'requirements.txt')).read().split('\n'),
+    extras_require={
+        'aiohttp': ["aiohttp >= 3.5.4"],
+        'tornado': ["tornado >= 6.0.2"],
+        'ujson': ["ujson >= 1.35"],
+        'uvloop': ["uvloop >= 0.12.1"]
+    },
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
+        'Framework :: AsyncIO',
         'Intended Audience :: Developers',
+        'Intended Audience :: Education',
         'Intended Audience :: Information Technology',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3 :: Only',
+        'Topic :: Communications :: Chat',
+        'Topic :: Internet',
         'Topic :: Utilities',
+        'Topic :: Software Development',
         'Topic :: Software Development :: Libraries',
+        'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 )
