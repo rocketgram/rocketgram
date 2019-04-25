@@ -62,7 +62,7 @@ def message() -> 'Message':
 def chat() -> 'Chat':
     """Returns Chat object for current request."""
 
-    ch = current_user.get()
+    ch = current_chat.get()
     assert ch, "`chat()` should not be accessed outside bot's context."
     return ch
 
