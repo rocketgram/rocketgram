@@ -27,8 +27,8 @@ class LimiterMiddleware(EmptyMiddleware):
         self.__period = period
         self.__values = dict()
 
-    def shutdown(self, bot: 'Bot'):
-        bot_id = id(bot)
+    def shutdown(self):
+        bot_id = id(context.bot())
         if bot_id in self.__values:
             del self.__values[bot_id]
 
