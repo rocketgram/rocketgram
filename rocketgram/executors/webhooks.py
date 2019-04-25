@@ -20,11 +20,15 @@ from .executor import Executor
 from ..requests import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
 from ..update import Update
 from ..errors import RocketgramRequestError
+from ..version import version
 
 if TYPE_CHECKING:
     from ..bot import Bot
 
 logger = logging.getLogger('rocketgram.executors.webhook')
+
+HEADERS = {"Server": f"Rocketgram/{version()}", "Content-Type": "application/json"}
+HEADERS_ERROR = {"Server": f"Rocketgram/{version()}", "Content-Type": "text/plain"}
 
 
 class WebHooksExecutor(Executor):
@@ -151,27 +155,36 @@ class WebHooksExecutor(Executor):
 
         async def __handler(request: web.BaseRequest):
             if request.method != 'POST':
-                return web.Response(status=400, text="Bad request.")
+                return web.Response(status=400, text="Bad request.", headers=HEADERS_ERROR)
 
             bot: 'Bot' = self.__bots.get(request.path)
 
             if not bot:
-                logger.warning("Bot not found for request '%s %s'.", request.method, request.path)
-                return web.Response(status=404, text="Not found.")
+                logger.warning("Bot not found for request `%s`.", request.path)
+                return web.Response(status=404, text="Not found.", headers=HEADERS_ERROR)
 
-            if not bot in self.__tasks:
+            if bot not in self.__tasks:
                 self.__tasks[bot] = set()
 
-            parsed = Update.parse(json.loads(await request.read()))
+            try:
+                parsed = Update.parse(json.loads(await request.read()))
+            except Exception:
+                logger.exception("Got exception while parsing update:")
+                return web.Response(status=500, text="Server error.", headers=HEADERS_ERROR)
 
             task = asyncio.create_task(
                 bot.process(self, parsed))
             self.__tasks[bot].add(task)
 
-            response: Request = await task
+            try:
+                response: Request = await task
+            except Exception:
+                logger.exception("Got exception while processing update:")
+                return web.Response(status=500, text="Server error.", headers=HEADERS_ERROR)
+
             if response:
                 data = json.dumps(response.render(with_method=True))
-                return web.Response(body=data, headers={'Content-Type': 'application/json'})
+                return web.Response(body=data, headers=HEADERS)
 
             self.__tasks[bot] = {t for t in self.__tasks[bot] if not t.done()}
 
@@ -182,7 +195,7 @@ class WebHooksExecutor(Executor):
 
         self.__started = True
 
-        logger.info("Starting with webhooks...")
+        logger.info("Starting with webhook...")
 
         loop = asyncio.get_event_loop()
 
