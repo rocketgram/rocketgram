@@ -260,17 +260,23 @@ class TornadoExecutor(Executor):
         logger.info("Stopped.")
 
     @classmethod
-    def run(cls, bots: Union['Bot', List['Bot']], base_url: str, base_path: str, *, host='0.0.0.0', port=8080,
+    def run(cls, bots: Union['Bot', List['Bot']], base_url: str, base_path: str, *, host='localhost', port=8080,
             webhook_setup=True, webhook_remove=True, drop_updates=False,
-            signals: tuple = (signal.SIGINT, signal.SIGTERM), request_timeout=30, shutdown_wait=10):
-
+            signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait=10):
         """
 
         :param bots:
+        :param base_url:
+        :param base_path:
+        :param host:
+        :param port:
+        :param webhook_setup:
+        :param webhook_remove:
         :param drop_updates:
         :param signals:
-        :param request_timeout:
         :param shutdown_wait:
+
+        :return: None
         """
 
         executor = cls(base_url, base_path, host=host, port=port)
@@ -285,4 +291,4 @@ class TornadoExecutor(Executor):
         logger.debug('Using base url: %s', base_url)
         logger.debug('Using base path: %s', base_path)
 
-        cls._run(executor, add, remove, bots, signals, )
+        cls._run(executor, add, remove, bots, signals, shutdown_wait=shutdown_wait)

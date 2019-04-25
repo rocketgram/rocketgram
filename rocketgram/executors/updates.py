@@ -206,4 +206,4 @@ class UpdatesExecutor(Executor):
 
         logger.info('Starting updates executor...')
 
-        cls._run(executor, add, remove, bots, signals, )
+        cls._run(executor, add, remove, bots, signals, shutdown_wait=shutdown_wait)
