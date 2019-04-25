@@ -8,6 +8,7 @@ from . import tools
 from .bot import Bot
 from .errors import *
 from .executors import *
+from .connectors import *
 from .keyboards import *
 from .middlewares import *
 from .requests import *
