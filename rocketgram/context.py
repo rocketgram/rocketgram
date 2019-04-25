@@ -25,54 +25,47 @@ current_user = ContextVar('current_user')
 def executor() -> 'Executor':
     """Returns Executor object for current request."""
 
-    v = current_executor.get()
-    assert v, "`executor` should not be accessed bot's context."
-    return v
+    return current_executor.get()
 
 
 def bot() -> 'Bot':
-    """Returns Bot object for current request."""
+    """Returns current Bot object."""
 
-    v = current_bot.get()
-    assert v, "`bot()` should not be accessed outside bot's context."
-    return v
+    return current_bot.get()
 
 
 def update() -> 'Update':
     """Returns Update object for current request."""
-    v = current_update.get()
-    assert v, "`update()` should not be accessed outside request's context."
-    return v
+    return current_update.get()
 
 
 def message() -> 'Message':
     """Returns Message object for current request."""
 
-    msg = current_message.get()
-    assert msg, "`message()` should not be accessed outside bot's context."
-    return msg
+    return current_message.get()
 
 
 def chat() -> 'Chat':
     """Returns Chat object for current request."""
 
-    ch = current_chat.get()
-    assert ch, "`chat()` should not be accessed outside bot's context."
-    return ch
+    return current_chat.get()
 
 
 def user() -> 'User':
     """Returns User object for current request."""
 
-    usr = current_user.get()
-    assert usr, "`user()` should not be accessed outside bot's context."
-    return usr
+    return current_user.get()
 
 
 def webhook_request(request: 'Request'):
-    whrs = current_webhook_requests.get()
-    whrs.append(request)
+    current_webhook_requests.get().append(request)
+
 
 
 def get_webhook_requests() -> List['Request']:
-    return current_webhook_requests.get() or list()
+    try:
+        return current_webhook_requests.get()
+    except LookupError:
+        lst = list()
+        current_webhook_requests.set(lst)
+        return lst
