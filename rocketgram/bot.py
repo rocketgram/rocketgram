@@ -7,7 +7,6 @@ import asyncio
 import inspect
 import logging
 from contextlib import suppress
-from typing import ClassVar
 
 from .errors import RocketgramRequest429Error, RocketgramStopRequest
 from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
@@ -26,11 +25,9 @@ logger_raw_out = logging.getLogger('rocketgram.raw.out')
 
 
 class Bot:
-    __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router',
-                 '__own_connector', '__connector', '__globals')
+    __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router', '__own_connector', '__connector')
 
-    def __init__(self, token: str, *, connector: 'Connector' = None, router: 'Router' = None,
-                 globals_class: ClassVar = dict):
+    def __init__(self, token: str, *, connector: 'Connector' = None, router: 'Router' = None):
 
         self.__token = token
 
@@ -50,10 +47,6 @@ class Bot:
             from .connectors import AioHttpConnector
             self.__own_connector = True
             self.__connector = AioHttpConnector()
-
-        assert issubclass(globals_class, dict), "`globals_class` must be `dict` or subcalss of `dict`!"
-
-        self.__globals = globals_class()
 
     @property
     def token(self) -> str:
@@ -86,11 +79,6 @@ class Bot:
         """Bot's connector."""
 
         return self.__connector
-
-    @property
-    def globals(self):
-        """Bot's globals data storage."""
-        return self.__globals
 
     def middleware(self, middleware: 'Middleware'):
         """Registers middleware."""

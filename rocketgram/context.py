@@ -38,12 +38,6 @@ def bot() -> 'Bot':
     return v
 
 
-def globals():
-    v = current_bot.get()
-    assert v, "`bot()` should not be accessed outside bot's context."
-    return v.globals
-
-
 def update() -> 'Update':
     """Returns Update object for current request."""
     v = current_update.get()
