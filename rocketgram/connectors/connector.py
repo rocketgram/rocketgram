@@ -5,10 +5,13 @@
 
 import logging
 
+from .. import version
 from ..requests import Request
 from ..update import Response
 
 logger = logging.getLogger('rocketgram.connectors.connector')
+
+USER_AGENT = f'Rocketgram/{version()}'
 
 
 class Connector:
