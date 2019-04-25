@@ -4,4 +4,4 @@
 
 
 def version():
-    return "2019.04"
+    return "1.0"

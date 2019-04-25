@@ -61,7 +61,6 @@ def webhook_request(request: 'Request'):
     current_webhook_requests.get().append(request)
 
 
-
 def get_webhook_requests() -> List['Request']:
     try:
         return current_webhook_requests.get()

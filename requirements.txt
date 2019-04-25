@@ -1,1 +1,2 @@
-aiohttp >= 3.5.4
+aiohttp[aiohttp] >= 3.5.4
+tornado[tornado] >= 6.0.2
