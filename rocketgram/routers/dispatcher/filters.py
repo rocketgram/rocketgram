@@ -44,7 +44,7 @@ def make_filter(filter_func: Callable[..., bool]):
             # This prevents runtime errors when wrong
             # arguments passed to filter.
             assert _check_sig(filter_func, *args, **kwargs), \
-                'Wrong arguments passed to filter `%s`!' % filter_func.__name__
+                f'Wrong arguments passed to filter `{filter_func.__name__}`!'
 
             # Set property to handler function.
             params = getattr(handler_func, FILTERS_ATTR, list())
