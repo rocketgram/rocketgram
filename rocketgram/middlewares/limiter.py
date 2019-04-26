@@ -32,7 +32,7 @@ class LimiterMiddleware(EmptyMiddleware):
         if bot_id in self.__values:
             del self.__values[bot_id]
 
-    def process(self):
+    def before_process(self):
         bot_id = id(context.bot())
         current = monotonic()
         d = current - self.__period

@@ -17,7 +17,10 @@ class Middleware:
     def shutdown(self):
         raise NotImplementedError
 
-    def process(self):
+    def before_process(self):
+        raise NotImplementedError
+
+    def after_process(self):
         raise NotImplementedError
 
     def process_error(self, error: Exception):
@@ -40,7 +43,10 @@ class EmptyMiddleware(Middleware):
     def shutdown(self):
         pass
 
-    def process(self):
+    def before_process(self):
+        pass
+
+    def after_process(self):
         pass
 
     def process_error(self, error: Exception):

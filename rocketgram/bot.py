@@ -181,7 +181,7 @@ class Bot:
 
         try:
             for md in self.__middlewares:
-                mw = md.process()
+                mw = md.before_process()
                 if inspect.isawaitable(mw):
                     await mw
 
@@ -202,6 +202,11 @@ class Bot:
                 # fallback and send by hands
                 with suppress(Exception):
                     await self.send(req)
+
+            for md in self.__middlewares:
+                mw = md.after_process()
+                if inspect.isawaitable(mw):
+                    await mw
 
             return webhook_request
 
