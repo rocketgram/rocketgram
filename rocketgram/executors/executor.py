@@ -14,7 +14,7 @@ from ..requests import Request
 if TYPE_CHECKING:
     from ..bot import Bot
 
-logger = logging.getLogger('rocketgram.executors.updates')
+logger = logging.getLogger('rocketgram.executors.executor')
 
 
 class Executor:
