@@ -19,7 +19,7 @@ setuptools.setup(
     description='Modern and powerful asynchronous telegram bot framework.',
     long_description=open(join(dirname(__file__), 'README.md')).read(),
     long_description_content_type='text/markdown',
-    packages=['rocketgram'],
+    packages=setuptools.find_packages(),
     extras_require={
         'aiohttp': ["aiohttp >= 3.5.4"],
         'tornado': ["tornado >= 6.0.2"],
