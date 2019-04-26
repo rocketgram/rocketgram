@@ -24,10 +24,6 @@ DEFAULT_WATIRES_LIFETIME = 60 * 60 * 24  # 1 day
 DEFAULT_WATIRES_LIFETIME_CHECK = 60 * 30  # 30 minutes
 
 
-class StopRequest(Exception):
-    pass
-
-
 class HandlerNotFoundError(Exception):
     pass
 
