@@ -28,7 +28,12 @@ class Bot:
     __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router', '__own_connector', '__connector')
 
     def __init__(self, token: str, *, connector: 'Connector' = None, router: 'Router' = None):
+        """
 
+        :param token: Bot's token
+        :param connector: Connector object. If not specified Bot will try AioHttpConnector
+        :param router: Router object. If not specified Bot will try Dispatcher
+        """
         self.__token = token
 
         self.__name = None
