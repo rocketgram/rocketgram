@@ -114,7 +114,10 @@ class Dispatcher(BaseDispatcher):
         if isinstance(wait, DropWaiter):
             # drop current waiter
             if scope in self.__waiters:
+                with suppress(StopAsyncIteration):
+                    await self.__waiters[scope].handler.aclose()
                 del self.__waiters[scope]
+
             # re-run generator again
             await self.__run_generator(True, Waiter(int(time()), gen, lambda: True, (), {}, []), scope)
             return
@@ -126,7 +129,8 @@ class Dispatcher(BaseDispatcher):
         if scope in self.__waiters and self.__waiters[scope].handler != gen:
             logger.warning('Overriding old wait in `%s` by `%s` handler for update %s.',
                            self.__waiters[scope].handler.__name__, gen.__name__, context.update().update_id)
-            await self.__waiters[scope].handler.aclose()
+            with suppress(StopAsyncIteration):
+                await self.__waiters[scope].handler.aclose()
 
         # If new wait exist set it for scope otherwise remove scope from waiters
         if wait is not None:
