@@ -4,27 +4,34 @@
 
 
 import asyncio
+import json
 import logging
 import signal
 from typing import TYPE_CHECKING, Union, Dict, List, Set
 
-try:
-    import ujson as json
-except ModuleNotFoundError:
-    import json
-
 from tornado.httpserver import HTTPServer
 from tornado.httputil import HTTPServerRequest, HTTPHeaders, ResponseStartLine
 
-from ..types import InputFile
 from .executor import Executor
-from ..requests import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
-from ..update import Update
 from ..errors import RocketgramRequestError
+from ..requests import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
+from ..types import InputFile
+from ..update import Update
 from ..version import version
 
 if TYPE_CHECKING:
     from ..bot import Bot
+
+json_encoder = json.dumps
+json_decoder = json.loads
+
+try:
+    import ujson
+
+    json_encoder = ujson.dumps
+    json_decoder = ujson.loads
+except ModuleNotFoundError:
+    pass
 
 logger = logging.getLogger('rocketgram.executors.tornado')
 
@@ -174,7 +181,7 @@ class TornadoExecutor(Executor):
                     return
 
                 try:
-                    parsed = Update.parse(json.loads(request.body))
+                    parsed = Update.parse(json_decoder(request.body))
                 except Exception:
                     logger.exception("Got exception while parsing update:")
                     await request.connection.write_headers(ResponseStartLine('1.1', 500, 'Internal Server Error'),
@@ -203,7 +210,7 @@ class TornadoExecutor(Executor):
                 await request.connection.write_headers(ResponseStartLine('1.1', 200, 'Ok'), HTTPHeaders(HEADERS))
 
                 if response:
-                    data = json.dumps(response.render(with_method=True))
+                    data = json_decoder(response.render(with_method=True))
                     await request.connection.write(data.encode())
 
                 request.connection.finish()

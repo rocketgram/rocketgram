@@ -4,26 +4,33 @@
 
 
 import asyncio
+import json
 import logging
 import signal
 from typing import TYPE_CHECKING, Union, Dict, List, Set
 
-try:
-    import ujson as json
-except ModuleNotFoundError:
-    import json
-
 from aiohttp import web
 
-from ..types import InputFile
 from .executor import Executor
-from ..requests import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
-from ..update import Update
 from ..errors import RocketgramRequestError
+from ..requests import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
+from ..types import InputFile
+from ..update import Update
 from ..version import version
 
 if TYPE_CHECKING:
     from ..bot import Bot
+
+json_encoder = json.dumps
+json_decoder = json.loads
+
+try:
+    import ujson
+
+    json_encoder = ujson.dumps
+    json_decoder = ujson.loads
+except ModuleNotFoundError:
+    pass
 
 logger = logging.getLogger('rocketgram.executors.webhook')
 
@@ -167,7 +174,7 @@ class AioHttpExecutor(Executor):
                 self.__tasks[bot] = set()
 
             try:
-                parsed = Update.parse(json.loads(await request.read()))
+                parsed = Update.parse(json_decoder(await request.read()))
             except Exception:
                 logger.exception("Got exception while parsing update:")
                 return web.Response(status=500, text="Server error.", headers=HEADERS_ERROR)
@@ -183,7 +190,7 @@ class AioHttpExecutor(Executor):
                 return web.Response(status=500, text="Server error.", headers=HEADERS_ERROR)
 
             if response:
-                data = json.dumps(response.render(with_method=True))
+                data = json_encoder(response.render(with_method=True))
                 return web.Response(body=data, headers=HEADERS)
 
             self.__tasks[bot] = {t for t in self.__tasks[bot] if not t.done()}

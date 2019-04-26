@@ -4,20 +4,27 @@
 
 
 import asyncio
+import json
 import logging
 
 import aiohttp
 
-try:
-    import ujson as json
-except ModuleNotFoundError:
-    import json
-
-from .. import types
 from .connector import Connector, USER_AGENT
+from .. import types
+from ..errors import RocketgramNetworkError, RocketgramParseError
 from ..requests import Request
 from ..update import Response
-from ..errors import RocketgramNetworkError, RocketgramParseError
+
+json_encoder = json.dumps
+json_decoder = json.loads
+
+try:
+    import ujson
+
+    json_encoder = ujson.dumps
+    json_decoder = ujson.loads
+except ModuleNotFoundError:
+    pass
 
 logger = logging.getLogger('rocketgram.connectors.aiohttpconnector')
 
@@ -50,7 +57,7 @@ class AioHttpConnector(Connector):
                 data = aiohttp.FormData()
                 for name, field in request_data.items():
                     if isinstance(field, (dict, list)):
-                        data.add_field(name, json.dumps(field), content_type='application/json')
+                        data.add_field(name, json_encoder(field), content_type='application/json')
                         continue
                     data.add_field(name, str(field), content_type='text/plain')
 
@@ -59,10 +66,10 @@ class AioHttpConnector(Connector):
 
                 response = await self._session.post(url, data=data, timeout=self._timeout)
             else:
-                response = await self._session.post(url, data=json.dumps(request_data), headers=HEADERS,
+                response = await self._session.post(url, data=json_encoder(request_data), headers=HEADERS,
                                                     timeout=self._timeout)
 
-            return Response.parse(json.loads(await response.read()), request)
+            return Response.parse(json_decoder(await response.read()), request)
         except json.decoder.JSONDecodeError as e:
             raise RocketgramParseError(e)
         except asyncio.CancelledError:

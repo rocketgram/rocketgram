@@ -4,20 +4,27 @@
 
 
 import asyncio
+import json
 import logging
 
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
-try:
-    import ujson as json
-except ModuleNotFoundError:
-    import json
-
-from .. import types
 from .connector import Connector, USER_AGENT
+from .. import types
+from ..errors import RocketgramNetworkError, RocketgramParseError
 from ..requests import Request
 from ..update import Response
-from ..errors import RocketgramNetworkError, RocketgramParseError
+
+json_encoder = json.dumps
+json_decoder = json.loads
+
+try:
+    import ujson
+
+    json_encoder = ujson.dumps
+    json_decoder = ujson.loads
+except ModuleNotFoundError:
+    pass
 
 logger = logging.getLogger('rocketgram.connectors.tornadoconnector')
 
@@ -50,7 +57,7 @@ class TornadoConnector(Connector):
                 data = aiohttp.FormData()
                 for name, field in request_data.items():
                     if isinstance(field, (dict, list)):
-                        data.add_field(name, json.dumps(field), content_type='application/json')
+                        data.add_field(name, json_encoder(field), content_type='application/json')
                         continue
                     data.add_field(name, str(field), content_type='text/plain')
 
@@ -59,15 +66,12 @@ class TornadoConnector(Connector):
 
                 response = await self._session.post(url, data=data, timeout=self._timeout)
             else:
-
-                # HTTPResponse()
-
-                req = HTTPRequest(url, method='POST', headers=HEADERS, body=json.dumps(request_data),
+                req = HTTPRequest(url, method='POST', headers=HEADERS, body=json_encoder(request_data),
                                   request_timeout=self._timeout)
 
                 response = await self._client.fetch(req, raise_error=False)
 
-            return Response.parse(json.loads(response.body), request)
+            return Response.parse(json_decoder(response.body), request)
         except json.decoder.JSONDecodeError as e:
             raise RocketgramParseError(e)
         except asyncio.CancelledError:
