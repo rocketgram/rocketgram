@@ -32,7 +32,7 @@ try:
 except ModuleNotFoundError:
     pass
 
-logger = logging.getLogger('rocketgram.executors.webhook')
+logger = logging.getLogger('rocketgram.executors.aiohttp')
 
 HEADERS = {"Server": f"Rocketgram/{version()}", "Content-Type": "application/json"}
 HEADERS_ERROR = {"Server": f"Rocketgram/{version()}", "Content-Type": "text/plain"}
