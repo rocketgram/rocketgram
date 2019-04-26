@@ -6,6 +6,7 @@
 import asyncio
 import json
 import logging
+import uuid
 
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
@@ -54,22 +55,56 @@ class TornadoConnector(Connector):
             files = request.files()
 
             if len(files):
-                data = aiohttp.FormData()
-                for name, field in request_data.items():
-                    if isinstance(field, (dict, list)):
-                        data.add_field(name, json_encoder(field), content_type='application/json')
+                boundary = uuid.uuid4().hex
+
+                async def producer(write):
+                    for name, field in request_data.items():
+                        if isinstance(field, (dict, list)):
+                            content_type = 'application/json'
+                            data = json_encoder(field)
+                        else:
+                            content_type = 'text/plain'
+                            data = str(field)
+
+                        buf = f'--{boundary}\r\n' \
+                            f'Content-Disposition: form-data; name="{name}"\r\n' \
+                            f'Content-Type: {content_type}\r\n\r\n' \
+                            f'{data}' \
+                            f'\r\n'
+
+                        await write(buf.encode())
                         continue
-                    data.add_field(name, str(field), content_type='text/plain')
 
-                for file in files:
-                    data.add_field(file.file_name, file.data, filename=file.file_name, content_type=file.content_type)
+                    for fl in files:
+                        begin = f'--{boundary}\r\n' \
+                            f'Content-Disposition: form-data; name="{fl.file_name}"; filename="{fl.file_name}"\r\n' \
+                            f'Content-Type: {fl.content_type}\r\n' \
+                            f'\r\n'
 
-                response = await self._session.post(url, data=data, timeout=self._timeout)
+                        await write(begin.encode())
+
+                        while True:
+                            chunk = fl.data.read(8 * 1024)
+                            if not chunk:
+                                break
+                            await write(chunk)
+
+                        await write(f'\r\n'.encode())
+
+                    await write(f'--{boundary}--\r\n\r\n'.encode())
+
+                headers = {
+                    'Content-Type': f'multipart/form-data; boundary={boundary}',
+                    'User-Agent': USER_AGENT
+                }
+
+                req = HTTPRequest(url, method='POST', headers=headers, body_producer=producer,
+                                  request_timeout=self._timeout)
             else:
                 req = HTTPRequest(url, method='POST', headers=HEADERS, body=json_encoder(request_data),
                                   request_timeout=self._timeout)
 
-                response = await self._client.fetch(req, raise_error=False)
+            response = await self._client.fetch(req, raise_error=False)
 
             return Response.parse(json_decoder(response.body), request)
         except json.decoder.JSONDecodeError as e:
