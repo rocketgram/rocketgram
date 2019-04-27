@@ -85,6 +85,7 @@ def test_SendMessage():
     assert req.render() == {'chat_id': 1000, 'text': 'Hello, World!', 'disable_notification': True,
                             'disable_web_page_preview': True, 'parse_mode': 'html', 'reply_to_message_id': 100,
                             'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
+    assert req.files() == []
 
 
 def test_ForwardMessage():
@@ -306,4 +307,144 @@ def test_SendLocation():
                             'live_period': 300, 'reply_to_message_id': 100,
                             'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
 
+    assert req.files() == []
+
+
+def test_EditMessageLiveLocation():
+    req = requests.EditMessageLiveLocation(chat_id=1000, message_id=300, latitude=31.7767, longitude=35.2345)
+    assert req.render() == {'chat_id': 1000, 'message_id': 300, 'latitude': 31.7767, 'longitude': 35.2345}
+    assert req.method == 'editMessageLiveLocation'
+    assert req.render(with_method=True) == {'method': 'editMessageLiveLocation', 'chat_id': 1000, 'message_id': 300,
+                                            'latitude': 31.7767, 'longitude': 35.2345}
+    assert req.files() == []
+
+    req = requests.EditMessageLiveLocation(inline_message_id='ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                                           latitude=31.7767, longitude=35.2345)
+    assert req.render() == {'inline_message_id': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                            'latitude': 31.7767, 'longitude': 35.2345}
+    assert req.method == 'editMessageLiveLocation'
+    assert req.render(with_method=True) == {'method': 'editMessageLiveLocation',
+                                            'inline_message_id': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                                            'latitude': 31.7767, 'longitude': 35.2345}
+    assert req.files() == []
+
+    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
+    req = requests.EditMessageLiveLocation(chat_id=1000, message_id=300, latitude=31.7767, longitude=35.2345,
+                                           reply_markup=kb)
+
+    assert req.render() == {'chat_id': 1000, 'message_id': 300, 'latitude': 31.7767, 'longitude': 35.2345,
+                            'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
+
+    assert req.files() == []
+
+
+def test_StopMessageLiveLocation():
+    req = requests.StopMessageLiveLocation(chat_id=1000, message_id=300)
+    assert req.render() == {'chat_id': 1000, 'message_id': 300}
+    assert req.method == 'stopMessageLiveLocation'
+    assert req.render(with_method=True) == {'method': 'stopMessageLiveLocation', 'chat_id': 1000, 'message_id': 300}
+    assert req.files() == []
+
+    req = requests.StopMessageLiveLocation(inline_message_id='ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    assert req.render() == {'inline_message_id': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
+    assert req.method == 'stopMessageLiveLocation'
+    assert req.render(with_method=True) == {'method': 'stopMessageLiveLocation',
+                                            'inline_message_id': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
+    assert req.files() == []
+
+    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
+    req = requests.StopMessageLiveLocation(chat_id=1000, message_id=300, reply_markup=kb)
+
+    assert req.render() == {'chat_id': 1000, 'message_id': 300,
+                            'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
+
+    assert req.files() == []
+
+
+def test_SendVenue():
+    req = requests.SendVenue(1000, latitude=31.7767, longitude=35.2345, title='Earth', address='Solar system')
+    assert req.render() == {'chat_id': 1000, 'latitude': 31.7767, 'longitude': 35.2345, 'title': 'Earth',
+                            'address': 'Solar system'}
+    assert req.method == 'sendVenue'
+    assert req.render(with_method=True) == {'method': 'sendVenue', 'chat_id': 1000, 'latitude': 31.7767,
+                                            'longitude': 35.2345, 'title': 'Earth', 'address': 'Solar system'}
+    assert req.files() == []
+
+    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
+    req = requests.SendVenue(1000, latitude=31.7767, longitude=35.2345, title='Earth', address='Solar system',
+                             foursquare_id='ABCDE123', foursquare_type='food/icecream',
+                             disable_notification=True, reply_to_message_id=100, reply_markup=kb)
+
+    assert req.render() == {'chat_id': 1000, 'latitude': 31.7767, 'longitude': 35.2345, 'title': 'Earth',
+                            'address': 'Solar system', 'foursquare_id': 'ABCDE123', 'foursquare_type': 'food/icecream',
+                            'disable_notification': True, 'reply_to_message_id': 100,
+                            'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
+
+    assert req.files() == []
+
+
+def test_SendContact():
+    req = requests.SendContact(1000, phone_number='+1234567890', first_name='John')
+    assert req.render() == {'chat_id': 1000, 'phone_number': '+1234567890', 'first_name': 'John'}
+    assert req.method == 'sendContact'
+    assert req.render(with_method=True) == {'method': 'sendContact', 'chat_id': 1000, 'phone_number': '+1234567890',
+                                            'first_name': 'John'}
+    assert req.files() == []
+
+    vcard = "BEGIN:VCARD\nVERSION:4.0\nN:Gump;Forrest;;Mr.;\nFN:Forrest Gump\n" \
+            "EMAIL:forrestgump@example.com\nEND:VCARD"
+
+    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
+    req = requests.SendContact(1000, phone_number='+1234567890', first_name='Forrest', last_name='Gump', vcard=vcard,
+                               disable_notification=True, reply_to_message_id=100, reply_markup=kb)
+
+    assert req.render() == {'chat_id': 1000, 'phone_number': '+1234567890', 'first_name': 'Forrest',
+                            'last_name': 'Gump', 'vcard': vcard, 'disable_notification': True,
+                            'reply_to_message_id': 100,
+                            'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
+
+    assert req.files() == []
+
+
+def test_SendPoll():
+    req = requests.SendPoll(1000, question='Do it?', options=['Yes', 'No'])
+    assert req.render() == {'chat_id': 1000, 'question': 'Do it?', 'options': ['Yes', 'No']}
+    assert req.method == 'sendPoll'
+    assert req.render(with_method=True) == {'method': 'sendPoll', 'chat_id': 1000, 'question': 'Do it?',
+                                            'options': ['Yes', 'No']}
+    assert req.files() == []
+
+    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
+    req = requests.SendPoll(1000, question='Do it?', options=['Yes', 'No'],
+                            disable_notification=True, reply_to_message_id=100, reply_markup=kb)
+
+    assert req.render() == {'chat_id': 1000, 'question': 'Do it?', 'options': ['Yes', 'No'],
+                            'disable_notification': True, 'reply_to_message_id': 100,
+                            'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
+
+    assert req.files() == []
+
+
+def test_SendChatAction():
+    req = requests.SendChatAction(1000, action=types.ChatActionType.typing)
+    assert req.render() == {'chat_id': 1000, 'action': 'typing'}
+    assert req.method == 'sendChatAction'
+    assert req.render(with_method=True) == {'method': 'sendChatAction', 'chat_id': 1000, 'action': 'typing'}
+    assert req.files() == []
+
+
+def test_GetUserProfilePhotos():
+    req = requests.GetUserProfilePhotos(10000, offset=10, limit=20)
+    assert req.render() == {'user_id': 10000, 'offset': 10, 'limit': 20}
+    assert req.method == 'getUserProfilePhotos'
+    assert req.render(with_method=True) == {'method': 'getUserProfilePhotos', 'user_id': 10000, 'offset': 10,
+                                            'limit': 20}
+    assert req.files() == []
+
+
+def test_GetFile():
+    req = requests.GetFile('ABCDEFG12345')
+    assert req.render() == {'file_id': 'ABCDEFG12345'}
+    assert req.method == 'getFile'
+    assert req.render(with_method=True) == {'method': 'getFile', 'file_id': 'ABCDEFG12345'}
     assert req.files() == []
