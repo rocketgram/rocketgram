@@ -195,11 +195,11 @@ class Dispatcher(BaseDispatcher):
 
     async def __waiters_cleanup(self, current: int):
         closes = list()
-        for k in self.__waiters.keys():
+        for k in list(self.__waiters.keys()):
             wtr = self.__waiters[k]
             if current - wtr.created > self.__watires_lifetime:
                 del self.__waiters[k]
-                closes.append(wtr.handler.aclose())
+                closes.append(wtr)
         for cl in closes:
             with suppress(StopAsyncIteration):
-                await cl
+                await cl.handler.aclose()
