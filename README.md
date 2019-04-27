@@ -2,6 +2,8 @@
 
 Modern and powerful asynchronous telegram bot framework.
 
+[![Build Status](https://www.travis-ci.com/vd2org/rocketgram.svg?branch=master)](https://www.travis-ci.com/vd2org/rocketgram)
+
 ## How to install
 
 #### For development
