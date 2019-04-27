@@ -46,3 +46,10 @@ def test_GetWebhookInfo():
     assert req.render() == {}
     assert req.method == 'getWebhookInfo'
     assert req.render(with_method=True) == {'method': 'getWebhookInfo'}
+
+
+def test_GetMe():
+    req = requests.GetMe()
+    assert req.render() == {}
+    assert req.method == 'getMe'
+    assert req.render(with_method=True) == {'method': 'getMe'}
