@@ -57,3 +57,14 @@ async def start_command():
     
 UpdatesExecutor.run(bot)
 ```
+
+# Testing
+
+Code tested automatically using `travis`. You can see build status **[here](https://travis-ci.com/vd2org/rocketgram)**.
+
+To test code manually install and run `pytest`:
+
+```bash
+pip install pytest
+python -m pytest
+```
