@@ -1,0 +1,9 @@
+dist: xenial
+sudo: required
+language: python
+python: 3.7
+cache: pip
+install:
+  - pip install pytest aiohttp tornado
+script:
+  - python -m pytest
