@@ -18,5 +18,4 @@ def html(text):
 
 def markdown(text):
     """Helper function to escape rocketgram markup symbols"""
-    escape_chars = '\*_`\['
-    return re.sub(r'([%s])' % escape_chars, r'\\\1', text)
+    return re.sub(r'([\*_`\[])', r'\\\1', text)
