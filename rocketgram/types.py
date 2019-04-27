@@ -299,8 +299,8 @@ class InputMediaPhoto(InputMedia):
     type: str = field(init=False, default='photo')
 
     media: Union['InputFile', str]
-    caption: Optional[str]
-    parse_mode: Optional['ParseModeType']
+    caption: Optional[str] = None
+    parse_mode: Optional['ParseModeType'] = None
 
 
 @dataclass(frozen=True)
@@ -313,13 +313,13 @@ class InputMediaVideo(InputMedia):
     type: str = field(init=False, default='video')
 
     media: Union['InputFile', str]
-    thumb: Optional[Union['InputFile', str]]
-    caption: Optional[str]
-    parse_mode: Optional['ParseModeType']
-    width: Optional[int]
-    height: Optional[int]
-    duration: Optional[int]
-    supports_streaming: Optional[bool]
+    thumb: Optional[Union['InputFile', str]] = None
+    caption: Optional[str] = None
+    parse_mode: Optional['ParseModeType'] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+    duration: Optional[int] = None
+    supports_streaming: Optional[bool] = None
 
 
 @dataclass(frozen=True)
@@ -332,12 +332,12 @@ class InputMediaAnimation(InputMedia):
     type: str = field(init=False, default='animation')
 
     media: Union['InputFile', str]
-    thumb: Optional[Union['InputFile', str]]
-    caption: Optional[str]
-    parse_mode: Optional['ParseModeType']
-    width: Optional[int]
-    height: Optional[int]
-    duration: Optional[int]
+    thumb: Optional[Union['InputFile', str]] = None
+    caption: Optional[str] = None
+    parse_mode: Optional['ParseModeType'] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+    duration: Optional[int] = None
 
 
 @dataclass(frozen=True)
@@ -350,12 +350,12 @@ class InputMediaAudio(InputMedia):
     type: str = field(init=False, default='audio')
 
     media: Union['InputFile', str]
-    thumb: Optional[Union['InputFile', str]]
-    caption: Optional[str]
-    parse_mode: Optional['ParseModeType']
-    duration: Optional[int]
-    performer: Optional[str]
-    title: Optional[str]
+    thumb: Optional[Union['InputFile', str]] = None
+    caption: Optional[str] = None
+    parse_mode: Optional['ParseModeType'] = None
+    duration: Optional[int] = None
+    performer: Optional[str] = None
+    title: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -368,9 +368,9 @@ class InputMediaDocument(InputMedia):
     type: str = field(init=False, default='document')
 
     media: Union['InputFile', str]
-    thumb: Optional[Union['InputFile', str]]
-    caption: Optional[str]
-    parse_mode: Optional['ParseModeType']
+    thumb: Optional[Union['InputFile', str]] = None
+    caption: Optional[str] = None
+    parse_mode: Optional['ParseModeType'] = None
 
 
 @dataclass(frozen=True)
