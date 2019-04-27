@@ -4,7 +4,7 @@
 
 
 from contextvars import ContextVar
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 
 if TYPE_CHECKING:
     from .bot import Bot
@@ -22,36 +22,36 @@ current_chat = ContextVar('current_chat')
 current_user = ContextVar('current_user')
 
 
-def executor() -> 'Executor':
+def executor() -> Optional['Executor']:
     """Returns Executor object for current request."""
 
     return current_executor.get()
 
 
-def bot() -> 'Bot':
+def bot() -> Optional['Bot']:
     """Returns current Bot object."""
 
     return current_bot.get()
 
 
-def update() -> 'Update':
+def update() -> Optional['Update']:
     """Returns Update object for current request."""
     return current_update.get()
 
 
-def message() -> 'Message':
+def message() -> Optional['Message']:
     """Returns Message object for current request."""
 
     return current_message.get()
 
 
-def chat() -> 'Chat':
+def chat() -> Optional['Chat']:
     """Returns Chat object for current request."""
 
     return current_chat.get()
 
 
-def user() -> 'User':
+def user() -> Optional['User']:
     """Returns User object for current request."""
 
     return current_user.get()
