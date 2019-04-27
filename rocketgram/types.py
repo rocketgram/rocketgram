@@ -27,7 +27,7 @@ class InputFile:
 
     __slots__ = ('__file_name', '__content_type', '__data')
 
-    def __init__(self, file_name: str, content_type: str, data: io.IOBase):
+    def __init__(self, file_name: str, content_type: str, data: Union[io.FileIO, io.BytesIO]):
         self.__file_name = file_name
         self.__content_type = content_type
         self.__data = data
