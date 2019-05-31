@@ -20,7 +20,7 @@ All notable changes to this project.
 - Fixed MediaGroups's default values.
 
 
-## [1.0] - 2019-05-04
+## [1.0] - 2019-04-26
 
 ### Added
 - Released version 1.0.
