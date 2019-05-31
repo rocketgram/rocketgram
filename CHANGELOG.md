@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [1.1] - 2019-05-31
+
 ### Added
 - Start using "changelog".
 - Added some tests.
