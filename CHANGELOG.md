@@ -4,6 +4,13 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- Added LoginUrl type.
+- Added login() method to InlineKeyboard.
+
+### Changed
+- InlineKeyboardButton now accepts LoginUrl.
+
 
 ## [1.1] - 2019-05-31
 

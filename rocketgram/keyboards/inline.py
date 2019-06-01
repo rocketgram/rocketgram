@@ -3,8 +3,10 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+from typing import Optional
+
 from .keyboard import Keyboard
-from ..types import InlineKeyboardMarkup, InlineKeyboardButton
+from ..types import InlineKeyboardMarkup, InlineKeyboardButton, LoginUrl
 
 
 class InlineKeyboard(Keyboard):
@@ -12,6 +14,12 @@ class InlineKeyboard(Keyboard):
 
     def url(self, text, url) -> 'InlineKeyboard':
         self.add(InlineKeyboardButton(text=text, url=url))
+        return self
+
+    def login(self, text: str, url: str, forward_text: Optional[str] = None, bot_username: Optional[str] = None,
+              request_write_access: Optional[bool] = None) -> 'InlineKeyboard':
+        lu = LoginUrl(url, forward_text, bot_username, request_write_access)
+        self.add(InlineKeyboardButton(text=text, login_url=lu))
         return self
 
     def callback(self, text, callback_data) -> 'InlineKeyboard':
