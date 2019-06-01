@@ -4,12 +4,18 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [1.2] - 2019-06-01
+
 ### Added
 - Added LoginUrl type.
 - InlineKeyboardButton now accepts LoginUrl.
 - Added login() method to InlineKeyboard.
 - Added parse() to InlineKeyboardButton, LoginUrl InlineKeyboardMarkup.
 - Added reply_markup field to Message.
+
+### Changed
+- Framework now corresponds to Telegram Bot API 4.3.
 
 
 ## [1.1] - 2019-05-31
