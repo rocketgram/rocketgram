@@ -85,7 +85,7 @@ class Bot:
 
     @property
     def router(self) -> 'Router':
-        """Bot's dispatcher."""
+        """Bot's router."""
 
         return self.__router
 
@@ -113,12 +113,12 @@ class Bot:
         if self.__own_connector:
             await self.connector.init()
 
+        await self.router.init()
+
         for md in self.__middlewares:
             m = md.init()
             if inspect.isawaitable(m):
                 await m
-
-        await self.router.init()
 
         return True
 
@@ -131,20 +131,19 @@ class Bot:
 
         context.current_bot.set(self)
 
-        if self.__own_connector:
-            await self.router.shutdown()
+        await self.router.shutdown()
 
         for md in reversed(self.__middlewares):
             m = md.shutdown()
             if inspect.isawaitable(m):
                 await m
 
-        await self.connector.shutdown()
+        if self.__own_connector:
+            await self.connector.shutdown()
 
     async def process(self, executor: 'Executor', update: Update) -> Optional[Request]:
         logger_raw_in.debug('Raw in: %s', update.raw)
 
-        context.current_executor.set(executor)
         context.current_executor.set(executor)
         context.current_bot.set(self)
         context.current_webhook_requests.set(list())
