@@ -218,11 +218,25 @@ class InlineKeyboardButton:
 
     text: str
     url: Optional[str] = None
+    login_url: Optional['LoginUrl'] = None
     callback_data: Optional[str] = None
     switch_inline_query: Optional[str] = None
     switch_inline_query_current_chat: Optional[str] = None
     callback_game: Optional[str] = None
     pay: Optional[bool] = None
+
+
+@dataclass(frozen=True)
+class LoginUrl:
+    """\
+    Represents LoginUrl keyboard object:
+    https://core.telegram.org/bots/api#loginurl
+    """
+
+    url: str
+    forward_text: Optional[str] = None
+    bot_username: Optional[str] = None
+    request_write_access: Optional[bool] = None
 
 
 @dataclass(frozen=True)
