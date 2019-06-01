@@ -6,10 +6,10 @@ All notable changes to this project.
 
 ### Added
 - Added LoginUrl type.
-- Added login() method to InlineKeyboard.
-
-### Changed
 - InlineKeyboardButton now accepts LoginUrl.
+- Added login() method to InlineKeyboard.
+- Added parse() to InlineKeyboardButton, LoginUrl InlineKeyboardMarkup.
+- Added reply_markup field to Message.
 
 
 ## [1.1] - 2019-05-31

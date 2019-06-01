@@ -19,7 +19,7 @@ from .requests import GetUpdates, SetWebhook, DeleteWebhook, SendChatAction, Kic
     GetUserProfilePhotos, GetFile, UploadStickerFile, GetChat, GetChatMember, GetChatAdministrators, GetStickerSet, \
     GetGameHighScores
 from .types import UpdateType, MessageType, ChatType, EntityType, ChatMemberStatusType, MaskPositionPointType, \
-    EncryptedPassportElementType, MaskPosition
+    EncryptedPassportElementType, MaskPosition, InlineKeyboardMarkup
 
 if TYPE_CHECKING:
     from .requests import Request
@@ -335,6 +335,8 @@ class Message:
     connected_website: Optional[str]
     passport_data: Optional['PassportData']
 
+    reply_markup: Optional['InlineKeyboardMarkup']
+
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['Message']:
         if data is None:
@@ -403,6 +405,8 @@ class Message:
         connected_website = data.get('connected_website')
         passport_data = PassportData.parse(data.get('passport_data'))
 
+        reply_markup = InlineKeyboardMarkup.parse(data.get('reply_markup'))
+
         message_type = None
 
         if text is not None:
@@ -470,7 +474,7 @@ class Message:
                    video, voice, video_note, caption, contact, location, venue, poll, new_chat_members,
                    left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo, group_chat_created,
                    supergroup_chat_created, channel_chat_created, migrate_to_chat_id, migrate_from_chat_id,
-                   pinned_message, invoice, successful_payment, connected_website, passport_data)
+                   pinned_message, invoice, successful_payment, connected_website, passport_data, reply_markup)
 
 
 @dataclass(frozen=True)

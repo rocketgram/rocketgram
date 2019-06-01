@@ -6,7 +6,7 @@
 import io
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Optional, List, Union
+from typing import Optional, Dict, List, Union
 
 API_URL = "https://api.telegram.org/bot%s/"
 API_FILE_URL = "https://api.telegram.org/file/bot%s/"
@@ -225,6 +225,26 @@ class InlineKeyboardButton:
     callback_game: Optional[str] = None
     pay: Optional[bool] = None
 
+    @classmethod
+    def parse(cls, data: Optional[Dict]) -> Optional['InlineKeyboardButton']:
+        if data is None:
+            return None
+
+        if 'url' in data:
+            return cls(data['text'], url=data['url'])
+        if 'login_url' in data:
+            return cls(data['text'], login_url=LoginUrl.parse(data['login_url']))
+        if 'callback_data' in data:
+            return cls(data['text'], callback_data=data['callback_data'])
+        if 'switch_inline_query' in data:
+            return cls(data['text'], switch_inline_query=data['switch_inline_query'])
+        if 'switch_inline_query_current_chat' in data:
+            return cls(data['text'], switch_inline_query_current_chat=data['switch_inline_query_current_chat'])
+        if 'callback_game' in data:
+            return cls(data['text'], callback_game=data['callback_game'])
+        if 'pay' in data:
+            return cls(data['text'], pay=data['pay'])
+
 
 @dataclass(frozen=True)
 class LoginUrl:
@@ -237,6 +257,14 @@ class LoginUrl:
     forward_text: Optional[str] = None
     bot_username: Optional[str] = None
     request_write_access: Optional[bool] = None
+
+    @classmethod
+    def parse(cls, data: Optional[Dict]) -> Optional['LoginUrl']:
+        if data is None:
+            return None
+
+        return cls(url=data['url'], forward_text=data.get('forward_text'), bot_username=data.get('bot_username'),
+                   request_write_access=data.get('request_write_access'))
 
 
 @dataclass(frozen=True)
@@ -260,6 +288,13 @@ class InlineKeyboardMarkup:
     """
 
     inline_keyboard: List[List['InlineKeyboardButton']]
+
+    @classmethod
+    def parse(cls, data: Optional[Dict]) -> Optional['InlineKeyboardMarkup']:
+        if data is None:
+            return None
+
+        return cls([[InlineKeyboardButton.parse(c) for c in r] for r in data])
 
 
 @dataclass(frozen=True)
