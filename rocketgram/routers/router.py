@@ -3,12 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import typing
-
-if typing.TYPE_CHECKING:
-    from ..bot import Bot
-
-
 class Router:
     async def init(self):
         raise NotImplementedError
