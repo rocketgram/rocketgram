@@ -11,6 +11,7 @@ with suppress(ModuleNotFoundError):
     uvloop.install()
 
 from . import context
+from .context import context2
 from . import tools
 from .bot import Bot
 from .connectors import *

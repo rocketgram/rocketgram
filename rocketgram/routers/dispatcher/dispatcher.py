@@ -15,7 +15,7 @@ from typing import Tuple, List, Dict, Callable, Coroutine, AsyncGenerator, Union
 from .base import BaseDispatcher, DEFAULT_PRIORITY, _call_or_await
 from .filters import FilterParams, WAITER_ASSIGNED_ATTR
 from .waiters import WaitNext, DropWaiter
-from ... import context
+from ...context import context2
 from ...update import UpdateType
 
 logger = logging.getLogger('rocketgram.dispatcher')
@@ -43,14 +43,12 @@ def _user_scope():
 
     Valid user scope can be only for message or callback query in chats and groups."""
 
-    if context.update().update_type == UpdateType.message:
-        return f"{id(context.bot())}-{context.update().message.chat.chat_id}-{context.update().message.user.user_id}"
-    if context.update().update_type == UpdateType.callback_query:
-        if context.update().callback_query.message is None:
+    if context2.update.update_type == UpdateType.message:
+        return f"{id(context2.bot)}-{context2.chat.chat_id}-{context2.user.user_id}"
+    if context2.update.update_type == UpdateType.callback_query:
+        if context2.message is None:
             return None
-        return f"{id(context.bot())}-" \
-            f"{context.update().callback_query.message.chat.chat_id}-" \
-            f"{context.update().callback_query.user.user_id}"
+        return f"{id(context2.bot)}-{context2.message.chat.chat_id}-{context2.user.user_id}"
 
 
 async def _run_filters(filters):
@@ -124,7 +122,7 @@ class Dispatcher(BaseDispatcher):
         # Check if other waiter for scope already exist
         if scope in self.__waiters and self.__waiters[scope].handler != gen:
             logger.warning('Overriding old wait in `%s` by `%s` handler for update %s.',
-                           self.__waiters[scope].handler.__name__, gen.__name__, context.update().update_id)
+                           self.__waiters[scope].handler.__name__, gen.__name__, context2.update.update_id)
             with suppress(StopAsyncIteration):
                 await self.__waiters[scope].handler.aclose()
 
@@ -170,7 +168,7 @@ class Dispatcher(BaseDispatcher):
                 # handler is async generator...
                 if not scope:
                     emsg = f'Found async generator `{handler.handler.__name__}` but user_scope' \
-                        f'is undefined for update `{context.update().update_id}`'
+                        f'is undefined for update `{context2.update.update_id}`'
                     raise TypeError(emsg)
                 await self.__run_generator(anext, handler, scope)
             else:
@@ -191,7 +189,7 @@ class Dispatcher(BaseDispatcher):
                 _ = asyncio.create_task(self.__waiters_cleanup(current))
 
         except HandlerNotFoundError:
-            logger.warning('Handler not found for update:\n%s', replace(context.update(), raw=dict()))
+            logger.warning('Handler not found for update:\n%s', replace(context2.update, raw=dict()))
 
     async def __waiters_cleanup(self, current: int):
         closes = list()

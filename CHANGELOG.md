@@ -4,6 +4,12 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- Added new context2 context helpers.
+
+### Deprecated
+- Old context helpers is deprecated. It will be replaced with context2 in 2.0.
+
 
 ## [1.2] - 2019-06-01
 

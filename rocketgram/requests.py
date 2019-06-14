@@ -7,8 +7,9 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Union, Dict, Optional, List
+
+from .context import context2
 from .types import InputFile
-from . import context
 
 if TYPE_CHECKING:
     from .types import *
@@ -59,10 +60,10 @@ class Request:
         return list()
 
     async def send(self) -> 'Response':
-        return await context.bot().send(self)
+        return await context2.bot.send(self)
 
     def webhook(self):
-        context.webhook_request(self)
+        context2.webhook(self)
 
 
 @dataclass(frozen=True)

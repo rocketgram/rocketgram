@@ -5,13 +5,10 @@
 
 from dataclasses import dataclass
 from functools import wraps
-from typing import List, Union, Callable, Coroutine, Tuple, Dict, TYPE_CHECKING
+from typing import List, Union, Callable, Coroutine, Tuple, Dict
 
 from .filters import FILTERS_ATTR, PRIORITY_ATTR, HANDLER_ASSIGNED_ATTR, WAITER_ASSIGNED_ATTR
 from .filters import _check_sig, FilterParams
-
-if TYPE_CHECKING:
-    pass
 
 
 @dataclass(frozen=True)

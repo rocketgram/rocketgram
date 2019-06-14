@@ -11,7 +11,7 @@ from typing import Callable, Coroutine, AsyncGenerator, Union, List, TYPE_CHECKI
 from .filters import FILTERS_ATTR, PRIORITY_ATTR, WAITER_ASSIGNED_ATTR, HANDLER_ASSIGNED_ATTR
 from .filters import FilterParams, _check_sig
 from ..router import Router
-from ... import context
+from ...context import context2
 
 if TYPE_CHECKING:
     from ...bot import Bot
@@ -97,7 +97,7 @@ class BaseDispatcher(Router):
         if not len(self._bots):
             self._resort_handlers()
 
-        self._bots.append(context.bot())
+        self._bots.append(context2.bot)
 
         for func in self._init:
             await _call_or_await(func)
@@ -108,7 +108,7 @@ class BaseDispatcher(Router):
         for func in reversed(self._shutdown):
             await _call_or_await(func)
 
-        self._bots.remove(context.bot())
+        self._bots.remove(context2.bot)
 
     def on_init(self, func):
         """Registers init"""

@@ -4,7 +4,7 @@
 
 
 from .filters import make_filter
-from ... import context
+from ...context import context2
 from ...update import UpdateType, MessageType, ChatType
 
 
@@ -21,7 +21,7 @@ def command(*commands: str, case_sensitive: bool = False, separator: str = ' '):
     :return: True or False
     """
 
-    msg = context.message()
+    msg = context2.message
     if not msg:
         return False
     if msg.message_type is not MessageType.text:
@@ -29,7 +29,7 @@ def command(*commands: str, case_sensitive: bool = False, separator: str = ' '):
 
     splitted = msg.text.split(sep=separator)
     text = splitted[0] if case_sensitive else splitted[0].lower()
-    botname = context.bot().name if case_sensitive else context.bot().name.lower()
+    botname = context2.bot.name if case_sensitive else context2.bot.name.lower()
 
     for cmd in commands:
         if not case_sensitive:
@@ -54,7 +54,7 @@ def deeplink(*commands: str, case_sensitive: bool = False):
     :return: True or False
     """
 
-    msg = context.message()
+    msg = context2.message
     if not msg:
         return False
     if msg.message_type is not MessageType.text:
@@ -62,7 +62,7 @@ def deeplink(*commands: str, case_sensitive: bool = False):
 
     text = msg.text
     text_lw = msg.text.lower()
-    lw = '/start@%s ' % context.bot().name.lower()
+    lw = '/start@%s ' % context2.bot.name.lower()
 
     if not (text.startswith('/start ') or text_lw.startswith(lw)):
         return False
@@ -99,10 +99,10 @@ def callback(*commands: str, case_sensitive: bool = False, separator=' '):
     :return: True or False
     """
 
-    if context.update().update_type is not UpdateType.callback_query:
+    if context2.update.update_type is not UpdateType.callback_query:
         return False
 
-    splited = context.update().callback_query.data.split(sep=separator)
+    splited = context2.update.callback_query.data.split(sep=separator)
     text = splited[0]
     if not case_sensitive:
         text = text.lower()
@@ -126,10 +126,10 @@ def inline_callback():
     :return: True or False
     """
 
-    if context.update().update_type is not UpdateType.callback_query:
+    if context2.update.update_type is not UpdateType.callback_query:
         return False
 
-    if context.update().callback_query.inline_message_id is None:
+    if context2.update.callback_query.inline_message_id is None:
         return False
 
     return True
@@ -145,10 +145,10 @@ def inline(*commands: str, case_sensitive: bool = False):
     :return: True or False
     """
 
-    if context.update().update_type is not UpdateType.inline_query:
+    if context2.update.update_type is not UpdateType.inline_query:
         return False
 
-    text = context.update().inline_query.query
+    text = context2.update.inline_query.query
 
     if not case_sensitive:
         text = text.lower()
@@ -173,10 +173,10 @@ def chosen(*commands: str, case_sensitive: bool = False):
     :return: True or False
     """
 
-    if context.update().update_type is not UpdateType.chosen_inline_result:
+    if context2.update.update_type is not UpdateType.chosen_inline_result:
         return False
 
-    text = context.update().chosen_inline_result.query
+    text = context2.update.chosen_inline_result.query
 
     if not case_sensitive:
         text = text.lower()
@@ -201,7 +201,7 @@ def update_type(*types: UpdateType):
     :return: True or False
     """
 
-    return context.update().update_type in types
+    return context2.update.update_type in types
 
 
 @make_filter
@@ -213,12 +213,12 @@ def message_type(*types: UpdateType):
     :return: True or False
     """
 
-    msg = context.message()
+    msg = context2.message
 
     if not msg:
         return False
 
-    return context.message().message_type in types
+    return msg.message_type in types
 
 
 @make_filter
@@ -232,7 +232,7 @@ def chat_type(*types: ChatType):
     :return: True or False
     """
 
-    ch = context.chat()
+    ch = context2.chat
 
     if not ch:
         return False
