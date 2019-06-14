@@ -7,12 +7,12 @@ import asyncio
 import inspect
 import logging
 from contextlib import suppress
+from typing import TYPE_CHECKING, List, Optional
 
+from .context import context2
 from .errors import RocketgramRequest429Error, RocketgramStopRequest
 from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
-from .context import context2
 from .requests import Request
-from typing import TYPE_CHECKING, List, Optional
 from .update import Update, UpdateType, Response
 
 if TYPE_CHECKING:
@@ -227,7 +227,6 @@ class Bot:
         except asyncio.CancelledError:
             raise
         except Exception as error:
-
             for md in self.__middlewares:
                 with suppress(Exception):
                     m = md.process_error(error)
