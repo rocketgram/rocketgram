@@ -111,5 +111,5 @@ class TornadoConnector(Connector):
             raise RocketgramParseError(e)
         except asyncio.CancelledError:
             raise
-        except Exception as e:
-            raise RocketgramNetworkError(e)
+        except Exception as error:
+            raise RocketgramNetworkError(error) from error

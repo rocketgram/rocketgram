@@ -74,6 +74,5 @@ class AioHttpConnector(Connector):
             raise RocketgramParseError(e)
         except asyncio.CancelledError:
             raise
-        except Exception as e:
-            raise
-            raise RocketgramNetworkError(e)
+        except Exception as error:
+            raise RocketgramNetworkError(error) from error
