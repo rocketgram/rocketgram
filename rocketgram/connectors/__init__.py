@@ -4,9 +4,9 @@
 
 from contextlib import suppress
 
-with suppress(ModuleNotFoundError):
+with suppress(ImportError):
     from .aiohttpconnector import AioHttpConnector
-with suppress(ModuleNotFoundError):
+with suppress(ImportError):
     from .tornadoconnector import TornadoConnector
 
 from .connector import Connector

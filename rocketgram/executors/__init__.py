@@ -8,7 +8,7 @@ from contextlib import suppress
 from .executor import Executor
 from .updates import UpdatesExecutor
 
-with suppress(ModuleNotFoundError):
+with suppress(ImportError):
     from .aiohttp import AioHttpExecutor
-with suppress(ModuleNotFoundError):
+with suppress(ImportError):
     from .tornado import TornadoExecutor

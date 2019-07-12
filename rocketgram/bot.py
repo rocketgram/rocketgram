@@ -51,13 +51,13 @@ class Bot:
         self.__connector = connector
 
         if self.__connector is None:
-            with suppress(ModuleNotFoundError):
+            with suppress(ImportError):
                 from .connectors import AioHttpConnector
             self.__own_connector = True
             self.__connector = AioHttpConnector()
 
         if self.__connector is None:
-            with suppress(ModuleNotFoundError):
+            with suppress(ImportError):
                 from .connectors import TornadoConnector
             self.__own_connector = True
             self.__connector = TornadoConnector()

@@ -7,6 +7,9 @@ All notable changes to this project.
 ### Added
 - Added new context2 context helpers.
 
+### Changed
+- Fix optional module imports.
+
 ### Deprecated
 - Old context helpers is deprecated. It will be replaced with context2 in 2.0.
 

@@ -16,16 +16,14 @@ from ..errors import RocketgramNetworkError, RocketgramParseError
 from ..requests import Request
 from ..update import Response
 
-json_encoder = json.dumps
-json_decoder = json.loads
-
 try:
     import ujson
 
     json_encoder = ujson.dumps
     json_decoder = ujson.loads
-except ModuleNotFoundError:
-    pass
+except ImportError:
+    json_encoder = json.dumps
+    json_decoder = json.loads
 
 logger = logging.getLogger('rocketgram.connectors.tornadoconnector')
 
