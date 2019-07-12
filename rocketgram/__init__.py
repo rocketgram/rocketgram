@@ -3,18 +3,11 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-from contextlib import suppress
-
-with suppress(ModuleNotFoundError):
-    import uvloop
-
-    uvloop.install()
-
 from . import context
-from .context import context2
 from . import tools
 from .bot import Bot
 from .connectors import *
+from .context import context2
 from .errors import *
 from .executors import *
 from .keyboards import *
