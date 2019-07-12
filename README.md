@@ -1,8 +1,10 @@
 # Rocketgram
 
+[![Build Status](https://www.travis-ci.com/vd2org/rocketgram.svg?branch=master)](https://www.travis-ci.com/vd2org/rocketgram)
+
 Modern and powerful asynchronous telegram bot framework.
 
-[![Build Status](https://www.travis-ci.com/vd2org/rocketgram.svg?branch=master)](https://www.travis-ci.com/vd2org/rocketgram)
+Release news available here: [@RocketgramNews](https://t.me/RocketgramNews)
 
 ## How to install
 
@@ -15,7 +17,7 @@ pip install rocketgram[aiohttp]
 #### For production
 
 ```bash
-pip install rocketgram[aiohttp,ujson,uvloop]
+pip install rocketgram[aiohttp,ujson]
 ```
 
 ## Dependencies
