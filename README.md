@@ -41,7 +41,7 @@ There is a trivial example below.
 
 ```python
 from rocketgram import Bot, Dispatcher, UpdatesExecutor
-from rocketgram import context, commonfilters
+from rocketgram import context2, commonfilters
 from rocketgram import SendMessage
 
 token = 'YOUR_BOT_TOKEN'
@@ -52,12 +52,12 @@ bot = Bot(token, router=router)
 @router.handler
 @commonfilters.command('/start')
 async def start_command():
-    await SendMessage(context.user().user_id, 'Hello there!').send()
+    await SendMessage(context2.user.user_id, 'Hello there!').send()
     
 @router.handler
 @commonfilters.command('/help')
 async def start_command():
-    await SendMessage(context.user().user_id, 'Some userful help!').send()
+    await SendMessage(context2.user.user_id, 'Some userful help!').send()
     
 UpdatesExecutor.run(bot)
 ```
