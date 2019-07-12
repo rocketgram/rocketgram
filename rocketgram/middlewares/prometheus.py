@@ -41,19 +41,19 @@ class PrometheusMiddleware(Middleware):
         self.__bots.dec()
 
     def before_process(self):
-        self.__updates.labels(bot=context.bot().name, type=context.update().update_type.name).inc()
+        self.__updates.labels(bot=context.bot.name, type=context.update.update_type.name).inc()
 
     async def after_process(self):
         pass
 
     def process_error(self, error: Exception):
-        self.__process_errors.labels(bot=context.bot().name, type=context.update().update_type.name).inc()
+        self.__process_errors.labels(bot=context.bot.name, type=context.update.update_type.name).inc()
 
     def before_request(self, request: 'Request') -> 'Request':
         bot = None
 
         with suppress(LookupError):
-            bot = context.bot().name
+            bot = context.bot.name
 
         self.__requests.labels(bot=bot, type=request.method).inc()
         return request
@@ -66,9 +66,11 @@ class PrometheusMiddleware(Middleware):
         bot = None
 
         with suppress(LookupError):
-            bot = context.bot().name
+            bot = context.bot.name
 
         if isinstance(error, RocketgramRequestError):
             code = error.response.code
 
         self.__request_errors.labels(bot=bot, type=request.method, code=code).inc()
+
+
