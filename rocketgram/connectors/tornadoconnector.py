@@ -10,7 +10,7 @@ import uuid
 
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
-from .connector import Connector, USER_AGENT
+from .connector import Connector, HEADERS, USER_AGENT
 from .. import types
 from ..errors import RocketgramNetworkError, RocketgramParseError
 from ..requests import Request
@@ -26,8 +26,6 @@ except ImportError:
     json_decoder = json.loads
 
 logger = logging.getLogger('rocketgram.connectors.tornadoconnector')
-
-HEADERS = {'Content-Type': 'application/json', 'User-Agent': USER_AGENT}
 
 
 class TornadoConnector(Connector):
@@ -57,7 +55,7 @@ class TornadoConnector(Connector):
 
                 async def producer(write):
                     for name, field in request_data.items():
-                        if isinstance(field, (dict, list)):
+                        if isinstance(field, (dict, list, tuple)):
                             content_type = 'application/json'
                             data = json_encoder(field)
                         else:
