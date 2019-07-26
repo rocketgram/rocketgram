@@ -4,8 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
-### Changed
+### Fixed
 - Final fix optional module imports.
+- Fix issue in message_type filter.
 
 
 ## [1.3] - 2019-07-13
@@ -13,7 +14,7 @@ All notable changes to this project.
 ### Added
 - Added new context2 context helpers.
 
-### Changed
+### Fixed
 - Fix optional module imports.
 
 ### Deprecated
