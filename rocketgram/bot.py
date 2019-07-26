@@ -53,14 +53,14 @@ class Bot:
         if self.__connector is None:
             with suppress(ImportError):
                 from .connectors import AioHttpConnector
-            self.__own_connector = True
-            self.__connector = AioHttpConnector()
+                self.__own_connector = True
+                self.__connector = AioHttpConnector()
 
         if self.__connector is None:
             with suppress(ImportError):
                 from .connectors import TornadoConnector
-            self.__own_connector = True
-            self.__connector = TornadoConnector()
+                self.__own_connector = True
+                self.__connector = TornadoConnector()
 
         if self.__connector is None:
             raise RuntimeError("Can't create Connector object. Tornado or AioHttp should be installed.")
