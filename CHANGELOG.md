@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Changed
+- Final fix optional module imports.
+
 
 ## [1.3] - 2019-07-13
 
