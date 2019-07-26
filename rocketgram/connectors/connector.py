@@ -12,6 +12,7 @@ from ..update import Response
 logger = logging.getLogger('rocketgram.connectors.connector')
 
 USER_AGENT = f'Rocketgram/{version()}'
+HEADERS = {'Content-Type': 'application/json', 'User-Agent': USER_AGENT}
 
 
 class Connector:

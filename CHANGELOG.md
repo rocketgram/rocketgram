@@ -5,12 +5,20 @@ All notable changes to this project.
 ## [Unreleased]
 
 
+## [1.4] - 2019-07-26
+
+### Fixed
+- Final fix optional module imports.
+- Fix issue in message_type filter.
+- Fix issue in Connector with the inability to send files with unicode names.
+
+
 ## [1.3] - 2019-07-13
 
 ### Added
 - Added new context2 context helpers.
 
-### Changed
+### Fixed
 - Fix optional module imports.
 
 ### Deprecated

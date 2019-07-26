@@ -9,7 +9,7 @@ import logging
 
 import aiohttp
 
-from .connector import Connector, USER_AGENT
+from .connector import Connector, HEADERS
 from .. import types
 from ..errors import RocketgramNetworkError, RocketgramParseError
 from ..requests import Request
@@ -25,8 +25,6 @@ except ImportError:
     json_decoder = json.loads
 
 logger = logging.getLogger('rocketgram.connectors.aiohttpconnector')
-
-HEADERS = {'Content-Type': 'application/json', 'User-Agent': USER_AGENT}
 
 
 class AioHttpConnector(Connector):
@@ -52,9 +50,9 @@ class AioHttpConnector(Connector):
             files = request.files()
 
             if len(files):
-                data = aiohttp.FormData()
+                data = aiohttp.FormData(quote_fields=False)
                 for name, field in request_data.items():
-                    if isinstance(field, (dict, list)):
+                    if isinstance(field, (dict, list, tuple)):
                         data.add_field(name, json_encoder(field), content_type='application/json')
                         continue
                     data.add_field(name, str(field), content_type='text/plain')

@@ -205,7 +205,7 @@ def update_type(*types: UpdateType):
 
 
 @make_filter
-def message_type(*types: UpdateType):
+def message_type(*types: MessageType):
     """Filters massage_type with one of selected types.
     Assumes update_type one of message, edited_message, channel_post, edited_channel_post.
 
