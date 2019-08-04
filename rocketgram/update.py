@@ -244,11 +244,11 @@ class Chat:
     username: Optional[str]
     first_name: Optional[str]
     last_name: Optional[str]
-    all_members_are_administrators: Optional[bool]
     photo: Optional['ChatPhoto']
     description: Optional[str]
     invite_link: Optional[str]
     pinned_message: Optional['Message']
+    permissions: Optional['ChatPermissions']
     sticker_set_name: Optional[str]
     can_set_sticker_set: Optional[bool]
 
@@ -258,9 +258,9 @@ class Chat:
             return None
 
         return cls(data['id'], ChatType(data['type']), data.get('title'), data.get('username'), data.get('first_name'),
-                   data.get('last_name'), data.get('all_members_are_administrators'),
-                   ChatPhoto.parse(data.get('photo')), data.get('description'), data.get('invite_link'),
-                   Message.parse(data.get('pinned_message')), data.get('sticker_set_name'),
+                   data.get('last_name'), ChatPhoto.parse(data.get('photo')), data.get('description'),
+                   data.get('invite_link'), Message.parse(data.get('pinned_message')),
+                   ChatPermissions.parse(data.get('permissions')), data.get('sticker_set_name'),
                    data.get('can_set_sticker_set'))
 
 
@@ -869,6 +869,7 @@ class ChatMember:
     is_member: Optional[bool]
     can_send_messages: Optional[bool]
     can_send_media_messages: Optional[bool]
+    can_send_polls: Optional[bool]
     can_send_other_messages: Optional[bool]
     can_add_web_page_previews: Optional[bool]
 
@@ -884,7 +885,34 @@ class ChatMember:
                    data.get('can_edit_messages'), data.get('can_delete_messages'), data.get('can_invite_users'),
                    data.get('can_restrict_members'), data.get('can_pin_messages'), data.get('can_promote_members'),
                    data.get('is_member'), data.get('can_send_messages'), data.get('can_send_media_messages'),
-                   data.get('can_send_other_messages'), data.get('can_add_web_page_previews'))
+                   data.get('can_send_polls'), data.get('can_send_other_messages'),
+                   data.get('can_add_web_page_previews'))
+
+
+@dataclass(frozen=True)
+class ChatPermissions:
+    """\
+    Represents ChatPermissions object:
+    https://core.telegram.org/bots/api#chatpermissions
+    """
+
+    can_send_messages: Optional[bool]
+    can_send_media_messages: Optional[bool]
+    can_send_polls: Optional[bool]
+    can_send_other_messages: Optional[bool]
+    can_add_web_page_previews: Optional[bool]
+    can_change_info: Optional[bool]
+    can_invite_users: Optional[bool]
+    can_pin_messages: Optional[bool]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['ChatPermissions']:
+        if data is None:
+            return None
+
+        return cls(data.get('can_send_messages'), data.get('can_send_media_messages'), data.get('can_send_polls'),
+                   data.get('can_send_other_messages'), data.get('can_add_web_page_previews'),
+                   data.get('can_change_info'), data.get('can_invite_users'), data.get('can_pin_messages'))
 
 
 @dataclass(frozen=True)
@@ -957,6 +985,7 @@ class Sticker:
     file_id: str
     width: int
     height: int
+    is_animated: Optional[bool]
     thumb: Optional[PhotoSize]
     emoji: Optional[str]
     set_name: Optional[str]
@@ -968,9 +997,9 @@ class Sticker:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['width'], data['height'], PhotoSize.parse(data.get('thumb')),
-                   data.get('emoji'), data.get('set_name'), MaskPosition.parse(data.get('mask_position')),
-                   data.get('file_size'))
+        return cls(data['file_id'], data['width'], data['height'], data['is_animated'],
+                   PhotoSize.parse(data.get('thumb')), data.get('emoji'), data.get('set_name'),
+                   MaskPosition.parse(data.get('mask_position')), data.get('file_size'))
 
 
 @dataclass(frozen=True)

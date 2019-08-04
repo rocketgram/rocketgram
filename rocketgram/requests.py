@@ -13,7 +13,7 @@ from .types import InputFile
 
 if TYPE_CHECKING:
     from .types import *
-    from .update import Response, UpdateType
+    from .update import Response, UpdateType, ChatPermissions
 
 
 @dataclass(frozen=True)
@@ -580,11 +580,8 @@ class RestrictChatMember(Request):
 
     chat_id: Union[int, str]
     user_id: int
+    permissions: 'ChatPermissions'
     until_date: Optional[datetime] = None
-    can_send_messages: Optional[bool] = None
-    can_send_media_messages: Optional[bool] = None
-    can_send_other_messages: Optional[bool] = None
-    can_add_web_page_previews: Optional[bool] = None
 
 
 @dataclass(frozen=True)
@@ -606,6 +603,19 @@ class PromoteChatMember(Request):
     can_restrict_members: Optional[bool] = None
     can_pin_messages: Optional[bool] = None
     can_promote_members: Optional[bool] = None
+
+
+@dataclass(frozen=True)
+class SetChatPermissions(Request):
+    """\
+    Represents SetChatPermissions request object:
+    https://core.telegram.org/bots/api#setchatpermissions
+    """
+
+    method = "setChatPermissions"
+
+    user_id: int
+    permissions: 'ChatPermissions'
 
 
 @dataclass(frozen=True)
