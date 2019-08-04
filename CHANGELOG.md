@@ -5,6 +5,27 @@ All notable changes to this project.
 ## [Unreleased]
 
 
+## [1.5] - 2019-08-04
+
+### Added
+- `permissions` field to `RestrictChatMember` request object.
+- `SetChatPermissions` request object.
+- `permissions` field to `Chat` object.
+- `can_send_polls` field to `ChatMember` object.
+- `ChatPermissions` object.
+- `is_animated` field to `Sticker` request object.
+
+### Changed
+- Framework now corresponds to Telegram Bot API 4.4.
+
+### Removed
+- `can_send_messages` field from `RestrictChatMember` request object.
+- `can_send_media_messages` field from `RestrictChatMember` request object.
+- `can_send_other_messages` field from `RestrictChatMember` request object.
+- `can_add_web_page_previews` field from `RestrictChatMember` request object.
+- `all_members_are_administrators` field from `Chat` request object.
+
+
 ## [1.4] - 2019-07-26
 
 ### Fixed
