@@ -46,4 +46,4 @@ class InlineKeyboard(Keyboard):
         return super().row()
 
     def render(self) -> InlineKeyboardMarkup:
-        return InlineKeyboardMarkup(super().render())
+        return InlineKeyboardMarkup(self.render_buttons())

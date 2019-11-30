@@ -4,9 +4,13 @@
 
 
 from itertools import accumulate, chain, cycle, repeat
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, TYPE_CHECKING
 
 from . import errors
+
+if TYPE_CHECKING:
+    from ..types import InlineKeyboardMarkup, ReplyKeyboardMarkup
+    from ..types import KeyboardButton, InlineKeyboardButton
 
 MIN_BUTTONS = 1
 MAX_BUTTONS = 8
@@ -99,7 +103,7 @@ class Keyboard:
             self._buttons.append(None)
         return self
 
-    def render(self) -> List[List]:
+    def render_buttons(self) -> List[List[Union[KeyboardButton, InlineKeyboardButton]]]:
         keyboard = list(list())
         cnt = 0
         for b in self._buttons:
@@ -114,6 +118,9 @@ class Keyboard:
                 cnt += 1
 
         return keyboard
+
+    def render(self) -> Union[ReplyKeyboardMarkup, InlineKeyboardMarkup]:
+        raise NotImplementedError
 
     def add(self, button):
         self._buttons.append(button)

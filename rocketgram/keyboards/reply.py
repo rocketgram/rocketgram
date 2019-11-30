@@ -48,7 +48,7 @@ class ReplyKeyboard(Keyboard):
         return super().row()
 
     def render(self) -> ReplyKeyboardMarkup:
-        return ReplyKeyboardMarkup(super().render(),
+        return ReplyKeyboardMarkup(self.render_buttons(),
                                    resize_keyboard=self.resize if self.resize else None,
                                    one_time_keyboard=self.one_time if self.one_time else None,
                                    selective=self.selective if self.selective else None)
