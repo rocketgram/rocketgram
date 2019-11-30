@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Fixed
+- Fixed bug in webhook-reply in `TornadoExecutor`.
+
 
 ## [1.5] - 2019-08-04
 

@@ -208,7 +208,7 @@ class TornadoExecutor(Executor):
                 await request.connection.write_headers(ResponseStartLine('1.1', 200, 'Ok'), HTTPHeaders(HEADERS))
 
                 if response:
-                    data = json_decoder(response.render(with_method=True))
+                    data = json_encoder(response.render(with_method=True))
                     await request.connection.write(data.encode())
 
                 request.connection.finish()
