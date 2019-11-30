@@ -14,7 +14,16 @@ from .keyboards.keyboard import Keyboard
 
 if TYPE_CHECKING:
     from .types import *
+    from .keyboards import InlineKeyboard, ReplyKeyboard
     from .update import Response, UpdateType, ChatPermissions
+
+ALL_KEYBOARDS = Union['InlineKeyboard',
+                      'ReplyKeyboard',
+                      'InlineKeyboardMarkup',
+                      'ReplyKeyboardMarkup',
+                      'ReplyKeyboardRemove',
+                      'ForceReply']
+INLINE_KEYBOARDS = Union['InlineKeyboard', 'InlineKeyboardMarkup']
 
 
 @dataclass(frozen=True)
@@ -150,8 +159,7 @@ class SendMessage(Request):
     disable_web_page_preview: Optional[bool] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -184,8 +192,7 @@ class SendPhoto(Request):
     parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
     def files(self) -> List['InputFile']:
         if isinstance(self.photo, InputFile):
@@ -212,8 +219,7 @@ class SendAudio(Request):
     parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
     def files(self) -> List['InputFile']:
         out = list()
@@ -240,8 +246,7 @@ class SendDocument(Request):
     parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
     def files(self) -> List['InputFile']:
         out = list()
@@ -272,8 +277,7 @@ class SendVideo(Request):
     parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
     def files(self) -> List['InputFile']:
         out = list()
@@ -303,8 +307,7 @@ class SendAnimation(Request):
     parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
     def files(self) -> List['InputFile']:
         out = list()
@@ -331,8 +334,7 @@ class SendVoice(Request):
     parse_mode: Optional['ParseModeType'] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
     def files(self) -> List['InputFile']:
         if isinstance(self.voice, InputFile):
@@ -356,8 +358,7 @@ class SendVideoNote(Request):
     thumb: Union[InputFile, str] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
     def files(self) -> List['InputFile']:
         out = list()
@@ -410,8 +411,7 @@ class SendLocation(Request):
     live_period: Optional[int] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -428,7 +428,7 @@ class EditMessageLiveLocation(Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
+    reply_markup: Optional[INLINE_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -443,7 +443,7 @@ class StopMessageLiveLocation(Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
+    reply_markup: Optional[INLINE_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -464,8 +464,7 @@ class SendVenue(Request):
     foursquare_type: Optional[str] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -484,8 +483,7 @@ class SendContact(Request):
     vcard: Optional[str] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -502,8 +500,7 @@ class SendPoll(Request):
     options: List[str]
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -834,7 +831,7 @@ class EditMessageText(Request):
     inline_message_id: Optional[str] = None
     parse_mode: Optional['ParseModeType'] = None
     disable_web_page_preview: Optional[bool] = None
-    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
+    reply_markup: Optional[INLINE_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -852,7 +849,7 @@ class EditMessageCaption(Request):
     caption: Optional[str] = None
     parse_mode: Optional['ParseModeType'] = None
     disable_web_page_preview: Optional[bool] = None
-    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
+    reply_markup: Optional[INLINE_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -868,7 +865,7 @@ class EditMessageMedia(Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
+    reply_markup: Optional[INLINE_KEYBOARDS] = None
 
     def files(self) -> List['InputFile']:
         out = list()
@@ -895,7 +892,7 @@ class EditMessageReplyMarkup(Request):
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
     disable_web_page_preview: Optional[bool] = None
-    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
+    reply_markup: Optional[INLINE_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -909,7 +906,7 @@ class StopPoll(Request):
 
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
-    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
+    reply_markup: Optional[INLINE_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -938,8 +935,7 @@ class SendSticker(Request):
     sticker: Union[InputFile, str]
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[
-        Union['InlineKeyboardMarkup', 'ReplyKeyboardMarkup', 'ReplyKeyboardRemove', 'ForceReply']] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
 
     def files(self) -> List['InputFile']:
         if isinstance(self.sticker, InputFile):
@@ -1094,7 +1090,7 @@ class SendInvoice(Request):
     is_flexible: Optional[bool] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[bool] = None
-    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
+    reply_markup: Optional[INLINE_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
@@ -1152,7 +1148,7 @@ class SendGame(Request):
     game_short_name: str
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
-    reply_markup: Optional[Union['InlineKeyboardMarkup']] = None
+    reply_markup: Optional[INLINE_KEYBOARDS] = None
 
 
 @dataclass(frozen=True)
