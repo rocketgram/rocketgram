@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- `Keyboard` object now can be passed to request without rendering.
+
 ### Fixed
 - Fixed bug in webhook-reply in `TornadoExecutor`.
 

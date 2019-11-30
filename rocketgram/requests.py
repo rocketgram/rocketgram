@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Union, Dict, Optional, List
 
 from .context import context2
 from .types import InputFile
+from .keyboards.keyboard import Keyboard
 
 if TYPE_CHECKING:
     from .types import *
@@ -36,6 +37,9 @@ class Request:
                 continue
             if isinstance(v, InputFile):
                 d[k] = f'attach://{v.file_name}'
+                continue
+            if isinstance(v, Keyboard):
+                d[k] = self.__prepare(asdict(v.render()))
                 continue
             if isinstance(v, (list, dict)):
                 d[k] = self.__prepare(v)
