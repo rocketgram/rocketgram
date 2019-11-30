@@ -103,7 +103,7 @@ class Keyboard:
             self._buttons.append(None)
         return self
 
-    def render_buttons(self) -> List[List[Union[KeyboardButton, InlineKeyboardButton]]]:
+    def render_buttons(self) -> List[List[Union['KeyboardButton', 'InlineKeyboardButton']]]:
         keyboard = list(list())
         cnt = 0
         for b in self._buttons:
@@ -119,7 +119,7 @@ class Keyboard:
 
         return keyboard
 
-    def render(self) -> Union[ReplyKeyboardMarkup, InlineKeyboardMarkup]:
+    def render(self) -> Union['ReplyKeyboardMarkup', 'InlineKeyboardMarkup']:
         raise NotImplementedError
 
     def add(self, button):
