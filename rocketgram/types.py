@@ -119,6 +119,8 @@ class EntityType(EnumAutoName):
     phone_number = auto()
     bold = auto()
     italic = auto()
+    underline = auto()
+    strikethrough = auto()
     code = auto()
     pre = auto()
     text_link = auto()
