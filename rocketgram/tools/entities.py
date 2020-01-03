@@ -4,107 +4,139 @@
 
 
 import sys
-from dataclasses import dataclass
-from typing import Optional, List
+from collections import namedtuple
+from typing import Optional, List, Generator, Dict, Callable
 
 from . import escape
-from ..update import User, MessageEntity, EntityType
+from ..update import MessageEntity, EntityType
+
+Tag = namedtuple('Tag', 'open close')
+
+ENCODE_UTF16 = not sys.maxunicode == 0xffff
+
+HTML = {
+    EntityType.bold: Tag('<b>', '</b>'),
+    EntityType.italic: Tag('<i>', '</i>'),
+    EntityType.underline: Tag('<u>', '</u>'),
+    EntityType.strikethrough: Tag('<s>', '</s>'),
+    EntityType.code: Tag('<code>', '</code>'),
+    EntityType.pre: Tag('<pre>', '</pre>'),
+    EntityType.text_link: Tag('<a href="%s">', '</a>'),
+    EntityType.text_mention: Tag('<a href="tg://user?id=%s">', '</a>'),
+}
+
+MARKDOWN = {
+    EntityType.bold: Tag('*', '*'),
+    EntityType.italic: Tag('_', '_'),
+    EntityType.code: Tag('`', '`'),
+    EntityType.pre: Tag('```\n', '```'),
+    EntityType.text_link: Tag('[', '](%s)'),
+    EntityType.text_mention: Tag('[', '](tg://user?id=%s)'),
+}
+
+MARKDOWN2 = MARKDOWN.copy()
+MARKDOWN2.update({
+    EntityType.underline: Tag('\r__\r', '\r__\r'),
+    EntityType.strikethrough: Tag('~', '~'),
+})
 
 
-@dataclass(frozen=True)
-class EntityItem:
-    entity_type: Optional[EntityType]
-    text: str
-    url: Optional[str]
-    user: Optional[User]
+def parse(text: str, entities: List[MessageEntity], get_tag: Callable[[bool, MessageEntity], Optional[str]],
+          escape: Callable[[str], str]) -> str:
+    encoded = text.encode('utf-16-le') if ENCODE_UTF16 else text
+
+    def e(start: int, end: int) -> str:
+        return encoded[start * 2:end * 2].decode('utf-16-le') if ENCODE_UTF16 else encoded[start:end]
+
+    def p(sub: List[MessageEntity], start: int, end: int) -> Generator[str, None, None]:
+        for index, entity in enumerate(sub):
+            if entity.offset < start:
+                continue
+            if entity.offset > start:
+                yield escape(e(start, entity.offset))
+
+            open_tag = get_tag(True, entity)
+            if open_tag:
+                yield open_tag
+
+            start = entity.offset + entity.length
+            nested = list(filter(lambda i: start > i.offset, sub[index + 1:]))
+
+            yield from p(nested, entity.offset, start)
+
+            close_tag = get_tag(False, entity)
+            if close_tag:
+                yield close_tag
+
+        if start < end:
+            yield escape(e(start, end))
+
+    se = sorted(entities, key=lambda item: item.offset)
+
+    return str().join(p(se, 0, len(text)))
 
 
-def parse(text: str, entities: List[MessageEntity]) -> List[EntityItem]:
-    if not entities:
-        return [EntityItem(None, text, None, None)]
+def get_html_tag(is_open: bool, entity: MessageEntity) -> Optional[str]:
+    tag = HTML.get(entity.entity_type)
+    if not tag:
+        return None
 
-    if sys.maxunicode == 0xffff:
-        encoded = False
-    else:
-        encoded = True
-        text = text.encode('utf-16-le')
+    if entity.entity_type == EntityType.text_link and is_open:
+        return tag.open % entity.url
 
-    parsed = list()
-    idx = 0
-    for e in entities:
-        offset = e.offset * 2 if encoded else e.offset
-        length = e.length * 2 if encoded else e.length
+    if entity.entity_type == EntityType.text_mention and is_open:
+        return tag.open % entity.user.user_id
 
-        if idx < offset:
-            t = text[idx:offset]
-            if encoded:
-                t = t.decode('utf-16-le')
-            parsed.append(EntityItem(None, t, None, None))
+    return tag.open if is_open else tag.close
 
-        t = text[offset:offset + length]
-        if encoded:
-            t = t.decode('utf-16-le')
-        parsed.append(EntityItem(e.entity_type, t, e.url, e.user))
 
-        idx = offset + length
+def get_md_tag(is_open: bool, entity: MessageEntity, tags: Dict[EntityType, Tag]) -> Optional[str]:
+    tag = tags.get(entity.entity_type)
+    if not tag:
+        return None
 
-    if idx < len(text):
-        t = text[idx:len(text)]
-        if encoded:
-            t = t.decode('utf-16-le')
-        parsed.append(EntityItem(None, t, None, None))
-    return parsed
+    if entity.entity_type == EntityType.text_link and not is_open:
+        return tag.close % entity.url
+
+    if entity.entity_type == EntityType.text_mention and not is_open:
+        return tag.close % entity.user.user_id
+
+    return tag.open if is_open else tag.close
+
+
+def get_markdown_tag(is_open: bool, entity: MessageEntity) -> Optional[str]:
+    return get_md_tag(is_open, entity, MARKDOWN)
+
+
+def get_markdown2_tag(is_open: bool, entity: MessageEntity) -> Optional[str]:
+    return get_md_tag(is_open, entity, MARKDOWN2)
 
 
 def to_html(text: Optional[str], entities: List[MessageEntity], escape_html: bool = True) -> Optional[str]:
     if text is None:
         return None
 
-    esc = escape.html if escape_html else lambda tx: tx
+    if entities is None:
+        return text
 
-    result = str()
-    for m in parse(text, entities):
-        t = esc(m.text)
-        if m.entity_type is EntityType.bold:
-            result += f'<b>{t}</b>'
-        elif m.entity_type is EntityType.italic:
-            result += f'<i>{t}</i>'
-        elif m.entity_type is EntityType.code:
-            result += f'<code>{t}</code>'
-        elif m.entity_type is EntityType.pre:
-            result += f'<pre>{t}</pre>'
-        elif m.entity_type is EntityType.text_link:
-            result += f'<a href="{m.url}">{t}</a>'
-        elif m.entity_type is EntityType.text_mention:
-            result += f'<a href="tg://user?id={m.user.user_id}">{t}</a>'
-        else:
-            result += t
-
-    return result
+    return parse(text, entities, get_html_tag, escape.html if escape_html else lambda t: t)
 
 
 def to_markdown(text: Optional[str], entities: List[MessageEntity], escape_markdown: bool = True) -> Optional[str]:
     if text is None:
         return None
 
-    esc = escape.markdown if escape_markdown else lambda tx: tx
+    if entities is None:
+        return text
 
-    result = str()
-    for m in parse(text, entities):
-        t = esc(m.text)
-        if m.entity_type is EntityType.bold:
-            result += f'*{t}*'
-        elif m.entity_type is EntityType.italic:
-            result += f'_{t}_'
-        elif m.entity_type is EntityType.code:
-            result += f'`{t}`'
-        elif m.entity_type is EntityType.pre:
-            result += f'```\n{t}```'
-        elif m.entity_type is EntityType.text_link:
-            result += f'[{t}]({m.url})'
-        elif m.entity_type is EntityType.text_mention:
-            result += f'[{t}](tg://user?id={m.user.user_id})'
-        else:
-            result += t
+    return parse(text, entities, get_markdown_tag, escape.markdown if escape_markdown else lambda t: t)
 
-    return result
+
+def to_markdown2(text: Optional[str], entities: List[MessageEntity], escape_markdown2: bool = True) -> Optional[str]:
+    if text is None:
+        return None
+
+    if entities is None:
+        return text
+
+    return parse(text, entities, get_markdown2_tag, escape.markdown2 if escape_markdown2 else lambda t: t)
