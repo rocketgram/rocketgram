@@ -5,17 +5,23 @@
 
 import re
 
-
-def html(text):
-    """Helper function to escape rocketgram html symbols"""
-    t = str(text)
-    t = t.replace(u'&', u'&amp;')
-    t = t.replace(u'<', u'&lt;')
-    t = t.replace(u'>', u'&gt;')
-
-    return t
+MD_RE = re.compile(r"([*_`\[])")
+MD2_RE = re.compile(r"([_*\[\]()~`>#+\-|{}.!])")
 
 
-def markdown(text):
-    """Helper function to escape rocketgram markup symbols"""
-    return re.sub(r'([\*_`\[])', r'\\\1', text)
+def html(text: str) -> str:
+    """Helper function to escape html symbols"""
+
+    return text.replace(u'&', u'&amp;').replace(u'<', u'&lt;').replace(u'>', u'&gt;')
+
+
+def markdown(text: str) -> str:
+    """Helper function to escape markdown symbols"""
+
+    return MD_RE.sub(r'\\\1', text)
+
+
+def markdown2(text: str) -> str:
+    """Helper function to escape markdown2 symbols"""
+
+    return MD2_RE.sub(r'\\\1', text)
