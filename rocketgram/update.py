@@ -498,7 +498,12 @@ class MessageEntity:
         if data is None:
             return None
 
-        return cls(EntityType(data['type']), data['offset'], data['length'], data.get('url'),
+        try:
+            entity_type = EntityType(data['type'])
+        except ValueError:
+            entity_type = EntityType.unknown
+
+        return cls(entity_type, data['offset'], data['length'], data.get('url'),
                    User.parse(data.get('user')))
 
 
