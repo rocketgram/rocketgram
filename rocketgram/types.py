@@ -168,6 +168,7 @@ class ParseModeType(EnumAutoName):
 
     html = auto()
     markdown = auto()
+    markdownv2 = auto()
 
 
 class ChatActionType(EnumAutoName):
