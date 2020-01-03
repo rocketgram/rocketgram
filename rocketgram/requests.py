@@ -5,6 +5,7 @@
 
 from dataclasses import dataclass, asdict
 from datetime import datetime
+from enum import Enum
 from typing import TYPE_CHECKING, Union, Dict, Optional, List
 
 from .context import context2
@@ -13,6 +14,7 @@ from .types import InputFile
 
 if TYPE_CHECKING:
     from .types import *
+    from .keyboards import InlineKeyboard, ReplyKeyboard
     from .update import Response, UpdateType, ChatPermissions
 
 ALL_KEYBOARDS = Union['InlineKeyboard',

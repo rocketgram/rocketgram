@@ -5,6 +5,12 @@ All notable changes to this project.
 ## [Unreleased]
 
 
+## [1.6.1] - 2020-01-04
+
+### Fixed
+- Import bug quickfix.
+
+
 ## [1.6] - 2020-01-04
 
 ### Added
