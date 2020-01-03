@@ -4,11 +4,25 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [1.6] - 2020-01-04
+
 ### Added
 - `Keyboard` object now can be passed to request without rendering.
+- Support new entity types `underline` and `strikethrough`.
+- Support parse mode type `markdownv2`.
+- New `file_unique_id` field to various objects.
+- New `small_file_unique_id` and `big_file_unique_id` to `ChatPhoto` object.
+- New `custom_title` to `ChatMember` object.
+- New `slow_mode_delay` to `Chat` object.
+- New `setChatAdministratorCustomTitle` request object.
+- Support nested entities.
 
 ### Fixed
 - Fixed bug in webhook-reply in `TornadoExecutor`.
+
+### Changed
+- Framework now corresponds to Telegram Bot API 4.5.
 
 
 ## [1.5] - 2019-08-04
