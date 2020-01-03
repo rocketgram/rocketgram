@@ -14,7 +14,7 @@ setuptools.setup(
     version=version(),
     author='Vd',
     author_email='vd@vd2.org',
-    url='https://github.com/vd2org/rocketgram',
+    url='https://github.com/rocketgram/rocketgram',
     license='MIT',
     description='Modern and powerful asynchronous telegram bot framework.',
     long_description=open(join(dirname(__file__), 'README.md')).read(),
