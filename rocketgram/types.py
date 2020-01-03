@@ -125,6 +125,7 @@ class EntityType(EnumAutoName):
     pre = auto()
     text_link = auto()
     text_mention = auto()
+    unknown = auto()
 
 
 class ChatMemberStatusType(EnumAutoName):
