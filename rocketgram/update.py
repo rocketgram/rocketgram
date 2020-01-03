@@ -249,6 +249,7 @@ class Chat:
     invite_link: Optional[str]
     pinned_message: Optional['Message']
     permissions: Optional['ChatPermissions']
+    slow_mode_delay: Optional[int]
     sticker_set_name: Optional[str]
     can_set_sticker_set: Optional[bool]
 
@@ -260,8 +261,8 @@ class Chat:
         return cls(data['id'], ChatType(data['type']), data.get('title'), data.get('username'), data.get('first_name'),
                    data.get('last_name'), ChatPhoto.parse(data.get('photo')), data.get('description'),
                    data.get('invite_link'), Message.parse(data.get('pinned_message')),
-                   ChatPermissions.parse(data.get('permissions')), data.get('sticker_set_name'),
-                   data.get('can_set_sticker_set'))
+                   ChatPermissions.parse(data.get('permissions')), data.get('slow_mode_delay'),
+                   data.get('sticker_set_name'), data.get('can_set_sticker_set'))
 
 
 @dataclass(frozen=True)
@@ -515,6 +516,7 @@ class PhotoSize:
     """
 
     file_id: str
+    file_unique_id: str
     width: int
     height: int
     file_size: Optional[int]
@@ -524,7 +526,7 @@ class PhotoSize:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['width'], data['height'], data.get('file_size'))
+        return cls(data['file_id'], data['file_unique_id'], data['width'], data['height'], data.get('file_size'))
 
 
 @dataclass(frozen=True)
@@ -535,6 +537,7 @@ class Audio:
     """
 
     file_id: str
+    file_unique_id: str
     duration: int
     performer: Optional[str]
     title: Optional[str]
@@ -547,7 +550,7 @@ class Audio:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['duration'], data.get('performer'), data.get('title'),
+        return cls(data['file_id'], data['file_unique_id'], data['duration'], data.get('performer'), data.get('title'),
                    data.get('mime_type'), data.get('file_size'), PhotoSize.parse(data.get('thumb')))
 
 
@@ -559,6 +562,7 @@ class Document:
     """
 
     file_id: str
+    file_unique_id: str
     thumb: Optional[PhotoSize]
     file_name: Optional[str]
     mime_type: Optional[str]
@@ -569,7 +573,7 @@ class Document:
         if data is None:
             return None
 
-        return cls(data['file_id'], PhotoSize.parse(data.get('thumb')), data.get('file_name'),
+        return cls(data['file_id'], data['file_unique_id'], PhotoSize.parse(data.get('thumb')), data.get('file_name'),
                    data.get('mime_type'), data.get('file_size'))
 
 
@@ -581,6 +585,7 @@ class Video:
     """
 
     file_id: str
+    file_unique_id: str
     width: int
     height: int
     duration: int
@@ -593,7 +598,7 @@ class Video:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['width'], data['height'], data['duration'],
+        return cls(data['file_id'], data['file_unique_id'], data['width'], data['height'], data['duration'],
                    PhotoSize.parse(data.get('thumb')), data.get('mime_type'), data.get('file_size'))
 
 
@@ -605,6 +610,7 @@ class Animation:
     """
 
     file_id: str
+    file_unique_id: str
     width: str
     height: str
     duration: str
@@ -618,7 +624,7 @@ class Animation:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['width'], data['height'], data['duration'],
+        return cls(data['file_id'], data['file_unique_id'], data['width'], data['height'], data['duration'],
                    PhotoSize.parse(data.get('thumb')), data.get('file_name'),
                    data.get('mime_type'), data.get('file_size'))
 
@@ -631,6 +637,7 @@ class Voice:
     """
 
     file_id: str
+    file_unique_id: str
     duration: int
     mime_type: Optional[str]
     file_size: Optional[int]
@@ -640,7 +647,8 @@ class Voice:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['duration'], data.get('mime_type'), data.get('file_size'))
+        return cls(data['file_id'], data['file_unique_id'], data['duration'], data.get('mime_type'),
+                   data.get('file_size'))
 
 
 @dataclass(frozen=True)
@@ -651,6 +659,7 @@ class VideoNote:
     """
 
     file_id: str
+    file_unique_id: str
     length: int
     duration: int
     thumb: Optional['PhotoSize']
@@ -661,7 +670,7 @@ class VideoNote:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['length'], data['duration'],
+        return cls(data['file_id'], data['file_unique_id'], data['length'], data['duration'],
                    PhotoSize.parse(data.get('thumb')), data.get('file_size'))
 
 
@@ -795,6 +804,7 @@ class File:
     """
 
     file_id: str
+    file_unique_id: str
     file_size: Optional[int]
     file_path: Optional[str]
 
@@ -803,7 +813,7 @@ class File:
         if data is None:
             return None
 
-        return cls(data['file_id'], data.get('file_size'), data.get('file_path'))
+        return cls(data['file_id'], data['file_unique_id'], data.get('file_size'), data.get('file_path'))
 
 
 @dataclass(frozen=True)
@@ -842,14 +852,16 @@ class ChatPhoto:
     """
 
     small_file_id: str
+    small_file_unique_id: str
     big_file_id: str
+    big_file_unique_id: str
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['ChatPhoto']:
         if data is None:
             return None
 
-        return cls(data['small_file_id'], data['big_file_id'])
+        return cls(data['small_file_id'], data['small_file_unique_id'], data['big_file_id'], data['big_file_unique_id'])
 
 
 @dataclass(frozen=True)
@@ -861,6 +873,7 @@ class ChatMember:
 
     user: 'User'
     status: 'ChatMemberStatusType'
+    custom_title: Optional[str]
     until_date: Optional[datetime]
     can_be_edited: Optional[bool]
     can_change_info: Optional[bool]
@@ -885,7 +898,7 @@ class ChatMember:
 
         until_date = datetime.utcfromtimestamp(data['until_date']) if 'until_date' in data else None
 
-        return cls(User.parse(data['user']), ChatMemberStatusType(data['status']), until_date,
+        return cls(User.parse(data['user']), ChatMemberStatusType(data['status']), data['custom_title'], until_date,
                    data.get('can_be_edited'), data.get('can_change_info'), data.get('can_post_messages'),
                    data.get('can_edit_messages'), data.get('can_delete_messages'), data.get('can_invite_users'),
                    data.get('can_restrict_members'), data.get('can_pin_messages'), data.get('can_promote_members'),
@@ -988,6 +1001,7 @@ class Sticker:
     """
 
     file_id: str
+    file_unique_id: str
     width: int
     height: int
     is_animated: Optional[bool]
@@ -1002,7 +1016,7 @@ class Sticker:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['width'], data['height'], data['is_animated'],
+        return cls(data['file_id'], data['file_unique_id'], data['width'], data['height'], data['is_animated'],
                    PhotoSize.parse(data.get('thumb')), data.get('emoji'), data.get('set_name'),
                    MaskPosition.parse(data.get('mask_position')), data.get('file_size'))
 
@@ -1230,6 +1244,7 @@ class PassportFile:
     """
 
     file_id: str
+    file_unique_id: str
     file_size: int
     file_date: datetime
 
@@ -1238,7 +1253,8 @@ class PassportFile:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['file_size'], datetime.utcfromtimestamp(data['file_date']))
+        return cls(data['file_id'], data['file_unique_id'], data['file_size'],
+                   datetime.utcfromtimestamp(data['file_date']))
 
 
 @dataclass(frozen=True)
