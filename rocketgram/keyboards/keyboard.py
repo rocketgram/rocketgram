@@ -37,7 +37,7 @@ class Keyboard:
     def __init__(self):
         self._buttons = list()
 
-    def __assing_buttons(self, keyboard):
+    def __assign_buttons(self, keyboard):
         btns = chain.from_iterable([p + q for p, q in zip(keyboard, repeat([None]))])
         self._buttons = list(btns)[:-1]
 
@@ -82,7 +82,7 @@ class Keyboard:
 
         tail_part = [tail_btns[p:q] for p, q in zip(accumulate(chain([0], tail)), accumulate(tail))]
 
-        self.__assing_buttons(chain(head_part + middle_part + tail_part))
+        self.__assign_buttons(chain(head_part + middle_part + tail_part))
 
         return self
 
@@ -94,7 +94,7 @@ class Keyboard:
         l = len(btns) if len(btns) < row else row
         keyboard = [btns[i:i + row] for i in range(0, len(btns), row)]
 
-        self.__assing_buttons(keyboard)
+        self.__assign_buttons(keyboard)
 
         return self
 
