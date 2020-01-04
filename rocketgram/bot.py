@@ -246,7 +246,7 @@ class Bot:
 
             for md in reversed(self.__middlewares):
                 response = md.after_request(request, response)
-                if inspect.isawaitable(request):
+                if inspect.isawaitable(response):
                     response = await response
 
             if response.ok:
