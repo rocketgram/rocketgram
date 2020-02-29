@@ -5,7 +5,7 @@ All notable changes to this project.
 ## [Unreleased]
 
 
-## [1.7] - 2020-01-04
+## [1.7] - 2020-02-29
 
 ### Added
 - More typing.
