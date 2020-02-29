@@ -499,7 +499,7 @@ class SendPoll(Request):
     question: str
     options: List[str]
     is_anonymous: Optional[bool] = None
-    type: Optional[PollType] = None
+    type: Optional['PollType'] = None
     allows_multiple_answers: Optional[bool] = None
     correct_option_id: Optional[int] = None
     is_closed: Optional[bool] = None
