@@ -213,10 +213,13 @@ class User:
 
     user_id: int
     is_bot: bool
-    first_name: Optional[str]
+    first_name: str
     last_name: Optional[str]
     username: Optional[str]
     language_code: Optional[str]
+    can_join_groups: Optional[bool]
+    can_read_all_group_messages: Optional[bool]
+    supports_inline_queries: Optional[bool]
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['User']:
@@ -224,7 +227,8 @@ class User:
             return None
 
         return cls(data['id'], data['is_bot'], data['first_name'], data.get('last_name'), data.get('username'),
-                   data.get('language_code'))
+                   data.get('language_code'), data.get('can_join_groups'), data.get('can_read_all_group_messages'),
+                   data.get('supports_inline_queries'))
 
 
 @dataclass(frozen=True)
