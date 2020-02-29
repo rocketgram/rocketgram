@@ -898,7 +898,7 @@ class ChatMember:
 
         until_date = datetime.utcfromtimestamp(data['until_date']) if 'until_date' in data else None
 
-        return cls(User.parse(data['user']), ChatMemberStatusType(data['status']), data['custom_title'], until_date,
+        return cls(User.parse(data['user']), ChatMemberStatusType(data['status']), data.get('custom_title'), until_date,
                    data.get('can_be_edited'), data.get('can_change_info'), data.get('can_post_messages'),
                    data.get('can_edit_messages'), data.get('can_delete_messages'), data.get('can_invite_users'),
                    data.get('can_restrict_members'), data.get('can_pin_messages'), data.get('can_promote_members'),
