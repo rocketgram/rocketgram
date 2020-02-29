@@ -5,6 +5,34 @@ All notable changes to this project.
 ## [Unreleased]
 
 
+## [1.7] - 2020-01-04
+
+### Added
+- More typing.
+- `language` field to `MessageEntity` class.
+- New `PollType` class.
+- `can_join_groups` field to `User` class.
+- `can_read_all_group_messages` field to `User` class.
+- `can_join_groups` field to `User` class.
+- New `PollAnswer` class.
+- New update type `poll_answer` in `UpdateType` class.
+- `poll_answer` to `Update` class.
+- `poll` method to `ReplyKeyboard` class.
+- `is_anonymous` field to `SendPoll` request class.
+- `type` field to `SendPoll` request class.
+- `allows_multiple_answers` field to `SendPoll` request class.
+- `correct_option_id` field to `SendPoll` request class.
+- `is_closed` field to `SendPoll` request class.
+
+### Fixed
+- Bug when use middlewares.
+- Bug in ChatMember object.
+- `first_name` in `User` class now mandatory as expected.
+
+### Changed
+- Framework now corresponds to Telegram Bot API 4.6.
+
+
 ## [1.6.1] - 2020-01-04
 
 ### Fixed
