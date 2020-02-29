@@ -9,11 +9,15 @@ from typing import List, Tuple, Union, TYPE_CHECKING
 from . import errors
 
 if TYPE_CHECKING:
+    from .reply import ReplyKeyboard
+    from .inline import InlineKeyboard
     from ..types import InlineKeyboardMarkup, ReplyKeyboardMarkup
     from ..types import KeyboardButton, InlineKeyboardButton
 
 MIN_BUTTONS = 1
 MAX_BUTTONS = 8
+
+POSSIBLE_RETURN_TYPE = Union['Keyboard', 'ReplyKeyboard', 'InlineKeyboard']
 
 
 def _check_scheme_values(*args):
@@ -43,7 +47,7 @@ class Keyboard:
 
     def arrange_scheme(self, head: Union[None, int, List, Tuple] = None,
                        middle: Union[None, int, List, Tuple] = 1,
-                       tail: Union[None, int, List, Tuple] = None):
+                       tail: Union[None, int, List, Tuple] = None) -> POSSIBLE_RETURN_TYPE:
 
         head = [] if head is None else head
         middle = [] if middle is None else middle
@@ -86,7 +90,7 @@ class Keyboard:
 
         return self
 
-    def arrange_simple(self, row: int = 8):
+    def arrange_simple(self, row: int = 8) -> POSSIBLE_RETURN_TYPE:
         if row < MIN_BUTTONS or row > MAX_BUTTONS:
             raise errors.TooManyButtonsError('Too many buttons in a row')
 
@@ -98,7 +102,7 @@ class Keyboard:
 
         return self
 
-    def row(self):
+    def row(self) -> POSSIBLE_RETURN_TYPE:
         if len(self._buttons) and self._buttons[-1]:
             self._buttons.append(None)
         return self

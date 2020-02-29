@@ -32,19 +32,19 @@ class ReplyKeyboard(Keyboard):
 
     resize = property(fget=lambda self: self.__resize, fset=set_resize)
 
-    def text(self, text):
+    def text(self, text: str) -> 'ReplyKeyboard':
         self.add(KeyboardButton(text=text))
         return self
 
-    def contact(self, text):
+    def contact(self, text: str) -> 'ReplyKeyboard':
         self.add(KeyboardButton(text=text, request_contact=True))
         return self
 
-    def location(self, text):
+    def location(self, text: str) -> 'ReplyKeyboard':
         self.add(KeyboardButton(text=text, request_location=True))
         return self
 
-    def poll(self, text: str, request_poll: PollType):
+    def poll(self, text: str, request_poll: PollType) -> 'ReplyKeyboard':
         self.add(KeyboardButton(text=text, request_poll=KeyboardButtonPollType(request_poll)))
         return self
 

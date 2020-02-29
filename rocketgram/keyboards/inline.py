@@ -22,23 +22,23 @@ class InlineKeyboard(Keyboard):
         self.add(InlineKeyboardButton(text=text, login_url=lu))
         return self
 
-    def callback(self, text, callback_data) -> 'InlineKeyboard':
+    def callback(self, text: str, callback_data: str) -> 'InlineKeyboard':
         self.add(InlineKeyboardButton(text=text, callback_data=callback_data))
         return self
 
-    def inline(self, text, switch_inline_query=str()) -> 'InlineKeyboard':
+    def inline(self, text: str, switch_inline_query: str = str()) -> 'InlineKeyboard':
         self.add(InlineKeyboardButton(text=text, switch_inline_query=switch_inline_query))
         return self
 
-    def inline_current(self, text, switch_inline_query_current_chat=str()) -> 'InlineKeyboard':
+    def inline_current(self, text: str, switch_inline_query_current_chat: str = str()) -> 'InlineKeyboard':
         self.add(InlineKeyboardButton(text=text, switch_inline_query_current_chat=switch_inline_query_current_chat))
         return self
 
-    def game(self, text, callback_game) -> 'InlineKeyboard':
+    def game(self, text: str, callback_game: str) -> 'InlineKeyboard':
         self.add(InlineKeyboardButton(text=text, callback_game=callback_game))
         return self
 
-    def pay(self, text) -> 'InlineKeyboard':
+    def pay(self, text: str) -> 'InlineKeyboard':
         self.add(InlineKeyboardButton(text=text, pay=True))
         return self
 
