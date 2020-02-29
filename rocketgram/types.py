@@ -160,6 +160,11 @@ class EncryptedPassportElementType(EnumAutoName):
     email = auto()
 
 
+class PollType(EnumAutoName):
+    regular = auto()
+    quiz = auto()
+
+
 class ParseModeType(EnumAutoName):
     """\
     Formatting options type:

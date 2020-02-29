@@ -19,7 +19,7 @@ from .requests import GetUpdates, SetWebhook, DeleteWebhook, SendChatAction, Kic
     GetUserProfilePhotos, GetFile, UploadStickerFile, GetChat, GetChatMember, GetChatAdministrators, GetStickerSet, \
     GetGameHighScores
 from .types import UpdateType, MessageType, ChatType, EntityType, ChatMemberStatusType, MaskPositionPointType, \
-    EncryptedPassportElementType, MaskPosition, InlineKeyboardMarkup
+    EncryptedPassportElementType, MaskPosition, InlineKeyboardMarkup, PollType
 
 if TYPE_CHECKING:
     from .requests import Request
@@ -760,12 +760,22 @@ class Poll:
     """\
     Represents Poll object:
     https://core.telegram.org/bots/api#poll
+
+    Differences in field names:
+    id -> pool_id
+    type -> poll_type
+
     """
 
     pool_id: str
     question: str
     options: List['PollOption']
+    total_voter_count: int
     is_closed: bool
+    is_anonymous: bool
+    poll_type: PollType
+    allows_multiple_answers: bool
+    correct_option_id: Optional[int]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['Poll']:
@@ -774,7 +784,9 @@ class Poll:
 
         options = [PollOption.parse(i) for i in data['options']]
 
-        return cls(data['id'], data['question'], options, data['is_closed'])
+        return cls(data['id'], data['question'], options, data['total_voter_count'], data['is_closed'],
+                   data['is_anonymous'], PollType(data['poll_type']), data['allows_multiple_answers'],
+                   data['correct_option_id'])
 
 
 @dataclass(frozen=True)
