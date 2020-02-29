@@ -68,6 +68,7 @@ class UpdateType(EnumAutoName):
     shipping_query = auto()
     pre_checkout_query = auto()
     poll = auto()
+    poll_answer = auto()
 
 
 class MessageType(EnumAutoName):

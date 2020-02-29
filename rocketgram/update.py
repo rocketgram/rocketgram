@@ -134,6 +134,7 @@ class Update:
     shipping_query: Optional['ShippingQuery']
     pre_checkout_query: Optional['PreCheckoutQuery']
     poll: Optional['Poll']
+    poll_answer: Optional['PollAnswer']
 
     @classmethod
     def parse(cls, data: Dict) -> 'Update':
@@ -147,6 +148,7 @@ class Update:
         shipping_query = ShippingQuery.parse(data.get('shipping_query'))
         pre_checkout_query = PreCheckoutQuery.parse(data.get('pre_checkout_query'))
         poll = Poll.parse(data.get('poll'))
+        poll_answer = PollAnswer.parse(data.get('poll_answer'))
 
         update_type = None
         if 'message' in data:
@@ -169,9 +171,12 @@ class Update:
             update_type = UpdateType.pre_checkout_query
         elif 'poll' in data:
             update_type = UpdateType.poll
+        elif 'poll_answer' in data:
+            update_type = UpdateType.poll_answer
 
         return cls(data, data['update_id'], update_type, message, edited_message, channel_post, edited_channel_post,
-                   inline_query, chosen_inline_result, callback_query, shipping_query, pre_checkout_query, poll)
+                   inline_query, chosen_inline_result, callback_query, shipping_query, pre_checkout_query, poll,
+                   poll_answer)
 
 
 @dataclass(frozen=True)
@@ -757,6 +762,26 @@ class PollOption:
             return None
 
         return cls(data['text'], data['voter_count'])
+
+
+@dataclass(frozen=True)
+class PollAnswer:
+    """\
+    Represents PollAnswer object:
+    https://core.telegram.org/bots/api#pollanswer
+
+    """
+
+    pool_id: str
+    user: 'User'
+    option_ids: List[int]
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['PollAnswer']:
+        if data is None:
+            return None
+
+        return cls(data['pool_id'], User.parse(data['user']), data['option_ids'])
 
 
 @dataclass(frozen=True)
