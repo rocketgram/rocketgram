@@ -493,6 +493,7 @@ class MessageEntity:
     length: int
     url: Optional[str]
     user: Optional[User]
+    language: Optional[str]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['MessageEntity']:
@@ -505,7 +506,7 @@ class MessageEntity:
             entity_type = EntityType.unknown
 
         return cls(entity_type, data['offset'], data['length'], data.get('url'),
-                   User.parse(data.get('user')))
+                   User.parse(data.get('user')), data.get('language'))
 
 
 @dataclass(frozen=True)
