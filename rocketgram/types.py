@@ -217,6 +217,17 @@ class KeyboardButton:
     text: str
     request_contact: Optional[bool] = None
     request_location: Optional[bool] = None
+    request_poll: Optional['KeyboardButtonPollType'] = None
+
+
+@dataclass(frozen=True)
+class KeyboardButtonPollType:
+    """\
+    Represents KeyboardButtonPollType keyboard object:
+    https://core.telegram.org/bots/api#keyboardbuttonpolltype
+    """
+
+    type: PollType
 
 
 @dataclass(frozen=True)

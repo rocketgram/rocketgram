@@ -4,7 +4,7 @@
 
 
 from .keyboard import Keyboard
-from ..types import ReplyKeyboardMarkup, KeyboardButton
+from ..types import ReplyKeyboardMarkup, KeyboardButton, PollType, KeyboardButtonPollType
 
 
 class ReplyKeyboard(Keyboard):
@@ -42,6 +42,10 @@ class ReplyKeyboard(Keyboard):
 
     def location(self, text):
         self.add(KeyboardButton(text=text, request_location=True))
+        return self
+
+    def poll(self, text: str, request_poll: PollType):
+        self.add(KeyboardButton(text=text, request_poll=KeyboardButtonPollType(request_poll)))
         return self
 
     def row(self) -> 'ReplyKeyboard':
