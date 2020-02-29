@@ -498,6 +498,11 @@ class SendPoll(Request):
     chat_id: Union[int, str]
     question: str
     options: List[str]
+    is_anonymous: Optional[bool] = None
+    type: Optional[PollType] = None
+    allows_multiple_answers: Optional[bool] = None
+    correct_option_id: Optional[int] = None
+    is_closed: Optional[bool] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[ALL_KEYBOARDS] = None
