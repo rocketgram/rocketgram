@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [1.8] - 2020-04-11
+
 ### Added
 - Added `SendDice` request class.
 - Added `Dice` update class.
