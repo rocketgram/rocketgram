@@ -1105,7 +1105,7 @@ class SetStickerSetThumb(Request):
 
     name: str
     user_id: int
-    thumb: Optional[InputFile, str]
+    thumb: Optional[Union[InputFile, str]]
 
     def files(self) -> List['InputFile']:
         if isinstance(self.thumb, InputFile):
