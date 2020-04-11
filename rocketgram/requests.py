@@ -15,7 +15,7 @@ from .types import InputFile
 if TYPE_CHECKING:
     from .types import *
     from .keyboards import InlineKeyboard, ReplyKeyboard
-    from .update import Response, UpdateType, ChatPermissions
+    from .update import Response, UpdateType, ChatPermissions, BotCommand
 
 ALL_KEYBOARDS = Union['InlineKeyboard',
                       'ReplyKeyboard',
@@ -848,6 +848,28 @@ class AnswerCallbackQuery(Request):
     show_alert: Optional[bool] = None
     url: Optional[str] = None
     cache_time: Optional[int] = None
+
+
+@dataclass(frozen=True)
+class SetMyCommands(Request):
+    """\
+    Represents SetMyCommands request object:
+    https://core.telegram.org/bots/api#setmycommands
+    """
+
+    method = "setMyCommands"
+
+    commands: List['BotCommand']
+
+
+@dataclass(frozen=True)
+class GetMyCommands(Request):
+    """\
+    Represents GetMyCommands request object:
+    https://core.telegram.org/bots/api#getmycommands
+    """
+
+    method = "getMyCommands"
 
 
 @dataclass(frozen=True)

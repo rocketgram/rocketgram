@@ -11,13 +11,13 @@ from .requests import GetUpdates, SetWebhook, DeleteWebhook, SendChatAction, Kic
     RestrictChatMember, PromoteChatMember, SetChatPhoto, DeleteChatPhoto, SetChatTitle, SetChatDescription, \
     PinChatMessage, UnpinChatMessage, LeaveChat, SetChatStickerSet, DeleteChatStickerSet, DeleteMessage, \
     CreateNewStickerSet, AddStickerToSet, SetStickerPositionInSet, DeleteStickerFromSet, SetPassportDataErrors, \
-    SetGameScore, ExportChatInviteLink, GetChatMembersCount, AnswerCallbackQuery, AnswerInlineQuery, \
-    AnswerPreCheckoutQuery, AnswerShippingQuery, GetWebhookInfo, GetMe, SendMessage, ForwardMessage, SendPhoto, \
-    SendAudio, SendDocument, SendVideo, SendAnimation, SendVoice, SendVideoNote, SendLocation, SendVenue, SendContact, \
-    SendPoll, SendDice, SendSticker, SendInvoice, SendGame, EditMessageLiveLocation, StopMessageLiveLocation, \
-    StopPoll, EditMessageText, EditMessageCaption, EditMessageMedia, EditMessageReplyMarkup, SendMediaGroup, \
-    GetUserProfilePhotos, GetFile, UploadStickerFile, GetChat, GetChatMember, GetChatAdministrators, GetStickerSet, \
-    GetGameHighScores
+    SetGameScore, ExportChatInviteLink, GetChatMembersCount, AnswerCallbackQuery, GetMyCommands, SetMyCommands, \
+    AnswerInlineQuery, AnswerPreCheckoutQuery, AnswerShippingQuery, GetWebhookInfo, GetMe, SendMessage, \
+    ForwardMessage, SendPhoto, SendAudio, SendDocument, SendVideo, SendAnimation, SendVoice, SendVideoNote, \
+    SendLocation, SendVenue, SendContact, SendPoll, SendDice, SendSticker, SendInvoice, SendGame, \
+    EditMessageLiveLocation, StopMessageLiveLocation, StopPoll, EditMessageText, EditMessageCaption, \
+    EditMessageMedia, EditMessageReplyMarkup, SendMediaGroup, GetUserProfilePhotos, GetFile, UploadStickerFile, \
+    GetChat, GetChatMember, GetChatAdministrators, GetStickerSet, GetGameHighScores
 from .types import UpdateType, MessageType, ChatType, EntityType, ChatMemberStatusType, MaskPositionPointType, \
     EncryptedPassportElementType, MaskPosition, InlineKeyboardMarkup, PollType
 
@@ -43,7 +43,7 @@ class Response:
     description: Optional[str]
     result: Optional[Union[bool, int, str, 'Chat', 'ChatMember', 'File', 'Message', List['GameHighScore'],
                            List['Update'], 'StickerSet', 'User', 'WebhookInfo', 'UserProfilePhotos',
-                           List['ChatMember']]]
+                           List['ChatMember'], List['BotCommand']]]
     parameters: Optional['ResponseParameters']
 
     @classmethod
@@ -70,6 +70,10 @@ class Response:
                                  SetStickerPositionInSet, DeleteStickerFromSet, SetPassportDataErrors, SetGameScore,
                                  ExportChatInviteLink, GetChatMembersCount, AnswerCallbackQuery, AnswerInlineQuery,
                                  AnswerPreCheckoutQuery, AnswerShippingQuery)):
+            result = data['result']
+        elif isinstance(method, GetMyCommands):
+            result = [BotCommand.parse(r) for r in data['result']]
+        elif isinstance(method, SetMyCommands):
             result = data['result']
         elif isinstance(method, GetWebhookInfo):
             result = WebhookInfo.parse(data['result'])
@@ -994,6 +998,24 @@ class ChatPermissions:
         return cls(data.get('can_send_messages'), data.get('can_send_media_messages'), data.get('can_send_polls'),
                    data.get('can_send_other_messages'), data.get('can_add_web_page_previews'),
                    data.get('can_change_info'), data.get('can_invite_users'), data.get('can_pin_messages'))
+
+
+@dataclass(frozen=True)
+class BotCommand:
+    """\
+    Represents BotCommand object:
+    https://core.telegram.org/bots/api#botcommand
+    """
+
+    command: str
+    description: str
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['BotCommand']:
+        if data is None:
+            return None
+
+        return cls(data['command'], data['description'])
 
 
 @dataclass(frozen=True)

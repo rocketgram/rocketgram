@@ -8,6 +8,8 @@ All notable changes to this project.
 - Added `SendDice` request method.
 - Added `Dice` update object.
 - Added `dice` field to `Message` object.
+- Added `SetMyCommands` request method.
+- Added `GetMyCommands` request method.
 
 
 ## [1.7] - 2020-02-29
