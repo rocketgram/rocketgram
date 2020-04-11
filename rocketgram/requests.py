@@ -1041,15 +1041,19 @@ class CreateNewStickerSet(Request):
     user_id: int
     name: str
     title: str
-    png_sticker: Union['InputFile', str]
+    png_sticker: Optional[Union['InputFile', str]]
+    tgs_sticker: Optional['InputFile']
     emojis: str
     contains_masks: Optional[bool] = None
     mask_position: Optional['MaskPosition'] = None
 
     def files(self) -> List['InputFile']:
+        files = list()
         if isinstance(self.png_sticker, InputFile):
-            return [self.png_sticker]
-        return list()
+            files.append(self.png_sticker)
+        if self.tgs_sticker is not None:
+            files.append(self.tgs_sticker)
+        return files
 
 
 @dataclass(frozen=True)
@@ -1063,14 +1067,18 @@ class AddStickerToSet(Request):
 
     user_id: int
     name: str
-    png_sticker: Union[InputFile, str]
+    png_sticker: Optional[Union[InputFile, str]]
+    tgs_sticker: Optional[InputFile]
     emojis: str
     mask_position: Optional['MaskPosition'] = None
 
     def files(self) -> List['InputFile']:
+        files = list()
         if isinstance(self.png_sticker, InputFile):
-            return [self.png_sticker]
-        return list()
+            files.append(self.png_sticker)
+        if self.tgs_sticker is not None:
+            files.append(self.tgs_sticker)
+        return files
 
 
 @dataclass(frozen=True)
@@ -1084,6 +1092,25 @@ class SetStickerPositionInSet(Request):
 
     sticker: str
     position: int
+
+
+@dataclass(frozen=True)
+class SetStickerSetThumb(Request):
+    """\
+    Represents SetStickerSetThumb request object:
+    https://core.telegram.org/bots/api#setstickersetthumb
+    """
+
+    method = "setStickerSetThumb"
+
+    name: str
+    user_id: int
+    thumb: Optional[InputFile, str]
+
+    def files(self) -> List['InputFile']:
+        if isinstance(self.thumb, InputFile):
+            return [self.thumb]
+        return list()
 
 
 @dataclass(frozen=True)

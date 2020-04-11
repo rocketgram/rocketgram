@@ -5,11 +5,17 @@ All notable changes to this project.
 ## [Unreleased]
 
 ### Added
-- Added `SendDice` request method.
-- Added `Dice` update object.
-- Added `dice` field to `Message` object.
-- Added `SetMyCommands` request method.
-- Added `GetMyCommands` request method.
+- Added `SendDice` request class.
+- Added `Dice` update class.
+- Added `dice` field to `Message` class.
+- Added `SetMyCommands` request class.
+- Added `GetMyCommands` request class.
+- Added `GetStickerSetThumb` request class.
+- Added `tgs_sticker` field to `AddStickerToSet` request class.
+- Added `tgs_sticker` and `thumb` fields to `StickerSet` request class.
+
+### Changed
+- Framework now corresponds to Telegram Bot API 4.7.
 
 
 ## [1.7] - 2020-02-29

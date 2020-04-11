@@ -1067,6 +1067,7 @@ class StickerSet:
     title: str
     contains_masks: bool
     stickers: List['Sticker']
+    thumb: Optional['PhotoSize']
 
     @classmethod
     def parse(cls, data: dict) -> Optional['StickerSet']:
@@ -1075,7 +1076,7 @@ class StickerSet:
 
         stickers = [Sticker.parse(s) for s in data['stickers']]
 
-        return cls(data['name'], data['title'], data['contains_masks'], stickers)
+        return cls(data['name'], data['title'], data['contains_masks'], stickers, PhotoSize.parse(data['thumb']))
 
 
 @dataclass(frozen=True)
