@@ -14,8 +14,8 @@ from .requests import GetUpdates, SetWebhook, DeleteWebhook, SendChatAction, Kic
     SetGameScore, ExportChatInviteLink, GetChatMembersCount, AnswerCallbackQuery, AnswerInlineQuery, \
     AnswerPreCheckoutQuery, AnswerShippingQuery, GetWebhookInfo, GetMe, SendMessage, ForwardMessage, SendPhoto, \
     SendAudio, SendDocument, SendVideo, SendAnimation, SendVoice, SendVideoNote, SendLocation, SendVenue, SendContact, \
-    SendPoll, SendSticker, SendInvoice, SendGame, EditMessageLiveLocation, StopMessageLiveLocation, StopPoll, \
-    EditMessageText, EditMessageCaption, EditMessageMedia, EditMessageReplyMarkup, SendMediaGroup, \
+    SendPoll, SendDice, SendSticker, SendInvoice, SendGame, EditMessageLiveLocation, StopMessageLiveLocation, \
+    StopPoll, EditMessageText, EditMessageCaption, EditMessageMedia, EditMessageReplyMarkup, SendMediaGroup, \
     GetUserProfilePhotos, GetFile, UploadStickerFile, GetChat, GetChatMember, GetChatAdministrators, GetStickerSet, \
     GetGameHighScores
 from .types import UpdateType, MessageType, ChatType, EntityType, ChatMemberStatusType, MaskPositionPointType, \
@@ -77,7 +77,7 @@ class Response:
             result = User.parse(data['result'])
         elif isinstance(method, (SendMessage, ForwardMessage, SendPhoto, SendAudio, SendDocument, SendVideo,
                                  SendAnimation, SendVoice, SendVideoNote, SendLocation, SendVenue, SendContact,
-                                 SendPoll, SendSticker, SendInvoice, SendGame)):
+                                 SendPoll, SendDice, SendSticker, SendInvoice, SendGame)):
             result = Message.parse(data['result'])
         elif isinstance(method, (EditMessageLiveLocation, StopMessageLiveLocation, EditMessageText, EditMessageCaption,
                                  EditMessageMedia, EditMessageReplyMarkup)):
@@ -323,6 +323,7 @@ class Message:
     location: Optional['Location']
     venue: Optional['Venue']
     poll: Optional['Poll']
+    dice: Optional['Dice']
 
     new_chat_members: Optional[List['User']]
     left_chat_member: Optional[User]
@@ -391,6 +392,7 @@ class Message:
         location = Location.parse(data.get('location'))
         venue = Venue.parse(data.get('venue'))
         poll = Poll.parse(data.get('poll'))
+        dice = Dice.parse(data.get('dice'))
 
         new_chat_members = [User.parse(d) for d in
                             data.get('new_chat_members')] if 'new_chat_members' in data else None
@@ -449,6 +451,8 @@ class Message:
             message_type = MessageType.venue
         elif poll is not None:
             message_type = MessageType.poll
+        elif dice is not None:
+            message_type = MessageType.dice
         elif left_chat_member is not None:
             message_type = MessageType.left_chat_member
         elif new_chat_title is not None:
@@ -481,7 +485,7 @@ class Message:
         return cls(message_id, message_type, user, date, chat, forward_from, forward_from_chat, forward_from_message_id,
                    forward_signature, forward_sender_name, forward_date, reply_to_message, edit_date, media_group_id,
                    author_signature, text, entities, caption_entities, audio, document, animation, game, photo, sticker,
-                   video, voice, video_note, caption, contact, location, venue, poll, new_chat_members,
+                   video, voice, video_note, caption, contact, location, venue, poll, dice, new_chat_members,
                    left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo, group_chat_created,
                    supergroup_chat_created, channel_chat_created, migrate_to_chat_id, migrate_from_chat_id,
                    pinned_message, invoice, successful_payment, connected_website, passport_data, reply_markup)
@@ -816,6 +820,23 @@ class Poll:
         return cls(data['id'], data['question'], options, data['total_voter_count'], data['is_closed'],
                    data['is_anonymous'], PollType(data['poll_type']), data['allows_multiple_answers'],
                    data['correct_option_id'])
+
+
+@dataclass(frozen=True)
+class Dice:
+    """\
+    Represents Dice object:
+    https://core.telegram.org/bots/api#dice
+    """
+
+    value: int
+
+    @classmethod
+    def parse(cls, data: dict) -> Optional['Dice']:
+        if data is None:
+            return None
+
+        return cls(data['value'])
 
 
 @dataclass(frozen=True)

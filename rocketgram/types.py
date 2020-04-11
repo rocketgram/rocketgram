@@ -86,6 +86,7 @@ class MessageType(EnumAutoName):
     location = auto()
     venue = auto()
     poll = auto()
+    dice = auto()
     new_chat_members = auto()
     left_chat_member = auto()
     new_chat_title = auto()

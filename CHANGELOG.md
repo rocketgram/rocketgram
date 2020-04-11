@@ -4,6 +4,11 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- Added `SendDice` request method.
+- Added `Dice` update object.
+- Added `dice` field to `Message` object.
+
 
 ## [1.7] - 2020-02-29
 

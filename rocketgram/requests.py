@@ -509,6 +509,21 @@ class SendPoll(Request):
 
 
 @dataclass(frozen=True)
+class SendDice(Request):
+    """\
+    Represents SendPoll request object:
+    https://core.telegram.org/bots/api#senddice
+    """
+
+    method = "sendDice"
+
+    chat_id: Union[int, str]
+    disable_notification: Optional[bool] = None
+    reply_to_message_id: Optional[int] = None
+    reply_markup: Optional[ALL_KEYBOARDS] = None
+
+
+@dataclass(frozen=True)
 class SendChatAction(Request):
     """\
     Represents SendChatAction request object:
