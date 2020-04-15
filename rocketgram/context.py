@@ -5,9 +5,10 @@
 import logging
 from contextvars import ContextVar
 from typing import List, Optional, TYPE_CHECKING
+from . import api
 
 if TYPE_CHECKING:
-    from . import bot, api, executors
+    from . import bot, executors
 
 current_executor = ContextVar('current_executor')
 current_bot = ContextVar('current_bot')
@@ -15,6 +16,7 @@ current_webhook_requests = ContextVar('current_webhook_requests')
 
 current_update = ContextVar('current_update')
 current_message = ContextVar('current_message')
+current_callback = ContextVar('current_callback')
 current_chat = ContextVar('current_chat')
 current_user = ContextVar('current_user')
 
@@ -22,7 +24,17 @@ logger = logging.getLogger('rocketgram.context')
 
 
 class Context:
+    __instance: 'Context' = None
     __slots__ = tuple()
+
+    def __new__(cls):
+        if Context.__instance is None:
+            Context.__instance = super().__new__(cls)
+        return Context.__instance
+
+    @classmethod
+    def instance(cls) -> 'Context':
+        return cls()
 
     @property
     def executor(self) -> Optional['executors.Executor']:
@@ -84,6 +96,16 @@ class Context:
     def user(self, user: 'api.User'):
         current_user.set(user)
 
+    @property
+    def callback(self) -> Optional['api.CallbackQuery']:
+        """Returns CallbackQuery object for current request."""
+
+        return current_callback.get(None)
+
+    @callback.setter
+    def callback(self, user: 'api.CallbackQuery'):
+        current_callback.set(user)
+
     @staticmethod
     def webhook(request: 'api.Request'):
         """Sets Request object to be sent through webhook-request mechanism."""
@@ -102,5 +124,48 @@ class Context:
 
         current_webhook_requests.set(webhook_requests)
 
+    def assign(self, executor: 'executors.Executor', bot: 'bot.Bot', update: 'api.Update'):
 
-context = Context()
+        self.executor = executor
+        self.bot = bot
+
+        self.webhook_requests = list()
+
+        self.update = update
+        self.message = None
+        self.chat = None
+        self.user = None
+
+        if update.update_type is api.UpdateType.message:
+            self.message = update.message
+            self.chat = update.message.chat
+            self.user = update.message.user
+        elif update.update_type is api.UpdateType.edited_message:
+            self.message = update.edited_message
+            self.chat = update.edited_message.chat
+            self.user = update.edited_message.user
+        elif update.update_type is api.UpdateType.channel_post:
+            self.message = update.channel_post
+            self.chat = update.channel_post.chat
+            self.user = update.channel_post.user
+        elif update.update_type is api.UpdateType.edited_channel_post:
+            self.message = update.edited_channel_post
+            self.chat = update.edited_channel_post.chat
+            self.user = update.edited_channel_post.user
+        elif update.update_type is api.UpdateType.inline_query:
+            self.user = update.inline_query.user
+        elif update.update_type is api.UpdateType.chosen_inline_result:
+            self.user = update.chosen_inline_result.user
+        elif update.update_type is api.UpdateType.callback_query:
+            self.callback = update.callback_query
+            self.message = update.callback_query.message
+            if update.callback_query.message:
+                self.chat = update.callback_query.message.chat
+            self.user = update.callback_query.user
+        elif update.update_type is api.UpdateType.shipping_query:
+            self.user = update.shipping_query.user
+        elif update.update_type is api.UpdateType.pre_checkout_query:
+            self.user = update.pre_checkout_query.user
+
+
+context = Context.instance()

@@ -4,14 +4,17 @@ All notable changes to this project.
 
 ## [Unreleased]
 
-### Removed
-- Old `context` helper functions. Now `context` and `context2` is the same.
+### Added
+- Added `callback` context helper.
 
 ### Fixed
 - Minor bugfixes.
 
 ### Changed
 - Refactored api.
+
+### Removed
+- Old `context` helper functions. Now `context` and `context2` is the same.
 
 ### Deprecated
 - `context2` is deprecated and will be removed in version 2.1.

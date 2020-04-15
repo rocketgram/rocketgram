@@ -145,45 +145,7 @@ class Bot:
     async def process(self, executor: 'executors.Executor', update: Update) -> Optional[Request]:
         logger_raw_in.debug('Raw in: %s', update.raw)
 
-        context.executor = executor
-        context.bot = self
-
-        context.webhook_requests = list()
-
-        context.update = update
-        context.message = None
-        context.chat = None
-        context.user = None
-
-        if update.update_type is UpdateType.message:
-            context.message = update.message
-            context.chat = update.message.chat
-            context.user = update.message.user
-        elif update.update_type is UpdateType.edited_message:
-            context.message = update.edited_message
-            context.chat = update.edited_message.chat
-            context.user = update.edited_message.user
-        elif update.update_type is UpdateType.channel_post:
-            context.message = update.channel_post
-            context.chat = update.channel_post.chat
-            context.user = update.channel_post.user
-        elif update.update_type is UpdateType.edited_channel_post:
-            context.message = update.edited_channel_post
-            context.chat = update.edited_channel_post.chat
-            context.user = update.edited_channel_post.user
-        elif update.update_type is UpdateType.inline_query:
-            context.user = update.inline_query.user
-        elif update.update_type is UpdateType.chosen_inline_result:
-            context.user = update.chosen_inline_result.user
-        elif update.update_type is UpdateType.callback_query:
-            context.message = update.callback_query.message
-            if update.callback_query.message:
-                context.chat = update.callback_query.message.chat
-            context.user = update.callback_query.user
-        elif update.update_type is UpdateType.shipping_query:
-            context.user = update.shipping_query.user
-        elif update.update_type is UpdateType.pre_checkout_query:
-            context.user = update.pre_checkout_query.user
+        context.assign(executor, self, update)
 
         try:
             for md in self.__middlewares:
