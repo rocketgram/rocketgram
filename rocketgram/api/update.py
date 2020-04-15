@@ -58,27 +58,27 @@ class Update:
         poll_answer = PollAnswer.parse(data.get('poll_answer'))
 
         update_type = None
-        if 'message' in data:
+        if message:
             update_type = UpdateType.message
-        elif 'edited_message' in data:
+        elif edited_message:
             update_type = UpdateType.edited_message
-        elif 'channel_post' in data:
+        elif channel_post:
             update_type = UpdateType.channel_post
-        elif 'edited_channel_post' in data:
+        elif edited_channel_post:
             update_type = UpdateType.edited_channel_post
-        elif 'inline_query' in data:
+        elif inline_query:
             update_type = UpdateType.inline_query
-        elif 'chosen_inline_result' in data:
+        elif chosen_inline_result:
             update_type = UpdateType.chosen_inline_result
-        elif 'callback_query' in data:
+        elif callback_query:
             update_type = UpdateType.callback_query
-        elif 'shipping_query' in data:
+        elif shipping_query:
             update_type = UpdateType.shipping_query
-        elif 'pre_checkout_query' in data:
+        elif pre_checkout_query:
             update_type = UpdateType.pre_checkout_query
-        elif 'poll' in data:
+        elif poll:
             update_type = UpdateType.poll
-        elif 'poll_answer' in data:
+        elif poll_answer:
             update_type = UpdateType.poll_answer
 
         assert update_type is not None, "Should have value here! This probably means api was changed."
