@@ -24,7 +24,7 @@ class DropWaiter:
     pass
 
 
-def make_waiter(waiter_func: Callable[..., bool]):
+def make_waiter(waiter_func: Callable[..., bool]) -> Callable:
     """Make waiter"""
 
     # Checking if function is registered in dispatcher or as waiter.

@@ -21,7 +21,7 @@ class FilterParams:
     kwargs: Dict
 
 
-def _check_sig(func, *args, **kwargs):
+def _check_sig(func, *args, **kwargs) -> bool:
     try:
         sig = signature(func)
         sig.bind(*args, **kwargs)
@@ -30,12 +30,12 @@ def _check_sig(func, *args, **kwargs):
         return False
 
 
-def make_filter(filter_func: Callable[..., bool]):
-    """Make filter"""
+def make_filter(filter_func: Callable[..., bool]) -> Callable:
+    """Makes filter"""
 
     @wraps(filter_func)
-    def outer(*args, **kwargs):
-        def inner(handler_func: Callable):
+    def outer(*args, **kwargs) -> Callable:
+        def inner(handler_func: Callable[..., None]) -> Callable:
             # Checking if function is registered in dispatcher or as waiter.
             assert not hasattr(handler_func, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
             assert not hasattr(handler_func, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
@@ -59,8 +59,8 @@ def make_filter(filter_func: Callable[..., bool]):
     return outer
 
 
-def priority(pri: int):
-    def inner(handler_func: Callable[..., None]):
+def priority(pri: int) -> Callable:
+    def inner(handler_func: Callable[..., None]) -> Callable:
         # Checking if function is registered in dispatcher or as waiter.
         assert not hasattr(handler_func, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
         assert not hasattr(handler_func, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
