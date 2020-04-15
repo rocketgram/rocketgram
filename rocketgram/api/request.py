@@ -10,7 +10,7 @@ from typing import Union, Dict, List
 
 from . import response
 from .input_file import InputFile
-from ..context import context2
+from .. import context
 from ..keyboards import keyboard
 
 
@@ -61,7 +61,7 @@ class Request:
         return list()
 
     async def send(self) -> 'response.Response':
-        return await context2.bot.send(self)
+        return await context.bot.send(self)
 
     def webhook(self):
-        context2.webhook(self)
+        context.webhook(self)

@@ -6,7 +6,7 @@
 from time import monotonic
 
 from .middleware import EmptyMiddleware
-from ..context import context2
+from .. import context
 from ..errors import RocketgramStopRequest
 
 
@@ -23,19 +23,19 @@ class LimiterMiddleware(EmptyMiddleware):
         self.__values = dict()
 
     def shutdown(self):
-        bot_id = id(context2.bot)
+        bot_id = id(context.bot)
         if bot_id in self.__values:
             del self.__values[bot_id]
 
     def before_process(self):
-        bot_id = id(context2.bot)
+        bot_id = id(context.bot)
         current = monotonic()
         d = current - self.__period
 
         self.__values[bot_id] = [v for v in self.__values.get(bot_id, list()) if v > d]
 
         if len(self.__values[bot_id]) >= self.__quantity:
-            raise RocketgramStopRequest(f'Update `{context2.update.update_id}` was dropped due to '
+            raise RocketgramStopRequest(f'Update `{context.update.update_id}` was dropped due to '
                                         f'rate exceed `{self.__quantity}` msg per `{self.__period}` secs.')
 
         self.__values[bot_id].append(current)

@@ -5,8 +5,8 @@
 
 from . import commonfilters
 from .waiters import make_waiter, DropWaiter
+from ... import context
 from ...api import UpdateType, MessageType
-from ...context import context2
 
 
 @make_waiter
@@ -22,7 +22,7 @@ def next_message(*message_types: MessageType):
     if not message_types:
         message_types = (MessageType.text,)
 
-    if context2.message.message_type in message_types:
+    if context.message.message_type in message_types:
         return True
 
     return False

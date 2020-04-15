@@ -8,13 +8,12 @@ from typing import List, Tuple, Union
 
 from . import errors
 from .. import api
-from . import reply
-from . import inline
+from .. import keyboards
 
 MIN_BUTTONS = 1
 MAX_BUTTONS = 8
 
-POSSIBLE_RETURN_TYPE = Union['Keyboard', 'reply.ReplyKeyboard', 'inline.InlineKeyboard']
+POSSIBLE_RETURN_TYPE = Union['Keyboard', 'keyboards.ReplyKeyboard', 'keyboards.InlineKeyboard']
 
 
 def _check_scheme_values(*args):

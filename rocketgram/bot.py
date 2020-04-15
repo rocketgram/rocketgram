@@ -9,9 +9,9 @@ import logging
 from contextlib import suppress
 from typing import List, Optional
 
+from . import context
 from . import executors, routers, connectors, middlewares
 from .api import Request, Response, Update, UpdateType
-from .context import context2
 from .errors import RocketgramRequest429Error, RocketgramStopRequest
 from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
 
@@ -109,7 +109,7 @@ class Bot:
 
         logger.debug('Performing init...')
 
-        context2.bot = self
+        context.bot = self
 
         if self.__own_connector:
             await self.connector.init()
@@ -130,7 +130,7 @@ class Bot:
 
         logger.debug('Performing shutdown...')
 
-        context2.bot = self
+        context.bot = self
 
         await self.router.shutdown()
 
@@ -145,45 +145,45 @@ class Bot:
     async def process(self, executor: 'executors.Executor', update: Update) -> Optional[Request]:
         logger_raw_in.debug('Raw in: %s', update.raw)
 
-        context2.executor = executor
-        context2.bot = self
+        context.executor = executor
+        context.bot = self
 
-        context2.webhook_requests = list()
+        context.webhook_requests = list()
 
-        context2.update = update
-        context2.message = None
-        context2.chat = None
-        context2.user = None
+        context.update = update
+        context.message = None
+        context.chat = None
+        context.user = None
 
         if update.update_type is UpdateType.message:
-            context2.message = update.message
-            context2.chat = update.message.chat
-            context2.user = update.message.user
+            context.message = update.message
+            context.chat = update.message.chat
+            context.user = update.message.user
         elif update.update_type is UpdateType.edited_message:
-            context2.message = update.edited_message
-            context2.chat = update.edited_message.chat
-            context2.user = update.edited_message.user
+            context.message = update.edited_message
+            context.chat = update.edited_message.chat
+            context.user = update.edited_message.user
         elif update.update_type is UpdateType.channel_post:
-            context2.message = update.channel_post
-            context2.chat = update.channel_post.chat
-            context2.user = update.channel_post.user
+            context.message = update.channel_post
+            context.chat = update.channel_post.chat
+            context.user = update.channel_post.user
         elif update.update_type is UpdateType.edited_channel_post:
-            context2.message = update.edited_channel_post
-            context2.chat = update.edited_channel_post.chat
-            context2.user = update.edited_channel_post.user
+            context.message = update.edited_channel_post
+            context.chat = update.edited_channel_post.chat
+            context.user = update.edited_channel_post.user
         elif update.update_type is UpdateType.inline_query:
-            context2.user = update.inline_query.user
+            context.user = update.inline_query.user
         elif update.update_type is UpdateType.chosen_inline_result:
-            context2.user = update.chosen_inline_result.user
+            context.user = update.chosen_inline_result.user
         elif update.update_type is UpdateType.callback_query:
-            context2.message = update.callback_query.message
+            context.message = update.callback_query.message
             if update.callback_query.message:
-                context2.chat = update.callback_query.message.chat
-            context2.user = update.callback_query.user
+                context.chat = update.callback_query.message.chat
+            context.user = update.callback_query.user
         elif update.update_type is UpdateType.shipping_query:
-            context2.user = update.shipping_query.user
+            context.user = update.shipping_query.user
         elif update.update_type is UpdateType.pre_checkout_query:
-            context2.user = update.pre_checkout_query.user
+            context.user = update.pre_checkout_query.user
 
         try:
             for md in self.__middlewares:
@@ -195,7 +195,7 @@ class Bot:
 
             webhook_request = None
 
-            for req in context2.webhook_requests:
+            for req in context.webhook_requests:
                 # set request to return if it can be processed
                 if webhook_request is None and executor.can_process_webhook_request(req):
                     for md in self.__middlewares:

@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 import logging
-import warnings
 from contextvars import ContextVar
 from typing import List, Optional
 
@@ -103,70 +102,5 @@ class Context:
         current_webhook_requests.set(webhook_requests)
 
 
-context2 = Context()
+context = Context()
 del Context
-
-
-def executor() -> Optional['Executor']:
-    """Returns Executor object for current request."""
-
-    warnings.warn("Old context-helpers will be removed in 2.0. Use context2 instead.", DeprecationWarning)
-
-    return current_executor.get()
-
-
-def bot() -> Optional['Bot']:
-    """Returns current Bot object."""
-
-    warnings.warn("Old context-helpers will be removed in 2.0. Use context2 instead.", DeprecationWarning)
-
-    return current_bot.get()
-
-
-def update() -> Optional['Update']:
-    """Returns Update object for current request."""
-
-    warnings.warn("Old context-helpers will be removed in 2.0. Use context2 instead.", DeprecationWarning)
-
-    return current_update.get()
-
-
-def message() -> Optional['Message']:
-    """Returns Message object for current request."""
-
-    warnings.warn("Old context-helpers will be removed in 2.0. Use context2 instead.", DeprecationWarning)
-
-    return current_message.get()
-
-
-def chat() -> Optional['Chat']:
-    """Returns Chat object for current request."""
-
-    warnings.warn("Old context-helpers will be removed in 2.0. Use context2 instead.", DeprecationWarning)
-
-    return current_chat.get()
-
-
-def user() -> Optional['User']:
-    """Returns User object for current request."""
-
-    warnings.warn("Old context-helpers will be removed in 2.0. Use context2 instead.", DeprecationWarning)
-
-    return current_user.get()
-
-
-def webhook_request(request: 'Request'):
-    warnings.warn("Old context-helpers will be removed in 2.0. Use context2 instead.", DeprecationWarning)
-
-    current_webhook_requests.get().append(request)
-
-
-def get_webhook_requests() -> List['Request']:
-    warnings.warn("Old context-helpers will be removed in 2.0. Use context2 instead.", DeprecationWarning)
-
-    try:
-        return current_webhook_requests.get()
-    except LookupError:
-        lst = list()
-        current_webhook_requests.set(lst)
-        return lst

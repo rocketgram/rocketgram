@@ -8,12 +8,12 @@ import logging
 from dataclasses import dataclass
 from typing import Callable, Coroutine, AsyncGenerator, Union, List
 
-from . import proxy
 from .filters import FILTERS_ATTR, PRIORITY_ATTR, WAITER_ASSIGNED_ATTR, HANDLER_ASSIGNED_ATTR
 from .filters import FilterParams, _check_sig
+from .. import dispatcher
 from ..router import Router
 from ... import bot
-from ...context import context2
+from ... import context
 
 logger = logging.getLogger('rocketgram.dispatcher')
 
@@ -78,7 +78,7 @@ class BaseDispatcher(Router):
         self._pre = sorted(self._pre, key=lambda handler: handler.priority)
         self._post = sorted(self._post, key=lambda handler: handler.priority)
 
-    def from_proxy(self, proxy: 'proxy.BaseDispatcherProxy'):
+    def from_proxy(self, proxy: 'dispatcher.BaseDispatcherProxy'):
         self._init.extend(proxy.inits())
         self._shutdown.extend(proxy.shutdowns())
         self._handlers.extend(proxy.handlers())
@@ -95,7 +95,7 @@ class BaseDispatcher(Router):
         if not len(self._bots):
             self._resort_handlers()
 
-        self._bots.append(context2.bot)
+        self._bots.append(context.bot)
 
         for func in self._init:
             await _call_or_await(func)
@@ -106,7 +106,7 @@ class BaseDispatcher(Router):
         for func in reversed(self._shutdown):
             await _call_or_await(func)
 
-        self._bots.remove(context2.bot)
+        self._bots.remove(context.bot)
 
     def on_init(self, func):
         """Registers init"""

@@ -4,8 +4,17 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Removed
+- Old `context` helper functions. Now `context` and `context2` is the same.
+
+### Fixed
+- Minor bugfixes.
+
 ### Changed
 - Refactored api.
+
+### Deprecated
+- `context2` is deprecated and will be removed in version 2.1.
 
 
 ## [1.8] - 2020-04-11
@@ -116,7 +125,7 @@ All notable changes to this project.
 - Fix optional module imports.
 
 ### Deprecated
-- Old context helpers is deprecated. It will be replaced with context2 in version 2.0.
+- Old context helpers is deprecated. It will be replaced with `context2` in version 2.0.
 
 
 ## [1.2] - 2019-06-01
