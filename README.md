@@ -1,6 +1,6 @@
 # Rocketgram
 
-[![Build Status](https://www.travis-ci.com/vd2org/rocketgram.svg?branch=master)](https://www.travis-ci.com/vd2org/rocketgram)
+![TEST](https://github.com/rocketgram/rocketgram/workflows/TEST/badge.svg)
 
 Modern and powerful asynchronous telegram bot framework.
 
