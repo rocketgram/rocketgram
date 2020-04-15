@@ -5,3 +5,7 @@ uvloop
 
 pytest
 flake8
+
+twine
+setuptools
+wheel
