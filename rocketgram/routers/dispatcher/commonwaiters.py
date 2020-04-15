@@ -5,7 +5,7 @@
 
 from . import commonfilters
 from .waiters import make_waiter, DropWaiter
-from ... import context
+from ...context import context
 from ...api import UpdateType, MessageType
 
 

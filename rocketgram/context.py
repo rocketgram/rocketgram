@@ -4,9 +4,10 @@
 
 import logging
 from contextvars import ContextVar
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
-from . import bot, api, executors
+if TYPE_CHECKING:
+    from . import bot, api, executors
 
 current_executor = ContextVar('current_executor')
 current_bot = ContextVar('current_bot')
@@ -103,4 +104,3 @@ class Context:
 
 
 context = Context()
-del Context

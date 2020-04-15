@@ -9,7 +9,7 @@ import logging
 from contextlib import suppress
 from typing import List, Optional
 
-from . import context
+from .context import context
 from . import executors, routers, connectors, middlewares
 from .api import Request, Response, Update, UpdateType
 from .errors import RocketgramRequest429Error, RocketgramStopRequest

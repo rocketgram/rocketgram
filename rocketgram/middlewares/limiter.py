@@ -6,7 +6,7 @@
 from time import monotonic
 
 from .middleware import EmptyMiddleware
-from .. import context
+from ..context import context
 from ..errors import RocketgramStopRequest
 
 

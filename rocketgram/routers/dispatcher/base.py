@@ -13,7 +13,7 @@ from .filters import FilterParams, _check_sig
 from .. import dispatcher
 from ..router import Router
 from ... import bot
-from ... import context
+from ...context import context
 
 logger = logging.getLogger('rocketgram.dispatcher')
 

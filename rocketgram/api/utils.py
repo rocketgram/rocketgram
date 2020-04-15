@@ -4,9 +4,9 @@
 
 
 from enum import Enum
-from typing import Union, TypeVar
+from typing import Union
 
-from . import force_reply, inline_keyboard_markup
+from .. import api
 from .. import keyboards
 
 
@@ -17,10 +17,10 @@ class EnumAutoName(Enum):
         return self
 
 
-ALL_KEYBOARDS = Union['keyboards.InlineKeyboard',
-                      'keyboards.ReplyKeyboard',
-                      'keyboards.InlineKeyboardMarkup',
-                      'keyboards.ReplyKeyboardMarkup',
-                      'keyboards.ReplyKeyboardRemove',
+ALL_KEYBOARDS = Union['api.InlineKeyboard',
+                      'api.ReplyKeyboard',
+                      'api.InlineKeyboardMarkup',
+                      'api.ReplyKeyboardMarkup',
+                      'api.ReplyKeyboardRemove',
                       'force_reply.ForceReply']
-INLINE_KEYBOARDS = Union['InlineKeyboard', 'inline_keyboard_markup.InlineKeyboardMarkup']
+INLINE_KEYBOARDS = Union['keyboards.InlineKeyboard', 'api.InlineKeyboardMarkup']

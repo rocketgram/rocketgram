@@ -15,7 +15,7 @@ from typing import Tuple, List, Dict, Callable, Coroutine, AsyncGenerator, Union
 from .base import BaseDispatcher, DEFAULT_PRIORITY, _call_or_await
 from .filters import FilterParams, WAITER_ASSIGNED_ATTR
 from .waiters import WaitNext, DropWaiter
-from ... import context
+from ...context import context
 from ...api import UpdateType
 
 logger = logging.getLogger('rocketgram.dispatcher')

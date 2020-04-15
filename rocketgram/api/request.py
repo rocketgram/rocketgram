@@ -8,9 +8,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Union, Dict, List
 
-from . import response
-from .input_file import InputFile
-from .. import context
+from .. import api
+from ..context import context
 from ..keyboards import keyboard
 
 
@@ -32,7 +31,7 @@ class Request:
             if isinstance(v, datetime):
                 d[k] = int(v.timestamp())
                 continue
-            if isinstance(v, InputFile):
+            if isinstance(v, api.InputFile):
                 d[k] = f'attach://{v.file_name}'
                 continue
             if isinstance(v, keyboard.Keyboard):
@@ -57,10 +56,10 @@ class Request:
 
         return self.__prepare(d)
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> List['api.InputFile']:
         return list()
 
-    async def send(self) -> 'response.Response':
+    async def send(self) -> 'api.Response':
         return await context.bot.send(self)
 
     def webhook(self):
