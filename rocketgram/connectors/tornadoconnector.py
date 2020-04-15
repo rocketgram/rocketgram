@@ -11,7 +11,7 @@ import uuid
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
 from .connector import Connector, HEADERS, USER_AGENT
-from ..api import Request, Response
+from ..api import API_URL, Request, Response
 from ..errors import RocketgramNetworkError, RocketgramParseError
 
 try:
