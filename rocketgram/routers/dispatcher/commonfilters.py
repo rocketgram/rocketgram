@@ -4,8 +4,8 @@
 
 
 from .filters import make_filter
+from ...api import UpdateType, MessageType, ChatType
 from ...context import context2
-from ...update import UpdateType, MessageType, ChatType
 
 
 @make_filter

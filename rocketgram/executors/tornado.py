@@ -7,16 +7,16 @@ import asyncio
 import json
 import logging
 import signal
-from typing import TYPE_CHECKING, Union, Dict, List, Set
+from typing import Union, Dict, List, Set
 
 from tornado.httpserver import HTTPServer
 from tornado.httputil import HTTPServerRequest, HTTPHeaders, ResponseStartLine
 
 from .executor import Executor
+from .. import bot
+from ..api import InputFile, Update
+from ..api import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
 from ..errors import RocketgramRequestError
-from ..requests import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
-from ..types import InputFile
-from ..update import Update
 from ..version import version
 
 try:
@@ -27,9 +27,6 @@ try:
 except ImportError:
     json_encoder = json.dumps
     json_decoder = json.loads
-
-if TYPE_CHECKING:
-    from ..bot import Bot
 
 logger = logging.getLogger('rocketgram.executors.tornado')
 
@@ -57,7 +54,7 @@ class TornadoExecutor(Executor):
         self.__srv = None
         self.__started = False
 
-        self.__tasks: Dict[Bot, Set[asyncio.Task]] = dict()
+        self.__tasks: Dict['bot.Bot', Set[asyncio.Task]] = dict()
 
     @property
     def bots(self):
@@ -82,7 +79,7 @@ class TornadoExecutor(Executor):
 
         return True
 
-    async def add_bot(self, bot: 'Bot', *, suffix=None, webhook=True, drop_updates=False,
+    async def add_bot(self, bot: 'bot.Bot', *, suffix=None, webhook=True, drop_updates=False,
                       max_connections=None):
         """
 
@@ -127,7 +124,7 @@ class TornadoExecutor(Executor):
             await bot.send(SetWebhook(full_url, max_connections=max_connections))
             logger.debug('Webhook setup done for bot @%s', bot.name)
 
-    async def remove_bot(self, bot: 'Bot', webhook=True):
+    async def remove_bot(self, bot: 'bot.Bot', webhook=True):
         """
 
         :param bot:
@@ -168,7 +165,7 @@ class TornadoExecutor(Executor):
                     request.connection.finish()
                     return
 
-                bot: 'Bot' = self.__bots.get(request.path)
+                bot = self.__bots.get(request.path)
 
                 if not bot:
                     logger.warning("Bot not found for request `%s`.", request.path)
@@ -265,7 +262,7 @@ class TornadoExecutor(Executor):
         logger.info("Stopped.")
 
     @classmethod
-    def run(cls, bots: Union['Bot', List['Bot']], base_url: str, base_path: str, *, host='localhost', port=8080,
+    def run(cls, bots: Union['bot.Bot', List['bot.Bot']], base_url: str, base_path: str, *, host='localhost', port=8080,
             webhook_setup=True, webhook_remove=True, drop_updates=False,
             signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait=10):
         """
@@ -286,10 +283,10 @@ class TornadoExecutor(Executor):
 
         executor = cls(base_url, base_path, host=host, port=port)
 
-        def add(bot: 'Bot'):
+        def add(bot: 'bot.Bot'):
             return executor.add_bot(bot, webhook=webhook_setup, drop_updates=drop_updates)
 
-        def remove(bot: 'Bot'):
+        def remove(bot: 'bot.Bot'):
             return executor.remove_bot(bot, webhook=webhook_remove)
 
         logger.info('Starting webhook executor...')

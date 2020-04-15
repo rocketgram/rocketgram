@@ -6,16 +6,14 @@
 import asyncio
 import logging
 from dataclasses import dataclass
-from typing import Callable, Coroutine, AsyncGenerator, Union, List, TYPE_CHECKING
+from typing import Callable, Coroutine, AsyncGenerator, Union, List
 
+from . import proxy
 from .filters import FILTERS_ATTR, PRIORITY_ATTR, WAITER_ASSIGNED_ATTR, HANDLER_ASSIGNED_ATTR
 from .filters import FilterParams, _check_sig
 from ..router import Router
+from ... import bot
 from ...context import context2
-
-if TYPE_CHECKING:
-    from ...bot import Bot
-    from .proxy import BaseDispatcherProxy
 
 logger = logging.getLogger('rocketgram.dispatcher')
 
@@ -68,7 +66,7 @@ class BaseDispatcher(Router):
         self._pre: List[Handler] = list()
         self._post: List[Handler] = list()
         self._default_priority = default_priority
-        self._bots: List['Bot'] = list()
+        self._bots: List['bot.Bot'] = list()
 
     @property
     def default_priority(self):
@@ -80,7 +78,7 @@ class BaseDispatcher(Router):
         self._pre = sorted(self._pre, key=lambda handler: handler.priority)
         self._post = sorted(self._post, key=lambda handler: handler.priority)
 
-    def from_proxy(self, proxy: 'BaseDispatcherProxy'):
+    def from_proxy(self, proxy: 'proxy.BaseDispatcherProxy'):
         self._init.extend(proxy.inits())
         self._shutdown.extend(proxy.shutdowns())
         self._handlers.extend(proxy.handlers())

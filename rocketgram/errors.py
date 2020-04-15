@@ -3,11 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .requests import Request
-    from .update import Response
+from . import api
 
 
 class RocketgramError(Exception):
@@ -44,7 +40,7 @@ class RocketgramRequestError(RocketgramError):
     Base exception for all request-related errors.
     """
 
-    def __init__(self, request: 'Request', response: 'Response'):
+    def __init__(self, request: 'api.Request', response: 'api.Response'):
         self.request = request
         self.response = response
 

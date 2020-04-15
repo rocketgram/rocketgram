@@ -3,13 +3,10 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import typing
 from dataclasses import replace
 
 from .middleware import EmptyMiddleware
-
-if typing.TYPE_CHECKING:
-    from ..requests import Request
+from .. import api
 
 
 class DefaultValuesMiddleware(EmptyMiddleware):
@@ -22,7 +19,7 @@ class DefaultValuesMiddleware(EmptyMiddleware):
     def defaults(self):
         return self.__defaults.copy()
 
-    def before_request(self, request: 'Request') -> 'Request':
+    def before_request(self, request: 'api.Request') -> 'api.Request':
         replaces = dict()
 
         for k, v in self.__defaults.items():

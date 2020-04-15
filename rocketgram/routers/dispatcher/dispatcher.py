@@ -16,7 +16,7 @@ from .base import BaseDispatcher, DEFAULT_PRIORITY, _call_or_await
 from .filters import FilterParams, WAITER_ASSIGNED_ATTR
 from .waiters import WaitNext, DropWaiter
 from ...context import context2
-from ...update import UpdateType
+from ...api import UpdateType
 
 logger = logging.getLogger('rocketgram.dispatcher')
 

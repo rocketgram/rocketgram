@@ -5,13 +5,9 @@
 import logging
 import warnings
 from contextvars import ContextVar
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 
-if TYPE_CHECKING:
-    from .bot import Bot
-    from .update import Update, Message, Chat, User
-    from .requests import Request
-    from .executors import Executor
+from . import bot, api, executors
 
 current_executor = ContextVar('current_executor')
 current_bot = ContextVar('current_bot')
@@ -29,73 +25,73 @@ class Context:
     __slots__ = tuple()
 
     @property
-    def executor(self) -> Optional['Executor']:
+    def executor(self) -> Optional['executors.Executor']:
         """Returns Executor object for current request."""
 
         return current_executor.get(None)
 
     @executor.setter
-    def executor(self, executor: 'Executor'):
+    def executor(self, executor: 'executors.Executor'):
         current_executor.set(executor)
 
     @property
-    def bot(self) -> Optional['Bot']:
+    def bot(self) -> Optional['bot.Bot']:
         """Returns current Bot object."""
 
         return current_bot.get(None)
 
     @bot.setter
-    def bot(self, bot: 'Bot'):
+    def bot(self, bot: 'bot.Bot'):
         current_bot.set(bot)
 
     @property
-    def update(self) -> Optional['Update']:
+    def update(self) -> Optional['api.Update']:
         """Returns Update object for current request."""
 
         return current_update.get(None)
 
     @update.setter
-    def update(self, update: 'Update'):
+    def update(self, update: 'api.Update'):
         current_update.set(update)
 
     @property
-    def message(self) -> Optional['Message']:
+    def message(self) -> Optional['api.Message']:
         """Returns Message object for current request."""
 
         return current_message.get(None)
 
     @message.setter
-    def message(self, update: 'Message'):
+    def message(self, update: 'api.Message'):
         current_message.set(update)
 
     @property
-    def chat(self) -> Optional['Chat']:
+    def chat(self) -> Optional['api.Chat']:
         """Returns Chat object for current request."""
 
         return current_chat.get(None)
 
     @chat.setter
-    def chat(self, chat: 'Chat'):
+    def chat(self, chat: 'api.Chat'):
         current_chat.set(chat)
 
     @property
-    def user(self) -> Optional['User']:
+    def user(self) -> Optional['api.User']:
         """Returns User object for current request."""
 
         return current_user.get(None)
 
     @user.setter
-    def user(self, user: 'User'):
+    def user(self, user: 'api.User'):
         current_user.set(user)
 
     @staticmethod
-    def webhook(request: 'Request'):
+    def webhook(request: 'api.Request'):
         """Sets Request object to be sent through webhook-request mechanism."""
 
         current_webhook_requests.get().append(request)
 
     @property
-    def webhook_requests(self) -> List['Request']:
+    def webhook_requests(self) -> List['api.Request']:
         """Returns list of current requests awaits sent through webhook-request mechanism."""
 
         return current_webhook_requests.get()

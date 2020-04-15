@@ -5,9 +5,8 @@
 
 import logging
 
+from ..api import Request, Response
 from ..version import version
-from ..requests import Request
-from ..update import Response
 
 logger = logging.getLogger('rocketgram.connectors.connector')
 

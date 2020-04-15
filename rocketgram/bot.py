@@ -7,19 +7,13 @@ import asyncio
 import inspect
 import logging
 from contextlib import suppress
-from typing import TYPE_CHECKING, List, Optional
+from typing import List, Optional
 
+from . import executors, routers, connectors, middlewares
+from .api import Request, Response, Update, UpdateType
 from .context import context2
 from .errors import RocketgramRequest429Error, RocketgramStopRequest
 from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
-from .requests import Request
-from .update import Update, UpdateType, Response
-
-if TYPE_CHECKING:
-    from .executors import Executor
-    from .routers import Router
-    from .connectors import Connector
-    from .middlewares import Middleware
 
 logger = logging.getLogger('rocketgram.bot')
 logger_raw_in = logging.getLogger('rocketgram.raw.in')
@@ -29,7 +23,7 @@ logger_raw_out = logging.getLogger('rocketgram.raw.out')
 class Bot:
     __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router', '__own_connector', '__connector')
 
-    def __init__(self, token: str, *, connector: 'Connector' = None, router: 'Router' = None):
+    def __init__(self, token: str, *, connector: 'connectors.Connector' = None, router: 'routers.Router' = None):
         """
 
         :param token: Bot's token
@@ -40,7 +34,7 @@ class Bot:
 
         self.__name = None
         self.__user_id = int(self.__token.split(':')[0])
-        self.__middlewares: List['Middleware'] = list()
+        self.__middlewares: List['middlewares.Middleware'] = list()
 
         self.__router = router
         if self.__router is None:
@@ -91,18 +85,18 @@ class Bot:
         return self.__user_id
 
     @property
-    def router(self) -> 'Router':
+    def router(self) -> 'routers.Router':
         """Bot's router."""
 
         return self.__router
 
     @property
-    def connector(self) -> 'Connector':
+    def connector(self) -> 'connectors.Connector':
         """Bot's connector."""
 
         return self.__connector
 
-    def middleware(self, middleware: 'Middleware'):
+    def middleware(self, middleware: 'middlewares.Middleware'):
         """Registers middleware."""
 
         self.__middlewares.append(middleware)
@@ -148,7 +142,7 @@ class Bot:
         if self.__own_connector:
             await self.connector.shutdown()
 
-    async def process(self, executor: 'Executor', update: Update) -> Optional[Request]:
+    async def process(self, executor: 'executors.Executor', update: Update) -> Optional[Request]:
         logger_raw_in.debug('Raw in: %s', update.raw)
 
         context2.executor = executor

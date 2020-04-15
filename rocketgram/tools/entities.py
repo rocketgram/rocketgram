@@ -8,7 +8,7 @@ from collections import namedtuple
 from typing import Optional, List, Generator, Dict, Callable
 
 from . import escape
-from ..update import MessageEntity, EntityType
+from ..api import MessageEntity, EntityType
 
 Tag = namedtuple('Tag', 'open close')
 

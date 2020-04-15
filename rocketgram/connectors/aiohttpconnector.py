@@ -10,10 +10,8 @@ import logging
 import aiohttp
 
 from .connector import Connector, HEADERS
-from .. import types
+from ..api import API_URL, Request, Response
 from ..errors import RocketgramNetworkError, RocketgramParseError
-from ..requests import Request
-from ..update import Response
 
 try:
     import ujson
@@ -30,7 +28,7 @@ logger = logging.getLogger('rocketgram.connectors.aiohttpconnector')
 class AioHttpConnector(Connector):
     __slots__ = ('_api_url', '_session', '_timeout')
 
-    def __init__(self, *, timeout: int = 35, api_url: str = types.API_URL):
+    def __init__(self, *, timeout: int = 35, api_url: str = API_URL):
         self._api_url = api_url
         self._session = aiohttp.ClientSession(loop=asyncio.get_event_loop())
         self._timeout = timeout

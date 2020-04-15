@@ -4,20 +4,17 @@
 
 
 from itertools import accumulate, chain, cycle, repeat
-from typing import List, Tuple, Union, TYPE_CHECKING
+from typing import List, Tuple, Union
 
 from . import errors
-
-if TYPE_CHECKING:
-    from .reply import ReplyKeyboard
-    from .inline import InlineKeyboard
-    from ..types import InlineKeyboardMarkup, ReplyKeyboardMarkup
-    from ..types import KeyboardButton, InlineKeyboardButton
+from .. import api
+from . import reply
+from . import inline
 
 MIN_BUTTONS = 1
 MAX_BUTTONS = 8
 
-POSSIBLE_RETURN_TYPE = Union['Keyboard', 'ReplyKeyboard', 'InlineKeyboard']
+POSSIBLE_RETURN_TYPE = Union['Keyboard', 'reply.ReplyKeyboard', 'inline.InlineKeyboard']
 
 
 def _check_scheme_values(*args):
@@ -107,7 +104,7 @@ class Keyboard:
             self._buttons.append(None)
         return self
 
-    def render_buttons(self) -> List[List[Union['KeyboardButton', 'InlineKeyboardButton']]]:
+    def render_buttons(self) -> List[List[Union['api.KeyboardButton', 'api.InlineKeyboardButton']]]:
         keyboard = list(list())
         cnt = 0
         for b in self._buttons:
@@ -123,7 +120,7 @@ class Keyboard:
 
         return keyboard
 
-    def render(self) -> Union['ReplyKeyboardMarkup', 'InlineKeyboardMarkup']:
+    def render(self) -> Union['api.ReplyKeyboardMarkup', 'api.InlineKeyboardMarkup']:
         raise NotImplementedError
 
     def add(self, button):

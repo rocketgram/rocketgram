@@ -11,10 +11,8 @@ import uuid
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
 from .connector import Connector, HEADERS, USER_AGENT
-from .. import types
+from ..api import Request, Response
 from ..errors import RocketgramNetworkError, RocketgramParseError
-from ..requests import Request
-from ..update import Response
 
 try:
     import ujson
@@ -31,7 +29,7 @@ logger = logging.getLogger('rocketgram.connectors.tornadoconnector')
 class TornadoConnector(Connector):
     __slots__ = ('_api_url', '_client', '_timeout')
 
-    def __init__(self, *, timeout: int = 35, api_url: str = types.API_URL):
+    def __init__(self, *, timeout: int = 35, api_url: str = API_URL):
         self._api_url = api_url
         self._client = AsyncHTTPClient()
         self._timeout = timeout
@@ -63,19 +61,19 @@ class TornadoConnector(Connector):
                             data = str(field)
 
                         buf = f'--{boundary}\r\n' \
-                            f'Content-Disposition: form-data; name="{name}"\r\n' \
-                            f'Content-Type: {content_type}\r\n\r\n' \
-                            f'{data}' \
-                            f'\r\n'
+                              f'Content-Disposition: form-data; name="{name}"\r\n' \
+                              f'Content-Type: {content_type}\r\n\r\n' \
+                              f'{data}' \
+                              f'\r\n'
 
                         await write(buf.encode())
                         continue
 
                     for fl in files:
                         begin = f'--{boundary}\r\n' \
-                            f'Content-Disposition: form-data; name="{fl.file_name}"; filename="{fl.file_name}"\r\n' \
-                            f'Content-Type: {fl.content_type}\r\n' \
-                            f'\r\n'
+                                f'Content-Disposition: form-data; name="{fl.file_name}"; filename="{fl.file_name}"\r\n' \
+                                f'Content-Type: {fl.content_type}\r\n' \
+                                f'\r\n'
 
                         await write(begin.encode())
 

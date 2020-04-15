@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Changed
+- Refactored api.
+
 
 ## [1.8] - 2020-04-11
 

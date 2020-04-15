@@ -6,14 +6,12 @@
 import asyncio
 import logging
 import signal
-from typing import TYPE_CHECKING, Union, Optional, Dict, List, Set
+from typing import Union, Optional, Dict, List, Set
 
 from .executor import Executor
+from .. import bot
+from ..api import Request, GetMe, GetUpdates, DeleteWebhook
 from ..errors import RocketgramNetworkError
-from ..requests import Request, GetMe, GetUpdates, DeleteWebhook
-
-if TYPE_CHECKING:
-    from ..bot import Bot
 
 logger = logging.getLogger('rocketgram.executors.updates')
 
@@ -26,12 +24,12 @@ class UpdatesExecutor(Executor):
 
         self.__timeout = request_timeout
 
-        self.__bots: Dict['Bot', Optional[asyncio.Task]] = dict()
+        self.__bots: Dict['bot.Bot', Optional[asyncio.Task]] = dict()
         self.__task = None
         self.__started = False
 
     @property
-    def bots(self) -> List['Bot']:
+    def bots(self) -> List['bot.Bot']:
         """
 
         :return:
@@ -49,7 +47,7 @@ class UpdatesExecutor(Executor):
     def can_process_webhook_request(self, request: Request) -> bool:
         return False
 
-    async def add_bot(self, bot: 'Bot', *, drop_updates=False):
+    async def add_bot(self, bot: 'bot.Bot', *, drop_updates=False):
         """
 
         :param bot:
@@ -85,7 +83,7 @@ class UpdatesExecutor(Executor):
         if self.running:
             self.__start_bot(bot)
 
-    async def remove_bot(self, bot: 'Bot'):
+    async def remove_bot(self, bot: 'bot.Bot'):
         """
 
         :param bot:
@@ -103,7 +101,7 @@ class UpdatesExecutor(Executor):
 
         logger.info('Removed bot @%s', bot.name)
 
-    async def __runner(self, bot: 'Bot') -> Set[asyncio.Task]:
+    async def __runner(self, bot: 'bot.Bot') -> Set[asyncio.Task]:
         offset = 0
         pending = set()
         while True:
@@ -125,7 +123,7 @@ class UpdatesExecutor(Executor):
             except:
                 logging.exception('Exception while processing updates')
 
-    def __start_bot(self, bot: 'Bot'):
+    def __start_bot(self, bot: 'bot.Bot'):
         assert bot in self.__bots, 'Unknown bot!'
         assert self.__bots[bot] is None, 'Bot already started!'
 
@@ -185,7 +183,7 @@ class UpdatesExecutor(Executor):
         logger.info("Stopped.")
 
     @classmethod
-    def run(cls, bots: Union['Bot', List['Bot']], *, drop_updates=False,
+    def run(cls, bots: Union['bot.Bot', List['bot.Bot']], *, drop_updates=False,
             signals: tuple = (signal.SIGINT, signal.SIGTERM),
             request_timeout=30, shutdown_wait=10):
         """
@@ -198,10 +196,10 @@ class UpdatesExecutor(Executor):
 
         executor = cls(request_timeout=request_timeout)
 
-        def add(bot: 'Bot'):
+        def add(bot: 'bot.Bot'):
             return executor.add_bot(bot, drop_updates=drop_updates)
 
-        def remove(bot: 'Bot'):
+        def remove(bot: 'bot.Bot'):
             return executor.remove_bot(bot)
 
         logger.info('Starting updates executor...')

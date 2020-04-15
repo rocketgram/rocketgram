@@ -4,7 +4,7 @@
 
 
 from .keyboard import Keyboard
-from ..types import ReplyKeyboardMarkup, KeyboardButton, PollType, KeyboardButtonPollType
+from .. import api
 
 
 class ReplyKeyboard(Keyboard):
@@ -33,26 +33,26 @@ class ReplyKeyboard(Keyboard):
     resize = property(fget=lambda self: self.__resize, fset=set_resize)
 
     def text(self, text: str) -> 'ReplyKeyboard':
-        self.add(KeyboardButton(text=text))
+        self.add(api.KeyboardButton(text=text))
         return self
 
     def contact(self, text: str) -> 'ReplyKeyboard':
-        self.add(KeyboardButton(text=text, request_contact=True))
+        self.add(api.KeyboardButton(text=text, request_contact=True))
         return self
 
     def location(self, text: str) -> 'ReplyKeyboard':
-        self.add(KeyboardButton(text=text, request_location=True))
+        self.add(api.KeyboardButton(text=text, request_location=True))
         return self
 
-    def poll(self, text: str, request_poll: PollType) -> 'ReplyKeyboard':
-        self.add(KeyboardButton(text=text, request_poll=KeyboardButtonPollType(request_poll)))
+    def poll(self, text: str, request_poll: 'api.PollType') -> 'ReplyKeyboard':
+        self.add(api.KeyboardButton(text=text, request_poll=api.KeyboardButtonPollType(request_poll)))
         return self
 
     def row(self) -> 'ReplyKeyboard':
         return super().row()
 
-    def render(self) -> ReplyKeyboardMarkup:
-        return ReplyKeyboardMarkup(self.render_buttons(),
-                                   resize_keyboard=self.resize if self.resize else None,
-                                   one_time_keyboard=self.one_time if self.one_time else None,
-                                   selective=self.selective if self.selective else None)
+    def render(self) -> 'api.ReplyKeyboardMarkup':
+        return api.ReplyKeyboardMarkup(self.render_buttons(),
+                                       resize_keyboard=self.resize if self.resize else None,
+                                       one_time_keyboard=self.one_time if self.one_time else None,
+                                       selective=self.selective if self.selective else None)
