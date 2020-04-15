@@ -5,41 +5,40 @@
 
 from io import BytesIO
 
-from rocketgram import requests
-from rocketgram import types
+from rocketgram import api
 
 
 def test_GetUpdates():
-    req = requests.GetUpdates()
+    req = api.GetUpdates()
     assert req.render() == {}
     assert req.method == 'getUpdates'
     assert req.render(with_method=True) == {'method': 'getUpdates'}
     assert req.files() == []
 
-    req = requests.GetUpdates(offset=1000, limit=10, timeout=30,
-                              allowed_updates=[types.UpdateType.message, types.UpdateType.channel_post])
+    req = api.GetUpdates(offset=1000, limit=10, timeout=30,
+                              allowed_updates=[api.UpdateType.message, api.UpdateType.channel_post])
 
     assert req.render() == {'allowed_updates': ['message', 'channel_post'], 'limit': 10, 'offset': 1000, 'timeout': 30}
 
 
 def test_SetWebhook():
-    req = requests.SetWebhook(url='https://www.example.com/bot')
+    req = api.SetWebhook(url='https://www.example.com/bot')
 
     assert req.render() == {'url': 'https://www.example.com/bot'}
     assert req.method == 'setWebhook'
     assert req.render(with_method=True) == {'method': 'setWebhook', 'url': 'https://www.example.com/bot'}
     assert req.files() == []
 
-    req = requests.SetWebhook(url='https://www.example.com/bot',
+    req = api.SetWebhook(url='https://www.example.com/bot',
                               certificate='https://www.example.com/cert/cert.crt', max_connections=10,
-                              allowed_updates=[types.UpdateType.message, types.UpdateType.channel_post])
+                              allowed_updates=[api.UpdateType.message, api.UpdateType.channel_post])
 
     assert req.render() == {'url': 'https://www.example.com/bot',
                             'allowed_updates': ['message', 'channel_post'], 'max_connections': 10,
                             'certificate': 'https://www.example.com/cert/cert.crt'}
 
-    file = types.InputFile('cert.crt', 'application/x-x509-ca-cert', BytesIO())
-    req = requests.SetWebhook(url='https://www.example.com/bot', certificate=file)
+    file = api.InputFile('cert.crt', 'application/x-x509-ca-cert', BytesIO())
+    req = api.SetWebhook(url='https://www.example.com/bot', certificate=file)
 
     assert req.render() == {'url': 'https://www.example.com/bot',
                             'certificate': 'attach://cert.crt'}
@@ -47,7 +46,7 @@ def test_SetWebhook():
 
 
 def test_DeleteWebhook():
-    req = requests.DeleteWebhook()
+    req = api.DeleteWebhook()
     assert req.render() == {}
     assert req.method == 'deleteWebhook'
     assert req.render(with_method=True) == {'method': 'deleteWebhook'}
@@ -55,7 +54,7 @@ def test_DeleteWebhook():
 
 
 def test_GetWebhookInfo():
-    req = requests.GetWebhookInfo()
+    req = api.GetWebhookInfo()
     assert req.render() == {}
     assert req.method == 'getWebhookInfo'
     assert req.render(with_method=True) == {'method': 'getWebhookInfo'}
@@ -63,7 +62,7 @@ def test_GetWebhookInfo():
 
 
 def test_GetMe():
-    req = requests.GetMe()
+    req = api.GetMe()
     assert req.render() == {}
     assert req.method == 'getMe'
     assert req.render(with_method=True) == {'method': 'getMe'}
@@ -71,14 +70,14 @@ def test_GetMe():
 
 
 def test_SendMessage():
-    req = requests.SendMessage(1000, "Hello, World!")
+    req = api.SendMessage(1000, "Hello, World!")
     assert req.render() == {'chat_id': 1000, 'text': 'Hello, World!'}
     assert req.method == 'sendMessage'
     assert req.render(with_method=True) == {'method': 'sendMessage', 'chat_id': 1000, 'text': 'Hello, World!'}
     assert req.files() == []
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendMessage(1000, "Hello, World!", parse_mode=types.ParseModeType.html,
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendMessage(1000, "Hello, World!", parse_mode=api.ParseModeType.html,
                                disable_web_page_preview=True, disable_notification=True, reply_to_message_id=100,
                                reply_markup=kb)
 
@@ -89,30 +88,30 @@ def test_SendMessage():
 
 
 def test_ForwardMessage():
-    req = requests.ForwardMessage(1000, 1234, 100)
+    req = api.ForwardMessage(1000, 1234, 100)
     assert req.render() == {'chat_id': 1000, 'from_chat_id': 1234, 'message_id': 100}
     assert req.method == 'forwardMessage'
     assert req.render(with_method=True) == {'method': 'forwardMessage', 'chat_id': 1000, 'from_chat_id': 1234,
                                             'message_id': 100}
     assert req.files() == []
 
-    req = requests.ForwardMessage(1000, 1234, 100, disable_notification=True)
+    req = api.ForwardMessage(1000, 1234, 100, disable_notification=True)
     assert req.render() == {'chat_id': 1000, 'from_chat_id': 1234, 'message_id': 100, 'disable_notification': True}
     assert req.files() == []
 
 
 def test_SendPhoto():
-    req = requests.SendPhoto(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    req = api.SendPhoto(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'photo': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendPhoto'
     assert req.render(with_method=True) == {'method': 'sendPhoto', 'chat_id': 1000,
                                             'photo': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
-    photo_file = types.InputFile('photo.jpg', 'image/jpeg', BytesIO())
+    photo_file = api.InputFile('photo.jpg', 'image/jpeg', BytesIO())
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendPhoto(1000, photo_file, caption="Hello, World!", parse_mode=types.ParseModeType.html,
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendPhoto(1000, photo_file, caption="Hello, World!", parse_mode=api.ParseModeType.html,
                              disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'photo': 'attach://photo.jpg', 'disable_notification': True,
@@ -122,19 +121,19 @@ def test_SendPhoto():
 
 
 def test_SendAudio():
-    req = requests.SendAudio(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    req = api.SendAudio(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'audio': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendAudio'
     assert req.render(with_method=True) == {'method': 'sendAudio', 'chat_id': 1000,
                                             'audio': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
-    audio_file = types.InputFile('audio.mp3', 'audio/mpeg', BytesIO())
-    thumb_file = types.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
+    audio_file = api.InputFile('audio.mp3', 'audio/mpeg', BytesIO())
+    thumb_file = api.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendAudio(1000, audio_file, duration=300, performer="Beethoven", title="Symphony No. 5",
-                             thumb=thumb_file, caption="Hello, World!", parse_mode=types.ParseModeType.html,
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendAudio(1000, audio_file, duration=300, performer="Beethoven", title="Symphony No. 5",
+                             thumb=thumb_file, caption="Hello, World!", parse_mode=api.ParseModeType.html,
                              disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'audio': 'attach://audio.mp3', 'duration': 300, 'performer': "Beethoven",
@@ -146,19 +145,19 @@ def test_SendAudio():
 
 
 def test_SendDocument():
-    req = requests.SendDocument(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    req = api.SendDocument(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'document': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendDocument'
     assert req.render(with_method=True) == {'method': 'sendDocument', 'chat_id': 1000,
                                             'document': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
-    document_file = types.InputFile('document.pdf', 'application/pdf', BytesIO())
-    thumb_file = types.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
+    document_file = api.InputFile('document.pdf', 'application/pdf', BytesIO())
+    thumb_file = api.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendDocument(1000, document_file, thumb=thumb_file, caption="Hello, World!",
-                                parse_mode=types.ParseModeType.html, disable_notification=True, reply_to_message_id=100,
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendDocument(1000, document_file, thumb=thumb_file, caption="Hello, World!",
+                                parse_mode=api.ParseModeType.html, disable_notification=True, reply_to_message_id=100,
                                 reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'document': 'attach://document.pdf', 'thumb': 'attach://thumb.jpg',
@@ -170,19 +169,19 @@ def test_SendDocument():
 
 
 def test_SendVideo():
-    req = requests.SendVideo(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    req = api.SendVideo(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'video': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendVideo'
     assert req.render(with_method=True) == {'method': 'sendVideo', 'chat_id': 1000,
                                             'video': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
-    video_file = types.InputFile('video.mp4', 'video/mp4', BytesIO())
-    thumb_file = types.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
+    video_file = api.InputFile('video.mp4', 'video/mp4', BytesIO())
+    thumb_file = api.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendVideo(1000, video_file, duration=300, width=640, height=480, supports_streaming=True,
-                             thumb=thumb_file, caption="Hello, World!", parse_mode=types.ParseModeType.html,
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendVideo(1000, video_file, duration=300, width=640, height=480, supports_streaming=True,
+                             thumb=thumb_file, caption="Hello, World!", parse_mode=api.ParseModeType.html,
                              disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'video': 'attach://video.mp4', 'duration': 300, 'width': 640,
@@ -195,19 +194,19 @@ def test_SendVideo():
 
 
 def test_SendAnimation():
-    req = requests.SendAnimation(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    req = api.SendAnimation(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'animation': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendAnimation'
     assert req.render(with_method=True) == {'method': 'sendAnimation', 'chat_id': 1000,
                                             'animation': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
-    animation_file = types.InputFile('animation.mp4', 'video/mp4', BytesIO())
-    thumb_file = types.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
+    animation_file = api.InputFile('animation.mp4', 'video/mp4', BytesIO())
+    thumb_file = api.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendAnimation(1000, animation_file, duration=300, width=640, height=480,
-                                 thumb=thumb_file, caption="Hello, World!", parse_mode=types.ParseModeType.html,
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendAnimation(1000, animation_file, duration=300, width=640, height=480,
+                                 thumb=thumb_file, caption="Hello, World!", parse_mode=api.ParseModeType.html,
                                  disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'animation': 'attach://animation.mp4', 'duration': 300, 'width': 640,
@@ -220,18 +219,18 @@ def test_SendAnimation():
 
 
 def test_SendVoice():
-    req = requests.SendVoice(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    req = api.SendVoice(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'voice': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendVoice'
     assert req.render(with_method=True) == {'method': 'sendVoice', 'chat_id': 1000,
                                             'voice': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
-    voice_file = types.InputFile('voice.opus', 'audio/ogg', BytesIO())
+    voice_file = api.InputFile('voice.opus', 'audio/ogg', BytesIO())
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendVoice(1000, voice_file, duration=300, caption="Hello, World!",
-                             parse_mode=types.ParseModeType.html, disable_notification=True, reply_to_message_id=100,
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendVoice(1000, voice_file, duration=300, caption="Hello, World!",
+                             parse_mode=api.ParseModeType.html, disable_notification=True, reply_to_message_id=100,
                              reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'voice': 'attach://voice.opus', 'duration': 300,
@@ -243,18 +242,18 @@ def test_SendVoice():
 
 
 def test_SendVideoNote():
-    req = requests.SendVideoNote(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    req = api.SendVideoNote(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'video_note': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendVideoNote'
     assert req.render(with_method=True) == {'method': 'sendVideoNote', 'chat_id': 1000,
                                             'video_note': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
-    note_file = types.InputFile('voice.opus', 'audio/ogg', BytesIO())
-    thumb_file = types.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
+    note_file = api.InputFile('voice.opus', 'audio/ogg', BytesIO())
+    thumb_file = api.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendVideoNote(1000, note_file, duration=300, length=500, thumb=thumb_file,
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendVideoNote(1000, note_file, duration=300, length=500, thumb=thumb_file,
                                  disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'video_note': 'attach://voice.opus', 'duration': 300, 'length': 500,
@@ -265,21 +264,21 @@ def test_SendVideoNote():
 
 
 def test_SendMediaGroupe():
-    photo = types.InputMediaPhoto("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-    req = requests.SendMediaGroup(1000, [photo])
+    photo = api.InputMediaPhoto("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    req = api.SendMediaGroup(1000, [photo])
     assert req.render() == {'chat_id': 1000, 'media': [{'media': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'type': 'photo'}]}
     assert req.method == 'sendMediaGroup'
     assert req.render(with_method=True) == {'method': 'sendMediaGroup', 'chat_id': 1000,
                                             'media': [{'media': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'type': 'photo'}]}
     assert req.files() == []
 
-    photo_file_1 = types.InputFile('photo1.jpg', 'image/jpeg', BytesIO())
-    photo1 = types.InputMediaPhoto(photo_file_1, caption="Hello, World!", parse_mode=types.ParseModeType.html)
+    photo_file_1 = api.InputFile('photo1.jpg', 'image/jpeg', BytesIO())
+    photo1 = api.InputMediaPhoto(photo_file_1, caption="Hello, World!", parse_mode=api.ParseModeType.html)
 
-    photo_file_2 = types.InputFile('photo2.jpg', 'image/jpeg', BytesIO())
-    photo2 = types.InputMediaPhoto(photo_file_2, caption="Hello, World!", parse_mode=types.ParseModeType.html)
+    photo_file_2 = api.InputFile('photo2.jpg', 'image/jpeg', BytesIO())
+    photo2 = api.InputMediaPhoto(photo_file_2, caption="Hello, World!", parse_mode=api.ParseModeType.html)
 
-    req = requests.SendMediaGroup(1000, [photo1, photo2], disable_notification=True, reply_to_message_id=100)
+    req = api.SendMediaGroup(1000, [photo1, photo2], disable_notification=True, reply_to_message_id=100)
 
     assert req.render() == {'chat_id': 1000,
                             'media': [{'media': 'attach://photo1.jpg', 'type': 'photo', 'caption': 'Hello, World!',
@@ -292,15 +291,15 @@ def test_SendMediaGroupe():
 
 
 def test_SendLocation():
-    req = requests.SendLocation(1000, latitude=31.7767, longitude=35.2345)
+    req = api.SendLocation(1000, latitude=31.7767, longitude=35.2345)
     assert req.render() == {'chat_id': 1000, 'latitude': 31.7767, 'longitude': 35.2345}
     assert req.method == 'sendLocation'
     assert req.render(with_method=True) == {'method': 'sendLocation', 'chat_id': 1000,
                                             'latitude': 31.7767, 'longitude': 35.2345}
     assert req.files() == []
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendLocation(1000, latitude=31.7767, longitude=35.2345, live_period=300,
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendLocation(1000, latitude=31.7767, longitude=35.2345, live_period=300,
                                 disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'latitude': 31.7767, 'longitude': 35.2345, 'disable_notification': True,
@@ -311,14 +310,14 @@ def test_SendLocation():
 
 
 def test_EditMessageLiveLocation():
-    req = requests.EditMessageLiveLocation(chat_id=1000, message_id=300, latitude=31.7767, longitude=35.2345)
+    req = api.EditMessageLiveLocation(chat_id=1000, message_id=300, latitude=31.7767, longitude=35.2345)
     assert req.render() == {'chat_id': 1000, 'message_id': 300, 'latitude': 31.7767, 'longitude': 35.2345}
     assert req.method == 'editMessageLiveLocation'
     assert req.render(with_method=True) == {'method': 'editMessageLiveLocation', 'chat_id': 1000, 'message_id': 300,
                                             'latitude': 31.7767, 'longitude': 35.2345}
     assert req.files() == []
 
-    req = requests.EditMessageLiveLocation(inline_message_id='ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    req = api.EditMessageLiveLocation(inline_message_id='ABCDEFGHIJKLMNOPQRSTUVWXYZ',
                                            latitude=31.7767, longitude=35.2345)
     assert req.render() == {'inline_message_id': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
                             'latitude': 31.7767, 'longitude': 35.2345}
@@ -328,8 +327,8 @@ def test_EditMessageLiveLocation():
                                             'latitude': 31.7767, 'longitude': 35.2345}
     assert req.files() == []
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.EditMessageLiveLocation(chat_id=1000, message_id=300, latitude=31.7767, longitude=35.2345,
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.EditMessageLiveLocation(chat_id=1000, message_id=300, latitude=31.7767, longitude=35.2345,
                                            reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'message_id': 300, 'latitude': 31.7767, 'longitude': 35.2345,
@@ -339,21 +338,21 @@ def test_EditMessageLiveLocation():
 
 
 def test_StopMessageLiveLocation():
-    req = requests.StopMessageLiveLocation(chat_id=1000, message_id=300)
+    req = api.StopMessageLiveLocation(chat_id=1000, message_id=300)
     assert req.render() == {'chat_id': 1000, 'message_id': 300}
     assert req.method == 'stopMessageLiveLocation'
     assert req.render(with_method=True) == {'method': 'stopMessageLiveLocation', 'chat_id': 1000, 'message_id': 300}
     assert req.files() == []
 
-    req = requests.StopMessageLiveLocation(inline_message_id='ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    req = api.StopMessageLiveLocation(inline_message_id='ABCDEFGHIJKLMNOPQRSTUVWXYZ')
     assert req.render() == {'inline_message_id': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'stopMessageLiveLocation'
     assert req.render(with_method=True) == {'method': 'stopMessageLiveLocation',
                                             'inline_message_id': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.StopMessageLiveLocation(chat_id=1000, message_id=300, reply_markup=kb)
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.StopMessageLiveLocation(chat_id=1000, message_id=300, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'message_id': 300,
                             'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
@@ -362,7 +361,7 @@ def test_StopMessageLiveLocation():
 
 
 def test_SendVenue():
-    req = requests.SendVenue(1000, latitude=31.7767, longitude=35.2345, title='Earth', address='Solar system')
+    req = api.SendVenue(1000, latitude=31.7767, longitude=35.2345, title='Earth', address='Solar system')
     assert req.render() == {'chat_id': 1000, 'latitude': 31.7767, 'longitude': 35.2345, 'title': 'Earth',
                             'address': 'Solar system'}
     assert req.method == 'sendVenue'
@@ -370,8 +369,8 @@ def test_SendVenue():
                                             'longitude': 35.2345, 'title': 'Earth', 'address': 'Solar system'}
     assert req.files() == []
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendVenue(1000, latitude=31.7767, longitude=35.2345, title='Earth', address='Solar system',
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendVenue(1000, latitude=31.7767, longitude=35.2345, title='Earth', address='Solar system',
                              foursquare_id='ABCDE123', foursquare_type='food/icecream',
                              disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
@@ -384,7 +383,7 @@ def test_SendVenue():
 
 
 def test_SendContact():
-    req = requests.SendContact(1000, phone_number='+1234567890', first_name='John')
+    req = api.SendContact(1000, phone_number='+1234567890', first_name='John')
     assert req.render() == {'chat_id': 1000, 'phone_number': '+1234567890', 'first_name': 'John'}
     assert req.method == 'sendContact'
     assert req.render(with_method=True) == {'method': 'sendContact', 'chat_id': 1000, 'phone_number': '+1234567890',
@@ -394,8 +393,8 @@ def test_SendContact():
     vcard = "BEGIN:VCARD\nVERSION:4.0\nN:Gump;Forrest;;Mr.;\nFN:Forrest Gump\n" \
             "EMAIL:forrestgump@example.com\nEND:VCARD"
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendContact(1000, phone_number='+1234567890', first_name='Forrest', last_name='Gump', vcard=vcard,
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendContact(1000, phone_number='+1234567890', first_name='Forrest', last_name='Gump', vcard=vcard,
                                disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'phone_number': '+1234567890', 'first_name': 'Forrest',
@@ -407,15 +406,15 @@ def test_SendContact():
 
 
 def test_SendPoll():
-    req = requests.SendPoll(1000, question='Do it?', options=['Yes', 'No'])
+    req = api.SendPoll(1000, question='Do it?', options=['Yes', 'No'])
     assert req.render() == {'chat_id': 1000, 'question': 'Do it?', 'options': ['Yes', 'No']}
     assert req.method == 'sendPoll'
     assert req.render(with_method=True) == {'method': 'sendPoll', 'chat_id': 1000, 'question': 'Do it?',
                                             'options': ['Yes', 'No']}
     assert req.files() == []
 
-    kb = types.InlineKeyboardMarkup([[types.InlineKeyboardButton('Button', callback_data='data')]])
-    req = requests.SendPoll(1000, question='Do it?', options=['Yes', 'No'],
+    kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
+    req = api.SendPoll(1000, question='Do it?', options=['Yes', 'No'],
                             disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'question': 'Do it?', 'options': ['Yes', 'No'],
@@ -426,7 +425,7 @@ def test_SendPoll():
 
 
 def test_SendChatAction():
-    req = requests.SendChatAction(1000, action=types.ChatActionType.typing)
+    req = api.SendChatAction(1000, action=api.ChatActionType.typing)
     assert req.render() == {'chat_id': 1000, 'action': 'typing'}
     assert req.method == 'sendChatAction'
     assert req.render(with_method=True) == {'method': 'sendChatAction', 'chat_id': 1000, 'action': 'typing'}
@@ -434,7 +433,7 @@ def test_SendChatAction():
 
 
 def test_GetUserProfilePhotos():
-    req = requests.GetUserProfilePhotos(10000, offset=10, limit=20)
+    req = api.GetUserProfilePhotos(10000, offset=10, limit=20)
     assert req.render() == {'user_id': 10000, 'offset': 10, 'limit': 20}
     assert req.method == 'getUserProfilePhotos'
     assert req.render(with_method=True) == {'method': 'getUserProfilePhotos', 'user_id': 10000, 'offset': 10,
@@ -443,7 +442,7 @@ def test_GetUserProfilePhotos():
 
 
 def test_GetFile():
-    req = requests.GetFile('ABCDEFG12345')
+    req = api.GetFile('ABCDEFG12345')
     assert req.render() == {'file_id': 'ABCDEFG12345'}
     assert req.method == 'getFile'
     assert req.render(with_method=True) == {'method': 'getFile', 'file_id': 'ABCDEFG12345'}
