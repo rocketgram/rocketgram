@@ -6,6 +6,10 @@ All notable changes to this project.
 
 ### Added
 - Added `callback` context helper.
+- Added `shipping` context helper.
+- Added `checkout` context helper.
+- Added `poll` context helper.
+- Added `answer` context helper.
 
 ### Fixed
 - Minor bugfixes.

@@ -17,6 +17,10 @@ current_webhook_requests = ContextVar('current_webhook_requests')
 current_update = ContextVar('current_update')
 current_message = ContextVar('current_message')
 current_callback = ContextVar('current_callback')
+current_shipping = ContextVar('current_shipping')
+current_checkout = ContextVar('current_checkout')
+current_poll = ContextVar('current_poll')
+current_answer = ContextVar('current_answer')
 current_chat = ContextVar('current_chat')
 current_user = ContextVar('current_user')
 
@@ -103,8 +107,48 @@ class Context:
         return current_callback.get(None)
 
     @callback.setter
-    def callback(self, user: 'api.CallbackQuery'):
-        current_callback.set(user)
+    def callback(self, callback: 'api.CallbackQuery'):
+        current_callback.set(callback)
+
+    @property
+    def shipping(self) -> Optional['api.ShippingQuery']:
+        """Returns ShippingQuery object for current request."""
+
+        return current_shipping.get(None)
+
+    @shipping.setter
+    def shipping(self, shipping: 'api.ShippingQuery'):
+        current_shipping.set(shipping)
+
+    @property
+    def checkout(self) -> Optional['api.PreCheckoutQuery']:
+        """Returns PreCheckoutQuery object for current request."""
+
+        return current_checkout.get(None)
+
+    @checkout.setter
+    def checkout(self, checkout: 'api.PreCheckoutQuery'):
+        current_checkout.set(checkout)
+
+    @property
+    def poll(self) -> Optional['api.Poll']:
+        """Returns Poll object for current request."""
+
+        return current_poll.get(None)
+
+    @poll.setter
+    def poll(self, poll: 'api.Poll'):
+        current_poll.set(poll)
+
+    @property
+    def answer(self) -> Optional['api.PollAnswer']:
+        """Returns PollAnswer object for current request."""
+
+        return current_answer.get(None)
+
+    @answer.setter
+    def answer(self, answer: 'api.PollAnswer'):
+        current_answer.set(answer)
 
     @staticmethod
     def webhook(request: 'api.Request'):
@@ -163,9 +207,16 @@ class Context:
                 self.chat = update.callback_query.message.chat
             self.user = update.callback_query.user
         elif update.update_type is api.UpdateType.shipping_query:
+            self.shipping = update.shipping_query
             self.user = update.shipping_query.user
         elif update.update_type is api.UpdateType.pre_checkout_query:
+            self.checkout = update.pre_checkout_query
             self.user = update.pre_checkout_query.user
+        elif update.update_type is api.UpdateType.poll:
+            self.poll = update.poll
+        elif update.update_type is api.UpdateType.poll_answer:
+            self.answer = update.poll_answer
+            self.user = update.poll_answer.user
 
 
 context = Context.instance()
