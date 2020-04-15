@@ -5,13 +5,13 @@
 
 from . import commonfilters
 from .waiters import make_waiter, DropWaiter
-from ...context import context
 from ...api import UpdateType, MessageType
+from ...context import context
 
 
 @make_waiter
-@commonfilters.update_type(UpdateType.message)
-def next_message(*message_types: MessageType):
+@commonfilters.update_type(UpdateType.message)  # noqa
+def next_message(*message_types: MessageType) -> bool:
     """\
     Waits next message.
 
