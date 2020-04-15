@@ -178,65 +178,65 @@ class Message:
 
         message_type = None
 
-        if text is not None:
+        if text:
             message_type = MessageType.text
-        elif audio is not None:
+        elif audio:
             message_type = MessageType.audio
-        elif document is not None and animation is None:
+        elif document and not animation:
             message_type = MessageType.document
-        elif animation is not None:
+        elif animation:
             message_type = MessageType.animation
-        elif game is not None:
+        elif game:
             message_type = MessageType.game
-        elif photo is not None:
+        elif photo:
             message_type = MessageType.photo
-        elif sticker is not None:
+        elif sticker:
             message_type = MessageType.sticker
-        elif video is not None:
+        elif video:
             message_type = MessageType.video
-        elif voice is not None:
+        elif voice:
             message_type = MessageType.voice
-        elif video_note is not None:
+        elif video_note:
             message_type = MessageType.video_note
-        elif new_chat_members is not None:
+        elif new_chat_members:
             message_type = MessageType.new_chat_members
-        elif contact is not None:
+        elif contact:
             message_type = MessageType.contact
-        elif location is not None:
+        elif location:
             message_type = MessageType.location
-        elif venue is not None:
+        elif venue:
             message_type = MessageType.venue
-        elif poll is not None:
+        elif poll:
             message_type = MessageType.poll
-        elif dice is not None:
+        elif dice:
             message_type = MessageType.dice
-        elif left_chat_member is not None:
+        elif left_chat_member:
             message_type = MessageType.left_chat_member
-        elif new_chat_title is not None:
+        elif new_chat_title:
             message_type = MessageType.new_chat_title
-        elif new_chat_photo is not None:
+        elif new_chat_photo:
             message_type = MessageType.new_chat_photo
-        elif delete_chat_photo is not None:
+        elif delete_chat_photo:
             message_type = MessageType.delete_chat_photo
-        elif group_chat_created is not None:
+        elif group_chat_created:
             message_type = MessageType.group_chat_created
-        elif supergroup_chat_created is not None:
+        elif supergroup_chat_created:
             message_type = MessageType.supergroup_chat_created
-        elif channel_chat_created is not None:
+        elif channel_chat_created:
             message_type = MessageType.channel_chat_created
-        elif migrate_to_chat_id is not None:
+        elif migrate_to_chat_id:
             message_type = MessageType.migrate_to_chat_id
-        elif migrate_from_chat_id is not None:
+        elif migrate_from_chat_id:
             message_type = MessageType.migrate_from_chat_id
-        elif pinned_message is not None:
+        elif pinned_message:
             message_type = MessageType.pinned_message
-        elif invoice is not None:
+        elif invoice:
             message_type = MessageType.invoice
-        elif successful_payment is not None:
+        elif successful_payment:
             message_type = MessageType.successful_payment
-        elif connected_website is not None:
+        elif connected_website:
             message_type = MessageType.connected_website
-        elif passport_data is not None:
+        elif passport_data:
             passport_data = MessageType.passport_data
 
         return cls(message_id, message_type, user, date, chat, forward_from, forward_from_chat, forward_from_message_id,
