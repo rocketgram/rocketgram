@@ -5,6 +5,7 @@
 
 import asyncio
 import logging
+from json import JSONDecodeError
 
 import aiohttp
 
@@ -59,7 +60,7 @@ class AioHttpConnector(Connector):
                                                     timeout=self._timeout)
 
             return Response.parse(json.loads(await response.read()), request)
-        except json.decoder.JSONDecodeError as e:
+        except JSONDecodeError as e:
             raise RocketgramParseError(e)
         except asyncio.CancelledError:
             raise

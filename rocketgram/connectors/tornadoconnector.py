@@ -6,6 +6,7 @@
 import asyncio
 import logging
 import uuid
+from json import JSONDecodeError
 
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
@@ -96,7 +97,7 @@ class TornadoConnector(Connector):
             response = await self._client.fetch(req, raise_error=False)
 
             return Response.parse(json.loads(response.body), request)
-        except json.decoder.JSONDecodeError as e:
+        except JSONDecodeError as e:
             raise RocketgramParseError(e)
         except asyncio.CancelledError:
             raise
