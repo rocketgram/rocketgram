@@ -13,8 +13,8 @@ from aiohttp import web
 
 from .executor import Executor
 from .. import bot
-from ..api import InputFile, Update
 from ..api import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
+from ..api import Update
 from ..errors import RocketgramRequestError
 from ..version import version
 
@@ -72,11 +72,7 @@ class AioHttpExecutor(Executor):
         return self.__started
 
     def can_process_webhook_request(self, request: Request) -> bool:
-        for k, v in request.render().items():
-            if isinstance(v, InputFile):
-                return False
-
-        return True
+        return len(request.files()) == 0
 
     async def add_bot(self, bot: 'bot.Bot', *, suffix=None, webhook=True, drop_updates=False,
                       max_connections=None):

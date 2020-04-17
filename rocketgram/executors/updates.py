@@ -10,7 +10,7 @@ from typing import Union, Optional, Dict, List, Set
 
 from .executor import Executor
 from .. import bot
-from ..api import Request, GetMe, GetUpdates, DeleteWebhook
+from ..api import GetMe, GetUpdates, DeleteWebhook
 from ..errors import RocketgramNetworkError
 
 logger = logging.getLogger('rocketgram.executors.updates')
@@ -43,9 +43,6 @@ class UpdatesExecutor(Executor):
         :rtype: object
         """
         return self.__started
-
-    def can_process_webhook_request(self, request: Request) -> bool:
-        return False
 
     async def add_bot(self, bot: 'bot.Bot', *, drop_updates=False):
         """

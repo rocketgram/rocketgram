@@ -14,8 +14,8 @@ from tornado.httputil import HTTPServerRequest, HTTPHeaders, ResponseStartLine
 
 from .executor import Executor
 from .. import bot
-from ..api import InputFile, Update
 from ..api import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
+from ..api import Update
 from ..errors import RocketgramRequestError
 from ..version import version
 
@@ -73,11 +73,7 @@ class TornadoExecutor(Executor):
         return self.__started
 
     def can_process_webhook_request(self, request: Request) -> bool:
-        for k, v in request.render().items():
-            if isinstance(v, InputFile):
-                return False
-
-        return True
+        return len(request.files()) == 0
 
     async def add_bot(self, bot: 'bot.Bot', *, suffix=None, webhook=True, drop_updates=False,
                       max_connections=None):
@@ -222,7 +218,6 @@ class TornadoExecutor(Executor):
         logger.info("Starting with webhook...")
 
         logger.info("Listening on http://%s:%s%s", self.__host, self.__port, self.__base_path)
-        # self.__srv = await loop.create_server(web.Server(__handler), self.__host, self.__port, backlog=128)
 
         self.__srv = HTTPServer(handler)
         self.__srv.listen(self.__port, address=self.__host)

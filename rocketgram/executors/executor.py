@@ -25,7 +25,7 @@ class Executor:
         raise NotImplementedError
 
     def can_process_webhook_request(self, request: Request) -> bool:
-        raise NotImplementedError
+        return False
 
     async def add_bot(self, bot: 'bot.Bot', *, drop_updates=False):
         raise NotImplementedError
