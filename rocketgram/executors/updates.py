@@ -145,7 +145,8 @@ class UpdatesExecutor(Executor):
 
         logger.info("Running!")
 
-    async def __wait_tasks(self, tasks: Set[asyncio.Task]):
+    @staticmethod
+    async def __wait_tasks(tasks: Set[asyncio.Task]):
         pending = set()
         for task in tasks:
             task.cancel()

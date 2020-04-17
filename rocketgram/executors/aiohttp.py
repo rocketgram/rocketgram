@@ -4,7 +4,6 @@
 
 
 import asyncio
-import json
 import logging
 import signal
 from typing import Union, Dict, List, Set
@@ -19,13 +18,9 @@ from ..errors import RocketgramRequestError
 from ..version import version
 
 try:
-    import ujson
-
-    json_encoder = ujson.dumps
-    json_decoder = ujson.loads
+    import ujson as json
 except ImportError:
-    json_encoder = json.dumps
-    json_decoder = json.loads
+    import json
 
 logger = logging.getLogger('rocketgram.executors.aiohttp')
 
@@ -165,7 +160,7 @@ class AioHttpExecutor(Executor):
                 self.__tasks[bot] = set()
 
             try:
-                parsed = Update.parse(json_decoder(await request.read()))
+                parsed = Update.parse(json.loads(await request.read()))
             except Exception:
                 logger.exception("Got exception while parsing update:")
                 return web.Response(status=500, text="Server error.", headers=HEADERS_ERROR)
@@ -181,7 +176,7 @@ class AioHttpExecutor(Executor):
                 return web.Response(status=500, text="Server error.", headers=HEADERS_ERROR)
 
             if response:
-                data = json_encoder(response.render(with_method=True))
+                data = json.dumps(response.render(with_method=True))
                 return web.Response(body=data, headers=HEADERS)
 
             self.__tasks[bot] = {t for t in self.__tasks[bot] if not t.done()}

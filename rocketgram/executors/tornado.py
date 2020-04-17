@@ -4,7 +4,6 @@
 
 
 import asyncio
-import json
 import logging
 import signal
 from typing import Union, Dict, List, Set
@@ -20,13 +19,9 @@ from ..errors import RocketgramRequestError
 from ..version import version
 
 try:
-    import ujson
-
-    json_encoder = ujson.dumps
-    json_decoder = ujson.loads
+    import ujson as json
 except ImportError:
-    json_encoder = json.dumps
-    json_decoder = json.loads
+    import json
 
 logger = logging.getLogger('rocketgram.executors.tornado')
 
@@ -172,7 +167,7 @@ class TornadoExecutor(Executor):
                     return
 
                 try:
-                    parsed = Update.parse(json_decoder(request.body))
+                    parsed = Update.parse(json.loads(request.body))
                 except Exception:
                     logger.exception("Got exception while parsing update:")
                     await request.connection.write_headers(ResponseStartLine('1.1', 500, 'Internal Server Error'),
@@ -201,7 +196,7 @@ class TornadoExecutor(Executor):
                 await request.connection.write_headers(ResponseStartLine('1.1', 200, 'Ok'), HTTPHeaders(HEADERS))
 
                 if response:
-                    data = json_encoder(response.render(with_method=True))
+                    data = json.dumps(response.render(with_method=True))
                     await request.connection.write(data.encode())
 
                 request.connection.finish()
@@ -224,7 +219,8 @@ class TornadoExecutor(Executor):
 
         logger.info("Running!")
 
-    async def __wait_tasks(self, tasks: Set[asyncio.Task]):
+    @staticmethod
+    async def __wait_tasks(tasks: Set[asyncio.Task]):
         while len(tasks):
             logger.info("Waiting %s tasks...", len(tasks))
             _, tasks = await asyncio.wait(tasks, timeout=1, return_when=asyncio.FIRST_COMPLETED)
