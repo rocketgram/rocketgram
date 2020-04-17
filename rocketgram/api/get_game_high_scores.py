@@ -4,9 +4,10 @@
 
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 from .request import Request
+from .. import api
 
 
 @dataclass(frozen=True)
@@ -22,3 +23,11 @@ class GetGameHighScores(Request):
     chat_id: Optional[int] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
+
+    def parse_result(self, data) -> List['api.GameHighScore']:
+        assert isinstance(data, list), "Should be dict."
+        return [api.GameHighScore.parse(r) for r in data]
+
+    async def send2(self) -> 'api.GameHighScore':
+        res = await self._send()
+        return res.result

@@ -7,10 +7,11 @@ from dataclasses import dataclass
 from typing import Union
 
 from .request import Request
+from .utils import StrResultMixin
 
 
 @dataclass(frozen=True)
-class ExportChatInviteLink(Request):
+class ExportChatInviteLink(StrResultMixin, Request):
     """\
     Represents ExportChatInviteLink request object:
     https://core.telegram.org/bots/api#exportchatinvitelink

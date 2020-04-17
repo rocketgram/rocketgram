@@ -7,10 +7,11 @@ from dataclasses import dataclass
 from typing import Union
 
 from .request import Request
+from .utils import IntResultMixin
 
 
 @dataclass(frozen=True)
-class GetChatMembersCount(Request):
+class GetChatMembersCount(IntResultMixin, Request):
     """\
     Represents GetChatMembersCount request object:
     https://core.telegram.org/bots/api#getchatmemberscount

@@ -8,10 +8,11 @@ from datetime import datetime
 from typing import Union, Optional
 
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class KickChatMember(Request):
+class KickChatMember(BoolResultMixin, Request):
     """\
     Represents KickChatMember request object:
     https://core.telegram.org/bots/api#kickchatmember

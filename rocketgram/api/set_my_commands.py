@@ -6,12 +6,13 @@
 from dataclasses import dataclass
 from typing import List
 
-from .request import Request
 from .bot_command import BotCommand
+from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SetMyCommands(Request):
+class SetMyCommands(BoolResultMixin, Request):
     """\
     Represents SetMyCommands request object:
     https://core.telegram.org/bots/api#setmycommands

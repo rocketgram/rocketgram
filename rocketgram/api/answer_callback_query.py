@@ -7,10 +7,11 @@ from dataclasses import dataclass
 from typing import Optional
 
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class AnswerCallbackQuery(Request):
+class AnswerCallbackQuery(BoolResultMixin, Request):
     """\
     Represents AnswerCallbackQuery request object:
     https://core.telegram.org/bots/api#answercallbackquery

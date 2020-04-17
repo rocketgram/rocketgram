@@ -9,10 +9,11 @@ from typing import Union, Optional, List
 from .input_file import InputFile
 from .mask_position import MaskPosition
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class CreateNewStickerSet(Request):
+class CreateNewStickerSet(BoolResultMixin, Request):
     """\
     Represents CreateNewStickerSet request object:
     https://core.telegram.org/bots/api#createnewstickerset

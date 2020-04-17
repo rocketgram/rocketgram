@@ -7,11 +7,11 @@ from dataclasses import dataclass
 from typing import Optional
 
 from .request import Request
-from .utils import INLINE_KEYBOARDS
+from .utils import INLINE_KEYBOARDS, MessageResultMixin
 
 
 @dataclass(frozen=True)
-class SendGame(Request):
+class SendGame(MessageResultMixin, Request):
     """\
     Represents SendGame request object:
     https://core.telegram.org/bots/api#sendgame

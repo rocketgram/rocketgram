@@ -12,7 +12,7 @@ def test_GetUpdates():
     req = api.GetUpdates()
     assert req.render() == {}
     assert req.method == 'getUpdates'
-    assert req.render(with_method=True) == {'method': 'getUpdates'}
+    assert req.render(with_method=True) == {'request': 'getUpdates'}
     assert req.files() == []
 
     req = api.GetUpdates(offset=1000, limit=10, timeout=30,
@@ -26,7 +26,7 @@ def test_SetWebhook():
 
     assert req.render() == {'url': 'https://www.example.com/bot'}
     assert req.method == 'setWebhook'
-    assert req.render(with_method=True) == {'method': 'setWebhook', 'url': 'https://www.example.com/bot'}
+    assert req.render(with_method=True) == {'request': 'setWebhook', 'url': 'https://www.example.com/bot'}
     assert req.files() == []
 
     req = api.SetWebhook(url='https://www.example.com/bot',
@@ -49,7 +49,7 @@ def test_DeleteWebhook():
     req = api.DeleteWebhook()
     assert req.render() == {}
     assert req.method == 'deleteWebhook'
-    assert req.render(with_method=True) == {'method': 'deleteWebhook'}
+    assert req.render(with_method=True) == {'request': 'deleteWebhook'}
     assert req.files() == []
 
 
@@ -57,7 +57,7 @@ def test_GetWebhookInfo():
     req = api.GetWebhookInfo()
     assert req.render() == {}
     assert req.method == 'getWebhookInfo'
-    assert req.render(with_method=True) == {'method': 'getWebhookInfo'}
+    assert req.render(with_method=True) == {'request': 'getWebhookInfo'}
     assert req.files() == []
 
 
@@ -65,7 +65,7 @@ def test_GetMe():
     req = api.GetMe()
     assert req.render() == {}
     assert req.method == 'getMe'
-    assert req.render(with_method=True) == {'method': 'getMe'}
+    assert req.render(with_method=True) == {'request': 'getMe'}
     assert req.files() == []
 
 
@@ -73,7 +73,7 @@ def test_SendMessage():
     req = api.SendMessage(1000, "Hello, World!")
     assert req.render() == {'chat_id': 1000, 'text': 'Hello, World!'}
     assert req.method == 'sendMessage'
-    assert req.render(with_method=True) == {'method': 'sendMessage', 'chat_id': 1000, 'text': 'Hello, World!'}
+    assert req.render(with_method=True) == {'request': 'sendMessage', 'chat_id': 1000, 'text': 'Hello, World!'}
     assert req.files() == []
 
     kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
@@ -91,7 +91,7 @@ def test_ForwardMessage():
     req = api.ForwardMessage(1000, 1234, 100)
     assert req.render() == {'chat_id': 1000, 'from_chat_id': 1234, 'message_id': 100}
     assert req.method == 'forwardMessage'
-    assert req.render(with_method=True) == {'method': 'forwardMessage', 'chat_id': 1000, 'from_chat_id': 1234,
+    assert req.render(with_method=True) == {'request': 'forwardMessage', 'chat_id': 1000, 'from_chat_id': 1234,
                                             'message_id': 100}
     assert req.files() == []
 
@@ -104,7 +104,7 @@ def test_SendPhoto():
     req = api.SendPhoto(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'photo': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendPhoto'
-    assert req.render(with_method=True) == {'method': 'sendPhoto', 'chat_id': 1000,
+    assert req.render(with_method=True) == {'request': 'sendPhoto', 'chat_id': 1000,
                                             'photo': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
@@ -124,7 +124,7 @@ def test_SendAudio():
     req = api.SendAudio(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'audio': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendAudio'
-    assert req.render(with_method=True) == {'method': 'sendAudio', 'chat_id': 1000,
+    assert req.render(with_method=True) == {'request': 'sendAudio', 'chat_id': 1000,
                                             'audio': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
@@ -148,7 +148,7 @@ def test_SendDocument():
     req = api.SendDocument(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'document': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendDocument'
-    assert req.render(with_method=True) == {'method': 'sendDocument', 'chat_id': 1000,
+    assert req.render(with_method=True) == {'request': 'sendDocument', 'chat_id': 1000,
                                             'document': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
@@ -172,7 +172,7 @@ def test_SendVideo():
     req = api.SendVideo(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'video': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendVideo'
-    assert req.render(with_method=True) == {'method': 'sendVideo', 'chat_id': 1000,
+    assert req.render(with_method=True) == {'request': 'sendVideo', 'chat_id': 1000,
                                             'video': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
@@ -197,7 +197,7 @@ def test_SendAnimation():
     req = api.SendAnimation(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'animation': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendAnimation'
-    assert req.render(with_method=True) == {'method': 'sendAnimation', 'chat_id': 1000,
+    assert req.render(with_method=True) == {'request': 'sendAnimation', 'chat_id': 1000,
                                             'animation': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
@@ -222,7 +222,7 @@ def test_SendVoice():
     req = api.SendVoice(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'voice': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendVoice'
-    assert req.render(with_method=True) == {'method': 'sendVoice', 'chat_id': 1000,
+    assert req.render(with_method=True) == {'request': 'sendVoice', 'chat_id': 1000,
                                             'voice': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
@@ -245,7 +245,7 @@ def test_SendVideoNote():
     req = api.SendVideoNote(1000, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     assert req.render() == {'chat_id': 1000, 'video_note': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'sendVideoNote'
-    assert req.render(with_method=True) == {'method': 'sendVideoNote', 'chat_id': 1000,
+    assert req.render(with_method=True) == {'request': 'sendVideoNote', 'chat_id': 1000,
                                             'video_note': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
@@ -268,7 +268,7 @@ def test_SendMediaGroupe():
     req = api.SendMediaGroup(1000, [photo])
     assert req.render() == {'chat_id': 1000, 'media': [{'media': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'type': 'photo'}]}
     assert req.method == 'sendMediaGroup'
-    assert req.render(with_method=True) == {'method': 'sendMediaGroup', 'chat_id': 1000,
+    assert req.render(with_method=True) == {'request': 'sendMediaGroup', 'chat_id': 1000,
                                             'media': [{'media': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'type': 'photo'}]}
     assert req.files() == []
 
@@ -294,7 +294,7 @@ def test_SendLocation():
     req = api.SendLocation(1000, latitude=31.7767, longitude=35.2345)
     assert req.render() == {'chat_id': 1000, 'latitude': 31.7767, 'longitude': 35.2345}
     assert req.method == 'sendLocation'
-    assert req.render(with_method=True) == {'method': 'sendLocation', 'chat_id': 1000,
+    assert req.render(with_method=True) == {'request': 'sendLocation', 'chat_id': 1000,
                                             'latitude': 31.7767, 'longitude': 35.2345}
     assert req.files() == []
 
@@ -313,7 +313,7 @@ def test_EditMessageLiveLocation():
     req = api.EditMessageLiveLocation(chat_id=1000, message_id=300, latitude=31.7767, longitude=35.2345)
     assert req.render() == {'chat_id': 1000, 'message_id': 300, 'latitude': 31.7767, 'longitude': 35.2345}
     assert req.method == 'editMessageLiveLocation'
-    assert req.render(with_method=True) == {'method': 'editMessageLiveLocation', 'chat_id': 1000, 'message_id': 300,
+    assert req.render(with_method=True) == {'request': 'editMessageLiveLocation', 'chat_id': 1000, 'message_id': 300,
                                             'latitude': 31.7767, 'longitude': 35.2345}
     assert req.files() == []
 
@@ -322,7 +322,7 @@ def test_EditMessageLiveLocation():
     assert req.render() == {'inline_message_id': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
                             'latitude': 31.7767, 'longitude': 35.2345}
     assert req.method == 'editMessageLiveLocation'
-    assert req.render(with_method=True) == {'method': 'editMessageLiveLocation',
+    assert req.render(with_method=True) == {'request': 'editMessageLiveLocation',
                                             'inline_message_id': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
                                             'latitude': 31.7767, 'longitude': 35.2345}
     assert req.files() == []
@@ -341,13 +341,13 @@ def test_StopMessageLiveLocation():
     req = api.StopMessageLiveLocation(chat_id=1000, message_id=300)
     assert req.render() == {'chat_id': 1000, 'message_id': 300}
     assert req.method == 'stopMessageLiveLocation'
-    assert req.render(with_method=True) == {'method': 'stopMessageLiveLocation', 'chat_id': 1000, 'message_id': 300}
+    assert req.render(with_method=True) == {'request': 'stopMessageLiveLocation', 'chat_id': 1000, 'message_id': 300}
     assert req.files() == []
 
     req = api.StopMessageLiveLocation(inline_message_id='ABCDEFGHIJKLMNOPQRSTUVWXYZ')
     assert req.render() == {'inline_message_id': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.method == 'stopMessageLiveLocation'
-    assert req.render(with_method=True) == {'method': 'stopMessageLiveLocation',
+    assert req.render(with_method=True) == {'request': 'stopMessageLiveLocation',
                                             'inline_message_id': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'}
     assert req.files() == []
 
@@ -365,7 +365,7 @@ def test_SendVenue():
     assert req.render() == {'chat_id': 1000, 'latitude': 31.7767, 'longitude': 35.2345, 'title': 'Earth',
                             'address': 'Solar system'}
     assert req.method == 'sendVenue'
-    assert req.render(with_method=True) == {'method': 'sendVenue', 'chat_id': 1000, 'latitude': 31.7767,
+    assert req.render(with_method=True) == {'request': 'sendVenue', 'chat_id': 1000, 'latitude': 31.7767,
                                             'longitude': 35.2345, 'title': 'Earth', 'address': 'Solar system'}
     assert req.files() == []
 
@@ -386,7 +386,7 @@ def test_SendContact():
     req = api.SendContact(1000, phone_number='+1234567890', first_name='John')
     assert req.render() == {'chat_id': 1000, 'phone_number': '+1234567890', 'first_name': 'John'}
     assert req.method == 'sendContact'
-    assert req.render(with_method=True) == {'method': 'sendContact', 'chat_id': 1000, 'phone_number': '+1234567890',
+    assert req.render(with_method=True) == {'request': 'sendContact', 'chat_id': 1000, 'phone_number': '+1234567890',
                                             'first_name': 'John'}
     assert req.files() == []
 
@@ -409,7 +409,7 @@ def test_SendPoll():
     req = api.SendPoll(1000, question='Do it?', options=['Yes', 'No'])
     assert req.render() == {'chat_id': 1000, 'question': 'Do it?', 'options': ['Yes', 'No']}
     assert req.method == 'sendPoll'
-    assert req.render(with_method=True) == {'method': 'sendPoll', 'chat_id': 1000, 'question': 'Do it?',
+    assert req.render(with_method=True) == {'request': 'sendPoll', 'chat_id': 1000, 'question': 'Do it?',
                                             'options': ['Yes', 'No']}
     assert req.files() == []
 
@@ -428,7 +428,7 @@ def test_SendChatAction():
     req = api.SendChatAction(1000, action=api.ChatActionType.typing)
     assert req.render() == {'chat_id': 1000, 'action': 'typing'}
     assert req.method == 'sendChatAction'
-    assert req.render(with_method=True) == {'method': 'sendChatAction', 'chat_id': 1000, 'action': 'typing'}
+    assert req.render(with_method=True) == {'request': 'sendChatAction', 'chat_id': 1000, 'action': 'typing'}
     assert req.files() == []
 
 
@@ -436,7 +436,7 @@ def test_GetUserProfilePhotos():
     req = api.GetUserProfilePhotos(10000, offset=10, limit=20)
     assert req.render() == {'user_id': 10000, 'offset': 10, 'limit': 20}
     assert req.method == 'getUserProfilePhotos'
-    assert req.render(with_method=True) == {'method': 'getUserProfilePhotos', 'user_id': 10000, 'offset': 10,
+    assert req.render(with_method=True) == {'request': 'getUserProfilePhotos', 'user_id': 10000, 'offset': 10,
                                             'limit': 20}
     assert req.files() == []
 
@@ -445,5 +445,5 @@ def test_GetFile():
     req = api.GetFile('ABCDEFG12345')
     assert req.render() == {'file_id': 'ABCDEFG12345'}
     assert req.method == 'getFile'
-    assert req.render(with_method=True) == {'method': 'getFile', 'file_id': 'ABCDEFG12345'}
+    assert req.render(with_method=True) == {'request': 'getFile', 'file_id': 'ABCDEFG12345'}
     assert req.files() == []

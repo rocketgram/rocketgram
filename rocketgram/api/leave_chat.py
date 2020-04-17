@@ -7,10 +7,11 @@ from dataclasses import dataclass
 from typing import Union
 
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class LeaveChat(Request):
+class LeaveChat(BoolResultMixin, Request):
     """\
     Represents LeaveChat request object:
     https://core.telegram.org/bots/api#leavechat

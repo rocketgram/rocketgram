@@ -8,10 +8,11 @@ from typing import Optional, List
 
 from .inline_query_result import InlineQueryResult
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class AnswerInlineQuery(Request):
+class AnswerInlineQuery(BoolResultMixin, Request):
     """\
     Represents AnswerInlineQuery request object:
     https://core.telegram.org/bots/api#answerinlinequery

@@ -8,10 +8,11 @@ from typing import List
 
 from .passport_element_error import PassportElementError
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SetPassportDataErrors(Request):
+class SetPassportDataErrors(BoolResultMixin, Request):
     """\
     Represents SetPassportDataErrors request object:
     https://core.telegram.org/bots/api#setpassportdataerrors

@@ -8,10 +8,11 @@ from typing import Union
 
 from .chat_action_type import ChatActionType
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SendChatAction(Request):
+class SendChatAction(BoolResultMixin, Request):
     """\
     Represents SendChatAction request object:
     https://core.telegram.org/bots/api#sendchataction

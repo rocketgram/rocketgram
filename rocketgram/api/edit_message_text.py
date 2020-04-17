@@ -8,11 +8,11 @@ from typing import Union, Optional
 
 from .parse_mode_type import ParseModeType
 from .request import Request
-from .utils import INLINE_KEYBOARDS
+from .utils import INLINE_KEYBOARDS, MessageOrBoolResultMixin
 
 
 @dataclass(frozen=True)
-class EditMessageText(Request):
+class EditMessageText(MessageOrBoolResultMixin, Request):
     """\
     Represents EditMessageText request object:
     https://core.telegram.org/bots/api#editmessagetext

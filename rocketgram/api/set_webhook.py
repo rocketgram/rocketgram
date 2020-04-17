@@ -9,10 +9,11 @@ from typing import Union, Optional, List
 from .input_file import InputFile
 from .request import Request
 from .update_type import UpdateType
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SetWebhook(Request):
+class SetWebhook(BoolResultMixin, Request):
     """\
     Represents SetWebhook request object:
     https://core.telegram.org/bots/api#setwebhook

@@ -6,6 +6,7 @@
 from dataclasses import dataclass
 
 from .request import Request
+from .. import api
 
 
 @dataclass(frozen=True)
@@ -18,3 +19,11 @@ class GetStickerSet(Request):
     method = "getStickerSet"
 
     name: str
+
+    def parse_result(self, data) -> 'api.StickerSet':
+        assert isinstance(data, dict), "Should be dict."
+        return api.StickerSet.parse(data)
+
+    async def send2(self) -> 'api.StickerSet':
+        res = await self._send()
+        return res.result

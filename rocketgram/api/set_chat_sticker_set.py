@@ -7,10 +7,11 @@ from dataclasses import dataclass
 from typing import Union
 
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SetChatStickerSet(Request):
+class SetChatStickerSet(BoolResultMixin, Request):
     """\
     Represents SetChatStickerSet request object:
     https://core.telegram.org/bots/api#setchatstickerset

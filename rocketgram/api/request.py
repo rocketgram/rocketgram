@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import Enum
@@ -49,18 +50,29 @@ class Request:
 
         d = asdict(self)
 
-        assert 'method' not in d
+        assert 'request' not in d
 
         if with_method:
-            d['method'] = self.method
+            d['request'] = self.method
 
         return self.__prepare(d)
 
     def files(self) -> List['api.InputFile']:
         return list()
 
-    async def send(self) -> 'api.Response':
+    def parse_result(self, data):
+        raise NotImplementedError
+
+    async def _send(self) -> 'api.Response':
         return await context.bot.send(self)
+
+    async def send(self) -> 'api.Response':
+        warnings.warn("This method is deprecated. Use send2() instead.", DeprecationWarning)
+
+        return await context.bot.send(self)
+
+    async def send2(self):
+        raise NotImplementedError
 
     def webhook(self):
         context.webhook(self)

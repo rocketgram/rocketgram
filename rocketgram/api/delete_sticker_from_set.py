@@ -6,10 +6,11 @@
 from dataclasses import dataclass
 
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class DeleteStickerFromSet(Request):
+class DeleteStickerFromSet(BoolResultMixin, Request):
     """\
     Represents DeleteStickerFromSet request object:
     https://core.telegram.org/bots/api#deletestickerfromset

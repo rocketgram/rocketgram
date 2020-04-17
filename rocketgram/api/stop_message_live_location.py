@@ -7,11 +7,11 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
-from .utils import INLINE_KEYBOARDS
+from .utils import INLINE_KEYBOARDS, MessageOrBoolResultMixin
 
 
 @dataclass(frozen=True)
-class StopMessageLiveLocation(Request):
+class StopMessageLiveLocation(MessageOrBoolResultMixin, Request):
     """\
     Represents StopMessageLiveLocation request object:
     https://core.telegram.org/bots/api#stopmessagelivelocation

@@ -4,9 +4,10 @@
 
 
 from dataclasses import dataclass
-from typing import Union
+from typing import Union, List
 
 from .request import Request
+from .. import api
 
 
 @dataclass(frozen=True)
@@ -19,3 +20,11 @@ class GetChatAdministrators(Request):
     method = "getChatAdministrators"
 
     chat_id: Union[int, str]
+
+    def parse_result(self, data) -> List['api.ChatMember']:
+        assert isinstance(data, list), "Should be list."
+        return [api.ChatMember.parse(r) for r in data]
+
+    async def send2(self) -> List['api.ChatMember']:
+        res = await self._send()
+        return res.result

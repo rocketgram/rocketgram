@@ -4,8 +4,10 @@
 
 
 from dataclasses import dataclass
+from typing import List
 
 from .request import Request
+from .. import api
 
 
 @dataclass(frozen=True)
@@ -16,3 +18,11 @@ class GetMyCommands(Request):
     """
 
     method = "getMyCommands"
+
+    def parse_result(self, data) -> List['api.BotCommand']:
+        assert isinstance(data, list), "Should be list."
+        return [api.BotCommand.parse(r) for r in data]
+
+    async def send2(self) -> List['api.BotCommand']:
+        res = await self._send()
+        return res.result

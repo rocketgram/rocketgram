@@ -7,11 +7,11 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
-from .utils import ALL_KEYBOARDS
+from .utils import ALL_KEYBOARDS, MessageResultMixin
 
 
 @dataclass(frozen=True)
-class SendContact(Request):
+class SendContact(MessageResultMixin, Request):
     """\
     Represents SendContact request object:
     https://core.telegram.org/bots/api#sendcontact

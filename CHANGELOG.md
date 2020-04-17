@@ -10,6 +10,8 @@ All notable changes to this project.
 - Added `checkout` context helper.
 - Added `poll` context helper.
 - Added `answer` context helper.
+- Added well typed `Request.send2()` method. This method returns result directly instead of `Response` object.
+- Added well typed `Response.method` property.
 
 ### Fixed
 - Minor bugfixes.
@@ -22,6 +24,8 @@ All notable changes to this project.
 
 ### Deprecated
 - `context2` is deprecated and will be removed in version 2.1.
+- `Request.send()` method is deprecated and will be removed in version 2.3. Use `Request.send2()` instead.
+- `Response.method` property is deprecated and will be removed in version 2.3. Use `Response.request` instead.
 
 
 ## [1.8] - 2020-04-11

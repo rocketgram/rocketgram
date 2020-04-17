@@ -8,11 +8,11 @@ from typing import Union, Optional, List
 
 from .input_file import InputFile
 from .request import Request
-from .utils import ALL_KEYBOARDS
+from .utils import ALL_KEYBOARDS, MessageResultMixin
 
 
 @dataclass(frozen=True)
-class SendSticker(Request):
+class SendSticker(MessageResultMixin, Request):
     """\
     Represents SendSticker request object:
     https://core.telegram.org/bots/api#sendsticker

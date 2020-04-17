@@ -6,10 +6,11 @@
 from dataclasses import dataclass
 
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class DeleteWebhook(Request):
+class DeleteWebhook(BoolResultMixin, Request):
     """\
     Represents DeleteWebhook request object:
     https://core.telegram.org/bots/api#deletewebhook

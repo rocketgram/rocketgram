@@ -6,10 +6,11 @@
 from dataclasses import dataclass
 
 from .request import Request
+from .utils import FileResultMixin
 
 
 @dataclass(frozen=True)
-class GetFile(Request):
+class GetFile(FileResultMixin, Request):
     """\
     Represents GetFile request object:
     https://core.telegram.org/bots/api#getfile

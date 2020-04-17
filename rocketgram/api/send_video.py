@@ -9,11 +9,11 @@ from typing import Union, Optional, List
 from .input_file import InputFile
 from .parse_mode_type import ParseModeType
 from .request import Request
-from .utils import ALL_KEYBOARDS
+from .utils import ALL_KEYBOARDS, MessageResultMixin
 
 
 @dataclass(frozen=True)
-class SendVideo(Request):
+class SendVideo(MessageResultMixin, Request):
     """\
     Represents SendVideo request object:
     https://core.telegram.org/bots/api#sendvideo

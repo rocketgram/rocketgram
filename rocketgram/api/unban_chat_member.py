@@ -4,14 +4,14 @@
 
 
 from dataclasses import dataclass
-from datetime import datetime
-from typing import Union, Optional
+from typing import Union
 
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class UnbanChatMember(Request):
+class UnbanChatMember(BoolResultMixin, Request):
     """\
     Represents UnbanChatMember request object:
     https://core.telegram.org/bots/api#unbanchatmember

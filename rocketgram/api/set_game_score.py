@@ -7,10 +7,11 @@ from dataclasses import dataclass
 from typing import Optional
 
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SetGameScore(Request):
+class SetGameScore(BoolResultMixin, Request):
     """\
     Represents SetGameScore request object:
     https://core.telegram.org/bots/api#setgamescore

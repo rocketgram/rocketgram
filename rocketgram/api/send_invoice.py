@@ -7,10 +7,10 @@ from typing import Optional, List
 
 from .labeled_price import LabeledPrice
 from .request import Request
-from .utils import INLINE_KEYBOARDS
+from .utils import INLINE_KEYBOARDS, MessageResultMixin
 
 
-class SendInvoice(Request):
+class SendInvoice(MessageResultMixin, Request):
     """\
     Represents SendInvoice request object:
     https://core.telegram.org/bots/api#sendinvoice

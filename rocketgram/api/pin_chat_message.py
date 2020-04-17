@@ -7,10 +7,11 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class PinChatMessage(Request):
+class PinChatMessage(BoolResultMixin, Request):
     """\
     Represents PinChatMessage request object:
     https://core.telegram.org/bots/api#pinchatmessage

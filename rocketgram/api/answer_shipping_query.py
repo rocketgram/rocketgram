@@ -8,10 +8,11 @@ from typing import Optional, List
 
 from .request import Request
 from .shipping_option import ShippingOption
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class AnswerShippingQuery(Request):
+class AnswerShippingQuery(BoolResultMixin, Request):
     """\
     Represents AnswerShippingQuery request object:
     https://core.telegram.org/bots/api#answershippingquery

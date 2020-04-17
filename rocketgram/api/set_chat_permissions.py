@@ -5,12 +5,14 @@
 
 from dataclasses import dataclass
 from typing import Union
-from .request import Request
+
 from .chat_permissions import ChatPermissions
+from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SetChatPermissions(Request):
+class SetChatPermissions(BoolResultMixin, Request):
     """\
     Represents SetChatPermissions request object:
     https://core.telegram.org/bots/api#setchatpermissions

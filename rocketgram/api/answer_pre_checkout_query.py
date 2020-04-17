@@ -7,10 +7,11 @@ from dataclasses import dataclass
 from typing import Optional
 
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class AnswerPreCheckoutQuery(Request):
+class AnswerPreCheckoutQuery(BoolResultMixin, Request):
     """\
     Represents AnswerPreCheckoutQuery request object:
     https://core.telegram.org/bots/api#answerprecheckoutquery

@@ -8,10 +8,11 @@ from typing import Union, Optional, List
 
 from .input_file import InputFile
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SetStickerSetThumb(Request):
+class SetStickerSetThumb(BoolResultMixin, Request):
     """\
     Represents SetStickerSetThumb request object:
     https://core.telegram.org/bots/api#setstickersetthumb

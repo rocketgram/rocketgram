@@ -7,11 +7,12 @@ from dataclasses import dataclass
 from typing import Union, Optional, List
 
 from .request import Request
+from .utils import BoolResultMixin
 from .. import api
 
 
 @dataclass(frozen=True)
-class AddStickerToSet(Request):
+class AddStickerToSet(BoolResultMixin, Request):
     """\
     Represents AddStickerToSet request object:
     https://core.telegram.org/bots/api#addstickertoset

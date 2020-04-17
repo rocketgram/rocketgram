@@ -7,10 +7,11 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
+from .utils import MessageResultMixin
 
 
 @dataclass(frozen=True)
-class ForwardMessage(Request):
+class ForwardMessage(MessageResultMixin, Request):
     """\
     Represents ForwardMessage request object:
     https://core.telegram.org/bots/api#forwardmessage

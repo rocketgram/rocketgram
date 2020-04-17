@@ -8,11 +8,11 @@ from typing import Union, Optional, List
 
 from .poll_type import PollType
 from .request import Request
-from .utils import ALL_KEYBOARDS
+from .utils import ALL_KEYBOARDS, MessageResultMixin
 
 
 @dataclass(frozen=True)
-class SendPoll(Request):
+class SendPoll(MessageResultMixin, Request):
     """\
     Represents SendPoll request object:
     https://core.telegram.org/bots/api#sendpoll

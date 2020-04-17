@@ -7,12 +7,13 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Union, Optional
 
-from .request import Request
 from .chat_permissions import ChatPermissions
+from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class RestrictChatMember(Request):
+class RestrictChatMember(BoolResultMixin, Request):
     """\
     Represents RestrictChatMember request object:
     https://core.telegram.org/bots/api#restrictchatmember

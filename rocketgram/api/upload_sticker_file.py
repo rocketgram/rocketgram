@@ -8,10 +8,11 @@ from typing import List
 
 from .input_file import InputFile
 from .request import Request
+from .utils import FileResultMixin
 
 
 @dataclass(frozen=True)
-class UploadStickerFile(Request):
+class UploadStickerFile(FileResultMixin, Request):
     """\
     Represents UploadStickerFile request object:
     https://core.telegram.org/bots/api#uploadstickerfile

@@ -8,6 +8,7 @@ from typing import Optional, List
 
 from .request import Request
 from .update_type import UpdateType
+from .. import api
 
 
 @dataclass(frozen=True)
@@ -23,3 +24,11 @@ class GetUpdates(Request):
     limit: Optional[int] = None
     timeout: Optional[int] = None
     allowed_updates: Optional[List[UpdateType]] = None
+
+    def parse_result(self, data) -> List['api.Update']:
+        assert isinstance(data, list), "Should be list."
+        return [api.Update.parse(r) for r in data]
+
+    async def send2(self) -> List['api.Update']:
+        res = await self._send()
+        return res.result

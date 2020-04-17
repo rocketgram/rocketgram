@@ -7,11 +7,11 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
-from .utils import ALL_KEYBOARDS
+from .utils import ALL_KEYBOARDS, MessageResultMixin
 
 
 @dataclass(frozen=True)
-class SendLocation(Request):
+class SendLocation(MessageResultMixin, Request):
     """\
     Represents SendLocation request object:
     https://core.telegram.org/bots/api#sendlocation

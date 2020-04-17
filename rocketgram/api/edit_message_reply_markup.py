@@ -7,11 +7,11 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
-from .utils import INLINE_KEYBOARDS
+from .utils import INLINE_KEYBOARDS, MessageOrBoolResultMixin
 
 
 @dataclass(frozen=True)
-class EditMessageReplyMarkup(Request):
+class EditMessageReplyMarkup(MessageOrBoolResultMixin, Request):
     """\
     Represents EditMessageReplyMarkup request object:
     https://core.telegram.org/bots/api#editmessagereplymarkup

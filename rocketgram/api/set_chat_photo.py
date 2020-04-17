@@ -8,10 +8,11 @@ from typing import Union, List
 
 from .input_file import InputFile
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SetChatPhoto(Request):
+class SetChatPhoto(BoolResultMixin, Request):
     """\
     Represents SetChatPhoto request object:
     https://core.telegram.org/bots/api#setchatphoto

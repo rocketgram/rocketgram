@@ -8,11 +8,11 @@ from typing import Union, Optional
 
 from .parse_mode_type import ParseModeType
 from .request import Request
-from .utils import ALL_KEYBOARDS
+from .utils import ALL_KEYBOARDS, MessageResultMixin
 
 
 @dataclass(frozen=True)
-class SendMessage(Request):
+class SendMessage(MessageResultMixin, Request):
     """\
     Represents SendMessage request object:
     https://core.telegram.org/bots/api#sendmessage
@@ -27,3 +27,5 @@ class SendMessage(Request):
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[ALL_KEYBOARDS] = None
+
+

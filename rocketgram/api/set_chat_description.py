@@ -7,10 +7,11 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
+from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SetChatDescription(Request):
+class SetChatDescription(BoolResultMixin, Request):
     """\
     Represents SetChatDescription request object:
     https://core.telegram.org/bots/api#setchatdescription

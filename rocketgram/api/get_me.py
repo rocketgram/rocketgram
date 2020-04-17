@@ -6,6 +6,7 @@
 from dataclasses import dataclass
 
 from .request import Request
+from .. import api
 
 
 @dataclass(frozen=True)
@@ -16,3 +17,11 @@ class GetMe(Request):
     """
 
     method = "getMe"
+
+    def parse_result(self, data) -> 'api.User':
+        assert isinstance(data, dict), "Should be dict."
+        return api.User.parse(data)
+
+    async def send2(self) -> 'api.User':
+        res = await self._send()
+        return res.result
