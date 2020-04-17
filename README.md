@@ -64,7 +64,8 @@ UpdatesExecutor.run(bot)
 
 # Testing
 
-Code tested automatically using `travis`. You can see build status **[here](https://travis-ci.com/vd2org/rocketgram)**.
+Code tested automatically using `Github Actions`. 
+You can see build status **[here](https://github.com/rocketgram/rocketgram/actions)**.
 
 To test code manually install and run `pytest`:
 
