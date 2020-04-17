@@ -10,8 +10,8 @@ from ...context import context
 
 
 @make_waiter
-@commonfilters.update_type(UpdateType.message)  # noqa
-def next_message(*message_types: MessageType) -> bool:
+@commonfilters.update_type(UpdateType.message)
+def next_message(*message_types: MessageType):
     """\
     Waits next message.
 

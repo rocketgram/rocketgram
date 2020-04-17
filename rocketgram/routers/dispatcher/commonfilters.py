@@ -9,7 +9,7 @@ from ...api import UpdateType, MessageType, ChatType
 
 
 @make_filter
-def command(*commands: str, case_sensitive: bool = False, separator: str = ' ') -> bool:
+def command(*commands: str, case_sensitive: bool = False, separator: str = ' '):
     """Filters message begins with one of commands.
     Filters commands for other bots in groups.
     Assumes update_type == message and message_type == text.
@@ -41,7 +41,7 @@ def command(*commands: str, case_sensitive: bool = False, separator: str = ' ') 
 
 
 @make_filter
-def deeplink(*commands: str, case_sensitive: bool = False) -> bool:
+def deeplink(*commands: str, case_sensitive: bool = False):
     """Filters deeplinks parameters passed to /start command.
     If no commands was present then all deeplinks will be cached.
     Filters commands for other bots in groups.
@@ -88,7 +88,7 @@ def deeplink(*commands: str, case_sensitive: bool = False) -> bool:
 
 
 @make_filter
-def callback(*commands: str, case_sensitive: bool = False, separator=' ') -> bool:
+def callback(*commands: str, case_sensitive: bool = False, separator=' '):
     """Filters callback query begins with one of commands.
     Assumes update_type == callback_query.
 
@@ -117,7 +117,7 @@ def callback(*commands: str, case_sensitive: bool = False, separator=' ') -> boo
 
 
 @make_filter
-def inline_callback() -> bool:
+def inline_callback():
     """Filters callback_query done in messages posted through inline query.
     Assumes update_type is callback_query.
 
@@ -136,7 +136,7 @@ def inline_callback() -> bool:
 
 
 @make_filter
-def inline(*commands: str, case_sensitive: bool = False) -> bool:
+def inline(*commands: str, case_sensitive: bool = False):
     """Filters inline_query begins with one of commands.
     Assumes update_type is inline_query.
 
@@ -163,7 +163,7 @@ def inline(*commands: str, case_sensitive: bool = False) -> bool:
 
 
 @make_filter
-def chosen(*commands: str, case_sensitive: bool = False) -> bool:
+def chosen(*commands: str, case_sensitive: bool = False):
     """Filters chosen_inline_result with query begins with one of commands.
     Assumes update_type is chosen_inline_result.
 
@@ -191,7 +191,7 @@ def chosen(*commands: str, case_sensitive: bool = False) -> bool:
 
 
 @make_filter
-def update_type(*types: UpdateType) -> bool:
+def update_type(*types: UpdateType):
     """Filters updates with selected types.
 
     :param update_types:
@@ -205,7 +205,7 @@ def update_type(*types: UpdateType) -> bool:
 
 
 @make_filter
-def message_type(*types: MessageType) -> bool:
+def message_type(*types: MessageType):
     """Filters massage_type with one of selected types.
     Assumes update_type one of message, edited_message, channel_post, edited_channel_post.
 
@@ -222,7 +222,7 @@ def message_type(*types: MessageType) -> bool:
 
 
 @make_filter
-def chat_type(*types: ChatType) -> bool:
+def chat_type(*types: ChatType):
     """Filters chat_type with one of selected types.
     Assumes update_type one of message, edited_message, channel_post, edited_channel_post, callback_query.
     Note: For callbacks it not works for callbacks from messages posted through inline query.
@@ -241,7 +241,7 @@ def chat_type(*types: ChatType) -> bool:
 
 
 @make_filter
-def catch_all() -> bool:
+def catch_all():
     """\
     Simply catch all updates.
 
