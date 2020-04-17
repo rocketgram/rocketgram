@@ -12,6 +12,7 @@ All notable changes to this project.
 - Added `answer` context helper.
 - Added well typed `Request.send2()` method. This method returns result directly instead of `Response` object.
 - Added well typed `Response.method` property.
+- Added `File.url` property. This property retrun url of a file requested by `GetFile` method.
 
 ### Fixed
 - Minor bugfixes.

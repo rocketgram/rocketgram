@@ -6,6 +6,9 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from .. import api
+from ..context import context
+
 
 @dataclass(frozen=True)
 class File:
@@ -18,6 +21,10 @@ class File:
     file_unique_id: str
     file_size: Optional[int]
     file_path: Optional[str]
+
+    @property
+    def url(self) -> str:
+        return (api.API_FILE_URL % context.bot.token) + self.file_path
 
     @classmethod
     def parse(cls, data: dict) -> Optional['File']:
