@@ -11,7 +11,7 @@ from typing import List, Optional
 
 from .context import context
 from . import executors, routers, connectors, middlewares
-from .api import Request, Response, Update, UpdateType
+from .api import Request, Response, Update
 from .errors import RocketgramRequest429Error, RocketgramStopRequest
 from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
 
