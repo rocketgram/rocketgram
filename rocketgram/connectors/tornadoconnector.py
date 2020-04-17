@@ -4,7 +4,6 @@
 
 
 import asyncio
-import json
 import logging
 import uuid
 
@@ -15,13 +14,9 @@ from ..api import API_URL, Request, Response
 from ..errors import RocketgramNetworkError, RocketgramParseError
 
 try:
-    import ujson
-
-    json_encoder = ujson.dumps
-    json_decoder = ujson.loads
+    import ujson as json
 except ImportError:
-    json_encoder = json.dumps
-    json_decoder = json.loads
+    import json
 
 logger = logging.getLogger('rocketgram.connectors.tornadoconnector')
 
@@ -55,7 +50,7 @@ class TornadoConnector(Connector):
                     for name, field in request_data.items():
                         if isinstance(field, (dict, list, tuple)):
                             content_type = 'application/json'
-                            data = json_encoder(field)
+                            data = json.dumps(field)
                         else:
                             content_type = 'text/plain'
                             data = str(field)
@@ -95,12 +90,12 @@ class TornadoConnector(Connector):
                 req = HTTPRequest(url, method='POST', headers=headers, body_producer=producer,
                                   request_timeout=self._timeout)
             else:
-                req = HTTPRequest(url, method='POST', headers=HEADERS, body=json_encoder(request_data),
+                req = HTTPRequest(url, method='POST', headers=HEADERS, body=json.dumps(request_data),
                                   request_timeout=self._timeout)
 
             response = await self._client.fetch(req, raise_error=False)
 
-            return Response.parse(json_decoder(response.body), request)
+            return Response.parse(json.loads(response.body), request)
         except json.decoder.JSONDecodeError as e:
             raise RocketgramParseError(e)
         except asyncio.CancelledError:
