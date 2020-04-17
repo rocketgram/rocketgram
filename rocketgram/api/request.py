@@ -46,6 +46,8 @@ class Request:
         return [v for v in d if v is not None]
 
     def render(self, with_method=False) -> dict:
+        """Return dict representation of this request object."""
+
         assert self.method
 
         d = asdict(self)
@@ -58,12 +60,18 @@ class Request:
         return self.__prepare(d)
 
     def files(self) -> List['api.InputFile']:
+        """Returns list of binary files that exist in request."""
+
         return list()
 
     def parse_result(self, data):
+        """Parses result field of Response object."""
+
         raise NotImplementedError
 
     async def _send(self) -> 'api.Response':
+        """A temporary method that exists until the old send method is deleted."""
+
         return await context.bot.send(self)
 
     async def send(self) -> 'api.Response':
@@ -72,7 +80,15 @@ class Request:
         return await context.bot.send(self)
 
     async def send2(self):
+        """Sends this request in current context."""
+
         raise NotImplementedError
 
     def webhook(self):
+        """\
+        Schedules sending this request through the webhook-request mechanism.
+
+        For more information see: https://core.telegram.org/bots/api#making-requests-when-getting-updates
+        """
+
         context.webhook(self)
