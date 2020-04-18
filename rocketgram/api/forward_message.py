@@ -17,8 +17,6 @@ class ForwardMessage(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#forwardmessage
     """
 
-    method = "forwardMessage"
-
     chat_id: Union[int, str]
     from_chat_id: Union[int, str]
     message_id: int

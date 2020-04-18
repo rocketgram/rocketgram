@@ -19,8 +19,6 @@ class SendPhoto(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendphoto
     """
 
-    method = "sendPhoto"
-
     chat_id: Union[int, str]
     photo: Union[InputFile, str]
     caption: Optional[str] = None

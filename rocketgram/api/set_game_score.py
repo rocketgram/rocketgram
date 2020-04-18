@@ -17,8 +17,6 @@ class SetGameScore(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setgamescore
     """
 
-    method = "setGameScore"
-
     user_id: int
     score: int
     force: Optional[bool] = None

@@ -18,8 +18,6 @@ class EditMessageCaption(MessageOrBoolResultMixin, Request):
     https://core.telegram.org/bots/api#editmessagecaption
     """
 
-    method = "editMessageCaption"
-
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None

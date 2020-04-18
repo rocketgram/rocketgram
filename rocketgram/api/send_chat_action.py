@@ -18,7 +18,5 @@ class SendChatAction(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#sendchataction
     """
 
-    method = "sendChatAction"
-
     chat_id: Union[int, str]
     action: ChatActionType

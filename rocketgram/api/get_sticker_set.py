@@ -16,8 +16,6 @@ class GetStickerSet(Request):
     https://core.telegram.org/bots/api#getstickerset
     """
 
-    method = "getStickerSet"
-
     name: str
 
     def parse_result(self, data) -> 'api.StickerSet':

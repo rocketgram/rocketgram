@@ -17,6 +17,4 @@ class ExportChatInviteLink(StrResultMixin, Request):
     https://core.telegram.org/bots/api#exportchatinvitelink
     """
 
-    method = "exportChatInviteLink"
-
     chat_id: Union[int, str]

@@ -17,8 +17,6 @@ class AnswerCallbackQuery(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#answercallbackquery
     """
 
-    method = "answerCallbackQuery"
-
     callback_query_id: str
     text: Optional[str] = None
     show_alert: Optional[bool] = None

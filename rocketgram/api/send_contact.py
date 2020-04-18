@@ -17,8 +17,6 @@ class SendContact(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendcontact
     """
 
-    method = "sendContact"
-
     chat_id: Union[int, str]
     phone_number: str
     first_name: str

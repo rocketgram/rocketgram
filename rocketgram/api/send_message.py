@@ -18,8 +18,6 @@ class SendMessage(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendmessage
     """
 
-    method = "sendMessage"
-
     chat_id: Union[int, str]
     text: str
     parse_mode: Optional[ParseModeType] = None

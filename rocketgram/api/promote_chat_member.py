@@ -17,8 +17,6 @@ class PromoteChatMember(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#promotechatmember
     """
 
-    method = "promoteChatMember"
-
     chat_id: Union[int, str]
     user_id: int
     can_change_info: Optional[bool] = None

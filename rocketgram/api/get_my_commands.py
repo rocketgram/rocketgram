@@ -17,8 +17,6 @@ class GetMyCommands(Request):
     https://core.telegram.org/bots/api#getmycommands
     """
 
-    method = "getMyCommands"
-
     def parse_result(self, data) -> List['api.BotCommand']:
         assert isinstance(data, list), "Should be list."
         return [api.BotCommand.parse(r) for r in data]

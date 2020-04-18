@@ -19,8 +19,6 @@ class SendAnimation(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendanimation
     """
 
-    method = "sendAnimation"
-
     chat_id: Union[int, str]
     animation: Union[InputFile, str]
     duration: Optional[int] = None

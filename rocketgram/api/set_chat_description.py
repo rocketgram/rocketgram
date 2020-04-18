@@ -17,7 +17,5 @@ class SetChatDescription(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setchatdescription
     """
 
-    method = "setChatDescription"
-
     chat_id: Union[int, str]
     description: Optional[str]

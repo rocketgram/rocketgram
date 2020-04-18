@@ -16,4 +16,3 @@ class DeleteWebhook(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#deletewebhook
     """
 
-    method = "deleteWebhook"

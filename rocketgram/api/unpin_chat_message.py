@@ -17,6 +17,4 @@ class UnpinChatMessage(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#unpinchatmessage
     """
 
-    method = "unpinChatMessage"
-
     chat_id: Union[int, str]

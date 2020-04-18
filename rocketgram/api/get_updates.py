@@ -18,8 +18,6 @@ class GetUpdates(Request):
     https://core.telegram.org/bots/api#getupdates
     """
 
-    method = "getUpdates"
-
     offset: Optional[int] = None
     limit: Optional[int] = None
     timeout: Optional[int] = None

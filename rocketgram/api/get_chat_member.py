@@ -17,8 +17,6 @@ class GetChatMember(Request):
     https://core.telegram.org/bots/api#getchatmember
     """
 
-    method = "getChatMember"
-
     chat_id: Union[int, str]
     user_id: int
 

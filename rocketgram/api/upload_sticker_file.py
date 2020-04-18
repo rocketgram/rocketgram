@@ -18,8 +18,6 @@ class UploadStickerFile(FileResultMixin, Request):
     https://core.telegram.org/bots/api#uploadstickerfile
     """
 
-    method = "uploadStickerFile"
-
     user_id: int
     png_sticker: InputFile
 

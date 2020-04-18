@@ -17,8 +17,6 @@ class GetChat(Request):
     https://core.telegram.org/bots/api#getchat
     """
 
-    method = "getChat"
-
     chat_id: Union[int, str]
 
     def parse_result(self, data) -> 'api.Chat':

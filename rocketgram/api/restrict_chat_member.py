@@ -19,8 +19,6 @@ class RestrictChatMember(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#restrictchatmember
     """
 
-    method = "restrictChatMember"
-
     chat_id: Union[int, str]
     user_id: int
     permissions: ChatPermissions

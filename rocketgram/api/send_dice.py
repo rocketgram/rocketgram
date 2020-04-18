@@ -17,8 +17,6 @@ class SendDice(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#senddice
     """
 
-    method = "sendDice"
-
     chat_id: Union[int, str]
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None

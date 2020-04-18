@@ -18,7 +18,5 @@ class SetChatPermissions(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setchatpermissions
     """
 
-    method = "setChatPermissions"
-
     user_id: Union[int, str]
     permissions: ChatPermissions

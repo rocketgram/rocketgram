@@ -17,7 +17,5 @@ class SetChatTitle(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setchattitle
     """
 
-    method = "setChatTitle"
-
     chat_id: Union[int, str]
     title: str

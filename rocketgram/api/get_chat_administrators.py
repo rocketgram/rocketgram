@@ -17,8 +17,6 @@ class GetChatAdministrators(Request):
     https://core.telegram.org/bots/api#getchatadministrators
     """
 
-    method = "getChatAdministrators"
-
     chat_id: Union[int, str]
 
     def parse_result(self, data) -> List['api.ChatMember']:

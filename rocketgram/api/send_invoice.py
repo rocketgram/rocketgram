@@ -16,8 +16,6 @@ class SendInvoice(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendinvoice
     """
 
-    method = "sendInvoice"
-
     chat_id: int
     title: str
     description: str

@@ -18,6 +18,4 @@ class SetMyCommands(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setmycommands
     """
 
-    method = "setMyCommands"
-
     commands: List[BotCommand]

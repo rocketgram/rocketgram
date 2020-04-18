@@ -19,8 +19,6 @@ class SendVoice(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendvoice
     """
 
-    method = "sendVoice"
-
     chat_id: Union[int, str]
     voice: Union[InputFile, str]
     duration: Optional[int] = None

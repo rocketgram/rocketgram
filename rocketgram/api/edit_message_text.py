@@ -18,8 +18,6 @@ class EditMessageText(MessageOrBoolResultMixin, Request):
     https://core.telegram.org/bots/api#editmessagetext
     """
 
-    method = "editMessageText"
-
     text: str
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None

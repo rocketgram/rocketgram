@@ -18,8 +18,6 @@ class AnswerInlineQuery(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#answerinlinequery
     """
 
-    method = "answerInlineQuery"
-
     inline_query_id: str
     results: List[InlineQueryResult]
     cache_time: Optional[int] = None

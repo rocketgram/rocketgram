@@ -16,6 +16,4 @@ class DeleteStickerFromSet(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#deletestickerfromset
     """
 
-    method = "deleteStickerFromSet"
-
     sticker: str

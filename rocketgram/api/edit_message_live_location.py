@@ -17,8 +17,6 @@ class EditMessageLiveLocation(MessageOrBoolResultMixin, Request):
     https://core.telegram.org/bots/api#editmessagelivelocation
     """
 
-    method = "editMessageLiveLocation"
-
     latitude: float
     longitude: float
     chat_id: Optional[Union[int, str]] = None

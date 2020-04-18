@@ -17,6 +17,4 @@ class DeleteChatPhoto(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#deletechatphoto
     """
 
-    method = "deleteChatPhoto"
-
     chat_id: Union[int, str]

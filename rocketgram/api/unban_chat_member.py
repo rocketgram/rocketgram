@@ -17,7 +17,5 @@ class UnbanChatMember(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#unbanchatmember
     """
 
-    method = "unbanChatMember"
-
     chat_id: Union[int, str]
     user_id: int

@@ -16,8 +16,6 @@ class GetWebhookInfo(Request):
     https://core.telegram.org/bots/api#getwebhookinfo
     """
 
-    method = "getWebhookInfo"
-
     def parse_result(self, data) -> 'api.WebhookInfo':
         assert isinstance(data, dict), "Should be dict."
         return api.WebhookInfo.parse(data)

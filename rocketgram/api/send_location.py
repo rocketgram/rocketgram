@@ -17,8 +17,6 @@ class SendLocation(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendlocation
     """
 
-    method = "sendLocation"
-
     chat_id: Union[int, str]
     latitude: float
     longitude: float

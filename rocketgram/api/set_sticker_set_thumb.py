@@ -18,8 +18,6 @@ class SetStickerSetThumb(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setstickersetthumb
     """
 
-    method = "setStickerSetThumb"
-
     name: str
     user_id: int
     thumb: Optional[Union[InputFile, str]]

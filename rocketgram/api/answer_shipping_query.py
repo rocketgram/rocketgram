@@ -18,8 +18,6 @@ class AnswerShippingQuery(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#answershippingquery
     """
 
-    method = "answerShippingQuery"
-
     shipping_query_id: str
     ok: bool
     shipping_options: Optional[List[ShippingOption]]

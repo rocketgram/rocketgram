@@ -17,8 +17,6 @@ class PinChatMessage(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#pinchatmessage
     """
 
-    method = "pinChatMessage"
-
     chat_id: Union[int, str]
     message_id: int
     disable_notification: Optional[bool] = None

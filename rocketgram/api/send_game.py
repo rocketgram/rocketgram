@@ -17,8 +17,6 @@ class SendGame(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendgame
     """
 
-    method = "sendGame"
-
     chat_id: int
     game_short_name: str
     disable_notification: Optional[bool] = None

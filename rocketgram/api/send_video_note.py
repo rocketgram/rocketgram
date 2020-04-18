@@ -18,8 +18,6 @@ class SendVideoNote(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendvideonote
     """
 
-    method = "sendVideoNote"
-
     chat_id: Union[int, str]
     video_note: Union[InputFile, str]
     duration: Optional[int] = None

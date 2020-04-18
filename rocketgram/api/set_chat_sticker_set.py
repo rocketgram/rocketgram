@@ -17,7 +17,5 @@ class SetChatStickerSet(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setchatstickerset
     """
 
-    method = "setChatStickerSet"
-
     chat_id: Union[int, str]
     sticker_set_name: str

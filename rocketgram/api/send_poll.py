@@ -18,8 +18,6 @@ class SendPoll(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendpoll
     """
 
-    method = "sendPoll"
-
     chat_id: Union[int, str]
     question: str
     options: List[str]

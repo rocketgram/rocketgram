@@ -17,6 +17,4 @@ class LeaveChat(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#leavechat
     """
 
-    method = "leaveChat"
-
     chat_id: Union[int, str]

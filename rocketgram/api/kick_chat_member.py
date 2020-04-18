@@ -18,8 +18,6 @@ class KickChatMember(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#kickchatmember
     """
 
-    method = "kickChatMember"
-
     chat_id: Union[int, str]
     user_id: int
     until_date: Optional[datetime] = None

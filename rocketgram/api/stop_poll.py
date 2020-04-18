@@ -18,8 +18,6 @@ class StopPoll(Request):
     https://core.telegram.org/bots/api#stoppoll
     """
 
-    method = "stopPoll"
-
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     reply_markup: Optional[INLINE_KEYBOARDS] = None

@@ -17,7 +17,5 @@ class DeleteChatStickerSet(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#deletechatstickerset
     """
 
-    method = "deleteChatStickerSet"
-
     chat_id: Union[int, str]
     sticker_set_name: str

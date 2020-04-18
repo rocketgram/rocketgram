@@ -19,8 +19,6 @@ class SendVideo(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendvideo
     """
 
-    method = "sendVideo"
-
     chat_id: Union[int, str]
     video: Union[InputFile, str]
     duration: Optional[int] = None

@@ -19,8 +19,6 @@ class SendMediaGroup(Request):
     https://core.telegram.org/bots/api#sendmediagroup
     """
 
-    method = "sendMediaGroup"
-
     chat_id: Union[int, str]
     media: List[InputMedia]
     disable_notification: Optional[bool] = None

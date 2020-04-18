@@ -17,7 +17,5 @@ class DeleteMessage(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#deletemessage
     """
 
-    method = "deleteMessage"
-
     chat_id: Union[int, str] = None
     message_id: int = None

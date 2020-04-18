@@ -18,8 +18,6 @@ class SetChatPhoto(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setchatphoto
     """
 
-    method = "setChatPhoto"
-
     chat_id: Union[int, str]
     photo: Union[InputFile, str]
 

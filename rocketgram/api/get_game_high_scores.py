@@ -17,8 +17,6 @@ class GetGameHighScores(Request):
     https://core.telegram.org/bots/api#getgamehighscores
     """
 
-    method = "getGameHighScores"
-
     user_id: int
     chat_id: Optional[int] = None
     message_id: Optional[int] = None

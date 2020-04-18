@@ -18,8 +18,6 @@ class SendSticker(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendsticker
     """
 
-    method = "sendSticker"
-
     chat_id: Union[int, str]
     sticker: Union[InputFile, str]
     disable_notification: Optional[bool] = None

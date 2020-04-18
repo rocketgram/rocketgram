@@ -19,8 +19,6 @@ class CreateNewStickerSet(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#createnewstickerset
     """
 
-    method = "createNewStickerSet"
-
     user_id: int
     name: str
     title: str

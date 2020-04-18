@@ -19,8 +19,6 @@ class SetWebhook(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setwebhook
     """
 
-    method = "setWebhook"
-
     url: str
     certificate: Optional[Union[InputFile, str]] = None
     max_connections: Optional[int] = None

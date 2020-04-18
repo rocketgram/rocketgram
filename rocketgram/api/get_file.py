@@ -16,6 +16,4 @@ class GetFile(FileResultMixin, Request):
     https://core.telegram.org/bots/api#getfile
     """
 
-    method = "getFile"
-
     file_id: str

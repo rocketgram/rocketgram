@@ -17,8 +17,6 @@ class SetChatAdministratorCustomTitle(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setchatadministratorcustomtitle
     """
 
-    method = "setChatAdministratorCustomTitle"
-
     chat_id: Union[int, str]
     user_id: int
     custom_title: str

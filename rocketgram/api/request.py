@@ -20,8 +20,6 @@ class Request:
     Base class for all request objects.
     """
 
-    method = None
-
     def __prepare(self, d: Union[Dict, List]) -> Union[Dict, List]:
         assert isinstance(d, (list, dict))
 
@@ -45,17 +43,19 @@ class Request:
             return {k: v for k, v in d.items() if v is not None}
         return [v for v in d if v is not None]
 
+    @property
+    def method(self) -> str:
+        return self.__class__.__name__
+
     def render(self, with_method=False) -> dict:
         """Return dict representation of this request object."""
 
-        assert self.method
+        assert self.__class__.__name__ != 'Request'
 
         d = asdict(self)
 
-        assert 'request' not in d
-
         if with_method:
-            d['request'] = self.method
+            d['method'] = self.__class__.__name__
 
         return self.__prepare(d)
 

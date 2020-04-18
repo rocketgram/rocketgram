@@ -17,6 +17,4 @@ class GetChatMembersCount(IntResultMixin, Request):
     https://core.telegram.org/bots/api#getchatmemberscount
     """
 
-    method = "getChatMembersCount"
-
     chat_id: Union[int, str]

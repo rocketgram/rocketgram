@@ -17,8 +17,6 @@ class SendVenue(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendvenue
     """
 
-    method = "sendVenue"
-
     chat_id: Union[int, str]
     latitude: float
     longitude: float

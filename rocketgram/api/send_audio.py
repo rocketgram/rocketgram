@@ -19,8 +19,6 @@ class SendAudio(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendaudio
     """
 
-    method = "sendAudio"
-
     chat_id: Union[int, str]
     audio: Union[InputFile, str]
     duration: Optional[int] = None

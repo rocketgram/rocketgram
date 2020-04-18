@@ -18,8 +18,6 @@ class AddStickerToSet(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#addstickertoset
     """
 
-    method = "addStickerToSet"
-
     user_id: int
     name: str
     png_sticker: Optional[Union['api.InputFile', str]]

@@ -17,8 +17,6 @@ class GetUserProfilePhotos(Request):
     https://core.telegram.org/bots/api#getuserprofilephotos
     """
 
-    method = "getUserProfilePhotos"
-
     user_id: int
     offset: Optional[int] = None
     limit: Optional[int] = None

@@ -19,8 +19,6 @@ class SendDocument(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#senddocument
     """
 
-    method = "sendDocument"
-
     chat_id: Union[int, str]
     document: Union[InputFile, str]
     thumb: Optional[Union[InputFile, str]] = None

@@ -19,8 +19,6 @@ class EditMessageMedia(MessageOrBoolResultMixin, Request):
     https://core.telegram.org/bots/api#editmessagemedia
     """
 
-    method = "editMessageMedia"
-
     media: InputMedia
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None

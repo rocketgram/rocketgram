@@ -16,8 +16,6 @@ class GetMe(Request):
     https://core.telegram.org/bots/api#getme
     """
 
-    method = "getMe"
-
     def parse_result(self, data) -> 'api.User':
         assert isinstance(data, dict), "Should be dict."
         return api.User.parse(data)

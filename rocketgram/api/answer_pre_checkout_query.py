@@ -17,8 +17,6 @@ class AnswerPreCheckoutQuery(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#answerprecheckoutquery
     """
 
-    method = "answerPreCheckoutQuery"
-
     pre_checkout_query_id: str
     ok: bool
     error_message: Optional[str]

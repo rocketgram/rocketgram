@@ -16,7 +16,5 @@ class SetStickerPositionInSet(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setstickerpositioninset
     """
 
-    method = "setStickerPositionInSet"
-
     sticker: str
     position: int
