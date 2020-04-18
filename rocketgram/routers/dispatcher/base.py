@@ -5,12 +5,13 @@
 
 import asyncio
 import logging
+import warnings
 from dataclasses import dataclass
+from inspect import isclass
 from typing import Callable, Coroutine, AsyncGenerator, Union, List
 
 from .filters import FILTERS_ATTR, PRIORITY_ATTR, WAITER_ASSIGNED_ATTR, HANDLER_ASSIGNED_ATTR
 from .filters import FilterParams, _check_sig
-from .. import dispatcher
 from ..router import Router
 from ... import bot
 from ...context import context
@@ -28,25 +29,13 @@ class Handler:
 DEFAULT_PRIORITY = 1024
 
 
-def _register(what: List[Handler], handler_func: Callable[..., None], default_priority: int):
-    # Checking calling signature for handler_func.
-    assert _check_sig(handler_func), \
-        'Handler `%s` must not take any arguments!' % handler_func.__name__
+def _get_function(handler):
+    if not isclass(handler):
+        return handler
 
-    assert not hasattr(handler_func, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
-    assert not hasattr(handler_func, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
-
-    priority = getattr(handler_func, PRIORITY_ATTR, default_priority)
-    assert isinstance(priority, int), 'Handler function has wrong priority!'
-
-    filters = getattr(handler_func, FILTERS_ATTR, list())
-    assert isinstance(filters, list), 'Handler function has wrong filters!'
-    assert len(filters), 'Handler must have at least one filter!'
-
-    what.append(Handler(priority, handler_func, filters))
-
-    setattr(handler_func, HANDLER_ASSIGNED_ATTR, True)
-    return handler_func
+    instance = handler()
+    assert callable(instance), "Class handlers must be callable!"
+    return instance
 
 
 async def _call_or_await(func, *args, **kwargs):
@@ -78,16 +67,41 @@ class BaseDispatcher(Router):
         self._pre = sorted(self._pre, key=lambda handler: handler.priority)
         self._post = sorted(self._post, key=lambda handler: handler.priority)
 
-    def from_proxy(self, proxy: 'dispatcher.BaseDispatcherProxy'):
-        self._init.extend(proxy.inits())
-        self._shutdown.extend(proxy.shutdowns())
-        self._handlers.extend(proxy.handlers())
-        self._pre.extend(proxy.befores())
-        self._post.extend(proxy.afters())
+    @property
+    def inits(self):
+        return self._init
+
+    @property
+    def shutdowns(self):
+        return self._shutdown
+
+    @property
+    def handlers(self):
+        return self._handlers
+
+    @property
+    def befores(self):
+        return self._pre
+
+    @property
+    def afters(self):
+        return self._post
+
+    def from_dispatcher(self, dispatcher: 'BaseDispatcher'):
+        self._init.extend(dispatcher.inits)
+        self._shutdown.extend(dispatcher.shutdowns)
+        self._handlers.extend(dispatcher.handlers)
+        self._pre.extend(dispatcher.befores)
+        self._post.extend(dispatcher.afters)
 
         # if handler added in runtime - resort handlers
         if len(self._bots):
             self._resort_handlers()
+
+    def from_proxy(self, dispatcher: 'BaseDispatcher'):
+        warnings.warn("This method is deprecated. Use from_dispatcher() instead.", DeprecationWarning)
+
+        self.from_dispatcher(dispatcher)
 
     async def init(self):
         logger.debug('Performing init...')
@@ -120,38 +134,49 @@ class BaseDispatcher(Router):
         self._shutdown.append(func)
         return func
 
-    def handler(self, handler_func: Callable[..., None]):
+    def _register(self, what: List[Handler], handler: Callable[..., None]):
+        # Save handler to given handlers list.
+
+        function = _get_function(handler)
+
+        assert _check_sig(function), \
+            'Handler `%s` must not take any arguments!' % handler
+
+        assert not hasattr(handler, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
+        assert not hasattr(handler, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
+
+        priority = getattr(handler, PRIORITY_ATTR, self._default_priority)
+        assert isinstance(priority, int), 'Handler function has wrong priority!'
+
+        filters = getattr(handler, FILTERS_ATTR, list())
+        assert isinstance(filters, list), 'Handler function has wrong filters!'
+        assert len(filters), 'Handler must have at least one filter!'
+
+        what.append(Handler(priority, function, filters))
+
+        setattr(function, HANDLER_ASSIGNED_ATTR, True)
+
+        # if handler added in runtime - resort handlers
+        if len(self._bots):
+            self._resort_handlers()
+
+    def handler(self, handler: Callable[..., None]):
         """Registers handler"""
 
-        r = _register(self._handlers, handler_func, self._default_priority)
+        self._register(self._handlers, handler)
+        return handler
 
-        # if handler added in runtime - resort handlers
-        if len(self._bots):
-            self._resort_handlers()
-
-        return r
-
-    def before(self, handler_func: Callable[..., None]):
+    def before(self, handler: Callable[..., None]):
         """Registers preprocessor"""
 
-        r = _register(self._pre, handler_func, self._default_priority)
+        self._register(self._pre, handler)
+        return handler
 
-        # if handler added in runtime - resort handlers
-        if len(self._bots):
-            self._resort_handlers()
-
-        return r
-
-    def after(self, handler_func: Callable[..., None]):
+    def after(self, handler: Callable[..., None]):
         """Registers postprocessor"""
 
-        r = _register(self._post, handler_func, self._default_priority)
-
-        # if handler added in runtime - resort handlers
-        if len(self._bots):
-            self._resort_handlers()
-
-        return r
+        self._register(self._post, handler)
+        return handler
 
     async def process(self):
         """Process new request."""

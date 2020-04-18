@@ -13,6 +13,7 @@ All notable changes to this project.
 - Added well typed `Request.send2()` method. This method returns result directly instead of `Response` object.
 - Added well typed `Response.method` property.
 - Added `File.url` property. This property retrun url of a file requested by `GetFile` method.
+- Ability to use callable classes and instances as handlers.
 
 ### Fixed
 - Minor bugfixes.
@@ -27,6 +28,8 @@ All notable changes to this project.
 - `context2` is deprecated and will be removed in version 2.1.
 - `Request.send()` method is deprecated and will be removed in version 2.3. Use `Request.send2()` instead.
 - `Response.method` property is deprecated and will be removed in version 2.3. Use `Response.request` instead.
+- `BaseDispatcherProxy` class is deprecated and will be removed in version 3.0. Use `BaseDispatcher` instead.
+- `BaseDispatcher.from_proxy` method is deprecated and will be removed in version 3.0. Use `from_dispatcher` instead.
 
 
 ## [1.8] - 2020-04-11

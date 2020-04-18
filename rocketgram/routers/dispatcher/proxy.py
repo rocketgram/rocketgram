@@ -3,31 +3,13 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
+
 from .base import BaseDispatcher
 
 
 class BaseDispatcherProxy(BaseDispatcher):
-    @property
-    def inits(self):
-        return self._init
+    def __init__(self, *args, **kwargs):
+        warnings.warn("This class is deprecated. Use BaseDispatcher instead.", DeprecationWarning)
 
-    @property
-    def shutdowns(self):
-        return self._shutdown
-
-    @property
-    def handlers(self):
-        return self._handlers
-
-    @property
-    def befores(self):
-        return self._pre
-
-    @property
-    def afters(self):
-        return self._post
-
-    async def process(self):
-        """Process new request."""
-
-        raise NotImplementedError
+        super().__init__(*args, **kwargs)
