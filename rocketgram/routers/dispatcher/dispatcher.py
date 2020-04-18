@@ -4,19 +4,19 @@
 
 
 import asyncio
-import inspect
 import logging
 import typing
 from contextlib import suppress
 from dataclasses import dataclass, replace
+from inspect import isawaitable, isasyncgenfunction, isasyncgen
 from time import time
 from typing import Tuple, List, Dict, Callable, Coroutine, AsyncGenerator, Union
 
 from .base import BaseDispatcher, DEFAULT_PRIORITY, _call_or_await
 from .filters import FilterParams, WAITER_ASSIGNED_ATTR
 from .waiters import WaitNext, DropWaiter
-from ...context import context
 from ...api import UpdateType
+from ...context import context
 
 logger = logging.getLogger('rocketgram.dispatcher')
 
@@ -164,7 +164,7 @@ class Dispatcher(BaseDispatcher):
                 raise HandlerNotFoundError
 
             # Run handler...
-            if inspect.isasyncgenfunction(handler.handler) or inspect.isasyncgen(handler.handler):
+            if isasyncgenfunction(handler.handler) or isasyncgen(handler.handler):
                 # handler is async generator...
                 if not scope:
                     emsg = f'Found async generator `{handler.handler.__name__}` but user_scope' \
@@ -174,7 +174,7 @@ class Dispatcher(BaseDispatcher):
             else:
                 # This is normal handler.
                 r = handler.handler()
-                if inspect.isawaitable(r):
+                if isawaitable(r):
                     await r
 
             # Run postprocessors...

@@ -4,7 +4,7 @@
 
 
 import asyncio
-import inspect
+from inspect import isawaitable
 import logging
 from contextlib import suppress
 from typing import List, Optional
@@ -116,9 +116,9 @@ class Bot:
 
         await self.router.init()
 
-        for md in self.__middlewares:
-            m = md.init()
-            if inspect.isawaitable(m):
+        for mw in self.__middlewares:
+            m = mw.init()
+            if isawaitable(m):
                 await m
 
         return True
@@ -134,9 +134,9 @@ class Bot:
 
         await self.router.shutdown()
 
-        for md in reversed(self.__middlewares):
-            m = md.shutdown()
-            if inspect.isawaitable(m):
+        for mw in reversed(self.__middlewares):
+            m = mw.shutdown()
+            if isawaitable(m):
                 await m
 
         if self.__own_connector:
@@ -148,10 +148,10 @@ class Bot:
         context.assign(executor, self, update)
 
         try:
-            for md in self.__middlewares:
-                mw = md.before_process()
-                if inspect.isawaitable(mw):
-                    await mw
+            for mw in self.__middlewares:
+                m = mw.before_process()
+                if isawaitable(m):
+                    await m
 
             await self.router.process()
 
@@ -160,9 +160,9 @@ class Bot:
             for req in context.webhook_requests:
                 # set request to return if it can be processed
                 if webhook_request is None and executor.can_process_webhook_request(req):
-                    for md in self.__middlewares:
-                        req = md.before_request(req)
-                        if inspect.isawaitable(req):
+                    for mw in self.__middlewares:
+                        req = mw.before_request(req)
+                        if isawaitable(req):
                             req = await req
                     webhook_request = req
                     continue
@@ -171,10 +171,10 @@ class Bot:
                 with suppress(Exception):
                     await self.send(req)
 
-            for md in self.__middlewares:
-                mw = md.after_process()
-                if inspect.isawaitable(mw):
-                    await mw
+            for mw in self.__middlewares:
+                m = mw.after_process()
+                if isawaitable(m):
+                    await m
 
             return webhook_request
 
@@ -183,26 +183,26 @@ class Bot:
         except asyncio.CancelledError:
             raise
         except Exception as error:
-            for md in self.__middlewares:
+            for mw in self.__middlewares:
                 with suppress(Exception):
-                    m = md.process_error(error)
-                    if inspect.isawaitable(m):
+                    m = mw.process_error(error)
+                    if isawaitable(m):
                         await m
 
             logger.exception('Got exception during processing request:')
 
     async def send(self, request: Request) -> Response:
         try:
-            for md in self.__middlewares:
-                request = md.before_request(request)
-                if inspect.isawaitable(request):
+            for mw in self.__middlewares:
+                request = mw.before_request(request)
+                if isawaitable(request):
                     request = await request
 
             response = await self.__connector.send(self.token, request)
 
-            for md in reversed(self.__middlewares):
-                response = md.after_request(request, response)
-                if inspect.isawaitable(response):
+            for mw in reversed(self.__middlewares):
+                response = mw.after_request(request, response)
+                if isawaitable(response):
                     response = await response
 
             if response.ok:
@@ -213,8 +213,8 @@ class Bot:
         except asyncio.CancelledError:
             raise
         except Exception as error:
-            for md in reversed(self.__middlewares):
-                m = md.request_error(request, error)
-                if inspect.isawaitable(m):
+            for mw in reversed(self.__middlewares):
+                m = mw.request_error(request, error)
+                if isawaitable(m):
                     await m
             raise
