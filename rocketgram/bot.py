@@ -9,11 +9,11 @@ import logging
 from contextlib import suppress
 from typing import List, Optional
 
-from .context import context
 from . import executors, routers, connectors, middlewares
 from .api import Request, Response, Update
-from .errors import RocketgramRequest429Error, RocketgramStopRequest
-from .errors import RocketgramRequestError, RocketgramRequest400Error, RocketgramRequest401Error
+from .context import context
+from .errors import RocketgramRequestError
+from .errors import RocketgramStopRequest
 
 logger = logging.getLogger('rocketgram.bot')
 logger_raw_in = logging.getLogger('rocketgram.raw.in')
@@ -207,13 +207,9 @@ class Bot:
 
             if response.ok:
                 return response
-            if response.error_code == 400:
-                raise RocketgramRequest400Error(request, response)
-            elif response.error_code == 401:
-                raise RocketgramRequest401Error(request, response)
-            elif response.error_code == 429:
-                raise RocketgramRequest429Error(request, response)
-            raise RocketgramRequestError(request, response)
+
+            raise RocketgramRequestError.get_exception(request, response)
+
         except asyncio.CancelledError:
             raise
         except Exception as error:
