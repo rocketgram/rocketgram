@@ -4,11 +4,13 @@
 
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Union, Optional, List
 
 from .poll_type import PollType
 from .request import Request
 from .utils import ALL_KEYBOARDS, MessageResultMixin
+from .. import api
 
 
 @dataclass(frozen=True)
@@ -25,6 +27,10 @@ class SendPoll(MessageResultMixin, Request):
     type: Optional['PollType'] = None
     allows_multiple_answers: Optional[bool] = None
     correct_option_id: Optional[int] = None
+    explanation: Optional[str] = None
+    explanation_parse_mode: Optional['api.ParseModeType'] = None
+    open_period: Optional[int] = None
+    close_date: Optional[datetime] = None
     is_closed: Optional[bool] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None

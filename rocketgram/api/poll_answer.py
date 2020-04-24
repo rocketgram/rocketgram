@@ -17,7 +17,7 @@ class PollAnswer:
 
     """
 
-    pool_id: str
+    poll_id: str
     user: User
     option_ids: List[int]
 
@@ -26,4 +26,4 @@ class PollAnswer:
         if data is None:
             return None
 
-        return cls(data['pool_id'], User.parse(data['user']), data['option_ids'])
+        return cls(data['poll_id'], User.parse(data['user']), data['option_ids'])

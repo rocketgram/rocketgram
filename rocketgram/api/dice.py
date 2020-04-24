@@ -14,6 +14,7 @@ class Dice:
     https://core.telegram.org/bots/api#dice
     """
 
+    emoji: str
     value: int
 
     @classmethod
@@ -21,4 +22,4 @@ class Dice:
         if data is None:
             return None
 
-        return cls(data['value'])
+        return cls(data['emoji'], data['value'])

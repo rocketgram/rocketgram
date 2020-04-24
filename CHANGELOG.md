@@ -14,6 +14,10 @@ All notable changes to this project.
 - Added well typed `Response.method` property.
 - Added `File.url` property. This property retrun url of a file requested by `GetFile` method.
 - Ability to use callable classes and instances as handlers.
+- `explanation`, `explanation_entities`, `open_period`, `close_date` fields to `Poll` class.
+- `explanation`, `explanation_parse_mode`, `open_period`, `close_date` fields to `sendPoll` request class.
+- `emoji` field to `sendDice` request class.
+- `emoji` field to `Dice` class.
 
 ### Fixed
 - Minor bugfixes.
@@ -25,11 +29,14 @@ All notable changes to this project.
 - Old `context` helper functions. Now `context` and `context2` is the same.
 
 ### Deprecated
-- `context2` is deprecated and will be removed in version 2.1.
+- `context2` is deprecated and will be removed in version 2.3.
 - `Request.send()` method is deprecated and will be removed in version 2.3. Use `Request.send2()` instead.
 - `Response.method` property is deprecated and will be removed in version 2.3. Use `Response.request` instead.
 - `BaseDispatcherProxy` class is deprecated and will be removed in version 3.0. Use `BaseDispatcher` instead.
 - `BaseDispatcher.from_proxy` method is deprecated and will be removed in version 3.0. Use `from_dispatcher` instead.
+
+### Changed
+- Framework now corresponds to Telegram Bot API 4.8.
 
 
 ## [1.8] - 2020-04-11
