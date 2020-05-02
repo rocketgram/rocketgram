@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [2.0] - 2020-05-02
+
 ### Added
 - Added `callback` context helper.
 - Added `shipping` context helper.

@@ -4,4 +4,4 @@
 
 
 def version():
-    return "1.8"
+    return "2.0"
