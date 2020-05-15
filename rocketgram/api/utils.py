@@ -7,6 +7,7 @@ from enum import Enum
 from typing import Union
 
 from .. import api
+from .. import keyboards
 
 
 class EnumAutoName(Enum):
@@ -88,10 +89,10 @@ class FileResultMixin:
         return res.result
 
 
-ALL_KEYBOARDS = Union['api.InlineKeyboard',
-                      'api.ReplyKeyboard',
+ALL_KEYBOARDS = Union['keyboards.InlineKeyboard',
+                      'keyboards.ReplyKeyboard',
                       'api.InlineKeyboardMarkup',
                       'api.ReplyKeyboardMarkup',
                       'api.ReplyKeyboardRemove',
-                      'force_reply.ForceReply']
+                      'api.ForceReply']
 INLINE_KEYBOARDS = Union['keyboards.InlineKeyboard', 'api.InlineKeyboardMarkup']

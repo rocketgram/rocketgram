@@ -9,6 +9,7 @@ All notable changes to this project.
 
 ### Fixed
 - Fixed bug in `ResponseParameters` response class.
+- Fixed typing.
 
 
 ## [2.0] - 2020-05-02
