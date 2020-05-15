@@ -14,12 +14,12 @@ class ResponseParameters:
     https://core.telegram.org/bots/api#responseparameters
     """
 
-    migrate_to_chat_id: int
-    retry_after: int
+    migrate_to_chat_id: Optional[int]
+    retry_after: Optional[int]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['ResponseParameters']:
         if data is None:
             return None
 
-        return cls(data['migrate_to_chat_id'], data['retry_after'])
+        return cls(data.get('migrate_to_chat_id'), data.get('retry_after'))

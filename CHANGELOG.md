@@ -5,6 +5,12 @@ All notable changes to this project.
 ## [Unreleased]
 
 
+## [2.0.1] - 2020-05-16
+
+### Fixed
+- Fixed bug in `ResponseParameters` response class.
+
+
 ## [2.0] - 2020-05-02
 
 ### Added
