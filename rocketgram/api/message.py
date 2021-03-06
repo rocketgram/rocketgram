@@ -56,6 +56,7 @@ class Message:
     forward_sender_name: Optional[str]
     forward_date: Optional[datetime]
     reply_to_message: Optional['Message']
+    via_bot: Optional['User']
     edit_date: Optional[datetime]
     media_group_id: Optional[str]
     author_signature: Optional[str]
@@ -121,6 +122,7 @@ class Message:
         forward_signature = data.get('forward_signature')
         forward_date = datetime.utcfromtimestamp(data['forward_date']) if 'forward_date' in data else None
         reply_to_message = Message.parse(data.get('reply_to_message'))
+        via_bot = User.parse(data.get('via_bot'))
         edit_date = datetime.utcfromtimestamp(data['edit_date']) if 'edit_date' in data else None
         media_group_id = data.get('media_group_id')
         author_signature = data.get('author_signature')
@@ -240,9 +242,10 @@ class Message:
             passport_data = MessageType.passport_data
 
         return cls(message_id, message_type, user, date, chat, forward_from, forward_from_chat, forward_from_message_id,
-                   forward_signature, forward_sender_name, forward_date, reply_to_message, edit_date, media_group_id,
-                   author_signature, text, entities, caption_entities, audio, document, animation, game, photo, sticker,
-                   video, voice, video_note, caption, contact, location, venue, poll, dice, new_chat_members,
-                   left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo, group_chat_created,
-                   supergroup_chat_created, channel_chat_created, migrate_to_chat_id, migrate_from_chat_id,
-                   pinned_message, invoice, successful_payment, connected_website, passport_data, reply_markup)
+                   forward_signature, forward_sender_name, forward_date, reply_to_message, via_bot, edit_date,
+                   media_group_id, author_signature, text, entities, caption_entities, audio, document, animation, game,
+                   photo, sticker, video, voice, video_note, caption, contact, location, venue, poll, dice,
+                   new_chat_members, left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo,
+                   group_chat_created, supergroup_chat_created, channel_chat_created, migrate_to_chat_id,
+                   migrate_from_chat_id, pinned_message, invoice, successful_payment, connected_website, passport_data,
+                   reply_markup)

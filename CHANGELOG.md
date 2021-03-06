@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- `via_bot` field to `Message` class.
+
 
 ## [2.0.1] - 2020-05-16
 
