@@ -10,6 +10,7 @@ from .inline_keyboard_markup import InlineKeyboardMarkup
 from .inline_query_result import InlineQueryResult
 from .input_message_content import InputMessageContent
 from .parse_mode_type import ParseModeType
+from .thumb_mime_type import ThumbMimeType
 
 
 @dataclass(frozen=True)
@@ -24,6 +25,7 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     id: str
     mpeg4_url: str
     thumb_url: str
+    thumb_mime_type: Optional[ThumbMimeType] = None
     mpeg4_width: Optional[int] = None
     mpeg4_height: Optional[int] = None
     mpeg4_duration: Optional[int] = None

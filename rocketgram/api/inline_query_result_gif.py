@@ -8,8 +8,9 @@ from typing import Optional
 
 from .inline_keyboard_markup import InlineKeyboardMarkup
 from .inline_query_result import InlineQueryResult
-from .parse_mode_type import ParseModeType
 from .input_message_content import InputMessageContent
+from .parse_mode_type import ParseModeType
+from .thumb_mime_type import ThumbMimeType
 
 
 @dataclass(frozen=True)
@@ -24,6 +25,7 @@ class InlineQueryResultGif(InlineQueryResult):
     id: str
     gif_url: str
     thumb_url: str
+    thumb_mime_type: Optional[ThumbMimeType] = None
     gif_width: Optional[int] = None
     gif_height: Optional[int] = None
     gif_duration: Optional[int] = None

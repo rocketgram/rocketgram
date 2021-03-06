@@ -6,6 +6,8 @@ All notable changes to this project.
 
 ### Added
 - `via_bot` field to `Message` class.
+- `ThumbMimeType` class.
+- `thumb_mime_type` field to `InlineQueryResultGif` and `InlineQueryResultMpeg4Gif` classes.
 
 
 ## [2.0.1] - 2020-05-16
