@@ -9,6 +9,9 @@ All notable changes to this project.
 - `ThumbMimeType` class.
 - `thumb_mime_type` field to `InlineQueryResultGif` and `InlineQueryResultMpeg4Gif` classes.
 
+### Changed
+- Framework now corresponds to Telegram Bot API 4.9.
+
 
 ## [2.0.1] - 2020-05-16
 
