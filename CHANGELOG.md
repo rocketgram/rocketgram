@@ -24,6 +24,7 @@ All notable changes to this project.
 - `message_id` field to `UnpinChatMessage` request class.
 - `UnpinAllChatMessages` request class.
 - `file_name` field to `Audio` and `Video` classes.
+- `disable_content_type_detection` field to `SendDocument` and `InputMediaDocument` classes.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.

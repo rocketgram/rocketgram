@@ -26,3 +26,4 @@ class InputMediaDocument(InputMedia):
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None
+    disable_content_type_detection: Optional[bool] = None
