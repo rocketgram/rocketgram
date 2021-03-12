@@ -14,6 +14,7 @@ All notable changes to this project.
 - Added the fields `google_place_id` and `google_place_type` to the classes `Venue`, `InlineQueryResultVenue`, `InputVenueMessageContent`, `SendVenue`.
 - `allow_sending_without_reply` field to many api classes.
 - `sender_chat` field to `Message` class.
+- `is_anonymous` field to `ChatMember` and `PromoteChatMember` classes.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
