@@ -28,6 +28,7 @@ from .delete_message import DeleteMessage
 from .delete_sticker_from_set import DeleteStickerFromSet
 from .delete_webhook import DeleteWebhook
 from .dice import Dice
+from .dice_type import DiceType
 from .document import Document
 from .edit_message_caption import EditMessageCaption
 from .edit_message_live_location import EditMessageLiveLocation
