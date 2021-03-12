@@ -27,6 +27,7 @@ class SendPhoto(MessageResultMixin, Request):
     caption_entities: Optional[List[MessageEntity]] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
+    allow_sending_without_reply: Optional[bool] = None
     reply_markup: Optional[ALL_KEYBOARDS] = None
 
     def files(self) -> List[InputFile]:

@@ -38,4 +38,5 @@ class SendInvoice(MessageResultMixin, Request):
     is_flexible: Optional[bool] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[bool] = None
+    allow_sending_without_reply: Optional[bool] = None
     reply_markup: Optional[INLINE_KEYBOARDS] = None

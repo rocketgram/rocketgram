@@ -23,6 +23,7 @@ class SendMediaGroup(Request):
     media: List[InputMedia]
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
+    allow_sending_without_reply: Optional[bool] = None
 
     def files(self) -> List[InputFile]:
         out = list()
