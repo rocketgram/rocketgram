@@ -241,7 +241,7 @@ class Message:
         elif connected_website:
             message_type = MessageType.connected_website
         elif passport_data:
-            passport_data = MessageType.passport_data
+            message_type = MessageType.passport_data
 
         return cls(message_id, message_type, user, sender_chat, date, chat, forward_from, forward_from_chat,
                    forward_from_message_id, forward_signature, forward_sender_name, forward_date, reply_to_message,
