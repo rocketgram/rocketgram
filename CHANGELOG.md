@@ -23,6 +23,7 @@ All notable changes to this project.
 - `proximity_alert_triggered` type to `MessageType` class.
 - `message_id` field to `UnpinChatMessage` request class.
 - `UnpinAllChatMessages` request class.
+- `file_name` field to `Audio` and `Video` classes.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.

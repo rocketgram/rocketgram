@@ -21,6 +21,7 @@ class Audio:
     duration: int
     performer: Optional[str]
     title: Optional[str]
+    file_name: Optional[str]
     mime_type: Optional[str]
     file_size: Optional[int]
     thumb: Optional[PhotoSize]
@@ -31,4 +32,5 @@ class Audio:
             return None
 
         return cls(data['file_id'], data['file_unique_id'], data['duration'], data.get('performer'), data.get('title'),
-                   data.get('mime_type'), data.get('file_size'), PhotoSize.parse(data.get('thumb')))
+                   data.get('file_name'), data.get('mime_type'), data.get('file_size'),
+                   PhotoSize.parse(data.get('thumb')))
