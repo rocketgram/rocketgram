@@ -173,6 +173,7 @@ from .stop_poll import StopPoll
 from .successful_payment import SuccessfulPayment
 from .thumb_mime_type import ThumbMimeType
 from .unban_chat_member import UnbanChatMember
+from .unpin_all_chat_messages import UnpinAllChatMessages
 from .unpin_chat_message import UnpinChatMessage
 from .update import Update
 from .update_type import UpdateType
