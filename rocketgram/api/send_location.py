@@ -20,7 +20,10 @@ class SendLocation(MessageResultMixin, Request):
     chat_id: Union[int, str]
     latitude: float
     longitude: float
+    horizontal_accuracy: Optional[float] = None
     live_period: Optional[int] = None
+    heading: Optional[int] = None
+    proximity_alert_radius: Optional[int] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     allow_sending_without_reply: Optional[bool] = None

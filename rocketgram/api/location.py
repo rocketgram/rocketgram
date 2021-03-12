@@ -16,10 +16,15 @@ class Location:
 
     longitude: float
     latitude: float
+    horizontal_accuracy: Optional[float]
+    live_period: Optional[int]
+    heading: Optional[int]
+    proximity_alert_radius: Optional[int]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['Location']:
         if data is None:
             return None
 
-        return cls(data['longitude'], data['latitude'])
+        return cls(data['longitude'], data['latitude'], data.get('horizontal_accuracy'), data.get('live_period'),
+                   data.get('heading'), data.get('proximity_alert_radius'))

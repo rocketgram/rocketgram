@@ -15,6 +15,8 @@ All notable changes to this project.
 - `allow_sending_without_reply` field to many api classes.
 - `sender_chat` field to `Message` class.
 - `is_anonymous` field to `ChatMember` and `PromoteChatMember` classes.
+- `live_period` field to `Location` class.
+- `heading`, `proximity_alert_radius` and `horizontal_accuracy` fields to `Location`, `InlineQueryResultLocation`, `InputLocationMessageContent`, `SendLocation` and `EditMessageLiveLocation` classes.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
