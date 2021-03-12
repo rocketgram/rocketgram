@@ -9,7 +9,6 @@ from typing import Optional
 from .inline_keyboard_markup import InlineKeyboardMarkup
 from .inline_query_result import InlineQueryResult
 from .input_message_content import InputMessageContent
-from .parse_mode_type import ParseModeType
 
 
 @dataclass(frozen=True)
@@ -23,6 +22,5 @@ class InlineQueryResultCachedSticker(InlineQueryResult):
 
     id: str
     sticker_file_id: str
-    parse_mode: Optional[ParseModeType] = None
     reply_markup: Optional[InlineKeyboardMarkup] = None
     input_message_content: Optional[InputMessageContent] = None
