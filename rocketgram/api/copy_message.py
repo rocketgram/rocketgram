@@ -7,13 +7,14 @@ from dataclasses import dataclass
 from typing import Union, Optional, List
 
 from .message_entity import MessageEntity
+from .message_id import MessageId
 from .parse_mode_type import ParseModeType
 from .request import Request
-from .utils import ALL_KEYBOARDS, MessageResultMixin
+from .utils import ALL_KEYBOARDS
 
 
 @dataclass(frozen=True)
-class CopyMessage(MessageResultMixin, Request):
+class CopyMessage(Request):
     """\
     Represents CopyMessage request object:
     https://core.telegram.org/bots/api#copymessage
@@ -29,3 +30,11 @@ class CopyMessage(MessageResultMixin, Request):
     reply_to_message_id: Optional[int] = None
     allow_sending_without_reply: Optional[bool] = None
     reply_markup: Optional[ALL_KEYBOARDS] = None
+
+    def parse_result(self, data) -> MessageId:
+        assert isinstance(data, dict), "Should be dict."
+        return MessageId.parse(data)
+
+    async def send2(self) -> int:
+        res = await self._send()  # noqa
+        return res.result

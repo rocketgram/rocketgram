@@ -18,3 +18,4 @@ class UnpinChatMessage(BoolResultMixin, Request):
     """
 
     chat_id: Union[int, str]
+    message_id: int

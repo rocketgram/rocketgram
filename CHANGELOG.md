@@ -9,6 +9,7 @@ All notable changes to this project.
 - `ThumbMimeType` class.
 - `thumb_mime_type` field to `InlineQueryResultGif` and `InlineQueryResultMpeg4Gif` classes.
 - `DiceType` class.
+- `MessageId` class.
 - `CopyMessage` request class.
 - `caption_entities` or `entites` fields to many api classes.
 - `google_place_id` and `google_place_type` to `Venue`, `InlineQueryResultVenue`, `InputVenueMessageContent`, `SendVenue` classes.

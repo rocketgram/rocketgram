@@ -103,6 +103,7 @@ from .mask_position import MaskPosition
 from .mask_position_point_type import MaskPositionPointType
 from .message import Message
 from .message_entity import MessageEntity
+from .message_id import MessageId
 from .message_type import MessageType
 from .order_info import OrderInfo
 from .parse_mode_type import ParseModeType
