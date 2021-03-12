@@ -12,7 +12,7 @@ All notable changes to this project.
 - `MessageId` class.
 - `CopyMessage` request class.
 - `caption_entities` or `entites` fields to many api classes.
-- `google_place_id` and `google_place_type` to `Venue`, `InlineQueryResultVenue`, `InputVenueMessageContent`, `SendVenue` classes.
+- `google_place_id` and `google_place_type` fields to `Venue`, `InlineQueryResultVenue`, `InputVenueMessageContent`, `SendVenue` classes.
 - `allow_sending_without_reply` field to many api classes.
 - `sender_chat` field to `Message` class.
 - `is_anonymous` field to `ChatMember` and `PromoteChatMember` classes.
@@ -21,6 +21,7 @@ All notable changes to this project.
 - `ProximityAlertTriggered` class.
 - `proximity_alert_triggered` field to `Message` class.
 - `proximity_alert_triggered` type to `MessageType` class.
+- `message_id` field to `UnpinChatMessage` request class.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
