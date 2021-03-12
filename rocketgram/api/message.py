@@ -22,6 +22,7 @@ from .message_type import MessageType
 from .passport_data import PassportData
 from .photo_size import PhotoSize
 from .poll import Poll
+from .proximity_alert_triggered import ProximityAlertTriggered
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
 from .user import User
@@ -105,6 +106,8 @@ class Message:
     connected_website: Optional[str]
     passport_data: Optional['PassportData']
 
+    proximity_alert_triggered: Optional['ProximityAlertTriggered']
+
     reply_markup: Optional[InlineKeyboardMarkup]
 
     @classmethod
@@ -178,6 +181,8 @@ class Message:
         connected_website = data.get('connected_website')
         passport_data = PassportData.parse(data.get('passport_data'))
 
+        proximity_alert_triggered = ProximityAlertTriggered.parse(data.get('proximity_alert_triggered'))
+
         reply_markup = InlineKeyboardMarkup.parse(data.get('reply_markup'))
 
         message_type = None
@@ -242,6 +247,8 @@ class Message:
             message_type = MessageType.connected_website
         elif passport_data:
             message_type = MessageType.passport_data
+        elif proximity_alert_triggered:
+            message_type = MessageType.proximity_alert_triggered
 
         return cls(message_id, message_type, user, sender_chat, date, chat, forward_from, forward_from_chat,
                    forward_from_message_id, forward_signature, forward_sender_name, forward_date, reply_to_message,
@@ -250,4 +257,4 @@ class Message:
                    venue, poll, dice, new_chat_members, left_chat_member, new_chat_title, new_chat_photo,
                    delete_chat_photo, group_chat_created, supergroup_chat_created, channel_chat_created,
                    migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice, successful_payment,
-                   connected_website, passport_data, reply_markup)
+                   connected_website, passport_data, proximity_alert_triggered, reply_markup)

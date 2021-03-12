@@ -39,3 +39,4 @@ class MessageType(EnumAutoName):
     successful_payment = auto()
     connected_website = auto()
     passport_data = auto()
+    proximity_alert_triggered = auto()

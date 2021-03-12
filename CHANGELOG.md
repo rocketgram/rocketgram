@@ -11,12 +11,15 @@ All notable changes to this project.
 - `DiceType` class.
 - `CopyMessage` request class.
 - `caption_entities` or `entites` fields to many api classes.
-- Added the fields `google_place_id` and `google_place_type` to the classes `Venue`, `InlineQueryResultVenue`, `InputVenueMessageContent`, `SendVenue`.
+- `google_place_id` and `google_place_type` to `Venue`, `InlineQueryResultVenue`, `InputVenueMessageContent`, `SendVenue` classes.
 - `allow_sending_without_reply` field to many api classes.
 - `sender_chat` field to `Message` class.
 - `is_anonymous` field to `ChatMember` and `PromoteChatMember` classes.
 - `live_period` field to `Location` class.
 - `heading`, `proximity_alert_radius` and `horizontal_accuracy` fields to `Location`, `InlineQueryResultLocation`, `InputLocationMessageContent`, `SendLocation` and `EditMessageLiveLocation` classes.
+- New class `ProximityAlertTriggered`.
+- `proximity_alert_triggered` field to `Message` class.
+- `proximity_alert_triggered` type to `MessageType` class.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
