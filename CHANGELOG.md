@@ -18,7 +18,7 @@ All notable changes to this project.
 - `is_anonymous` field to `ChatMember` and `PromoteChatMember` classes.
 - `live_period` field to `Location` class.
 - `heading`, `proximity_alert_radius` and `horizontal_accuracy` fields to `Location`, `InlineQueryResultLocation`, `InputLocationMessageContent`, `SendLocation` and `EditMessageLiveLocation` classes.
-- New class `ProximityAlertTriggered`.
+- `ProximityAlertTriggered` class.
 - `proximity_alert_triggered` field to `Message` class.
 - `proximity_alert_triggered` type to `MessageType` class.
 
