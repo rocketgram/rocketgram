@@ -11,6 +11,7 @@ All notable changes to this project.
 - `DiceType` class.
 - `CopyMessage` request class.
 - `caption_entities` or `entites` field to many api classes.
+- Added the fields `google_place_id` and `google_place_type` to the classes `Venue`, `InlineQueryResultVenue`, `InputVenueMessageContent`, `SendVenue`.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.

@@ -27,6 +27,8 @@ class InlineQueryResultVenue(InlineQueryResult):
     address: str
     foursquare_id: Optional[str] = None
     foursquare_type: Optional[str] = None
+    google_place_id: Optional[str] = None
+    google_place_type: Optional[str] = None
     reply_markup: Optional[InlineKeyboardMarkup] = None
     input_message_content: Optional[InputMessageContent] = None
     thumb_url: Optional[str] = None

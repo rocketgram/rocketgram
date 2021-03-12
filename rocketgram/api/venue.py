@@ -21,6 +21,8 @@ class Venue:
     address: str
     foursquare_id: Optional[str]
     foursquare_type: Optional[str]
+    google_place_id: Optional[str]
+    google_place_type: Optional[str]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['Venue']:
@@ -28,4 +30,5 @@ class Venue:
             return None
 
         return cls(Location.parse(data['location']), data['title'], data['address'],
-                   data.get('foursquare_id'), data.get('foursquare_type'))
+                   data.get('foursquare_id'), data.get('foursquare_type'), data.get('google_place_id'),
+                   data.get('google_place_type'))
