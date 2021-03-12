@@ -4,8 +4,9 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional
+from typing import Union, Optional, List
 
+from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
 from .request import Request
 from .utils import INLINE_KEYBOARDS, MessageOrBoolResultMixin
@@ -23,4 +24,5 @@ class EditMessageCaption(MessageOrBoolResultMixin, Request):
     inline_message_id: Optional[str] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
+    caption_entities: Optional[List[MessageEntity]] = None
     reply_markup: Optional[INLINE_KEYBOARDS] = None

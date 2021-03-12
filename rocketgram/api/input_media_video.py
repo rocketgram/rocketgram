@@ -4,10 +4,11 @@
 
 
 from dataclasses import dataclass, field
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from .input_file import InputFile
 from .input_media import InputMedia
+from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
 
 
@@ -24,6 +25,7 @@ class InputMediaVideo(InputMedia):
     thumb: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
+    caption_entities: Optional[List[MessageEntity]] = None
     width: Optional[int] = None
     height: Optional[int] = None
     duration: Optional[int] = None

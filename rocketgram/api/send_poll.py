@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Union, Optional, List
 
+from .message_entity import MessageEntity
 from .poll_type import PollType
 from .request import Request
 from .utils import ALL_KEYBOARDS, MessageResultMixin
@@ -29,6 +30,7 @@ class SendPoll(MessageResultMixin, Request):
     correct_option_id: Optional[int] = None
     explanation: Optional[str] = None
     explanation_parse_mode: Optional['api.ParseModeType'] = None
+    explanation_entities: Optional[List[MessageEntity]] = None
     open_period: Optional[int] = None
     close_date: Optional[datetime] = None
     is_closed: Optional[bool] = None

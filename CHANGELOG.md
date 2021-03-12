@@ -10,6 +10,7 @@ All notable changes to this project.
 - `thumb_mime_type` field to `InlineQueryResultGif` and `InlineQueryResultMpeg4Gif` classes.
 - `DiceType` class.
 - `CopyMessage` request class.
+- `caption_entities` or `entites` field to many api classes.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.

@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Union, Optional, List
 
 from .input_file import InputFile
+from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
 from .request import Request
 from .utils import ALL_KEYBOARDS, MessageResultMixin
@@ -23,6 +24,7 @@ class SendPhoto(MessageResultMixin, Request):
     photo: Union[InputFile, str]
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
+    caption_entities: Optional[List[MessageEntity]] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[ALL_KEYBOARDS] = None
