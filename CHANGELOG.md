@@ -27,6 +27,7 @@ All notable changes to this project.
 - `disable_content_type_detection` field to `SendDocument` and `InputMediaDocument` classes.
 - `only_if_banned` field to `UnbanChatMember` request class.
 - `ChatLocation` class.
+- `bio`, `linked_chat_id` and `location` fields to `Chat` class.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
