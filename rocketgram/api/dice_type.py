@@ -19,5 +19,5 @@ class DiceType(Enum):
     basketball = "🏀"
     football = "⚽"
     bowling = "🎳"
-    slots = "🎰"
+    slot_machine = "🎰"
     unknown = "unknown"
