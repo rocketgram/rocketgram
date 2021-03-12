@@ -126,6 +126,7 @@ from .poll_option import PollOption
 from .poll_type import PollType
 from .pre_checkout_query import PreCheckoutQuery
 from .promote_chat_member import PromoteChatMember
+from .proximity_alert_triggered import ProximityAlertTriggered
 from .reply_keyboard_markup import ReplyKeyboardMarkup
 from .reply_keyboard_remove import ReplyKeyboardRemove
 from .request import Request
