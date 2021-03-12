@@ -21,6 +21,7 @@ from .chat_photo import ChatPhoto
 from .chat_type import ChatType
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
+from .copy_message import CopyMessage
 from .create_new_sticker_set import CreateNewStickerSet
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet

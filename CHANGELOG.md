@@ -9,6 +9,7 @@ All notable changes to this project.
 - `ThumbMimeType` class.
 - `thumb_mime_type` field to `InlineQueryResultGif` and `InlineQueryResultMpeg4Gif` classes.
 - `DiceType` class.
+- `CopyMessage` request class.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
