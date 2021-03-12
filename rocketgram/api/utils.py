@@ -7,7 +7,7 @@ from enum import Enum
 from typing import Union
 
 from .. import api
-from .. import keyboards
+from .. import keyboards  # noqa
 
 
 class EnumAutoName(Enum):
