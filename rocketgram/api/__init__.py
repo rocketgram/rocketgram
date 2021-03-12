@@ -14,6 +14,7 @@ from .bot_command import BotCommand
 from .callback_query import CallbackQuery
 from .chat import Chat
 from .chat_action_type import ChatActionType
+from .chat_location import ChatLocation
 from .chat_member import ChatMember
 from .chat_member_status_type import ChatMemberStatusType
 from .chat_permissions import ChatPermissions

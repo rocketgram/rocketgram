@@ -26,6 +26,7 @@ All notable changes to this project.
 - `file_name` field to `Audio` and `Video` classes.
 - `disable_content_type_detection` field to `SendDocument` and `InputMediaDocument` classes.
 - `only_if_banned` field to `UnbanChatMember` request class.
+- `ChatLocation` class.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
