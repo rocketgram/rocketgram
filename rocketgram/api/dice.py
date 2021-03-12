@@ -6,6 +6,8 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from .dice_type import DiceType
+
 
 @dataclass(frozen=True)
 class Dice:
@@ -22,4 +24,9 @@ class Dice:
         if data is None:
             return None
 
-        return cls(data['emoji'], data['value'])
+        try:
+            emoji = DiceType(data['emoji'])
+        except ValueError:
+            emoji = DiceType.unknown
+
+        return cls(emoji, data['value'])

@@ -6,6 +6,7 @@
 from dataclasses import dataclass
 from typing import Union, Optional
 
+from .dice_type import DiceType
 from .request import Request
 from .utils import ALL_KEYBOARDS, MessageResultMixin
 
@@ -18,7 +19,7 @@ class SendDice(MessageResultMixin, Request):
     """
 
     chat_id: Union[int, str]
-    emoji: Optional[str] = None
+    emoji: Optional[DiceType] = None
     disable_notification: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     reply_markup: Optional[ALL_KEYBOARDS] = None

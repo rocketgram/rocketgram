@@ -8,8 +8,10 @@ All notable changes to this project.
 - `via_bot` field to `Message` class.
 - `ThumbMimeType` class.
 - `thumb_mime_type` field to `InlineQueryResultGif` and `InlineQueryResultMpeg4Gif` classes.
+- `DiceType` class.
 
 ### Changed
+- `SendDice` and `Dice` classes now using `DiceType`.
 - Framework now corresponds to Telegram Bot API 4.9.
 
 
