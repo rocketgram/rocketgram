@@ -13,6 +13,7 @@ All notable changes to this project.
 - `caption_entities` or `entites` fields to many api classes.
 - Added the fields `google_place_id` and `google_place_type` to the classes `Venue`, `InlineQueryResultVenue`, `InputVenueMessageContent`, `SendVenue`.
 - `allow_sending_without_reply` field to many api classes.
+- `sender_chat` field to `Message` class.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.

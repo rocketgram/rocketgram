@@ -47,6 +47,7 @@ class Message:
     message_id: int
     message_type: MessageType
     user: Optional['User']
+    sender_chat: Optional['Chat']
     date: datetime
     chat: 'Chat'
     forward_from: Optional['User']
@@ -113,6 +114,7 @@ class Message:
 
         message_id = data['message_id']
         user = User.parse(data.get('from'))
+        sender_chat = Chat.parse(data['sender_chat'])
         date = datetime.utcfromtimestamp(data['date'])
         chat = Chat.parse(data['chat'])
         forward_from = User.parse(data.get('forward_from'))
@@ -241,11 +243,11 @@ class Message:
         elif passport_data:
             passport_data = MessageType.passport_data
 
-        return cls(message_id, message_type, user, date, chat, forward_from, forward_from_chat, forward_from_message_id,
-                   forward_signature, forward_sender_name, forward_date, reply_to_message, via_bot, edit_date,
-                   media_group_id, author_signature, text, entities, caption_entities, audio, document, animation, game,
-                   photo, sticker, video, voice, video_note, caption, contact, location, venue, poll, dice,
-                   new_chat_members, left_chat_member, new_chat_title, new_chat_photo, delete_chat_photo,
-                   group_chat_created, supergroup_chat_created, channel_chat_created, migrate_to_chat_id,
-                   migrate_from_chat_id, pinned_message, invoice, successful_payment, connected_website, passport_data,
-                   reply_markup)
+        return cls(message_id, message_type, user, sender_chat, date, chat, forward_from, forward_from_chat,
+                   forward_from_message_id, forward_signature, forward_sender_name, forward_date, reply_to_message,
+                   via_bot, edit_date, media_group_id, author_signature, text, entities, caption_entities, audio,
+                   document, animation, game, photo, sticker, video, voice, video_note, caption, contact, location,
+                   venue, poll, dice, new_chat_members, left_chat_member, new_chat_title, new_chat_photo,
+                   delete_chat_photo, group_chat_created, supergroup_chat_created, channel_chat_created,
+                   migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice, successful_payment,
+                   connected_website, passport_data, reply_markup)
