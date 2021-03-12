@@ -23,5 +23,4 @@ class EditMessageCaption(MessageOrBoolResultMixin, Request):
     inline_message_id: Optional[str] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
-    disable_web_page_preview: Optional[bool] = None
     reply_markup: Optional[INLINE_KEYBOARDS] = None
