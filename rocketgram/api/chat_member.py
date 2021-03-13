@@ -28,6 +28,7 @@ class ChatMember:
     can_post_messages: Optional[bool]
     can_edit_messages: Optional[bool]
     can_delete_messages: Optional[bool]
+    can_manage_voice_chats: Optional[bool]
     can_invite_users: Optional[bool]
     can_restrict_members: Optional[bool]
     can_pin_messages: Optional[bool]
@@ -49,7 +50,7 @@ class ChatMember:
         return cls(User.parse(data['user']), ChatMemberStatusType(data['status']), data.get('custom_title'),
                    data.get('is_anonymous'), until_date, data.get('can_be_edited'), data.get('can_change_info'),
                    data.get('can_post_messages'), data.get('can_edit_messages'), data.get('can_delete_messages'),
-                   data.get('can_invite_users'), data.get('can_restrict_members'), data.get('can_pin_messages'),
-                   data.get('can_promote_members'), data.get('is_member'), data.get('can_send_messages'),
-                   data.get('can_send_media_messages'), data.get('can_send_polls'),
+                   data.get('can_manage_voice_chats'), data.get('can_invite_users'), data.get('can_restrict_members'),
+                   data.get('can_pin_messages'), data.get('can_promote_members'), data.get('is_member'),
+                   data.get('can_send_messages'), data.get('can_send_media_messages'), data.get('can_send_polls'),
                    data.get('can_send_other_messages'), data.get('can_add_web_page_previews'))

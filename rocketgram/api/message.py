@@ -30,6 +30,9 @@ from .venue import Venue
 from .video import Video
 from .video_note import VideoNote
 from .voice import Voice
+from .voice_chat_ended import VoiceChatEnded
+from .voice_chat_participants_invited import VoiceChatParticipantsInvited
+from .voice_chat_started import VoiceChatStarted
 
 
 @dataclass(frozen=True)
@@ -108,6 +111,10 @@ class Message:
 
     proximity_alert_triggered: Optional['ProximityAlertTriggered']
 
+    voice_chat_started: Optional[VoiceChatStarted]
+    voice_chat_ended: Optional[VoiceChatEnded]
+    voice_chat_participants_invited: Optional[VoiceChatParticipantsInvited]
+
     reply_markup: Optional[InlineKeyboardMarkup]
 
     @classmethod
@@ -183,6 +190,11 @@ class Message:
 
         proximity_alert_triggered = ProximityAlertTriggered.parse(data.get('proximity_alert_triggered'))
 
+        voice_chat_started = VoiceChatStarted.parse(data.get('voice_chat_started'))
+        voice_chat_ended = VoiceChatEnded.parse(data.get('voice_chat_ended'))
+        voice_chat_participants_invited = VoiceChatParticipantsInvited.parse(
+            data.get('voice_chat_participants_invited'))
+
         reply_markup = InlineKeyboardMarkup.parse(data.get('reply_markup'))
 
         message_type = None
@@ -249,6 +261,12 @@ class Message:
             message_type = MessageType.passport_data
         elif proximity_alert_triggered:
             message_type = MessageType.proximity_alert_triggered
+        elif voice_chat_started:
+            message_type = MessageType.voice_chat_started
+        elif voice_chat_ended:
+            message_type = MessageType.voice_chat_ended
+        elif voice_chat_participants_invited:
+            message_type = MessageType.voice_chat_participants_invited
 
         return cls(message_id, message_type, user, sender_chat, date, chat, forward_from, forward_from_chat,
                    forward_from_message_id, forward_signature, forward_sender_name, forward_date, reply_to_message,
@@ -257,4 +275,5 @@ class Message:
                    venue, poll, dice, new_chat_members, left_chat_member, new_chat_title, new_chat_photo,
                    delete_chat_photo, group_chat_created, supergroup_chat_created, channel_chat_created,
                    migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice, successful_payment,
-                   connected_website, passport_data, proximity_alert_triggered, reply_markup)
+                   connected_website, passport_data, proximity_alert_triggered, voice_chat_started, voice_chat_ended,
+                   voice_chat_participants_invited, reply_markup)

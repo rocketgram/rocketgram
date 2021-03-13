@@ -40,3 +40,6 @@ class MessageType(EnumAutoName):
     connected_website = auto()
     passport_data = auto()
     proximity_alert_triggered = auto()
+    voice_chat_started = auto()
+    voice_chat_ended = auto()
+    voice_chat_participants_invited = auto()

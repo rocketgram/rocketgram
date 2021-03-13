@@ -192,6 +192,9 @@ from .venue import Venue
 from .video import Video
 from .video_note import VideoNote
 from .voice import Voice
+from .voice_chat_ended import VoiceChatEnded
+from .voice_chat_participants_invited import VoiceChatParticipantsInvited
+from .voice_chat_started import VoiceChatStarted
 from .webhook_info import WebhookInfo
 
 API_URL = "https://api.telegram.org/bot%s/"

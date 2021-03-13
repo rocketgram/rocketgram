@@ -35,10 +35,16 @@ All notable changes to this project.
 - `my_chat_member` and `chat_member` to `UpdateType`.
 - `ChatInviteLink` class.
 - `ChatMemberUpdated` class.
-- `my_chat_member`, `chat_member` and `unknown` to `Update` class.
+- `my_chat_member`, `chat_member` and `unknown` fields to `Update` class.
 - `CreateChatInviteLink` request class.
 - `EditChatInviteLink` request class.
 - `RevokeChatInviteLink` request class.
+- `VoiceChatStarted` class.
+- `VoiceChatEnded` class.
+- `VoiceChatParticipantsInvited` class.
+- `voice_chat_started`, `voice_chat_ended` and `voice_chat_participants_invited` fields to `Message` class.
+- `can_manage_voice_chats` field to `ChatMember` class.
+- `can_manage_voice_chats` field to `PromoteChatMember` request class.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
