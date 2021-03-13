@@ -89,6 +89,18 @@ class FileResultMixin:
         return res.result
 
 
+class ChatInviteLinkResultMixin:
+    """Mixin for request classes that returns ChatInviteLink"""
+
+    def parse_result(self, data) -> 'api.ChatInviteLink':  # noqa
+        assert isinstance(data, dict), "Should be dict."
+        return api.ChatInviteLink.parse(data)
+
+    async def send2(self) -> 'api.ChatInviteLink':
+        res = await self._send()  # noqa
+        return res.result
+
+
 ALL_KEYBOARDS = Union['keyboards.InlineKeyboard',
                       'keyboards.ReplyKeyboard',
                       'api.InlineKeyboardMarkup',

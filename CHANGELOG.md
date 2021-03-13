@@ -36,6 +36,9 @@ All notable changes to this project.
 - `ChatInviteLink` class.
 - `ChatMemberUpdated` class.
 - `my_chat_member`, `chat_member` and `unknown` to `Update` class.
+- `CreateChatInviteLink` request class.
+- `EditChatInviteLink` request class.
+- `RevokeChatInviteLink` request class.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.

@@ -2,7 +2,6 @@
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
-
 from .add_sticker_to_set import AddStickerToSet
 from .animation import Animation
 from .answer_callback_query import AnswerCallbackQuery
@@ -26,6 +25,7 @@ from .chosen_inline_result import ChosenInlineResult
 from .close import Close
 from .contact import Contact
 from .copy_message import CopyMessage
+from .create_chat_invite_link import CreateChatInviteLink
 from .create_new_sticker_set import CreateNewStickerSet
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
@@ -35,6 +35,7 @@ from .delete_webhook import DeleteWebhook
 from .dice import Dice
 from .dice_type import DiceType
 from .document import Document
+from .edit_chat_invite_link import EditChatInviteLink
 from .edit_message_caption import EditMessageCaption
 from .edit_message_live_location import EditMessageLiveLocation
 from .edit_message_media import EditMessageMedia
@@ -138,6 +139,7 @@ from .request import Request
 from .response import Response
 from .response_parameters import ResponseParameters
 from .restrict_chat_member import RestrictChatMember
+from .revoke_chat_invite_link import RevokeChatInviteLink
 from .send_animation import SendAnimation
 from .send_audio import SendAudio
 from .send_chat_action import SendChatAction
