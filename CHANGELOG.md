@@ -56,6 +56,7 @@ All notable changes to this project.
 - `SendDice` and `Dice` classes now using `DiceType`.
 - Framework now corresponds to Telegram Bot API 4.9.
 - Framework now corresponds to Telegram Bot API 5.0.
+- Framework now corresponds to Telegram Bot API 5.1.
 
 ### Removed
 - Assert in Update parser. Now unknown update types will be `UpdateType.unknown`.
