@@ -20,6 +20,7 @@ class WebhookInfo:
     url: str
     has_custom_certificate: bool
     pending_update_count: int
+    ip_address: Optional[str]
     last_error_date: Optional[datetime]
     last_error_message: Optional[str]
     max_connections: Optional[int]
@@ -33,5 +34,5 @@ class WebhookInfo:
         last_error_date = datetime.utcfromtimestamp(data['last_error_date']) if 'last_error_date' in data else None
         allowed_updates = [UpdateType(m) for m in data['allowed_updates']] if 'allowed_updates' in data else None
 
-        return cls(data['url'], data['has_custom_certificate'], data['pending_update_count'], last_error_date,
-                   data.get('last_error_message'), data.get('max_connections'), allowed_updates)
+        return cls(data['url'], data['has_custom_certificate'], data['pending_update_count'], data.get('ip_address'),
+                   last_error_date, data.get('last_error_message'), data.get('max_connections'), allowed_updates)

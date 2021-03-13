@@ -21,8 +21,10 @@ class SetWebhook(BoolResultMixin, Request):
 
     url: str
     certificate: Optional[Union[InputFile, str]] = None
+    ip_address: Optional[str] = None
     max_connections: Optional[int] = None
     allowed_updates: Optional[List[UpdateType]] = None
+    drop_pending_updates: Optional[bool] = None
 
     def files(self) -> List[InputFile]:
         if isinstance(self.certificate, InputFile):

@@ -28,6 +28,8 @@ All notable changes to this project.
 - `only_if_banned` field to `UnbanChatMember` request class.
 - `ChatLocation` class.
 - `bio`, `linked_chat_id` and `location` fields to `Chat` class.
+- `ip_address` field to `SetWebhook` and `WebhookInfo` classes.
+- `drop_pending_updates` field to `SetWebhook` and `DeleteWebhook` classes.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
