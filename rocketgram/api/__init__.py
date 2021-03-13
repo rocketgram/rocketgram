@@ -109,6 +109,7 @@ from .login_url import LoginUrl
 from .mask_position import MaskPosition
 from .mask_position_point_type import MaskPositionPointType
 from .message import Message
+from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
 from .message_id import MessageId
 from .message_type import MessageType

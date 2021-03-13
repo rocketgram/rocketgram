@@ -17,6 +17,7 @@ from .game import Game
 from .inline_keyboard_markup import InlineKeyboardMarkup
 from .invoice import Invoice
 from .location import Location
+from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
 from .message_type import MessageType
 from .passport_data import PassportData
@@ -98,6 +99,8 @@ class Message:
     supergroup_chat_created: Optional[bool]
     channel_chat_created: Optional[bool]
 
+    message_auto_delete_timer_changed: Optional[MessageAutoDeleteTimerChanged]
+
     migrate_to_chat_id: Optional[int]
     migrate_from_chat_id: Optional[int]
 
@@ -176,6 +179,9 @@ class Message:
         group_chat_created = data.get('group_chat_created')
         supergroup_chat_created = data.get('supergroup_chat_created')
         channel_chat_created = data.get('channel_chat_created')
+
+        message_auto_delete_timer_changed = MessageAutoDeleteTimerChanged.parse(
+            data.get('message_auto_delete_timer_changed'))
 
         migrate_to_chat_id = data.get('migrate_to_chat_id')
         migrate_from_chat_id = data.get('migrate_from_chat_id')
@@ -267,6 +273,8 @@ class Message:
             message_type = MessageType.voice_chat_ended
         elif voice_chat_participants_invited:
             message_type = MessageType.voice_chat_participants_invited
+        elif message_auto_delete_timer_changed:
+            message_type = MessageType.message_auto_delete_timer_changed
 
         return cls(message_id, message_type, user, sender_chat, date, chat, forward_from, forward_from_chat,
                    forward_from_message_id, forward_signature, forward_sender_name, forward_date, reply_to_message,
@@ -274,6 +282,6 @@ class Message:
                    document, animation, game, photo, sticker, video, voice, video_note, caption, contact, location,
                    venue, poll, dice, new_chat_members, left_chat_member, new_chat_title, new_chat_photo,
                    delete_chat_photo, group_chat_created, supergroup_chat_created, channel_chat_created,
-                   migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice, successful_payment,
-                   connected_website, passport_data, proximity_alert_triggered, voice_chat_started, voice_chat_ended,
-                   voice_chat_participants_invited, reply_markup)
+                   message_auto_delete_timer_changed, migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice,
+                   successful_payment, connected_website, passport_data, proximity_alert_triggered, voice_chat_started,
+                   voice_chat_ended, voice_chat_participants_invited, reply_markup)
