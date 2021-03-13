@@ -20,6 +20,7 @@ class PromoteChatMember(BoolResultMixin, Request):
     chat_id: Union[int, str]
     user_id: int
     is_anonymous: Optional[bool] = None
+    can_manage_chat: Optional[bool] = None
     can_change_info: Optional[bool] = None
     can_post_messages: Optional[bool] = None
     can_edit_messages: Optional[bool] = None

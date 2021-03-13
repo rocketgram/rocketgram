@@ -24,6 +24,7 @@ class ChatMember:
     is_anonymous: Optional[bool]
     until_date: Optional[datetime]
     can_be_edited: Optional[bool]
+    can_manage_chat: Optional[bool]
     can_change_info: Optional[bool]
     can_post_messages: Optional[bool]
     can_edit_messages: Optional[bool]
@@ -48,9 +49,10 @@ class ChatMember:
         until_date = datetime.utcfromtimestamp(data['until_date']) if 'until_date' in data else None
 
         return cls(User.parse(data['user']), ChatMemberStatusType(data['status']), data.get('custom_title'),
-                   data.get('is_anonymous'), until_date, data.get('can_be_edited'), data.get('can_change_info'),
-                   data.get('can_post_messages'), data.get('can_edit_messages'), data.get('can_delete_messages'),
-                   data.get('can_manage_voice_chats'), data.get('can_invite_users'), data.get('can_restrict_members'),
-                   data.get('can_pin_messages'), data.get('can_promote_members'), data.get('is_member'),
-                   data.get('can_send_messages'), data.get('can_send_media_messages'), data.get('can_send_polls'),
-                   data.get('can_send_other_messages'), data.get('can_add_web_page_previews'))
+                   data.get('is_anonymous'), until_date, data.get('can_be_edited'), data.get('can_manage_chat'),
+                   data.get('can_change_info'), data.get('can_post_messages'), data.get('can_edit_messages'),
+                   data.get('can_delete_messages'), data.get('can_manage_voice_chats'), data.get('can_invite_users'),
+                   data.get('can_restrict_members'), data.get('can_pin_messages'), data.get('can_promote_members'),
+                   data.get('is_member'), data.get('can_send_messages'), data.get('can_send_media_messages'),
+                   data.get('can_send_polls'), data.get('can_send_other_messages'),
+                   data.get('can_add_web_page_previews'))
