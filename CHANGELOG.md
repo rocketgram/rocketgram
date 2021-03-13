@@ -32,11 +32,18 @@ All notable changes to this project.
 - `drop_pending_updates` field to `SetWebhook` and `DeleteWebhook` classes.
 - `LogOut` request class.
 - `Close` request class.
+- `my_chat_member` and `chat_member` to `UpdateType`.
+- `ChatInviteLink` class.
+- `ChatMemberUpdated` class.
+- `my_chat_member`, `chat_member` and `unknown` to `Update` class.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
 - Framework now corresponds to Telegram Bot API 4.9.
 - Framework now corresponds to Telegram Bot API 5.0.
+
+### Removed
+- Assert in Update parser. Now unknown update types will be `UpdateType.unknown`.
 
 
 ## [2.0.1] - 2020-05-16

@@ -20,3 +20,6 @@ class UpdateType(EnumAutoName):
     pre_checkout_query = auto()
     poll = auto()
     poll_answer = auto()
+    my_chat_member = auto()
+    chat_member = auto()
+    unknown = auto()

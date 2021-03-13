@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 
 from .callback_query import CallbackQuery
+from .chat_member_updated import ChatMemberUpdated
 from .chosen_inline_result import ChosenInlineResult
 from .inline_query import InlineQuery
 from .message import Message
@@ -42,6 +43,8 @@ class Update:
     pre_checkout_query: Optional[PreCheckoutQuery]
     poll: Optional[Poll]
     poll_answer: Optional[PollAnswer]
+    my_chat_member: Optional[ChatMemberUpdated]
+    chat_member: Optional[ChatMemberUpdated]
 
     @classmethod
     def parse(cls, data: Dict) -> 'Update':
@@ -56,8 +59,10 @@ class Update:
         pre_checkout_query = PreCheckoutQuery.parse(data.get('pre_checkout_query'))
         poll = Poll.parse(data.get('poll'))
         poll_answer = PollAnswer.parse(data.get('poll_answer'))
+        my_chat_member = ChatMemberUpdated.parse(data.get('my_chat_member'))
+        chat_member = ChatMemberUpdated.parse(data.get('chat_member'))
 
-        update_type = None
+        update_type = UpdateType.unknown
         if message:
             update_type = UpdateType.message
         elif edited_message:
@@ -80,9 +85,11 @@ class Update:
             update_type = UpdateType.poll
         elif poll_answer:
             update_type = UpdateType.poll_answer
-
-        assert update_type is not None, "Should have value here! This probably means api was changed."
+        elif my_chat_member:
+            update_type = UpdateType.my_chat_member
+        elif chat_member:
+            update_type = UpdateType.chat_member
 
         return cls(data, data['update_id'], update_type, message, edited_message, channel_post, edited_channel_post,
                    inline_query, chosen_inline_result, callback_query, shipping_query, pre_checkout_query, poll,
-                   poll_answer)
+                   poll_answer, my_chat_member, chat_member)
