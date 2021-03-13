@@ -45,6 +45,7 @@ All notable changes to this project.
 - `voice_chat_started`, `voice_chat_ended` and `voice_chat_participants_invited` fields to `Message` class.
 - `can_manage_voice_chats` field to `ChatMember` class.
 - `can_manage_voice_chats` field to `PromoteChatMember` request class.
+- `MessageType.unknown` that will indicate unknown new type of message.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.

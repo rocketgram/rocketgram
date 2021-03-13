@@ -197,7 +197,7 @@ class Message:
 
         reply_markup = InlineKeyboardMarkup.parse(data.get('reply_markup'))
 
-        message_type = None
+        message_type = MessageType.unknown
 
         if text:
             message_type = MessageType.text
