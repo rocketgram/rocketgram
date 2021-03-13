@@ -21,3 +21,4 @@ class KickChatMember(BoolResultMixin, Request):
     chat_id: Union[int, str]
     user_id: int
     until_date: Optional[datetime] = None
+    revoke_messages: Optional[bool] = None
