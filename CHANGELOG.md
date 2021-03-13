@@ -30,10 +30,13 @@ All notable changes to this project.
 - `bio`, `linked_chat_id` and `location` fields to `Chat` class.
 - `ip_address` field to `SetWebhook` and `WebhookInfo` classes.
 - `drop_pending_updates` field to `SetWebhook` and `DeleteWebhook` classes.
+- `LogOut` request class.
+- `Close` request class.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
 - Framework now corresponds to Telegram Bot API 4.9.
+- Framework now corresponds to Telegram Bot API 5.0.
 
 
 ## [2.0.1] - 2020-05-16

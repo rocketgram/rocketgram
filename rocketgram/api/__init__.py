@@ -21,6 +21,7 @@ from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .chat_type import ChatType
 from .chosen_inline_result import ChosenInlineResult
+from .close import Close
 from .contact import Contact
 from .copy_message import CopyMessage
 from .create_new_sticker_set import CreateNewStickerSet
@@ -99,6 +100,7 @@ from .kick_chat_member import KickChatMember
 from .labeled_price import LabeledPrice
 from .leave_chat import LeaveChat
 from .location import Location
+from .log_out import LogOut
 from .login_url import LoginUrl
 from .mask_position import MaskPosition
 from .mask_position_point_type import MaskPositionPointType
