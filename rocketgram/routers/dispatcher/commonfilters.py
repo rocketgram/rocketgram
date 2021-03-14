@@ -4,8 +4,8 @@
 
 
 from .filters import make_filter
-from ...context import context
 from ...api import UpdateType, MessageType, ChatType
+from ...context import context
 
 
 @make_filter
@@ -42,14 +42,13 @@ def command(*commands: str, case_sensitive: bool = False, separator: str = ' '):
 
 @make_filter
 def deeplink(*commands: str, case_sensitive: bool = False):
-    """Filters deeplinks parameters passed to /start command.
-    If no commands was present then all deeplinks will be cached.
+    """Filters deep links parameters passed to /start command.
+    If no commands was present then all deep links will be cached.
     Filters commands for other bots in groups.
     Assumes update_type == message and message_type == text.
 
     :param commands:
     :param case_sensitive:
-    :param separator:
 
     :return: True or False
     """
@@ -120,8 +119,6 @@ def callback(*commands: str, case_sensitive: bool = False, separator=' '):
 def inline_callback():
     """Filters callback_query done in messages posted through inline query.
     Assumes update_type is callback_query.
-
-    :param types:
 
     :return: True or False
     """
@@ -194,9 +191,7 @@ def chosen(*commands: str, case_sensitive: bool = False):
 def update_type(*types: UpdateType):
     """Filters updates with selected types.
 
-    :param update_types:
-    :param message_types:
-    :param from_inline:
+    :param types:
 
     :return: True or False
     """

@@ -7,17 +7,19 @@ import asyncio
 import logging
 import signal
 from contextlib import suppress
-from typing import Callable, Union, List
+from typing import TYPE_CHECKING, Callable, Union, List
 
-from .. import bot
 from ..api import Request
+
+if TYPE_CHECKING:
+    from ..bot import Bot
 
 logger = logging.getLogger('rocketgram.executors.executor')
 
 
 class Executor:
     @property
-    def bots(self) -> List['bot.Bot']:
+    def bots(self) -> List['Bot']:
         raise NotImplementedError
 
     @property
@@ -27,10 +29,10 @@ class Executor:
     def can_process_webhook_request(self, request: Request) -> bool:
         return False
 
-    async def add_bot(self, bot: 'bot.Bot', *, drop_updates=False):
+    async def add_bot(self, bot: 'Bot', *, drop_updates=False):
         raise NotImplementedError
 
-    async def remove_bot(self, bot: 'bot.Bot'):
+    async def remove_bot(self, bot: 'Bot'):
         raise NotImplementedError
 
     async def start(self):
@@ -40,7 +42,7 @@ class Executor:
         raise NotImplementedError
 
     @staticmethod
-    def _run(executor: 'Executor', add: Callable, remove: Callable, bots: Union['bot.Bot', List['bot.Bot']],
+    def _run(executor: 'Executor', add: Callable, remove: Callable, bots: Union['Bot', List['Bot']],
              signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait=10):
         """
 

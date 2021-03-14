@@ -27,6 +27,6 @@ class DefaultValuesMiddleware(EmptyMiddleware):
                 replaces[k] = v
 
         if len(replaces):
-            return replace(request, **replaces)
+            return replace(request, **replaces)  # noqa
 
         return request

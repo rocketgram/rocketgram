@@ -6,12 +6,11 @@
 import asyncio
 import logging
 import signal
-from typing import Union, Dict, List, Set
+from typing import TYPE_CHECKING, Union, Dict, List, Set
 
 from aiohttp import web
 
 from .executor import Executor
-from .. import bot
 from ..api import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
 from ..api import Update
 from ..errors import RocketgramRequestError
@@ -21,6 +20,9 @@ try:
     import ujson as json
 except ImportError:
     import json
+
+if TYPE_CHECKING:
+    from ..bot import Bot
 
 logger = logging.getLogger('rocketgram.executors.aiohttp')
 
@@ -48,7 +50,7 @@ class AioHttpExecutor(Executor):
         self.__srv = None
         self.__started = False
 
-        self.__tasks: Dict['bot.Bot', Set[asyncio.Task]] = dict()
+        self.__tasks: Dict['Bot', Set[asyncio.Task]] = dict()
 
     @property
     def bots(self):
@@ -69,7 +71,7 @@ class AioHttpExecutor(Executor):
     def can_process_webhook_request(self, request: Request) -> bool:
         return len(request.files()) == 0
 
-    async def add_bot(self, bot: 'bot.Bot', *, suffix=None, webhook=True, drop_updates=False,
+    async def add_bot(self, bot: 'Bot', *, suffix=None, webhook=True, drop_updates=False,
                       max_connections=None):
         """
 
@@ -114,7 +116,7 @@ class AioHttpExecutor(Executor):
             await bot.send(SetWebhook(full_url, max_connections=max_connections))
             logger.debug('Webhook setup done for bot @%s', bot.name)
 
-    async def remove_bot(self, bot: 'bot.Bot', webhook=True):
+    async def remove_bot(self, bot: 'Bot', webhook=True):
         """
 
         :param bot:
@@ -161,7 +163,7 @@ class AioHttpExecutor(Executor):
 
             try:
                 parsed = Update.parse(json.loads(await request.read()))
-            except Exception:
+            except Exception:  # noqa
                 logger.exception("Got exception while parsing update:")
                 return web.Response(status=500, text="Server error.", headers=HEADERS_ERROR)
 
@@ -171,7 +173,7 @@ class AioHttpExecutor(Executor):
 
             try:
                 response: Request = await task
-            except Exception:
+            except Exception:  # noqa
                 logger.exception("Got exception while processing update:")
                 return web.Response(status=500, text="Server error.", headers=HEADERS_ERROR)
 
@@ -197,7 +199,8 @@ class AioHttpExecutor(Executor):
 
         logger.info("Running!")
 
-    async def __wait_tasks(self, tasks: Set[asyncio.Task]):
+    @staticmethod
+    async def __wait_tasks(tasks: Set[asyncio.Task]):
         while len(tasks):
             logger.info("Waiting %s tasks...", len(tasks))
             _, tasks = await asyncio.wait(tasks, timeout=1, return_when=asyncio.FIRST_COMPLETED)
@@ -229,7 +232,7 @@ class AioHttpExecutor(Executor):
         logger.info("Stopped.")
 
     @classmethod
-    def run(cls, bots: Union['bot.Bot', List['bot.Bot']], base_url: str, base_path: str, *, host='localhost', port=8080,
+    def run(cls, bots: Union['Bot', List['Bot']], base_url: str, base_path: str, *, host='localhost', port=8080,
             webhook_setup=True, webhook_remove=True, drop_updates=False,
             signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait=10):
         """
@@ -250,10 +253,10 @@ class AioHttpExecutor(Executor):
 
         executor = cls(base_url, base_path, host=host, port=port)
 
-        def add(bot: 'bot.Bot'):
+        def add(bot: 'Bot'):
             return executor.add_bot(bot, webhook=webhook_setup, drop_updates=drop_updates)
 
-        def remove(bot: 'bot.Bot'):
+        def remove(bot: 'Bot'):
             return executor.remove_bot(bot, webhook=webhook_remove)
 
         logger.info('Starting webhook executor...')

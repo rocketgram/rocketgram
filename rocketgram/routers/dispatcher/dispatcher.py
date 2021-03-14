@@ -94,7 +94,7 @@ class Dispatcher(BaseDispatcher):
         return waiter
 
     async def __run_generator(self, anext: bool, handler, scope):
-        wait = None
+        wait = None  # noqa
 
         with suppress(StopAsyncIteration):
             gen = handler.handler

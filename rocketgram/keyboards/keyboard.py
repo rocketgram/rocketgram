@@ -8,7 +8,7 @@ from typing import List, Tuple, Union
 
 from . import errors
 from .. import api
-from .. import keyboards
+from .. import keyboards  # noqa
 
 MIN_BUTTONS = 1
 MAX_BUTTONS = 8
@@ -17,8 +17,8 @@ POSSIBLE_RETURN_TYPE = Union['Keyboard', 'keyboards.ReplyKeyboard', 'keyboards.I
 
 
 def _check_scheme_values(*args):
-    for l in args:
-        for i in l:
+    for arg in args:
+        for i in arg:
             if i < MIN_BUTTONS or i > MAX_BUTTONS:
                 return False
     return True
@@ -91,7 +91,6 @@ class Keyboard:
             raise errors.TooManyButtonsError('Too many buttons in a row')
 
         btns = [b for b in self._buttons if b]
-        l = len(btns) if len(btns) < row else row
         keyboard = [btns[i:i + row] for i in range(0, len(btns), row)]
 
         self.__assign_buttons(keyboard)

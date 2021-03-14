@@ -23,4 +23,4 @@ class VoiceChatParticipantsInvited:
         if data is None:
             return None
 
-        return cls([user.User.parse(user) for user in data['users']])
+        return cls([user.User.parse(u) for u in data['users']])

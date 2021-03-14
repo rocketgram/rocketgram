@@ -67,7 +67,8 @@ class TornadoConnector(Connector):
 
                     for fl in files:
                         begin = f'--{boundary}\r\n' \
-                                f'Content-Disposition: form-data; name="{fl.file_name}"; filename="{fl.file_name}"\r\n' \
+                                f'Content-Disposition: form-data; name="{fl.file_name}"; ' \
+                                f'filename="{fl.file_name}"\r\n' \
                                 f'Content-Type: {fl.content_type}\r\n' \
                                 f'\r\n'
 
@@ -88,7 +89,7 @@ class TornadoConnector(Connector):
                     'User-Agent': USER_AGENT
                 }
 
-                req = HTTPRequest(url, method='POST', headers=headers, body_producer=producer,
+                req = HTTPRequest(url, method='POST', headers=headers, body_producer=producer,  # noqa
                                   request_timeout=self._timeout)
             else:
                 req = HTTPRequest(url, method='POST', headers=HEADERS, body=json.dumps(request_data),

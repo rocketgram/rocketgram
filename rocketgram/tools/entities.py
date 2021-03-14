@@ -42,7 +42,7 @@ MARKDOWN2.update({
 
 
 def parse(text: str, entities: List[MessageEntity], get_tag: Callable[[bool, MessageEntity], Optional[str]],
-          escape: Callable[[str], str]) -> str:
+          esc: Callable[[str], str]) -> str:
     encoded = text.encode('utf-16-le') if ENCODE_UTF16 else text
 
     def e(start: int, end: int) -> str:
@@ -53,7 +53,7 @@ def parse(text: str, entities: List[MessageEntity], get_tag: Callable[[bool, Mes
             if entity.offset < start:
                 continue
             if entity.offset > start:
-                yield escape(e(start, entity.offset))
+                yield esc(e(start, entity.offset))
 
             open_tag = get_tag(True, entity)
             if open_tag:
@@ -69,7 +69,7 @@ def parse(text: str, entities: List[MessageEntity], get_tag: Callable[[bool, Mes
                 yield close_tag
 
         if start < end:
-            yield escape(e(start, end))
+            yield esc(e(start, end))
 
     se = sorted(entities, key=lambda item: item.offset)
 

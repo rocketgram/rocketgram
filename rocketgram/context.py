@@ -2,13 +2,15 @@
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
+
 import logging
 from contextvars import ContextVar
 from typing import List, Optional, TYPE_CHECKING
 from . import api
 
 if TYPE_CHECKING:
-    from . import bot, executors
+    from .executors import Executor
+    from .bot import Bot
 
 current_executor = ContextVar('current_executor')
 current_bot = ContextVar('current_bot')
@@ -41,23 +43,23 @@ class Context:
         return cls()
 
     @property
-    def executor(self) -> Optional['executors.Executor']:
+    def executor(self) -> Optional['Executor']:
         """Returns Executor object for current request."""
 
         return current_executor.get(None)
 
     @executor.setter
-    def executor(self, executor: 'executors.Executor'):
+    def executor(self, executor: 'Executor'):
         current_executor.set(executor)
 
     @property
-    def bot(self) -> Optional['bot.Bot']:
+    def bot(self) -> Optional['Bot']:
         """Returns current Bot object."""
 
         return current_bot.get(None)
 
     @bot.setter
-    def bot(self, bot: 'bot.Bot'):
+    def bot(self, bot: 'Bot'):
         current_bot.set(bot)
 
     @property
@@ -168,7 +170,7 @@ class Context:
 
         current_webhook_requests.set(webhook_requests)
 
-    def assign(self, executor: 'executors.Executor', bot: 'bot.Bot', update: 'api.Update'):
+    def assign(self, executor: 'Executor', bot: 'Bot', update: 'api.Update'):
 
         self.executor = executor
         self.bot = bot
