@@ -71,13 +71,13 @@ class AioHttpExecutor(Executor):
     def can_process_webhook_request(self, request: Request) -> bool:
         return len(request.files()) == 0
 
-    async def add_bot(self, bot: 'Bot', *, suffix=None, webhook=True, drop_pending_updates=False,
+    async def add_bot(self, bot: 'Bot', *, suffix=None, set_webhook=True, drop_pending_updates=False,
                       max_connections=None):
         """
 
         :param bot:
         :param suffix:
-        :param webhook:
+        :param set_webhook:
         :param drop_pending_updates:
         :param max_connections:
         """
@@ -100,7 +100,7 @@ class AioHttpExecutor(Executor):
         self.__bots[full_path] = bot
         logger.info('Added bot @%s', bot.name)
 
-        if webhook or drop_pending_updates:
+        if set_webhook or drop_pending_updates:
             await bot.send(SetWebhook(full_url, drop_pending_updates=drop_pending_updates,
                                       max_connections=max_connections))
             logger.debug('Webhook setup done for bot @%s', bot.name)
@@ -108,11 +108,11 @@ class AioHttpExecutor(Executor):
         if drop_pending_updates:
             logger.debug('Updates dropped for @%s', bot.name)
 
-    async def remove_bot(self, bot: 'Bot', webhook=True):
+    async def remove_bot(self, bot: 'Bot', delete_webhook=True):
         """
 
         :param bot:
-        :param webhook:
+        :param delete_webhook:
         """
         if bot not in self.__bots.values():
             raise ValueError('Bot was not found.')
@@ -124,7 +124,7 @@ class AioHttpExecutor(Executor):
             self.__tasks[bot] = set()
             await self.__wait_tasks(tasks)
 
-        if webhook:
+        if delete_webhook:
             try:
                 await bot.send(DeleteWebhook())
             except RocketgramRequestError:
@@ -246,10 +246,10 @@ class AioHttpExecutor(Executor):
         executor = cls(base_url, base_path, host=host, port=port)
 
         def add(bot: 'Bot'):
-            return executor.add_bot(bot, webhook=webhook_setup, drop_pending_updates=drop_pending_updates)
+            return executor.add_bot(bot, set_webhook=webhook_setup, drop_pending_updates=drop_pending_updates)
 
         def remove(bot: 'Bot'):
-            return executor.remove_bot(bot, webhook=webhook_remove)
+            return executor.remove_bot(bot, delete_webhook=webhook_remove)
 
         logger.info('Starting webhook executor...')
         logger.debug('Using base url: %s', base_url)

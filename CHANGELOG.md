@@ -55,7 +55,8 @@ All notable changes to this project.
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
 - `Request.send()` method implementation was replaced. Now it returns `result` directly.
-- `drop_updates` parameter replaced with `drop_pending_updates`.
+- `webhook` parameter in executors is replaced with `set_webhook` or `delete_webhook`.
+- `drop_updates` parameter executors is replaced with `drop_pending_updates`.
 - Updates now dropping through setting corresponding parameter instead of getUpdates hack.
 - Framework now corresponds to Telegram Bot API 4.9.
 - Framework now corresponds to Telegram Bot API 5.0.
