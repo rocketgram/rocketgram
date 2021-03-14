@@ -62,7 +62,7 @@ class Keyboard:
         btns = [b for b in self._buttons if b]
 
         if sum(head) + sum(tail) > len(btns):
-            raise errors.NotEnoughButtonsError('Not egnought buttons to render scheme')
+            raise errors.NotEnoughButtonsError('Not enough buttons to render scheme')
 
         head_btns = btns[:sum(head)]
         middle_btns = btns[sum(head):-sum(tail) if sum(tail) > 0 else None]

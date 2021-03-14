@@ -29,12 +29,12 @@ def command(*commands: str, case_sensitive: bool = False, separator: str = ' '):
 
     splitted = msg.text.split(sep=separator)
     text = splitted[0] if case_sensitive else splitted[0].lower()
-    botname = context.bot.name if case_sensitive else context.bot.name.lower()
+    bot_name = context.bot.name if case_sensitive else context.bot.name.lower()
 
     for cmd in commands:
         if not case_sensitive:
             cmd = cmd.lower()
-        if text == cmd or text == cmd + '@' + botname:
+        if text == cmd or text == cmd + '@' + bot_name:
             return True
 
     return False
@@ -101,8 +101,8 @@ def callback(*commands: str, case_sensitive: bool = False, separator=' '):
     if context.update.update_type is not UpdateType.callback_query:
         return False
 
-    splited = context.update.callback_query.data.split(sep=separator)
-    text = splited[0]
+    splitted = context.update.callback_query.data.split(sep=separator)
+    text = splitted[0]
     if not case_sensitive:
         text = text.lower()
 

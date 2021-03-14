@@ -18,7 +18,7 @@ try:
 except ImportError:
     import json
 
-logger = logging.getLogger('rocketgram.connectors.aiohttpconnector')
+logger = logging.getLogger('rocketgram.connectors.aiohttp')
 
 
 class AioHttpConnector(Connector):

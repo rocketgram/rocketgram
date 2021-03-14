@@ -52,10 +52,10 @@ def _user_scope():
 
 
 async def _run_filters(filters):
-    for fltr in filters:
-        fr = await _call_or_await(fltr.func, *fltr.args, **fltr.kwargs)
+    for filt in filters:
+        fr = await _call_or_await(filt.func, *filt.args, **filt.kwargs)
         assert isinstance(fr, bool), \
-            f'Filter `{fltr.func.__name__}` returns `{type(fr)}` while `bool` is expected!'
+            f'Filter `{filt.func.__name__}` returns `{type(fr)}` while `bool` is expected!'
         if not fr:
             return False
 

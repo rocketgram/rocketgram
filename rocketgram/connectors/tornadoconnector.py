@@ -19,7 +19,7 @@ try:
 except ImportError:
     import json
 
-logger = logging.getLogger('rocketgram.connectors.tornadoconnector')
+logger = logging.getLogger('rocketgram.connectors.tornado')
 
 
 class TornadoConnector(Connector):
