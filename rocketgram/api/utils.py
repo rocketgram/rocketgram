@@ -6,8 +6,9 @@
 from enum import Enum
 from typing import Union
 
-from .. import api, context
+from .. import api
 from .. import keyboards  # noqa
+from ..context import context
 
 
 class EnumAutoName(Enum):
