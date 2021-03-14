@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [3.0.0] - 2021-03-14
+
 ### Added
 - `via_bot` field to `Message` class.
 - `ThumbMimeType` class.
