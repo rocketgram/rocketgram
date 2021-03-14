@@ -29,7 +29,7 @@ class Executor:
     def can_process_webhook_request(self, request: Request) -> bool:
         return False
 
-    async def add_bot(self, bot: 'Bot', *, drop_updates=False):
+    async def add_bot(self, bot: 'Bot', *, drop_pending_updates=False):
         raise NotImplementedError
 
     async def remove_bot(self, bot: 'Bot'):

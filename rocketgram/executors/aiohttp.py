@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Union, Dict, List, Set
 from aiohttp import web
 
 from .executor import Executor
-from ..api import Request, GetMe, GetUpdates, SetWebhook, DeleteWebhook
+from ..api import Request, GetMe, SetWebhook, DeleteWebhook
 from ..api import Update
 from ..errors import RocketgramRequestError
 from ..version import version
@@ -71,14 +71,14 @@ class AioHttpExecutor(Executor):
     def can_process_webhook_request(self, request: Request) -> bool:
         return len(request.files()) == 0
 
-    async def add_bot(self, bot: 'Bot', *, suffix=None, webhook=True, drop_updates=False,
+    async def add_bot(self, bot: 'Bot', *, suffix=None, webhook=True, drop_pending_updates=False,
                       max_connections=None):
         """
 
         :param bot:
         :param suffix:
         :param webhook:
-        :param drop_updates:
+        :param drop_pending_updates:
         :param max_connections:
         """
         if bot in self.__bots.values():
@@ -97,24 +97,16 @@ class AioHttpExecutor(Executor):
 
         await bot.init()
 
-        if drop_updates:
-            await bot.send(DeleteWebhook())
-            offset = 0
-            while True:
-                resp = await bot.send(GetUpdates(offset + 1))
-                if not len(resp.result):
-                    break
-                for update in resp.result:
-                    if offset < update.update_id:
-                        offset = update.update_id
-            logger.debug('Updates dropped for @%s', bot.name)
-
         self.__bots[full_path] = bot
         logger.info('Added bot @%s', bot.name)
 
-        if webhook or drop_updates:
-            await bot.send(SetWebhook(full_url, max_connections=max_connections))
+        if webhook or drop_pending_updates:
+            await bot.send(SetWebhook(full_url, drop_pending_updates=drop_pending_updates,
+                                      max_connections=max_connections))
             logger.debug('Webhook setup done for bot @%s', bot.name)
+
+        if drop_pending_updates:
+            logger.debug('Updates dropped for @%s', bot.name)
 
     async def remove_bot(self, bot: 'Bot', webhook=True):
         """
@@ -233,7 +225,7 @@ class AioHttpExecutor(Executor):
 
     @classmethod
     def run(cls, bots: Union['Bot', List['Bot']], base_url: str, base_path: str, *, host='localhost', port=8080,
-            webhook_setup=True, webhook_remove=True, drop_updates=False,
+            webhook_setup=True, webhook_remove=True, drop_pending_updates=False,
             signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait=10):
         """
 
@@ -244,7 +236,7 @@ class AioHttpExecutor(Executor):
         :param port:
         :param webhook_setup:
         :param webhook_remove:
-        :param drop_updates:
+        :param drop_pending_updates:
         :param signals:
         :param shutdown_wait:
 
@@ -254,7 +246,7 @@ class AioHttpExecutor(Executor):
         executor = cls(base_url, base_path, host=host, port=port)
 
         def add(bot: 'Bot'):
-            return executor.add_bot(bot, webhook=webhook_setup, drop_updates=drop_updates)
+            return executor.add_bot(bot, webhook=webhook_setup, drop_pending_updates=drop_pending_updates)
 
         def remove(bot: 'Bot'):
             return executor.remove_bot(bot, webhook=webhook_remove)

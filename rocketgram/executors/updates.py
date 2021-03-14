@@ -46,11 +46,11 @@ class UpdatesExecutor(Executor):
         """
         return self.__started
 
-    async def add_bot(self, bot: 'Bot', *, drop_updates=False):
+    async def add_bot(self, bot: 'Bot', *, drop_pending_updates=False):
         """
 
         :param bot:
-        :param drop_updates:
+        :param drop_pending_updates:
         """
         if bot in self.__bots:
             raise ValueError('Bot already added.')
@@ -66,17 +66,9 @@ class UpdatesExecutor(Executor):
 
         self.__bots[bot] = None
 
-        await bot.send(DeleteWebhook())
+        await bot.send(DeleteWebhook(drop_pending_updates=drop_pending_updates))
 
-        if drop_updates:
-            offset = 0
-            while True:
-                resp = await bot.send(GetUpdates(offset + 1))
-                if not len(resp.result):
-                    break
-                for update in resp.result:
-                    if offset < update.update_id:
-                        offset = update.update_id
+        if drop_pending_updates:
             logger.debug('Updates dropped for @%s', bot.name)
 
         if self.running:
@@ -183,13 +175,13 @@ class UpdatesExecutor(Executor):
         logger.info("Stopped.")
 
     @classmethod
-    def run(cls, bots: Union['Bot', List['Bot']], *, drop_updates=False,
+    def run(cls, bots: Union['Bot', List['Bot']], *, drop_pending_updates=False,
             signals: tuple = (signal.SIGINT, signal.SIGTERM),
             request_timeout=30, shutdown_wait=10):
         """
 
         :param bots:
-        :param drop_updates:
+        :param drop_pending_updates:
         :param signals:
         :param request_timeout:
         :param shutdown_wait:
@@ -198,7 +190,7 @@ class UpdatesExecutor(Executor):
         executor = cls(request_timeout=request_timeout)
 
         def add(bot: 'Bot'):
-            return executor.add_bot(bot, drop_updates=drop_updates)
+            return executor.add_bot(bot, drop_pending_updates=drop_pending_updates)
 
         def remove(bot: 'Bot'):
             return executor.remove_bot(bot)
