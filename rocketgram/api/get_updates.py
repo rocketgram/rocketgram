@@ -8,7 +8,8 @@ from typing import Optional, List
 
 from .request import Request
 from .update_type import UpdateType
-from .. import api, context
+from .. import api
+from ..context import context
 
 
 @dataclass(frozen=True)

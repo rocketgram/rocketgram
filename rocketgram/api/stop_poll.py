@@ -8,7 +8,8 @@ from typing import Union, Optional
 
 from .request import Request
 from .utils import INLINE_KEYBOARDS
-from .. import api, context
+from .. import api
+from ..context import context
 
 
 @dataclass(frozen=True)

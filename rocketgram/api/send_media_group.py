@@ -9,7 +9,8 @@ from typing import Union, Optional, List
 from .input_file import InputFile
 from .input_media import InputMedia
 from .request import Request
-from .. import api, context
+from .. import api
+from ..context import context
 
 
 @dataclass(frozen=True)

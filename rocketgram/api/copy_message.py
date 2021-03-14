@@ -11,7 +11,7 @@ from .message_id import MessageId
 from .parse_mode_type import ParseModeType
 from .request import Request
 from .utils import ALL_KEYBOARDS
-from .. import context
+from ..context import context
 
 
 @dataclass(frozen=True)

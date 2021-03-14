@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from typing import Union, List
 
 from .request import Request
-from .. import api, context
+from .. import api
+from ..context import context
 
 
 @dataclass(frozen=True)

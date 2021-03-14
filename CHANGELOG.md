@@ -5,6 +5,12 @@ All notable changes to this project.
 ## [Unreleased]
 
 
+## [3.0.1] - 2021-03-14
+
+### Fixed
+- Fixed import bug.
+
+
 ## [3.0.0] - 2021-03-14
 
 ### Added
