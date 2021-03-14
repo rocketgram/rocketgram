@@ -6,6 +6,7 @@
 import logging
 from contextvars import ContextVar
 from typing import List, Optional, TYPE_CHECKING
+
 from . import api
 
 if TYPE_CHECKING:
@@ -23,6 +24,8 @@ current_shipping = ContextVar('current_shipping')
 current_checkout = ContextVar('current_checkout')
 current_poll = ContextVar('current_poll')
 current_answer = ContextVar('current_answer')
+current_chat_member = ContextVar('chat_member')
+
 current_chat = ContextVar('current_chat')
 current_user = ContextVar('current_user')
 
@@ -152,6 +155,16 @@ class Context:
     def answer(self, answer: 'api.PollAnswer'):
         current_answer.set(answer)
 
+    @property
+    def chat_member(self) -> Optional['api.ChatMemberUpdated']:
+        """Returns ChatMemberUpdated object for current request."""
+
+        return current_chat_member.get(None)
+
+    @chat_member.setter
+    def chat_member(self, chat_member: 'api.ChatMemberUpdated'):
+        current_chat_member.set(chat_member)
+
     @staticmethod
     def webhook(request: 'api.Request'):
         """Sets Request object to be sent through webhook-request mechanism."""
@@ -178,7 +191,15 @@ class Context:
         self.webhook_requests = list()
 
         self.update = update
+
         self.message = None
+        self.callback = None
+        self.shipping = None
+        self.checkout = None
+        self.poll = None
+        self.answer = None
+        self.chat_member = None
+
         self.chat = None
         self.user = None
 
@@ -219,6 +240,12 @@ class Context:
         elif update.update_type is api.UpdateType.poll_answer:
             self.answer = update.poll_answer
             self.user = update.poll_answer.user
+        elif update.update_type is api.UpdateType.my_chat_member:
+            self.chat = update.my_chat_member.chat
+            self.user = update.my_chat_member.user
+        elif update.update_type is api.UpdateType.chat_member:
+            self.chat = update.chat_member.chat
+            self.user = update.chat_member.user
 
 
 context = Context.instance()
