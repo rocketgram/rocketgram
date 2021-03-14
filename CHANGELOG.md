@@ -70,6 +70,9 @@ All notable changes to this project.
 - `BaseDispatcherProxy`
 - `BaseDispatcher.from_proxy`
 
+### Deprecated
+- `Request.send2()` method is deprecated and will be removed in version 4.0. Use `Request.send()` instead.
+
 
 ## [2.0.1] - 2020-05-16
 
