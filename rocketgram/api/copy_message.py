@@ -11,6 +11,7 @@ from .message_id import MessageId
 from .parse_mode_type import ParseModeType
 from .request import Request
 from .utils import ALL_KEYBOARDS
+from .. import context
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,6 @@ class CopyMessage(Request):
         assert isinstance(data, dict), "Should be dict."
         return MessageId.parse(data)
 
-    async def send2(self) -> int:
-        res = await self._send()  # noqa
+    async def send(self) -> int:
+        res = await context.bot.send(self)
         return res.result

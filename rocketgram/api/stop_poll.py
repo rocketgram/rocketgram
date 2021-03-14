@@ -8,7 +8,7 @@ from typing import Union, Optional
 
 from .request import Request
 from .utils import INLINE_KEYBOARDS
-from .. import api
+from .. import api, context
 
 
 @dataclass(frozen=True)
@@ -26,6 +26,6 @@ class StopPoll(Request):
         assert isinstance(data, dict), "Should be dict."
         return api.Poll.parse(data)
 
-    async def send2(self) -> 'api.Poll':
-        res = await self._send()
+    async def send(self) -> 'api.Poll':
+        res = await context.bot.send(self)
         return res.result

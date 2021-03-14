@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Optional, List
 
 from .request import Request
-from .. import api
+from .. import api, context
 
 
 @dataclass(frozen=True)
@@ -26,6 +26,6 @@ class GetGameHighScores(Request):
         assert isinstance(data, list), "Should be dict."
         return [api.GameHighScore.parse(r) for r in data]
 
-    async def send2(self) -> 'api.GameHighScore':
-        res = await self._send()
+    async def send(self) -> 'api.GameHighScore':
+        res = await context.bot.send(self)
         return res.result

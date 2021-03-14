@@ -2,7 +2,7 @@
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
-import warnings
+
 from dataclasses import dataclass
 from typing import Optional, Any
 
@@ -19,12 +19,6 @@ class Response:
     request
     raw
     """
-
-    @property
-    def method(self) -> 'api.Request':
-        warnings.warn("This property is deprecated. Use request instead.", DeprecationWarning)
-
-        return self.request
 
     request: 'api.Request'
     raw: dict

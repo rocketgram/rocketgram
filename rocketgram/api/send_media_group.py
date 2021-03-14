@@ -9,7 +9,7 @@ from typing import Union, Optional, List
 from .input_file import InputFile
 from .input_media import InputMedia
 from .request import Request
-from .. import api
+from .. import api, context
 
 
 @dataclass(frozen=True)
@@ -41,6 +41,6 @@ class SendMediaGroup(Request):
         assert isinstance(data, list), "Should be list."
         return [api.Message.parse(r) for r in data]
 
-    async def send2(self) -> List['api.Message']:
-        res = await self._send()  # noqa
+    async def send(self) -> List['api.Message']:
+        res = await context.bot.send(self)
         return res.result

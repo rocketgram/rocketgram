@@ -6,7 +6,7 @@
 from dataclasses import dataclass
 
 from .request import Request
-from .. import api
+from .. import api, context
 
 
 @dataclass(frozen=True)
@@ -20,6 +20,6 @@ class GetMe(Request):
         assert isinstance(data, dict), "Should be dict."
         return api.User.parse(data)
 
-    async def send2(self) -> 'api.User':
-        res = await self._send()
+    async def send(self) -> 'api.User':
+        res = await context.bot.send(self)
         return res.result

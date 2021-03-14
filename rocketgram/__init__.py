@@ -8,7 +8,6 @@ from .api import *
 from .bot import Bot
 from .connectors import *
 from .context import context as context
-from .context import context as context2
 from .errors import *
 from .executors import *
 from .keyboards import *

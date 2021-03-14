@@ -6,7 +6,7 @@
 from enum import Enum
 from typing import Union
 
-from .. import api
+from .. import api, context
 from .. import keyboards  # noqa
 
 
@@ -24,8 +24,8 @@ class BoolResultMixin:
         assert isinstance(data, bool), "Should be bool."
         return data
 
-    async def send2(self) -> bool:
-        res = await self._send()  # noqa
+    async def send(self) -> bool:
+        res = await context.bot.send(self)
         return res.result
 
 
@@ -36,8 +36,8 @@ class IntResultMixin:
         assert isinstance(data, int), "Should be int."
         return data
 
-    async def send2(self) -> int:
-        res = await self._send()  # noqa
+    async def send(self) -> int:
+        res = await context.bot.send(self)
         return res.result
 
 
@@ -48,8 +48,8 @@ class StrResultMixin:
         assert isinstance(data, str), "Should be str."
         return data
 
-    async def send2(self) -> str:
-        res = await self._send()  # noqa
+    async def send(self) -> str:
+        res = await context.bot.send(self)
         return res.result
 
 
@@ -60,8 +60,8 @@ class MessageResultMixin:
         assert isinstance(data, dict), "Should be dict."
         return api.Message.parse(data)
 
-    async def send2(self) -> 'api.Message':
-        res = await self._send()  # noqa
+    async def send(self) -> 'api.Message':
+        res = await context.bot.send(self)
         return res.result
 
 
@@ -72,8 +72,8 @@ class MessageOrBoolResultMixin:
         assert isinstance(data, (dict, bool)), "Should be dict or bool."
         return data if isinstance(data, bool) else api.Message.parse(data)
 
-    async def send2(self) -> Union['api.Message', bool]:
-        res = await self._send()  # noqa
+    async def send(self) -> Union['api.Message', bool]:
+        res = await context.bot.send(self)
         return res.result
 
 
@@ -84,8 +84,8 @@ class FileResultMixin:
         assert isinstance(data, dict), "Should be dict."
         return api.File.parse(data)
 
-    async def send2(self) -> 'api.File':
-        res = await self._send()  # noqa
+    async def send(self) -> 'api.File':
+        res = await context.bot.send(self)
         return res.result
 
 
@@ -96,8 +96,8 @@ class ChatInviteLinkResultMixin:
         assert isinstance(data, dict), "Should be dict."
         return api.ChatInviteLink.parse(data)
 
-    async def send2(self) -> 'api.ChatInviteLink':
-        res = await self._send()  # noqa
+    async def send(self) -> 'api.ChatInviteLink':
+        res = await context.bot.send(self)
         return res.result
 
 

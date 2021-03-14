@@ -8,7 +8,7 @@ from typing import Optional, List
 
 from .request import Request
 from .update_type import UpdateType
-from .. import api
+from .. import api, context
 
 
 @dataclass(frozen=True)
@@ -27,6 +27,6 @@ class GetUpdates(Request):
         assert isinstance(data, list), "Should be list."
         return [api.Update.parse(r) for r in data]
 
-    async def send2(self) -> List['api.Update']:
-        res = await self._send()
+    async def send(self) -> List['api.Update']:
+        res = await context.bot.send(self)
         return res.result

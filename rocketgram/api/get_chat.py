@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Union
 
 from .request import Request
-from .. import api
+from .. import api, context
 
 
 @dataclass(frozen=True)
@@ -23,6 +23,6 @@ class GetChat(Request):
         assert isinstance(data, dict), "Should be dict."
         return api.Chat.parse(data)
 
-    async def send2(self) -> 'api.Chat':
-        res = await self._send()
+    async def send(self) -> 'api.Chat':
+        res = await context.bot.send(self)
         return res.result

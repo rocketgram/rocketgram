@@ -54,12 +54,17 @@ All notable changes to this project.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
+- `Request.send()` method implementation was replaced. Now it returns `result` directly.
 - Framework now corresponds to Telegram Bot API 4.9.
 - Framework now corresponds to Telegram Bot API 5.0.
 - Framework now corresponds to Telegram Bot API 5.1.
 
 ### Removed
 - Assert in Update parser. Now unknown update types will be `UpdateType.unknown`.
+- `context2`
+- `Response.method`
+- `BaseDispatcherProxy`
+- `BaseDispatcher.from_proxy`
 
 
 ## [2.0.1] - 2020-05-16

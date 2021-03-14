@@ -69,20 +69,15 @@ class Request:
 
         raise NotImplementedError
 
-    async def _send(self) -> 'api.Response':
-        """A temporary method that exists until the old send method is deleted."""
-
-        return await context.bot.send(self)
-
-    async def send(self) -> 'api.Response':
-        warnings.warn("This method is deprecated. Use send2() instead.", DeprecationWarning)
-
-        return await context.bot.send(self)
-
-    async def send2(self):
-        """Sends this request in current context."""
+    async def send(self):
+        """Sends this request with current context."""
 
         raise NotImplementedError
+
+    async def send2(self):
+        warnings.warn("This method is deprecated. Use send() instead.", DeprecationWarning)
+
+        return await self.send()
 
     def webhook(self):
         """\

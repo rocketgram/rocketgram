@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Union, List
 
 from .request import Request
-from .. import api
+from .. import api, context
 
 
 @dataclass(frozen=True)
@@ -23,6 +23,6 @@ class GetChatAdministrators(Request):
         assert isinstance(data, list), "Should be list."
         return [api.ChatMember.parse(r) for r in data]
 
-    async def send2(self) -> List['api.ChatMember']:
-        res = await self._send()
+    async def send(self) -> List['api.ChatMember']:
+        res = await context.bot.send(self)
         return res.result

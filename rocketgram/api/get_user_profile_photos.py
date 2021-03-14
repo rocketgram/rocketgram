@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from .request import Request
-from .. import api
+from .. import api, context
 
 
 @dataclass(frozen=True)
@@ -25,6 +25,6 @@ class GetUserProfilePhotos(Request):
         assert isinstance(data, dict), "Should be dict."
         return api.UserProfilePhotos.parse(data)
 
-    async def send2(self) -> 'api.UserProfilePhotos':
-        res = await self._send()
+    async def send(self) -> 'api.UserProfilePhotos':
+        res = await context.bot.send(self)
         return res.result

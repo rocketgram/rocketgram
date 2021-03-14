@@ -5,7 +5,6 @@
 
 import asyncio
 import logging
-import warnings
 from dataclasses import dataclass
 from inspect import isclass
 from typing import Callable, Coroutine, AsyncGenerator, Union, List
@@ -97,11 +96,6 @@ class BaseDispatcher(Router):
         # if handler added in runtime - resort handlers
         if len(self._bots):
             self._resort_handlers()
-
-    def from_proxy(self, dispatcher: 'BaseDispatcher'):
-        warnings.warn("This method is deprecated. Use from_dispatcher() instead.", DeprecationWarning)
-
-        self.from_dispatcher(dispatcher)
 
     async def init(self):
         logger.debug('Performing init...')
