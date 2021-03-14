@@ -51,6 +51,7 @@ All notable changes to this project.
 - `message_auto_delete_timer_changed`, `voice_chat_started`, `voice_chat_ended` and `voice_chat_participants_invited` message types.
 - `revoke_messages` field to `KickChatMember` request class.
 - `can_manage_chat` field to `ChatMember` and `PromoteChatMember` classes.
+- `context.chat_member` context helper field.
 
 ### Changed
 - `SendDice` and `Dice` classes now using `DiceType`.
