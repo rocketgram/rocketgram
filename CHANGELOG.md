@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Fixed
+- Fixed typing for base `Executor`.
+
 
 ## [3.0.1] - 2021-03-14
 
