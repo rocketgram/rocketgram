@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Optional, List
 
 from .input_file import InputFile
 from .request import Request
@@ -20,7 +20,7 @@ class SetWebhook(BoolResultMixin, Request):
     """
 
     url: str
-    certificate: Optional[Union[InputFile, str]] = None
+    certificate: Optional[InputFile] = None
     ip_address: Optional[str] = None
     max_connections: Optional[int] = None
     allowed_updates: Optional[List[UpdateType]] = None
