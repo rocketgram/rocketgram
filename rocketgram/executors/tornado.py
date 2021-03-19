@@ -72,7 +72,7 @@ class TornadoExecutor(Executor):
     def can_process_webhook_request(self, request: Request) -> bool:
         return len(request.files()) == 0
 
-    async def add_bot(self, bot: 'Bot', *, suffix=None, set_webhook=True, drop_pending_updates=False,
+    async def add_bot(self, bot: 'Bot', *, drop_pending_updates=False, suffix=None, set_webhook=True,
                       max_connections=None):
         """
 
@@ -269,7 +269,7 @@ class TornadoExecutor(Executor):
         executor = cls(base_url, base_path, host=host, port=port)
 
         def add(bot: 'Bot'):
-            return executor.add_bot(bot, set_webhook=webhook_setup, drop_pending_updates=drop_pending_updates)
+            return executor.add_bot(bot, drop_pending_updates=drop_pending_updates, set_webhook=webhook_setup)
 
         def remove(bot: 'Bot'):
             return executor.remove_bot(bot, delete_webhook=webhook_remove)

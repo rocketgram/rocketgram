@@ -8,7 +8,7 @@ import logging
 import signal
 from typing import TYPE_CHECKING, Union, Dict, List, Set
 
-from aiohttp import web
+from aiohttp.web import Server, ServerRunner, BaseRequest, TCPSite, Response
 
 from .executor import Executor
 from ..api import Request, GetMe, SetWebhook, DeleteWebhook
@@ -71,7 +71,7 @@ class AioHttpExecutor(Executor):
     def can_process_webhook_request(self, request: Request) -> bool:
         return len(request.files()) == 0
 
-    async def add_bot(self, bot: 'Bot', *, suffix=None, set_webhook=True, drop_pending_updates=False,
+    async def add_bot(self, bot: 'Bot', *, drop_pending_updates=False, suffix=None, set_webhook=True,
                       max_connections=None):
         """
 
@@ -134,48 +134,48 @@ class AioHttpExecutor(Executor):
 
         logger.info('Removed bot @%s', bot.name)
 
+    async def __handler(self, request: BaseRequest):
+        if request.method != 'POST':
+            return Response(status=400, text="Bad request.", headers=HEADERS_ERROR)
+
+        bot = self.__bots.get(request.path)
+
+        if not bot:
+            logger.warning("Bot not found for request `%s`.", request.path)
+            return Response(status=404, text="Not found.", headers=HEADERS_ERROR)
+
+        if bot not in self.__tasks:
+            self.__tasks[bot] = set()
+
+        try:
+            parsed = Update.parse(json.loads(await request.read()))
+        except Exception:  # noqa
+            logger.exception("Got exception while parsing update:")
+            return Response(status=500, text="Server error.", headers=HEADERS_ERROR)
+
+        task = asyncio.create_task(
+            bot.process(self, parsed))
+        self.__tasks[bot].add(task)
+
+        try:
+            response: Request = await task
+        except Exception:  # noqa
+            logger.exception("Got exception while processing update:")
+            return Response(status=500, text="Server error.", headers=HEADERS_ERROR)
+
+        if response:
+            data = json.dumps(response.render(with_method=True))
+            return Response(body=data, headers=HEADERS)
+
+        self.__tasks[bot] = {t for t in self.__tasks[bot] if not t.done()}
+
+        return Response(status=200)
+
     async def start(self):
         """
 
         :return:
         """
-
-        async def __handler(request: web.BaseRequest):
-            if request.method != 'POST':
-                return web.Response(status=400, text="Bad request.", headers=HEADERS_ERROR)
-
-            bot = self.__bots.get(request.path)
-
-            if not bot:
-                logger.warning("Bot not found for request `%s`.", request.path)
-                return web.Response(status=404, text="Not found.", headers=HEADERS_ERROR)
-
-            if bot not in self.__tasks:
-                self.__tasks[bot] = set()
-
-            try:
-                parsed = Update.parse(json.loads(await request.read()))
-            except Exception:  # noqa
-                logger.exception("Got exception while parsing update:")
-                return web.Response(status=500, text="Server error.", headers=HEADERS_ERROR)
-
-            task = asyncio.create_task(
-                bot.process(self, parsed))
-            self.__tasks[bot].add(task)
-
-            try:
-                response: Request = await task
-            except Exception:  # noqa
-                logger.exception("Got exception while processing update:")
-                return web.Response(status=500, text="Server error.", headers=HEADERS_ERROR)
-
-            if response:
-                data = json.dumps(response.render(with_method=True))
-                return web.Response(body=data, headers=HEADERS)
-
-            self.__tasks[bot] = {t for t in self.__tasks[bot] if not t.done()}
-
-            return web.Response(status=200)
 
         if self.__started:
             return
@@ -184,10 +184,13 @@ class AioHttpExecutor(Executor):
 
         logger.info("Starting with webhook...")
 
-        loop = asyncio.get_event_loop()
+        runner = ServerRunner(Server(self.__handler))
+        await runner.setup()
+        self.__srv = TCPSite(runner, self.__host, self.__port)
 
         logger.info("Listening on http://%s:%s%s", self.__host, self.__port, self.__base_path)
-        self.__srv = await loop.create_server(web.Server(__handler), self.__host, self.__port, backlog=128)
+
+        await self.__srv.start()
 
         logger.info("Running!")
 
@@ -210,8 +213,7 @@ class AioHttpExecutor(Executor):
         self.__started = False
 
         if self.__srv:
-            self.__srv.close()
-            await self.__srv.wait_closed()
+            await self.__srv.stop()
             self.__srv = None
 
         tasks = set()
@@ -246,7 +248,7 @@ class AioHttpExecutor(Executor):
         executor = cls(base_url, base_path, host=host, port=port)
 
         def add(bot: 'Bot'):
-            return executor.add_bot(bot, set_webhook=webhook_setup, drop_pending_updates=drop_pending_updates)
+            return executor.add_bot(bot, drop_pending_updates=drop_pending_updates, set_webhook=webhook_setup)
 
         def remove(bot: 'Bot'):
             return executor.remove_bot(bot, delete_webhook=webhook_remove)

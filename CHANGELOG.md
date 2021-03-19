@@ -7,6 +7,10 @@ All notable changes to this project.
 ### Fixed
 - Fixed typing for base `Executor`.
 
+### Changed
+- Refactored `AiohttpExecutor`.
+- A minimal version of `aiohttp` is now `3.6.2`.
+
 
 ## [3.0.1] - 2021-03-14
 

@@ -20,8 +20,9 @@ setuptools.setup(
     long_description=open(join(dirname(__file__), 'README.md')).read(),
     long_description_content_type='text/markdown',
     packages=setuptools.find_packages(),
+    python_requires=">=3.7",
     extras_require={
-        'aiohttp': ["aiohttp >= 3.5.4"],
+        'aiohttp': ["aiohttp >= 3.6.2"],
         'tornado': ["tornado >= 6.0.2"],
         'ujson': ["ujson >= 1.35"],
         'uvloop': ["uvloop >= 0.12.1"]
@@ -35,6 +36,7 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
+        "Environment :: Web Environment",
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.7',

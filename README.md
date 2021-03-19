@@ -29,7 +29,7 @@ All dependencies are optional but you should install one of `aiohttp` and `torna
 Also you can use `uvloop` as alternative to standard event loop.
 
 * Python >= 3.7
-* aiohttp >= 3.5.4
+* aiohttp >= 3.6.2
 * ujson >= 1.35
 * tornado >= 6.0.2
 * uvloop >= 0.12.1
