@@ -10,6 +10,7 @@ All notable changes to this project.
 
 ### Fixed
 - Fixed typing for base `Executor`.
+- Typing for `SetWebhook` request class.
 
 ### Changed
 - Refactored `AiohttpExecutor`.
