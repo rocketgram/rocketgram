@@ -45,15 +45,6 @@ class Executor:
     @staticmethod
     def _run(executor: 'Executor', add: Callable, remove: Callable, bots: Union['Bot', List['Bot']],
              signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait: int = 10):
-        """
-
-        :param executor:
-        :param add:
-        :param remove:
-        :param bots:
-        :param signals:
-        :param shutdown_wait:
-        """
 
         loop = asyncio.get_event_loop()
 
