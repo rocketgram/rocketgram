@@ -6,13 +6,13 @@
 import asyncio
 import logging
 import signal
-from typing import TYPE_CHECKING, Union, Dict, List, Set
+from typing import TYPE_CHECKING, Union, Dict, List, Set, Optional
 
 from aiohttp.web import Server, ServerRunner, BaseRequest, TCPSite, Response
 
 from .executor import Executor
 from ..api import Request, GetMe, SetWebhook, DeleteWebhook
-from ..api import Update
+from ..api import Update, UpdateType
 from ..errors import RocketgramRequestError
 from ..version import version
 
@@ -31,8 +31,7 @@ HEADERS_ERROR = {"Server": f"Rocketgram/{version()}", "Content-Type": "text/plai
 
 
 class AioHttpExecutor(Executor):
-    def __init__(self, base_url: str, base_path: str, *, host: str = 'localhost',
-                 port: int = 8080):
+    def __init__(self, base_url: str, base_path: str, *, host: str = 'localhost', port: int = 8080):
         """
 
         :param base_url:
@@ -71,14 +70,16 @@ class AioHttpExecutor(Executor):
     def can_process_webhook_request(self, request: Request) -> bool:
         return len(request.files()) == 0
 
-    async def add_bot(self, bot: 'Bot', *, drop_pending_updates=False, suffix=None, set_webhook=True,
-                      max_connections=None):
+    async def add_bot(self, bot: 'Bot', *, allowed_updates: Optional[List[UpdateType]] = None,
+                      drop_pending_updates: bool = False, suffix: str = None, set_webhook: bool = True,
+                      max_connections: int = None):
         """
 
         :param bot:
+        :param allowed_updates:
+        :param drop_pending_updates:
         :param suffix:
         :param set_webhook:
-        :param drop_pending_updates:
         :param max_connections:
         """
         if bot in self.__bots.values():
@@ -101,14 +102,15 @@ class AioHttpExecutor(Executor):
         logger.info('Added bot @%s', bot.name)
 
         if set_webhook or drop_pending_updates:
-            await bot.send(SetWebhook(full_url, drop_pending_updates=drop_pending_updates,
-                                      max_connections=max_connections))
+            swh = SetWebhook(full_url, allowed_updates=allowed_updates, drop_pending_updates=drop_pending_updates,
+                             max_connections=max_connections)
+            await bot.send(swh)
             logger.debug('Webhook setup done for bot @%s', bot.name)
 
         if drop_pending_updates:
             logger.debug('Updates dropped for @%s', bot.name)
 
-    async def remove_bot(self, bot: 'Bot', delete_webhook=True):
+    async def remove_bot(self, bot: 'Bot', delete_webhook: bool = True):
         """
 
         :param bot:
@@ -226,9 +228,10 @@ class AioHttpExecutor(Executor):
         logger.info("Stopped.")
 
     @classmethod
-    def run(cls, bots: Union['Bot', List['Bot']], base_url: str, base_path: str, *, host='localhost', port=8080,
-            webhook_setup=True, webhook_remove=True, drop_pending_updates=False,
-            signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait=10):
+    def run(cls, bots: Union['Bot', List['Bot']], base_url: str, base_path: str, *, host: str = 'localhost',
+            port: int = 8080, webhook_setup: bool = True, webhook_remove: bool = True,
+            allowed_updates: Optional[List[UpdateType]] = None, drop_pending_updates: bool = False,
+            signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait: int = 10):
         """
 
         :param bots:
@@ -238,6 +241,7 @@ class AioHttpExecutor(Executor):
         :param port:
         :param webhook_setup:
         :param webhook_remove:
+        :param allowed_updates:
         :param drop_pending_updates:
         :param signals:
         :param shutdown_wait:
@@ -248,7 +252,8 @@ class AioHttpExecutor(Executor):
         executor = cls(base_url, base_path, host=host, port=port)
 
         def add(bot: 'Bot'):
-            return executor.add_bot(bot, drop_pending_updates=drop_pending_updates, set_webhook=webhook_setup)
+            return executor.add_bot(bot, allowed_updates=allowed_updates, drop_pending_updates=drop_pending_updates,
+                                    set_webhook=webhook_setup)
 
         def remove(bot: 'Bot'):
             return executor.remove_bot(bot, delete_webhook=webhook_remove)

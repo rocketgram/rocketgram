@@ -7,9 +7,9 @@ import asyncio
 import logging
 import signal
 from contextlib import suppress
-from typing import TYPE_CHECKING, Callable, Union, List
+from typing import TYPE_CHECKING, Callable, Union, List, Optional
 
-from ..api import Request
+from ..api import Request, UpdateType
 
 if TYPE_CHECKING:
     from ..bot import Bot
@@ -29,7 +29,8 @@ class Executor:
     def can_process_webhook_request(self, request: Request) -> bool:
         return False
 
-    async def add_bot(self, bot: 'Bot', *, drop_pending_updates=False, **kwargs):
+    async def add_bot(self, bot: 'Bot', *, allowed_updates: Optional[List[UpdateType]] = None,
+                      drop_pending_updates: bool = False, **kwargs):
         raise NotImplementedError
 
     async def remove_bot(self, bot: 'Bot'):

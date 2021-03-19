@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- `allowed_updates` field to `Executor` class and subclasses.
+
 ### Fixed
 - Fixed typing for base `Executor`.
 

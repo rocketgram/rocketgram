@@ -9,7 +9,7 @@ import signal
 from typing import TYPE_CHECKING, Union, Optional, Dict, List, Set
 
 from .executor import Executor
-from ..api import GetMe, GetUpdates, DeleteWebhook
+from ..api import GetMe, GetUpdates, DeleteWebhook, UpdateType
 from ..errors import RocketgramNetworkError
 
 if TYPE_CHECKING:
@@ -27,7 +27,6 @@ class UpdatesExecutor(Executor):
         self.__timeout = request_timeout
 
         self.__bots: Dict['Bot', Optional[asyncio.Task]] = dict()
-        self.__task = None
         self.__started = False
 
     @property
@@ -46,10 +45,12 @@ class UpdatesExecutor(Executor):
         """
         return self.__started
 
-    async def add_bot(self, bot: 'Bot', *, drop_pending_updates=False):
+    async def add_bot(self, bot: 'Bot', *, allowed_updates: Optional[List[UpdateType]] = None,
+                      drop_pending_updates: bool = False):
         """
 
         :param bot:
+        :param allowed_updates:
         :param drop_pending_updates:
         """
         if bot in self.__bots:
@@ -72,7 +73,7 @@ class UpdatesExecutor(Executor):
             logger.debug('Updates dropped for @%s', bot.name)
 
         if self.running:
-            self.__start_bot(bot)
+            self.__start_bot(bot, allowed_updates=allowed_updates)
 
     async def remove_bot(self, bot: 'Bot'):
         """
@@ -92,12 +93,12 @@ class UpdatesExecutor(Executor):
 
         logger.info('Removed bot @%s', bot.name)
 
-    async def __runner(self, bot: 'Bot') -> Set[asyncio.Task]:
+    async def __runner(self, bot: 'Bot', allowed_updates: Optional[List[UpdateType]] = None) -> Set[asyncio.Task]:
         offset = 0
         pending = set()
         while True:
             try:
-                resp = await bot.send(GetUpdates(offset + 1, timeout=self.__timeout))
+                resp = await bot.send(GetUpdates(offset + 1, allowed_updates=allowed_updates, timeout=self.__timeout))
                 for update in resp.result:
                     if offset < update.update_id:
                         offset = update.update_id
@@ -114,11 +115,11 @@ class UpdatesExecutor(Executor):
             except Exception:  # noqa
                 logging.exception('Exception while processing updates')
 
-    def __start_bot(self, bot: 'Bot'):
+    def __start_bot(self, bot: 'Bot', allowed_updates: Optional[List[UpdateType]] = None):
         assert bot in self.__bots, 'Unknown bot!'
         assert self.__bots[bot] is None, 'Bot already started!'
 
-        aw = self.__runner(bot)
+        aw = self.__runner(bot, allowed_updates)
         task = asyncio.create_task(aw)
         self.__bots[bot] = task
 
@@ -175,11 +176,12 @@ class UpdatesExecutor(Executor):
         logger.info("Stopped.")
 
     @classmethod
-    def run(cls, bots: Union['Bot', List['Bot']], *, drop_pending_updates=False,
-            signals: tuple = (signal.SIGINT, signal.SIGTERM),
-            request_timeout=30, shutdown_wait=10):
+    def run(cls, bots: Union['Bot', List['Bot']], *, allowed_updates: Optional[List[UpdateType]] = None,
+            drop_pending_updates: bool = False, signals: tuple = (signal.SIGINT, signal.SIGTERM),
+            request_timeout: int = 30, shutdown_wait: int = 10):
         """
 
+        :param allowed_updates:
         :param bots:
         :param drop_pending_updates:
         :param signals:
@@ -190,7 +192,7 @@ class UpdatesExecutor(Executor):
         executor = cls(request_timeout=request_timeout)
 
         def add(bot: 'Bot'):
-            return executor.add_bot(bot, drop_pending_updates=drop_pending_updates)
+            return executor.add_bot(bot, allowed_updates=allowed_updates, drop_pending_updates=drop_pending_updates)
 
         def remove(bot: 'Bot'):
             return executor.remove_bot(bot)
