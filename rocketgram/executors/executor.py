@@ -44,12 +44,13 @@ class Executor:
 
     @staticmethod
     def _run(executor: 'Executor', add: Callable, remove: Callable, bots: Union['Bot', List['Bot']],
-             signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait=10):
+             signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait: int = 10):
         """
 
-        :param bots:
+        :param executor:
         :param add:
         :param remove:
+        :param bots:
         :param signals:
         :param shutdown_wait:
         """

@@ -6,6 +6,7 @@ All notable changes to this project.
 
 ### Added
 - `allowed_updates` field to `Executor` class and subclasses.
+- `certificate` and `ip_address` fields to `AioHttpExecutor` and `TornadoExecutor` classes.
 
 ### Fixed
 - Fixed typing for base `Executor`.
