@@ -5,289 +5,113 @@
 
 import asyncio
 import logging
-import signal
-from typing import TYPE_CHECKING, Union, Dict, List, Set, Optional
 
 from tornado.httpserver import HTTPServer
 from tornado.httputil import HTTPServerRequest, HTTPHeaders, ResponseStartLine
 
-from .executor import Executor
-from ..api import Request, GetMe, SetWebhook, DeleteWebhook
-from ..api import Update, UpdateType, InputFile
-from ..errors import RocketgramRequestError
-from ..version import version
+from .webhook import WebhookExecutor
+from ..api import Request, Update
 
 try:
     import ujson as json
 except ImportError:
     import json
 
-if TYPE_CHECKING:
-    from ..bot import Bot
-
 logger = logging.getLogger('rocketgram.executors.tornado')
 
-HEADERS = {"Server": f"Rocketgram/{version()}", "Content-Type": "application/json"}
-HEADERS_ERROR = {"Server": f"Rocketgram/{version()}", "Content-Type": "text/plain"}
 
+class TornadoExecutor(WebhookExecutor):
+    def __handler(self, request: HTTPServerRequest):
+        err_headers = HTTPHeaders(self.HEADERS_ERROR)
+        headers = HTTPHeaders(self.HEADERS)
 
-class TornadoExecutor(Executor):
-    def __init__(self, base_url: str, base_path: str, *, host: str = 'localhost', port: int = 8080):
-        """
+        async def handle():
+            if request.method != 'POST':
+                await request.connection.write_headers(ResponseStartLine('1.1', 400, 'Bad Request'), err_headers)
+                await request.connection.write('Bad request.'.encode())
+                request.connection.finish()
+                return
 
-        :param base_url:
-        :param base_path:
-        :param host:
-        :param port:
-        """
+            bot = self._bots.get(request.path)
 
-        self.__base_url = base_url
-        self.__base_path = base_path
-        self.__host = host
-        self.__port = port
+            if not bot:
+                logger.warning("Bot not found for request `%s`.", request.path)
+                await request.connection.write_headers(ResponseStartLine('1.1', 404, 'Not Found'), err_headers)
+                await request.connection.write('Not found.'.encode())
+                request.connection.finish()
+                return
 
-        self.__bots = dict()
-        self.__srv = None
-        self.__started = False
-
-        self.__tasks: Dict['Bot', Set[asyncio.Task]] = dict()
-
-    @property
-    def bots(self):
-        """
-
-        :return:
-        """
-        return self.__bots.values()
-
-    @property
-    def running(self):
-        """
-
-        :rtype: object
-        """
-        return self.__started
-
-    def can_process_webhook_request(self, request: Request) -> bool:
-        return len(request.files()) == 0
-
-    async def add_bot(self, bot: 'Bot', *, allowed_updates: Optional[List[UpdateType]] = None,
-                      drop_pending_updates: bool = False, certificate: Optional[InputFile] = None,
-                      ip_address: Optional[str] = None, suffix: str = None, set_webhook: bool = True,
-                      max_connections: int = None):
-        """
-
-        :param bot:
-        :param allowed_updates:
-        :param drop_pending_updates:
-        :param certificate:
-        :param ip_address:
-        :param suffix:
-        :param set_webhook:
-        :param max_connections:
-        """
-        if bot in self.__bots.values():
-            raise TypeError('Bot already added.')
-
-        if not suffix:
-            suffix = bot.token
-
-        full_path = self.__base_path + suffix
-        full_url = self.__base_url + suffix
-
-        if bot.name is None:
-            response = await bot.send(GetMe())
-            bot.name = response.result.username
-            logger.info('Bot authorized as @%s', response.result.username)
-
-        await bot.init()
-
-        self.__bots[full_path] = bot
-        logger.info('Added bot @%s', bot.name)
-
-        if set_webhook or drop_pending_updates:
-            swh = SetWebhook(full_url, certificate=certificate, ip_address=ip_address, allowed_updates=allowed_updates,
-                             drop_pending_updates=drop_pending_updates, max_connections=max_connections)
-            await bot.send(swh)
-            logger.debug('Webhook setup done for bot @%s', bot.name)
-
-        if drop_pending_updates:
-            logger.debug('Updates dropped for @%s', bot.name)
-
-    async def remove_bot(self, bot: 'Bot', delete_webhook=True):
-        """
-
-        :param bot:
-        :param delete_webhook:
-        """
-        if bot not in self.__bots.values():
-            raise TypeError('Bot was not found.')
-
-        self.__bots = {k: v for k, v in self.__bots.items() if v != bot}
-
-        if bot in self.__tasks:
-            tasks = self.__tasks[bot]
-            self.__tasks[bot] = set()
-            await self.__wait_tasks(tasks)
-
-        if delete_webhook:
             try:
-                await bot.send(DeleteWebhook())
-            except RocketgramRequestError:
-                logger.error('Error while removing webhook for %s.' % bot.name)
+                parsed = Update.parse(json.loads(request.body))
+            except Exception:  # noqa
+                logger.exception("Got exception while parsing update:")
+                await request.connection.write_headers(ResponseStartLine('1.1', 500, 'Internal Server Error'),
+                                                       err_headers)
+                await request.connection.write('Server error.'.encode())
+                request.connection.finish()
+                return
 
-        await bot.shutdown()
+            if bot not in self._tasks:
+                self._tasks[bot] = set()
 
-        logger.info('Removed bot @%s', bot.name)
+            task = asyncio.create_task(bot.process(self, parsed))
+            self._tasks[bot].add(task)
+
+            try:
+                response: Request = await task
+            except Exception:  # noqa
+                logger.exception("Got exception while processing update:")
+                await request.connection.write_headers(ResponseStartLine('1.1', 500, 'Internal Server Error'),
+                                                       err_headers)
+                await request.connection.write('Server error.'.encode())
+                request.connection.finish()
+                return
+
+            await request.connection.write_headers(ResponseStartLine('1.1', 200, 'Ok'), headers)
+
+            if response:
+                data = json.dumps(response.render(with_method=True))
+                await request.connection.write(data.encode())
+
+            request.connection.finish()
+
+            self._tasks[bot] = {t for t in self._tasks[bot] if not t.done()}
+
+        asyncio.create_task(handle())
 
     async def start(self):
-        """
-
-        :return:
-        """
-
-        def handler(request: HTTPServerRequest):
-            async def handle():
-                if request.method != 'POST':
-                    await request.connection.write_headers(ResponseStartLine('1.1', 400, 'Bad Request'),
-                                                           HTTPHeaders(HEADERS_ERROR))
-                    await request.connection.write('Bad request.'.encode())
-                    request.connection.finish()
-                    return
-
-                bot = self.__bots.get(request.path)
-
-                if not bot:
-                    logger.warning("Bot not found for request `%s`.", request.path)
-                    await request.connection.write_headers(ResponseStartLine('1.1', 404, 'Not Found'),
-                                                           HTTPHeaders(HEADERS_ERROR))
-                    await request.connection.write('Not found.'.encode())
-                    request.connection.finish()
-                    return
-
-                try:
-                    parsed = Update.parse(json.loads(request.body))
-                except Exception:  # noqa
-                    logger.exception("Got exception while parsing update:")
-                    await request.connection.write_headers(ResponseStartLine('1.1', 500, 'Internal Server Error'),
-                                                           HTTPHeaders(HEADERS_ERROR))
-                    await request.connection.write('Server error.'.encode())
-                    request.connection.finish()
-                    return
-
-                if bot not in self.__tasks:
-                    self.__tasks[bot] = set()
-
-                task = asyncio.create_task(
-                    bot.process(self, parsed))
-                self.__tasks[bot].add(task)
-
-                try:
-                    response: Request = await task
-                except Exception:  # noqa
-                    logger.exception("Got exception while processing update:")
-                    await request.connection.write_headers(ResponseStartLine('1.1', 500, 'Internal Server Error'),
-                                                           HTTPHeaders(HEADERS_ERROR))
-                    await request.connection.write('Server error.'.encode())
-                    request.connection.finish()
-                    return
-
-                await request.connection.write_headers(ResponseStartLine('1.1', 200, 'Ok'), HTTPHeaders(HEADERS))
-
-                if response:
-                    data = json.dumps(response.render(with_method=True))
-                    await request.connection.write(data.encode())
-
-                request.connection.finish()
-
-                self.__tasks[bot] = {t for t in self.__tasks[bot] if not t.done()}
-
-            asyncio.create_task(handle())
-
-        if self.__started:
+        if self._started:
             return
 
-        self.__started = True
+        self._started = True
 
         logger.info("Starting with webhook...")
 
-        logger.info("Listening on http://%s:%s%s", self.__host, self.__port, self.__base_path)
+        logger.info("Listening on http://%s:%s%s", self._host, self._port, self._base_path)
 
-        self.__srv = HTTPServer(handler)
-        self.__srv.listen(self.__port, address=self.__host)
+        self._srv = HTTPServer(self.__handler)
+        self._srv.listen(self._port, address=self._host)
 
         logger.info("Running!")
 
-    @staticmethod
-    async def __wait_tasks(tasks: Set[asyncio.Task]):
-        while len(tasks):
-            logger.info("Waiting %s tasks...", len(tasks))
-            _, tasks = await asyncio.wait(tasks, timeout=1, return_when=asyncio.FIRST_COMPLETED)
-
     async def stop(self):
-        """
-
-        :return:
-        """
-
         logger.info("Stopping server...")
 
-        if not self.__started:
+        if not self._started:
             return
 
-        self.__started = False
+        self._started = False
 
-        if self.__srv:
-            self.__srv.stop()
-            await self.__srv.close_all_connections()
-            self.__srv = None
+        if self._srv:
+            self._srv.stop()
+            await self._srv.close_all_connections()
+            self._srv = None
 
         tasks = set()
-        for b, t in self.__tasks.items():
+        for b, t in self._tasks.items():
             tasks.update(t)
             t.clear()
 
-        await self.__wait_tasks(tasks)
+        await self._wait_tasks(tasks)
 
         logger.info("Stopped.")
-
-    @classmethod
-    def run(cls, bots: Union['Bot', List['Bot']], base_url: str, base_path: str, *, host: str = 'localhost',
-            port: int = 8080, webhook_setup: bool = True, webhook_remove: bool = True,
-            certificate: Optional[InputFile] = None, ip_address: Optional[str] = None,
-            allowed_updates: Optional[List[UpdateType]] = None, drop_pending_updates: bool = False,
-            signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait: int = 10):
-        """
-
-        :param bots:
-        :param base_url:
-        :param base_path:
-        :param host:
-        :param port:
-        :param webhook_setup:
-        :param webhook_remove:
-        :param ip_address:
-        :param certificate:
-        :param allowed_updates:
-        :param drop_pending_updates:
-        :param signals:
-        :param shutdown_wait:
-
-        :return: None
-        """
-
-        executor = cls(base_url, base_path, host=host, port=port)
-
-        def add(bot: 'Bot'):
-            return executor.add_bot(bot, certificate=certificate, ip_address=ip_address,
-                                    allowed_updates=allowed_updates, drop_pending_updates=drop_pending_updates,
-                                    set_webhook=webhook_setup)
-
-        def remove(bot: 'Bot'):
-            return executor.remove_bot(bot, delete_webhook=webhook_remove)
-
-        logger.info('Starting webhook executor...')
-        logger.debug('Using base url: %s', base_url)
-        logger.debug('Using base path: %s', base_path)
-
-        cls._run(executor, add, remove, bots, signals, shutdown_wait=shutdown_wait)

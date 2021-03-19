@@ -7,6 +7,7 @@ from contextlib import suppress
 
 from .executor import Executor
 from .updates import UpdatesExecutor
+from .webhook import WebhookExecutor
 
 with suppress(ImportError):
     from .aiohttp import AioHttpExecutor

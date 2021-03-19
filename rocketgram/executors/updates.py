@@ -20,40 +20,25 @@ logger = logging.getLogger('rocketgram.executors.updates')
 
 class UpdatesExecutor(Executor):
     def __init__(self, request_timeout=30):
-        """
+        self._timeout = request_timeout
 
-        """
-
-        self.__timeout = request_timeout
-
-        self.__bots: Dict['Bot', Optional[asyncio.Task]] = dict()
-        self.__started = False
+        self._bots: Dict['Bot', Optional[asyncio.Task]] = dict()
+        self._started = False
 
     @property
     def bots(self) -> List['Bot']:
-        """
-
-        :return:
-        """
-        return list(self.__bots.keys())
+        return list(self._bots.keys())
 
     @property
     def running(self) -> bool:
-        """
-
-        :rtype: object
-        """
-        return self.__started
+        return self._started
 
     async def add_bot(self, bot: 'Bot', *, allowed_updates: Optional[List[UpdateType]] = None,
-                      drop_pending_updates: bool = False):
-        """
+                      drop_pending_updates: bool = False, **kwargs):
 
-        :param bot:
-        :param allowed_updates:
-        :param drop_pending_updates:
-        """
-        if bot in self.__bots:
+        assert not len(kwargs), "This method does not accept additional parameters!"
+
+        if bot in self._bots:
             raise ValueError('Bot already added.')
 
         if bot.name is None:
@@ -65,7 +50,7 @@ class UpdatesExecutor(Executor):
 
         logger.info('Added bot @%s', bot.name)
 
-        self.__bots[bot] = None
+        self._bots[bot] = None
 
         await bot.send(DeleteWebhook(drop_pending_updates=drop_pending_updates))
 
@@ -73,32 +58,28 @@ class UpdatesExecutor(Executor):
             logger.debug('Updates dropped for @%s', bot.name)
 
         if self.running:
-            self.__start_bot(bot, allowed_updates=allowed_updates)
+            self._start_bot(bot, allowed_updates=allowed_updates)
 
     async def remove_bot(self, bot: 'Bot'):
-        """
-
-        :param bot:
-        """
-        if bot not in self.__bots:
+        if bot not in self._bots:
             raise ValueError('Bot was not found.')
 
-        tasks = self.__bots[bot]
-        del self.__bots[bot]
+        tasks = self._bots[bot]
+        del self._bots[bot]
 
         if tasks:
-            await self.__wait_tasks({tasks})
+            await self._wait_tasks({tasks})
 
         await bot.shutdown()
 
         logger.info('Removed bot @%s', bot.name)
 
-    async def __runner(self, bot: 'Bot', allowed_updates: Optional[List[UpdateType]] = None) -> Set[asyncio.Task]:
+    async def _runner(self, bot: 'Bot', allowed_updates: Optional[List[UpdateType]] = None) -> Set[asyncio.Task]:
         offset = 0
         pending = set()
         while True:
             try:
-                resp = await bot.send(GetUpdates(offset + 1, allowed_updates=allowed_updates, timeout=self.__timeout))
+                resp = await bot.send(GetUpdates(offset + 1, allowed_updates=allowed_updates, timeout=self._timeout))
                 for update in resp.result:
                     if offset < update.update_id:
                         offset = update.update_id
@@ -115,33 +96,27 @@ class UpdatesExecutor(Executor):
             except Exception:  # noqa
                 logging.exception('Exception while processing updates')
 
-    def __start_bot(self, bot: 'Bot', allowed_updates: Optional[List[UpdateType]] = None):
-        assert bot in self.__bots, 'Unknown bot!'
-        assert self.__bots[bot] is None, 'Bot already started!'
+    def _start_bot(self, bot: 'Bot', allowed_updates: Optional[List[UpdateType]] = None):
+        assert bot in self._bots, 'Unknown bot!'
+        assert self._bots[bot] is None, 'Bot already started!'
 
-        aw = self.__runner(bot, allowed_updates)
-        task = asyncio.create_task(aw)
-        self.__bots[bot] = task
+        task = asyncio.create_task(self._runner(bot, allowed_updates))
+        self._bots[bot] = task
 
     async def start(self):
-        """
-
-        :return:
-        """
-
-        if self.__started:
+        if self._started:
             return
-        self.__started = True
+        self._started = True
 
         logger.info("Starting with updates...")
 
-        for bot in self.__bots:
-            self.__start_bot(bot)
+        for bot in self._bots:
+            self._start_bot(bot)
 
         logger.info("Running!")
 
     @staticmethod
-    async def __wait_tasks(tasks: Set[asyncio.Task]):
+    async def _wait_tasks(tasks: Set[asyncio.Task]):
         pending = set()
         for task in tasks:
             task.cancel()
@@ -153,25 +128,20 @@ class UpdatesExecutor(Executor):
             _, pending = await asyncio.wait(pending, timeout=1, return_when=asyncio.FIRST_COMPLETED)
 
     async def stop(self):
-        """
-
-        :return:
-        """
-
-        if not self.__started:
+        if not self._started:
             return
 
-        self.__started = False
+        self._started = False
 
         logger.info("Stopping server...")
 
         tasks = set()
-        for bot, task in self.__bots.items():
-            self.__bots[bot] = None
+        for bot, task in self._bots.items():
+            self._bots[bot] = None
             if task:
                 tasks.add(task)
 
-        await self.__wait_tasks(tasks)
+        await self._wait_tasks(tasks)
 
         logger.info("Stopped.")
 
@@ -179,15 +149,6 @@ class UpdatesExecutor(Executor):
     def run(cls, bots: Union['Bot', List['Bot']], *, allowed_updates: Optional[List[UpdateType]] = None,
             drop_pending_updates: bool = False, signals: tuple = (signal.SIGINT, signal.SIGTERM),
             request_timeout: int = 30, shutdown_wait: int = 10):
-        """
-
-        :param allowed_updates:
-        :param bots:
-        :param drop_pending_updates:
-        :param signals:
-        :param request_timeout:
-        :param shutdown_wait:
-        """
 
         executor = cls(request_timeout=request_timeout)
 
