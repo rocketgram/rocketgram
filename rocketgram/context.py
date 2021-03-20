@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import logging
 from contextvars import ContextVar
 from typing import List, Optional, TYPE_CHECKING
 
@@ -20,16 +19,16 @@ current_webhook_requests = ContextVar('current_webhook_requests')
 current_update = ContextVar('current_update')
 current_message = ContextVar('current_message')
 current_callback = ContextVar('current_callback')
+current_inline = ContextVar('current_inline')
+current_result = ContextVar('current_result')
 current_shipping = ContextVar('current_shipping')
 current_checkout = ContextVar('current_checkout')
 current_poll = ContextVar('current_poll')
 current_answer = ContextVar('current_answer')
-current_chat_member = ContextVar('chat_member')
+current_member = ContextVar('current_member')
 
 current_chat = ContextVar('current_chat')
 current_user = ContextVar('current_user')
-
-logger = logging.getLogger('rocketgram.context')
 
 
 class Context:
@@ -116,6 +115,26 @@ class Context:
         current_callback.set(callback)
 
     @property
+    def inline(self) -> Optional['api.InlineQuery']:
+        """Returns InlineQuery object for current request."""
+
+        return current_inline.get(None)
+
+    @inline.setter
+    def inline(self, inline: 'api.InlineQuery'):
+        current_inline.set(inline)
+
+    @property
+    def result(self) -> Optional['api.ChosenInlineResult']:
+        """Returns ChosenInlineResult object for current request."""
+
+        return current_result.get(None)
+
+    @result.setter
+    def result(self, result: 'api.ChosenInlineResult'):
+        current_result.set(result)
+
+    @property
     def shipping(self) -> Optional['api.ShippingQuery']:
         """Returns ShippingQuery object for current request."""
 
@@ -156,14 +175,14 @@ class Context:
         current_answer.set(answer)
 
     @property
-    def chat_member(self) -> Optional['api.ChatMemberUpdated']:
+    def member(self) -> Optional['api.ChatMemberUpdated']:
         """Returns ChatMemberUpdated object for current request."""
 
-        return current_chat_member.get(None)
+        return current_member.get(None)
 
-    @chat_member.setter
-    def chat_member(self, chat_member: 'api.ChatMemberUpdated'):
-        current_chat_member.set(chat_member)
+    @member.setter
+    def member(self, member: 'api.ChatMemberUpdated'):
+        current_member.set(member)
 
     @staticmethod
     def webhook(request: 'api.Request'):
@@ -195,10 +214,12 @@ class Context:
         self.message = None
         self.callback = None
         self.shipping = None
+        self.inline = None
+        self.result = None
         self.checkout = None
         self.poll = None
         self.answer = None
-        self.chat_member = None
+        self.member = None
 
         self.chat = None
         self.user = None
@@ -220,8 +241,10 @@ class Context:
             self.chat = update.edited_channel_post.chat
             self.user = update.edited_channel_post.user
         elif update.update_type is api.UpdateType.inline_query:
+            self.inline = update.inline_query
             self.user = update.inline_query.user
         elif update.update_type is api.UpdateType.chosen_inline_result:
+            self.result = update.chosen_inline_result
             self.user = update.chosen_inline_result.user
         elif update.update_type is api.UpdateType.callback_query:
             self.callback = update.callback_query
@@ -241,9 +264,11 @@ class Context:
             self.answer = update.poll_answer
             self.user = update.poll_answer.user
         elif update.update_type is api.UpdateType.my_chat_member:
+            self.member = update.my_chat_member
             self.chat = update.my_chat_member.chat
             self.user = update.my_chat_member.user
         elif update.update_type is api.UpdateType.chat_member:
+            self.member = update.chat_member
             self.chat = update.chat_member.chat
             self.user = update.chat_member.user
 

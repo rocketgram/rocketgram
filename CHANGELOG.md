@@ -10,15 +10,18 @@ All notable changes to this project.
 - `WebhookExecutor` class that now holds common code from `AioHttpExecutor` and `TornadoExecutor` classes.
 - `resolve_file_url` method to `Connector` class and subclasses.
 - `api_file_url` parameter to `Connector` class and subclasses.
+- `inline` and `result` context helpers.
 
 ### Fixed
 - Fixed typing for base `Executor`.
 - Typing for `SetWebhook` request class.
+- `Context.member()` was not properly set.
 
 ### Changed
 - Refactored `AiohttpExecutor`.
 - A minimal version of `aiohttp` is now `3.6.2`.
 - `File.url()` method now calls `Connector.resolve_file_url()` to resolve file's url.
+- `Context.chat_member()` renamed to `Context.member()`
 
 
 ## [3.0.1] - 2021-03-14
