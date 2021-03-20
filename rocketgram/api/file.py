@@ -6,7 +6,6 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from .. import api
 from ..context import context
 
 
@@ -24,7 +23,7 @@ class File:
 
     @property
     def url(self) -> str:
-        return (api.API_FILE_URL % context.bot.token) + self.file_path
+        return context.bot.connector.resolve_file_url(context.bot.token, self.file_path)
 
     @classmethod
     def parse(cls, data: dict) -> Optional['File']:

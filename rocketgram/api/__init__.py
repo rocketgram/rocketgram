@@ -199,4 +199,4 @@ from .voice_chat_started import VoiceChatStarted
 from .webhook_info import WebhookInfo
 
 API_URL = "https://api.telegram.org/bot%s/"
-API_FILE_URL = "https://api.telegram.org/file/bot%s/"
+API_FILE_URL = "https://api.telegram.org/file/bot%s/%s"

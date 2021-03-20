@@ -23,3 +23,6 @@ class Connector:
 
     async def send(self, token: str, request: Request) -> Response:
         raise NotImplementedError
+
+    def resolve_file_url(self, token: str, file_path: str) -> str:
+        raise NotImplementedError

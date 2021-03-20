@@ -11,7 +11,7 @@ from json import JSONDecodeError
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
 from .connector import Connector, HEADERS, USER_AGENT
-from ..api import API_URL, Request, Response
+from ..api import API_URL, API_FILE_URL, Request, Response
 from ..errors import RocketgramNetworkError, RocketgramParseError
 
 try:
@@ -23,9 +23,10 @@ logger = logging.getLogger('rocketgram.connectors.tornado')
 
 
 class TornadoConnector(Connector):
-    __slots__ = ('_api_url', '_client', '_timeout')
+    __slots__ = ('_api_url', '_api_file_url', '_client', '_timeout')
 
-    def __init__(self, *, timeout: int = 35, api_url: str = API_URL):
+    def __init__(self, *, timeout: int = 35, api_url: str = API_URL, api_file_url: str = API_FILE_URL):
+        self._api_file_url = api_file_url
         self._api_url = api_url
         self._client = AsyncHTTPClient()
         self._timeout = timeout
@@ -104,3 +105,6 @@ class TornadoConnector(Connector):
             raise
         except Exception as error:
             raise RocketgramNetworkError(error) from error
+
+    def resolve_file_url(self, token: str, file_path: str) -> str:
+        return self._api_file_url % (token, file_path)

@@ -8,6 +8,8 @@ All notable changes to this project.
 - `allowed_updates` field to `Executor` class and subclasses.
 - `certificate` and `ip_address` fields to `AioHttpExecutor` and `TornadoExecutor` classes.
 - `WebhookExecutor` class that now holds common code from `AioHttpExecutor` and `TornadoExecutor` classes.
+- `resolve_file_url` method to `Connector` class and subclasses.
+- `api_file_url` parameter to `Connector` class and subclasses.
 
 ### Fixed
 - Fixed typing for base `Executor`.
@@ -16,6 +18,7 @@ All notable changes to this project.
 ### Changed
 - Refactored `AiohttpExecutor`.
 - A minimal version of `aiohttp` is now `3.6.2`.
+- `File.url()` method now calls `Connector.resolve_file_url()` to resolve file's url.
 
 
 ## [3.0.1] - 2021-03-14
