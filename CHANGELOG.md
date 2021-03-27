@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [3.1.0] - 2021-03-27
+
 ### Added
 - `allowed_updates` field to `Executor` class and subclasses.
 - `certificate` and `ip_address` fields to `AioHttpExecutor` and `TornadoExecutor` classes.
