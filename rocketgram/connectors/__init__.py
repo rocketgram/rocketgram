@@ -5,8 +5,8 @@
 from contextlib import suppress
 
 with suppress(ImportError):
-    from .aiohttpconnector import AioHttpConnector
+    from .aiohttp import AioHttpConnector
 with suppress(ImportError):
-    from .tornadoconnector import TornadoConnector
+    from .tornado import TornadoConnector
 
 from .connector import Connector

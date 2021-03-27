@@ -4,6 +4,12 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Changed
+- Refactored `Connector` class and subclasses.
+
+### Deprecated
+- `API_URL` and `API_FILE_URL` constants is deprecated and will be removed in version 4.0. Use the appropriate constants from `Connector` class.
+
 
 ## [3.1.0] - 2021-03-27
 

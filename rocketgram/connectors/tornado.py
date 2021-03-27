@@ -10,8 +10,8 @@ from json import JSONDecodeError
 
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
-from .connector import Connector, HEADERS, USER_AGENT
-from ..api import API_URL, API_FILE_URL, Request, Response
+from .connector import Connector
+from ..api import Request, Response
 from ..errors import RocketgramNetworkError, RocketgramParseError
 
 try:
@@ -25,11 +25,10 @@ logger = logging.getLogger('rocketgram.connectors.tornado')
 class TornadoConnector(Connector):
     __slots__ = ('_api_url', '_api_file_url', '_client', '_timeout')
 
-    def __init__(self, *, timeout: int = 35, api_url: str = API_URL, api_file_url: str = API_FILE_URL):
-        self._api_file_url = api_file_url
-        self._api_url = api_url
+    def __init__(self, *, timeout: int = 35, api_url: str = Connector.API_URL,
+                 api_file_url: str = Connector.API_FILE_URL):
+        super().__init__(timeout=timeout, api_url=api_url, api_file_url=api_file_url)
         self._client = AsyncHTTPClient()
-        self._timeout = timeout
 
     async def init(self):
         pass
@@ -87,13 +86,13 @@ class TornadoConnector(Connector):
 
                 headers = {
                     'Content-Type': f'multipart/form-data; boundary={boundary}',
-                    'User-Agent': USER_AGENT
+                    'User-Agent': self.USER_AGENT
                 }
 
                 req = HTTPRequest(url, method='POST', headers=headers, body_producer=producer,  # noqa
                                   request_timeout=self._timeout)
             else:
-                req = HTTPRequest(url, method='POST', headers=HEADERS, body=json.dumps(request_data),
+                req = HTTPRequest(url, method='POST', headers=self.HEADERS, body=json.dumps(request_data),
                                   request_timeout=self._timeout)
 
             response = await self._client.fetch(req, raise_error=False)
@@ -105,6 +104,3 @@ class TornadoConnector(Connector):
             raise
         except Exception as error:
             raise RocketgramNetworkError(error) from error
-
-    def resolve_file_url(self, token: str, file_path: str) -> str:
-        return self._api_file_url % (token, file_path)

@@ -9,8 +9,8 @@ from json import JSONDecodeError
 
 import aiohttp
 
-from .connector import Connector, HEADERS
-from ..api import API_URL, API_FILE_URL, Request, Response
+from .connector import Connector
+from ..api import Request, Response
 from ..errors import RocketgramNetworkError, RocketgramParseError
 
 try:
@@ -24,11 +24,10 @@ logger = logging.getLogger('rocketgram.connectors.aiohttp')
 class AioHttpConnector(Connector):
     __slots__ = ('_api_url', '_api_file_url', '_session', '_timeout')
 
-    def __init__(self, *, timeout: int = 35, api_url: str = API_URL, api_file_url: str = API_FILE_URL):
-        self._api_file_url = api_file_url
-        self._api_url = api_url
+    def __init__(self, *, timeout: int = 35, api_url: str = Connector.API_URL,
+                 api_file_url: str = Connector.API_FILE_URL):
+        super().__init__(timeout=timeout, api_url=api_url, api_file_url=api_file_url)
         self._session = aiohttp.ClientSession(loop=asyncio.get_event_loop())
-        self._timeout = timeout
 
     async def init(self):
         pass
@@ -57,7 +56,7 @@ class AioHttpConnector(Connector):
 
                 response = await self._session.post(url, data=data, timeout=self._timeout)
             else:
-                response = await self._session.post(url, data=json.dumps(request_data), headers=HEADERS,
+                response = await self._session.post(url, data=json.dumps(request_data), headers=self.HEADERS,
                                                     timeout=self._timeout)
 
             return Response.parse(json.loads(await response.read()), request)
@@ -67,6 +66,3 @@ class AioHttpConnector(Connector):
             raise
         except Exception as error:
             raise RocketgramNetworkError(error) from error
-
-    def resolve_file_url(self, token: str, file_path: str) -> str:
-        return self._api_file_url % (token, file_path)
