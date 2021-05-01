@@ -4,11 +4,15 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- `ChatActionType.record_voice` and `ChatActionType.upload_voice`. 
+
 ### Changed
 - Refactored `Connector` class and subclasses.
 
 ### Deprecated
 - `API_URL` and `API_FILE_URL` constants is deprecated and will be removed in version 4.0. Use the appropriate constants from `Connector` class.
+- `ChatActionType.record_audio` and `ChatActionType.upload_audio` types is deprecated and will be removed in version 4.0. Use `ChatActionType.record_voice` or `ChatActionType.upload_voice` instead. 
 
 
 ## [3.1.0] - 2021-03-27

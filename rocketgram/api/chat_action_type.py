@@ -10,16 +10,18 @@ from .utils import EnumAutoName
 
 class ChatActionType(EnumAutoName):
     """\
-    Formatting options type:
-    https://core.telegram.org/bots/api#formatting-options
+    Chat action type:
+    https://core.telegram.org/bots/api#sendchataction
     """
 
     typing = auto()
     upload_photo = auto()
     record_video = auto()
     upload_video = auto()
-    record_audio = auto()
-    upload_audio = auto()
+    record_audio = auto()  # Deprecated
+    upload_audio = auto()  # Deprecated
+    record_voice = auto()
+    upload_voice = auto()
     upload_document = auto()
     find_location = auto()
     record_video_note = auto()
