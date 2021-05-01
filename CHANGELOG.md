@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [3.2.0] - 2021-05-01
+
 ### Added
 - `ChatActionType.record_voice` and `ChatActionType.upload_voice`. 
 - `MessageType.voice_chat_scheduled` message type.
@@ -16,6 +19,7 @@ All notable changes to this project.
 ### Changed
 - Refactored `Connector` class and subclasses.
 - `start_parameter` field of `SendInvoice` request class is now optional.
+- Framework now corresponds to Telegram Bot API 5.2.
 
 ### Deprecated
 - `API_URL` and `API_FILE_URL` constants is deprecated and will be removed in version 4.0. Use the appropriate constants from `Connector` class.
