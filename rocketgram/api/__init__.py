@@ -89,6 +89,7 @@ from .inline_query_result_video import InlineQueryResultVideo
 from .inline_query_result_voice import InlineQueryResultVoice
 from .input_contact_message_content import InputContactMessageContent
 from .input_file import InputFile
+from .input_invoice_message_content import InputInvoiceMessageContent
 from .input_location_message_content import InputLocationMessageContent
 from .input_media_animation import InputMediaAnimation
 from .input_media_audio import InputMediaAudio

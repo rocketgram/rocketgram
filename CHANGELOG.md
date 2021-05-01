@@ -11,6 +11,7 @@ All notable changes to this project.
 - `VoiceChatScheduled` class.
 - `chat_type` field to `InlineQuery` class.
 - `max_tip_amount` and `suggested_tip_amounts` fields to `SendInvoice` request class.
+- `InputInvoiceMessageContent` class.
 
 ### Changed
 - Refactored `Connector` class and subclasses.
