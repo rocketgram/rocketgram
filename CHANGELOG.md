@@ -10,9 +10,11 @@ All notable changes to this project.
 - `voice_chat_scheduled` field to `Message` class.
 - `VoiceChatScheduled` class.
 - `chat_type` field to `InlineQuery` class.
+- `max_tip_amount` and `suggested_tip_amounts` fields to `SendInvoice` request class.
 
 ### Changed
 - Refactored `Connector` class and subclasses.
+- `start_parameter` field of `SendInvoice` request class is now optional.
 
 ### Deprecated
 - `API_URL` and `API_FILE_URL` constants is deprecated and will be removed in version 4.0. Use the appropriate constants from `Connector` class.
