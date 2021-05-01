@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Fixed
+- typing for `Message` object.
+
 
 ## [3.2.0] - 2021-05-01
 

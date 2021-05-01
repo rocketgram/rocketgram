@@ -52,48 +52,48 @@ class Message:
 
     message_id: int
     message_type: MessageType
-    user: Optional['User']
-    sender_chat: Optional['Chat']
+    user: Optional[User]
+    sender_chat: Optional[Chat]
     date: datetime
-    chat: 'Chat'
-    forward_from: Optional['User']
-    forward_from_chat: Optional['Chat']
+    chat: Chat
+    forward_from: Optional[User]
+    forward_from_chat: Optional[Chat]
     forward_from_message_id: Optional[int]
     forward_signature: Optional[str]
     forward_sender_name: Optional[str]
     forward_date: Optional[datetime]
     reply_to_message: Optional['Message']
-    via_bot: Optional['User']
+    via_bot: Optional[User]
     edit_date: Optional[datetime]
     media_group_id: Optional[str]
     author_signature: Optional[str]
 
     text: Optional[str]
-    entities: Optional[List['MessageEntity']]
-    caption_entities: Optional[List['MessageEntity']]
+    entities: Optional[List[MessageEntity]]
+    caption_entities: Optional[List[MessageEntity]]
 
-    audio: Optional['Audio']
-    document: Optional['Document']
-    animation: Optional['Animation']
-    game: Optional['Game']
-    photo: Optional[List['PhotoSize']]
-    sticker: Optional['Sticker']
-    video: Optional['Video']
-    voice: Optional['Voice']
-    video_note: Optional['VideoNote']
+    audio: Optional[Audio]
+    document: Optional[Document]
+    animation: Optional[Animation]
+    game: Optional[Game]
+    photo: Optional[List[PhotoSize]]
+    sticker: Optional[Sticker]
+    video: Optional[Video]
+    voice: Optional[Voice]
+    video_note: Optional[VideoNote]
 
     caption: Optional[str]
 
-    contact: Optional['Contact']
-    location: Optional['Location']
-    venue: Optional['Venue']
-    poll: Optional['Poll']
-    dice: Optional['Dice']
+    contact: Optional[Contact]
+    location: Optional[Location]
+    venue: Optional[Venue]
+    poll: Optional[Poll]
+    dice: Optional[Dice]
 
-    new_chat_members: Optional[List['User']]
+    new_chat_members: Optional[List[User]]
     left_chat_member: Optional[User]
     new_chat_title: Optional[str]
-    new_chat_photo: Optional[List['PhotoSize']]
+    new_chat_photo: Optional[List[PhotoSize]]
     delete_chat_photo: Optional[bool]
 
     group_chat_created: Optional[bool]
@@ -107,13 +107,13 @@ class Message:
 
     pinned_message: Optional['Message']
 
-    invoice: Optional['Invoice']
-    successful_payment: Optional['SuccessfulPayment']
+    invoice: Optional[Invoice]
+    successful_payment: Optional[SuccessfulPayment]
 
     connected_website: Optional[str]
-    passport_data: Optional['PassportData']
+    passport_data: Optional[PassportData]
 
-    proximity_alert_triggered: Optional['ProximityAlertTriggered']
+    proximity_alert_triggered: Optional[ProximityAlertTriggered]
 
     voice_chat_scheduled: Optional[VoiceChatScheduled]
     voice_chat_started: Optional[VoiceChatStarted]
@@ -131,7 +131,7 @@ class Message:
         user = User.parse(data.get('from'))
         sender_chat = Chat.parse(data.get('sender_chat'))
         date = datetime.utcfromtimestamp(data['date'])
-        chat = Chat.parse(data['chat'])
+        chat = Chat.parse(data[Chat])
         forward_from = User.parse(data.get('forward_from'))
         forward_from_chat = Chat.parse(data.get('forward_from_chat'))
         forward_from_message_id = data.get('forward_from_message_id')
