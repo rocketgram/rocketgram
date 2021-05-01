@@ -9,6 +9,7 @@ All notable changes to this project.
 - `MessageType.voice_chat_scheduled` message type.
 - `voice_chat_scheduled` field to `Message` class.
 - `VoiceChatScheduled` class.
+- `chat_type` field to `InlineQuery` class.
 
 ### Changed
 - Refactored `Connector` class and subclasses.

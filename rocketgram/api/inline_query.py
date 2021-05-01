@@ -6,6 +6,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from .chat_type import ChatType
 from .location import Location
 from .user import User
 
@@ -26,11 +27,14 @@ class InlineQuery:
     location: Optional[Location]
     query: str
     offset: str
+    chat_type: Optional[ChatType]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['InlineQuery']:
         if data is None:
             return None
 
+        chat_type = ChatType(data['chat_type']) if 'chat_type' in data else None
+
         return cls(data['id'], User.parse(data['from']), Location.parse(data.get('location')),
-                   data['query'], data['offset'])
+                   data['query'], data['offset'], chat_type)
