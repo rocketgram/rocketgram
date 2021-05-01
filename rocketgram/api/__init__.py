@@ -195,5 +195,6 @@ from .video_note import VideoNote
 from .voice import Voice
 from .voice_chat_ended import VoiceChatEnded
 from .voice_chat_participants_invited import VoiceChatParticipantsInvited
+from .voice_chat_scheduled import VoiceChatScheduled
 from .voice_chat_started import VoiceChatStarted
 from .webhook_info import WebhookInfo

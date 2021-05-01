@@ -33,6 +33,7 @@ from .video_note import VideoNote
 from .voice import Voice
 from .voice_chat_ended import VoiceChatEnded
 from .voice_chat_participants_invited import VoiceChatParticipantsInvited
+from .voice_chat_scheduled import VoiceChatScheduled
 from .voice_chat_started import VoiceChatStarted
 
 
@@ -114,6 +115,7 @@ class Message:
 
     proximity_alert_triggered: Optional['ProximityAlertTriggered']
 
+    voice_chat_scheduled: Optional[VoiceChatScheduled]
     voice_chat_started: Optional[VoiceChatStarted]
     voice_chat_ended: Optional[VoiceChatEnded]
     voice_chat_participants_invited: Optional[VoiceChatParticipantsInvited]
@@ -196,6 +198,7 @@ class Message:
 
         proximity_alert_triggered = ProximityAlertTriggered.parse(data.get('proximity_alert_triggered'))
 
+        voice_chat_scheduled = VoiceChatScheduled.parse(data.get('voice_chat_scheduled'))
         voice_chat_started = VoiceChatStarted.parse(data.get('voice_chat_started'))
         voice_chat_ended = VoiceChatEnded.parse(data.get('voice_chat_ended'))
         voice_chat_participants_invited = VoiceChatParticipantsInvited.parse(
@@ -267,6 +270,8 @@ class Message:
             message_type = MessageType.passport_data
         elif proximity_alert_triggered:
             message_type = MessageType.proximity_alert_triggered
+        elif voice_chat_scheduled:
+            message_type = MessageType.voice_chat_scheduled
         elif voice_chat_started:
             message_type = MessageType.voice_chat_started
         elif voice_chat_ended:
@@ -283,5 +288,6 @@ class Message:
                    venue, poll, dice, new_chat_members, left_chat_member, new_chat_title, new_chat_photo,
                    delete_chat_photo, group_chat_created, supergroup_chat_created, channel_chat_created,
                    message_auto_delete_timer_changed, migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice,
-                   successful_payment, connected_website, passport_data, proximity_alert_triggered, voice_chat_started,
-                   voice_chat_ended, voice_chat_participants_invited, reply_markup)
+                   successful_payment, connected_website, passport_data, proximity_alert_triggered,
+                   voice_chat_scheduled, voice_chat_started, voice_chat_ended, voice_chat_participants_invited,
+                   reply_markup)

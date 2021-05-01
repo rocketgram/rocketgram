@@ -6,6 +6,9 @@ All notable changes to this project.
 
 ### Added
 - `ChatActionType.record_voice` and `ChatActionType.upload_voice`. 
+- `MessageType.voice_chat_scheduled` message type.
+- `voice_chat_scheduled` field to `Message` class.
+- `VoiceChatScheduled` class.
 
 ### Changed
 - Refactored `Connector` class and subclasses.
