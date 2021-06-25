@@ -131,7 +131,7 @@ class Message:
         user = User.parse(data.get('from'))
         sender_chat = Chat.parse(data.get('sender_chat'))
         date = datetime.utcfromtimestamp(data['date'])
-        chat = Chat.parse(data[Chat])
+        chat = Chat.parse(data["chat"])
         forward_from = User.parse(data.get('forward_from'))
         forward_from_chat = Chat.parse(data.get('forward_from_chat'))
         forward_from_message_id = data.get('forward_from_message_id')

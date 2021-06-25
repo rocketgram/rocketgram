@@ -5,6 +5,12 @@ All notable changes to this project.
 ## [Unreleased]
 
 
+## [3.3.1] - 2021-06-26
+
+### Fixed
+- bug in `Message` object.
+
+
 ## [3.3.0] - 2021-06-26
 
 ### Added
