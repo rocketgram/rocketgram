@@ -6,6 +6,8 @@ All notable changes to this project.
 
 ### Added
 - `BotCommandScope` classes.
+- `scope` and `language_code` fields to `GetMyCommands` request class.
+- `scope` and `language_code` fields to `SetMyCommands` request class.
 
 ### Fixed
 - typing for `Message` object.

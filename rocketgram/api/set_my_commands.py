@@ -4,9 +4,10 @@
 
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 from .bot_command import BotCommand
+from .bot_command_scope import BotCommandScope
 from .request import Request
 from .utils import BoolResultMixin
 
@@ -19,3 +20,5 @@ class SetMyCommands(BoolResultMixin, Request):
     """
 
     commands: List[BotCommand]
+    scope: Optional[List[BotCommandScope]]
+    language_code: Optional[str]

@@ -4,8 +4,9 @@
 
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
+from .bot_command_scope import BotCommandScope
 from .request import Request
 from .. import api
 from ..context import context
@@ -17,6 +18,9 @@ class GetMyCommands(Request):
     Represents GetMyCommands request object:
     https://core.telegram.org/bots/api#getmycommands
     """
+
+    scope: Optional[BotCommandScope]
+    language_code: Optional[str]
 
     def parse_result(self, data) -> List['api.BotCommand']:
         assert isinstance(data, list), "Should be list."
