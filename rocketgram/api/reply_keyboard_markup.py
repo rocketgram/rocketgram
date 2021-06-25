@@ -19,4 +19,5 @@ class ReplyKeyboardMarkup:
     keyboard: List[List[KeyboardButton]]
     resize_keyboard: Optional[bool] = None
     one_time_keyboard: Optional[bool] = None
+    input_field_placeholder: Optional[str] = None
     selective: Optional[bool] = None

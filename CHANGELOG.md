@@ -9,6 +9,8 @@ All notable changes to this project.
 - `scope` and `language_code` fields to `GetMyCommands` request class.
 - `scope` and `language_code` fields to `SetMyCommands` request class.
 - `DeleteMyCommands` request class.
+- `input_field_placeholder` field to `ReplyKeyboardMarkup` and `ForceReply` class.
+- `placeholder` field and parameter to `ReplyKeyboard` helper class.
 
 ### Changed
 - `KickChatMember` renamed to `BanChatMember`. The old method name can still be used.

@@ -4,6 +4,7 @@
 
 
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -13,5 +14,6 @@ class ForceReply:
     https://core.telegram.org/bots/api#forcereply
     """
 
-    selective: bool = False
     force_reply: bool = True
+    input_field_placeholder: Optional[str] = None
+    selective: Optional[bool] = None
