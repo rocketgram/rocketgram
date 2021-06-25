@@ -12,13 +12,16 @@ from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class KickChatMember(BoolResultMixin, Request):
+class BanChatMember(BoolResultMixin, Request):
     """\
-    Represents KickChatMember request object:
-    https://core.telegram.org/bots/api#kickchatmember
+    Represents BanChatMember request object:
+    https://core.telegram.org/bots/api#banchatmember
     """
 
     chat_id: Union[int, str]
     user_id: int
     until_date: Optional[datetime] = None
     revoke_messages: Optional[bool] = None
+
+
+KickChatMember = BanChatMember  # Deprecated! Will be removed in version 4.

@@ -10,6 +10,7 @@ from .answer_inline_query import AnswerInlineQuery
 from .answer_pre_checkout_query import AnswerPreCheckoutQuery
 from .answer_shipping_query import AnswerShippingQuery
 from .audio import Audio
+from .ban_chat_member import BanChatMember, KickChatMember
 from .bot_command import BotCommand
 from .bot_command_scope import BotCommandScope
 from .bot_command_scope_all_chat_administrators import BotCommandScopeAllChatAdministrators
@@ -110,7 +111,6 @@ from .input_venue_message_content import InputVenueMessageContent
 from .invoice import Invoice
 from .keyboard_button import KeyboardButton
 from .keyboard_button_poll_type import KeyboardButtonPollType
-from .kick_chat_member import KickChatMember
 from .labeled_price import LabeledPrice
 from .leave_chat import LeaveChat
 from .location import Location
