@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [3.3.0] - 2021-06-26
+
 ### Added
 - `BotCommandScope` classes.
 - `scope` and `language_code` fields to `GetMyCommands` request class.
