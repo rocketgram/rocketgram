@@ -24,6 +24,7 @@ All notable changes to this project.
 ### Changed
 - `KickChatMember` renamed to `BanChatMember`. The old method name can still be used.
 - `GetChatMembersCount` renamed to `GetChatMemberCount`. The old method name can still be used.
+- Framework now corresponds to Telegram Bot API 5.3.
 
 ### Deprecated
 - `KickChatMember` is deprecated and will be removed in version 4.
