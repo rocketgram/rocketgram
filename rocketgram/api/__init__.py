@@ -39,6 +39,7 @@ from .create_new_sticker_set import CreateNewStickerSet
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
 from .delete_message import DeleteMessage
+from .delete_my_commands import DeleteMyCommands
 from .delete_sticker_from_set import DeleteStickerFromSet
 from .delete_webhook import DeleteWebhook
 from .dice import Dice
