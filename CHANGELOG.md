@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- `BotCommandScope` classes.
+
 ### Fixed
 - typing for `Message` object.
 
