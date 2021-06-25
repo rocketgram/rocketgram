@@ -65,7 +65,7 @@ from .game_high_score import GameHighScore
 from .get_chat import GetChat
 from .get_chat_administrators import GetChatAdministrators
 from .get_chat_member import GetChatMember
-from .get_chat_members_count import GetChatMembersCount
+from .get_chat_member_count import GetChatMemberCount, GetChatMembersCount
 from .get_file import GetFile
 from .get_game_high_scores import GetGameHighScores
 from .get_me import GetMe

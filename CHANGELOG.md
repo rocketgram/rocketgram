@@ -12,9 +12,11 @@ All notable changes to this project.
 
 ### Changed
 - `KickChatMember` renamed to `BanChatMember`. The old method name can still be used.
+- `GetChatMembersCount` renamed to `GetChatMemberCount`. The old method name can still be used.
 
 ### Deprecated
 - `KickChatMember` is deprecated and will be removed in version 4.
+- `GetChatMembersCount` is deprecated and will be removed in version 4.
 
 ### Fixed
 - typing for `Message` object.

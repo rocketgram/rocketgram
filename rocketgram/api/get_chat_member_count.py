@@ -11,10 +11,13 @@ from .utils import IntResultMixin
 
 
 @dataclass(frozen=True)
-class GetChatMembersCount(IntResultMixin, Request):
+class GetChatMemberCount(IntResultMixin, Request):
     """\
-    Represents GetChatMembersCount request object:
+    Represents GetChatMemberCount request object:
     https://core.telegram.org/bots/api#getchatmemberscount
     """
 
     chat_id: Union[int, str]
+
+
+GetChatMembersCount = GetChatMemberCount  # Deprecated! Will be removed in version 4.
