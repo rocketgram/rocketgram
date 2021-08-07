@@ -27,7 +27,7 @@ def command(*commands: str, case_sensitive: bool = False, separator: str = ' '):
     msg = context.message
     if not msg:
         return False
-    if msg.message_type is not MessageType.text:
+    if msg.type is not MessageType.text:
         return False
 
     splitted = msg.text.split(sep=separator)
@@ -62,7 +62,7 @@ def deeplink(*commands: str, case_sensitive: bool = False):
     msg = context.message
     if not msg:
         return False
-    if msg.message_type is not MessageType.text:
+    if msg.type is not MessageType.text:
         return False
 
     text = msg.text
