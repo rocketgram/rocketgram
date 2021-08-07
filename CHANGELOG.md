@@ -11,6 +11,7 @@ All notable changes to this project.
 - Bug in entity parser tool.
 - Reuse of the message entity object when sending messages.
 - Typing in `CopyMessage` class.
+- Missing default values in `SetMyCommands` class.
 
 
 ## [3.3.1] - 2021-06-26

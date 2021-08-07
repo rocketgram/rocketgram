@@ -20,5 +20,5 @@ class SetMyCommands(BoolResultMixin, Request):
     """
 
     commands: List[BotCommand]
-    scope: Optional[List[BotCommandScope]]
-    language_code: Optional[str]
+    scope: Optional[BotCommandScope] = None
+    language_code: Optional[str] = None
