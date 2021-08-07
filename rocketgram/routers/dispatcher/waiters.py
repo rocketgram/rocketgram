@@ -42,8 +42,7 @@ def make_waiter(waiter_func: Callable[..., bool]) -> Callable:
 
     @wraps(waiter_func)
     def inner(*args, **kwargs) -> WaitNext:
-        assert _check_sig(waiter_func, *args, **kwargs), \
-            f'Wrong arguments passed to waiter `{waiter_func.__name__}`!'
+        assert _check_sig(waiter_func, *args, **kwargs), f'Wrong arguments passed to waiter `{waiter_func.__name__}`!'
 
         return WaitNext(waiter_func, args, kwargs, filters)
 
