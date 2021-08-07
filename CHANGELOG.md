@@ -10,6 +10,7 @@ All notable changes to this project.
 ### Fixed
 - Bug in entity parser tool.
 - Reuse of the message entity object when sending messages.
+- Typing in `CopyMessage` class.
 
 
 ## [3.3.1] - 2021-06-26

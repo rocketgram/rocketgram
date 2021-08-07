@@ -36,6 +36,6 @@ class CopyMessage(Request):
         assert isinstance(data, dict), "Should be dict."
         return MessageId.parse(data)
 
-    async def send(self) -> int:
+    async def send(self) -> MessageId:
         res = await context.bot.send(self)
         return res.result
