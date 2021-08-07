@@ -43,12 +43,12 @@ def _user_scope():
 
     Valid user scope can be only for message or callback query in chats and groups."""
 
-    if context.update.update_type == UpdateType.message:
-        return f"{id(context.bot)}-{context.chat.chat_id}-{context.user.user_id}"
-    if context.update.update_type == UpdateType.callback_query:
+    if context.update.type == UpdateType.message:
+        return f"{id(context.bot)}-{context.chat.id}-{context.user.id}"
+    if context.update.type == UpdateType.callback_query:
         if context.message is None:
             return None
-        return f"{id(context.bot)}-{context.message.chat.chat_id}-{context.user.user_id}"
+        return f"{id(context.bot)}-{context.chat.id}-{context.user.id}"
 
 
 async def _run_filters(filters):

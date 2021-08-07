@@ -98,7 +98,7 @@ def callback(*commands: str, case_sensitive: bool = False, separator=' '):
     :return: True or False
     """
 
-    if context.update.update_type is not UpdateType.callback_query:
+    if context.update.type is not UpdateType.callback_query:
         return False
 
     splitted = context.update.callback_query.data.split(sep=separator)
@@ -123,7 +123,7 @@ def inline_callback():
     :return: True or False
     """
 
-    if context.update.update_type is not UpdateType.callback_query:
+    if context.update.type is not UpdateType.callback_query:
         return False
 
     if context.update.callback_query.inline_message_id is None:
@@ -142,7 +142,7 @@ def inline(*commands: str, case_sensitive: bool = False):
     :return: True or False
     """
 
-    if context.update.update_type is not UpdateType.inline_query:
+    if context.update.type is not UpdateType.inline_query:
         return False
 
     text = context.update.inline_query.query
@@ -170,7 +170,7 @@ def chosen(*commands: str, case_sensitive: bool = False):
     :return: True or False
     """
 
-    if context.update.update_type is not UpdateType.chosen_inline_result:
+    if context.update.type is not UpdateType.chosen_inline_result:
         return False
 
     text = context.update.chosen_inline_result.query
@@ -196,7 +196,7 @@ def update_type(*types: UpdateType):
     :return: True or False
     """
 
-    return context.update.update_type in types
+    return context.update.type in types
 
 
 @make_filter
@@ -213,7 +213,7 @@ def message_type(*types: MessageType):
     if not msg:
         return False
 
-    return msg.message_type in types
+    return msg.type in types
 
 
 @make_filter
@@ -232,7 +232,7 @@ def chat_type(*types: ChatType):
     if not ch:
         return False
 
-    return ch.chat_type in types
+    return ch.type in types
 
 
 @make_filter

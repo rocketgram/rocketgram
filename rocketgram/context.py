@@ -224,50 +224,50 @@ class Context:
         self.chat = None
         self.user = None
 
-        if update.update_type is api.UpdateType.message:
+        if update.type is api.UpdateType.message:
             self.message = update.message
             self.chat = update.message.chat
             self.user = update.message.user
-        elif update.update_type is api.UpdateType.edited_message:
+        elif update.type is api.UpdateType.edited_message:
             self.message = update.edited_message
             self.chat = update.edited_message.chat
             self.user = update.edited_message.user
-        elif update.update_type is api.UpdateType.channel_post:
+        elif update.type is api.UpdateType.channel_post:
             self.message = update.channel_post
             self.chat = update.channel_post.chat
             self.user = update.channel_post.user
-        elif update.update_type is api.UpdateType.edited_channel_post:
+        elif update.type is api.UpdateType.edited_channel_post:
             self.message = update.edited_channel_post
             self.chat = update.edited_channel_post.chat
             self.user = update.edited_channel_post.user
-        elif update.update_type is api.UpdateType.inline_query:
+        elif update.type is api.UpdateType.inline_query:
             self.inline = update.inline_query
             self.user = update.inline_query.user
-        elif update.update_type is api.UpdateType.chosen_inline_result:
+        elif update.type is api.UpdateType.chosen_inline_result:
             self.result = update.chosen_inline_result
             self.user = update.chosen_inline_result.user
-        elif update.update_type is api.UpdateType.callback_query:
+        elif update.type is api.UpdateType.callback_query:
             self.callback = update.callback_query
             self.message = update.callback_query.message
             if update.callback_query.message:
                 self.chat = update.callback_query.message.chat
             self.user = update.callback_query.user
-        elif update.update_type is api.UpdateType.shipping_query:
+        elif update.type is api.UpdateType.shipping_query:
             self.shipping = update.shipping_query
             self.user = update.shipping_query.user
-        elif update.update_type is api.UpdateType.pre_checkout_query:
+        elif update.type is api.UpdateType.pre_checkout_query:
             self.checkout = update.pre_checkout_query
             self.user = update.pre_checkout_query.user
-        elif update.update_type is api.UpdateType.poll:
+        elif update.type is api.UpdateType.poll:
             self.poll = update.poll
-        elif update.update_type is api.UpdateType.poll_answer:
+        elif update.type is api.UpdateType.poll_answer:
             self.answer = update.poll_answer
             self.user = update.poll_answer.user
-        elif update.update_type is api.UpdateType.my_chat_member:
+        elif update.type is api.UpdateType.my_chat_member:
             self.member = update.my_chat_member
             self.chat = update.my_chat_member.chat
             self.user = update.my_chat_member.user
-        elif update.update_type is api.UpdateType.chat_member:
+        elif update.type is api.UpdateType.chat_member:
             self.member = update.chat_member
             self.chat = update.chat_member.chat
             self.user = update.chat_member.user

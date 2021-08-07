@@ -85,7 +85,7 @@ def get_html_tag(is_open: bool, entity: MessageEntity) -> Optional[str]:
         return tag.open % entity.url
 
     if entity.type == EntityType.text_mention and is_open:
-        return tag.open % entity.user.user_id
+        return tag.open % entity.user.id
 
     return tag.open if is_open else tag.close
 
@@ -99,7 +99,7 @@ def get_md_tag(is_open: bool, entity: MessageEntity, tags: Dict[EntityType, Tag]
         return tag.close % entity.url
 
     if entity.type == EntityType.text_mention and not is_open:
-        return tag.close % entity.user.user_id
+        return tag.close % entity.user.id
 
     return tag.open if is_open else tag.close
 

@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass
 from typing import Optional
 
@@ -18,11 +19,10 @@ class InlineQuery:
     https://core.telegram.org/bots/api#inlinequery
 
     Differences in field names:
-    id -> query_id
     from -> user
     """
 
-    query_id: str
+    id: str
     user: User
     location: Optional[Location]
     query: str
@@ -38,3 +38,9 @@ class InlineQuery:
 
         return cls(data['id'], User.parse(data['from']), Location.parse(data.get('location')),
                    data['query'], data['offset'], chat_type)
+
+    @property
+    def query_id(self) -> str:
+        warnings.warn("This field is deprecated. Use `id` instead.", DeprecationWarning)
+
+        return self.id

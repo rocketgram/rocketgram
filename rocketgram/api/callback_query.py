@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass
 from typing import Optional
 
@@ -17,11 +18,10 @@ class CallbackQuery:
     https://core.telegram.org/bots/api#callbackquery
 
     Differences in field names:
-    id -> query_id
     from -> user
     """
 
-    query_id: str
+    id: str
     user: User
     message: Optional[Message]
     inline_message_id: Optional[str]
@@ -36,3 +36,9 @@ class CallbackQuery:
 
         return cls(data['id'], User.parse(data['from']), Message.parse(data.get('message')),
                    data.get('inline_message_id'), data['chat_instance'], data.get('data'), data.get('game_short_name'))
+
+    @property
+    def query_id(self) -> str:
+        warnings.warn("This field is deprecated. Use `id` instead.", DeprecationWarning)
+
+        return self.id

@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
@@ -17,20 +18,15 @@ class Poll:
     """\
     Represents Poll object:
     https://core.telegram.org/bots/api#poll
-
-    Differences in field names:
-    id -> pool_id
-    type -> poll_type
-
     """
 
-    pool_id: str
+    id: str
     question: str
     options: List[PollOption]
     total_voter_count: int
     is_closed: bool
     is_anonymous: bool
-    poll_type: PollType
+    type: PollType
     allows_multiple_answers: bool
     correct_option_id: Optional[int]
     explanation: Optional[str]
@@ -52,3 +48,15 @@ class Poll:
                    data['is_anonymous'], PollType(data['type']), data['allows_multiple_answers'],
                    data.get('correct_option_id'), data.get('explanation'), explanation_entities,
                    data.get('open_period'), close_date)
+
+    @property
+    def pool_id(self) -> str:
+        warnings.warn("This field is deprecated. Use `id` instead.", DeprecationWarning)
+
+        return self.id
+
+    @property
+    def poll_type(self) -> PollType:
+        warnings.warn("This field is deprecated. Use `type` instead.", DeprecationWarning)
+
+        return self.type

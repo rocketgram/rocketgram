@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional
@@ -47,11 +48,11 @@ class Message:
     from -> user
 
     Additional fields:
-    message_type
+    type
     """
 
     message_id: int
-    message_type: MessageType
+    type: MessageType
     user: Optional[User]
     sender_chat: Optional[Chat]
     date: datetime
@@ -291,3 +292,9 @@ class Message:
                    successful_payment, connected_website, passport_data, proximity_alert_triggered,
                    voice_chat_scheduled, voice_chat_started, voice_chat_ended, voice_chat_participants_invited,
                    reply_markup)
+
+    @property
+    def message_type(self) -> MessageType:
+        warnings.warn("This field is deprecated. Use `type` instead.", DeprecationWarning)
+
+        return self.type

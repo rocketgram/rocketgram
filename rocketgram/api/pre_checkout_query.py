@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass
 from typing import Optional
 
@@ -17,11 +18,10 @@ class PreCheckoutQuery:
     https://core.telegram.org/bots/api#precheckoutquery
 
     Differences in field names:
-    id -> query_id
     from -> user
     """
 
-    query_id: str
+    id: str
     user: User
     currency: str
     total_amount: int
@@ -37,3 +37,9 @@ class PreCheckoutQuery:
         return cls(data['id'], User.parse(data['from']), data['currency'], data['total_amount'],
                    data['invoice_payload'], data.get('shipping_option_id'),
                    OrderInfo.parse(data.get('order_info')))
+
+    @property
+    def query_id(self) -> str:
+        warnings.warn("This field is deprecated. Use `id` instead.", DeprecationWarning)
+
+        return self.id

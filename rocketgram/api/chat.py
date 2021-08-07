@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass
 from typing import Dict, Optional
 
@@ -18,14 +19,10 @@ class Chat:
     """\
     Represents Chat object:
     https://core.telegram.org/bots/api#chat
-
-    Differences in field names:
-    id -> chat_id
-    type -> chat_type
     """
 
-    chat_id: int
-    chat_type: ChatType
+    id: int
+    type: ChatType
     title: Optional[str]
     username: Optional[str]
     first_name: Optional[str]
@@ -53,3 +50,15 @@ class Chat:
                    ChatPermissions.parse(data.get('permissions')), data.get('slow_mode_delay'),
                    data.get('sticker_set_name'), data.get('can_set_sticker_set'), data.get('linked_chat_id'),
                    ChatLocation.parse(data.get('location')))
+
+    @property
+    def chat_id(self) -> int:
+        warnings.warn("This field is deprecated. Use `id` instead.", DeprecationWarning)
+
+        return self.id
+
+    @property
+    def chat_type(self) -> ChatType:
+        warnings.warn("This field is deprecated. Use `type` instead.", DeprecationWarning)
+
+        return self.type

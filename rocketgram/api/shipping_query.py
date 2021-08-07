@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass
 from typing import Optional
 
@@ -20,7 +21,7 @@ class ShippingQuery:
     from -> user
     """
 
-    query_id: str
+    id: str
     user: User
     invoice_payload: str
     shipping_address: ShippingAddress
@@ -32,3 +33,9 @@ class ShippingQuery:
 
         return cls(data['id'], User.parse(data['from']), data['invoice_payload'],
                    ShippingAddress.parse(data['shipping_address']))
+
+    @property
+    def query_id(self) -> str:
+        warnings.warn("This field is deprecated. Use `id` instead.", DeprecationWarning)
+
+        return self.id

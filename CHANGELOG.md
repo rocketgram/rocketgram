@@ -6,6 +6,18 @@ All notable changes to this project.
 
 ### Deprecated
 - `MessageEntity.entity_type` is deprecated and will be removed in version 4. Use `MessageEntity.type` instead.
+- `CallbackQuery.query_id` is deprecated and will be removed in version 4. Use `CallbackQuery.id` instead.
+- `Chat.chat_id` is deprecated and will be removed in version 4. Use `Chat.id` instead.
+- `Chat.chat_type` is deprecated and will be removed in version 4. Use `Chat.type` instead.
+- `EncryptedPassportElement.encrypted_passport_element_type` is deprecated and will be removed in version 4. Use `EncryptedPassportElement.type` instead.
+- `InlineQuery.query_id` is deprecated and will be removed in version 4. Use `InlineQuery.id` instead.
+- `Message.message_type` is deprecated and will be removed in version 4. Use `Message.type` instead.
+- `Poll.pool_id` is deprecated and will be removed in version 4. Use `Poll.id` instead.
+- `Poll.poll_type` is deprecated and will be removed in version 4. Use `Poll.type` instead.
+- `PreCheckoutQuery.query_id` is deprecated and will be removed in version 4. Use `PreCheckoutQuery.id` instead.
+- `ShippingQuery.query_id` is deprecated and will be removed in version 4. Use `ShippingQuery.id` instead.
+- `User.user_id` is deprecated and will be removed in version 4. Use `User.id` instead.
+- `Update.chat_type` is deprecated and will be removed in version 4. Use `Update.type` instead.
 
 ### Fixed
 - Bug in entity parser tool.

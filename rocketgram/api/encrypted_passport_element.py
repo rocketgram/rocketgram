@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass
 from typing import List, Optional
 
@@ -20,7 +21,7 @@ class EncryptedPassportElement:
     type -> encrypted_passport_element_type
     """
 
-    encrypted_passport_element_type: EncryptedPassportElementType
+    type: EncryptedPassportElementType
     data: Optional[str]
     phone_number: Optional[str]
     email: Optional[str]
@@ -43,3 +44,9 @@ class EncryptedPassportElement:
                    data.get('email'), files, PassportFile.parse(data.get('front_side')),
                    PassportFile.parse(data.get('reverse_side')), PassportFile.parse(data.get('selfie')), translation,
                    data['hash'])
+
+    @property
+    def encrypted_passport_element_type(self) -> EncryptedPassportElementType:
+        warnings.warn("This field is deprecated. Use `type` instead.", DeprecationWarning)
+
+        return self.type
