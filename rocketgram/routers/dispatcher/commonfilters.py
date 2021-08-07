@@ -21,6 +21,9 @@ def command(*commands: str, case_sensitive: bool = False, separator: str = ' '):
     :return: True or False
     """
 
+    if context.update.type is not UpdateType.message:
+        return False
+
     msg = context.message
     if not msg:
         return False
@@ -52,6 +55,9 @@ def deeplink(*commands: str, case_sensitive: bool = False):
 
     :return: True or False
     """
+
+    if context.update.type is not UpdateType.message:
+        return False
 
     msg = context.message
     if not msg:
