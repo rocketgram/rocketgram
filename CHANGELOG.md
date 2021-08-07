@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [3.4.0] - 2021-08-07
+
 ### Deprecated
 - `MessageEntity.entity_type` is deprecated and will be removed in version 4. Use `MessageEntity.type` instead.
 - `CallbackQuery.query_id` is deprecated and will be removed in version 4. Use `CallbackQuery.id` instead.
