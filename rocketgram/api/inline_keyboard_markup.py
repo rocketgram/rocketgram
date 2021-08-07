@@ -23,4 +23,4 @@ class InlineKeyboardMarkup:
         if data is None:
             return None
 
-        return cls([[InlineKeyboardButton.parse(c) for c in r] for r in data])
+        return cls([[InlineKeyboardButton.parse(c) for c in r] for r in data['inline_keyboard']])

@@ -12,6 +12,7 @@ All notable changes to this project.
 - Reuse of the message entity object when sending messages.
 - Typing in `CopyMessage` class.
 - Missing default values in `SetMyCommands` class.
+- Parser method in `InlineKeyboardMarkup` class.
 
 
 ## [3.3.1] - 2021-06-26
