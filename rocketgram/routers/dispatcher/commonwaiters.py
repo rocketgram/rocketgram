@@ -22,7 +22,7 @@ def next_message(*message_types: MessageType):
     if not message_types:
         message_types = (MessageType.text,)
 
-    if context.message.message_type in message_types:
+    if context.message.type in message_types:
         return True
 
     return False
