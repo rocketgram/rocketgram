@@ -6,6 +6,7 @@ All notable changes to this project.
 
 ### Fixed
 - The `command` and `deeplink` filters now only catch messages with `UpdateType.message`.
+- The typing for `context` object.
 
 
 ## [3.4.0] - 2021-08-07

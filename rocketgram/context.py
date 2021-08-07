@@ -273,4 +273,4 @@ class Context:
             self.user = update.chat_member.user
 
 
-context = Context.instance()
+context: Context = Context.instance()
