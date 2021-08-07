@@ -52,10 +52,10 @@ def _user_scope():
 
 
 async def _run_filters(filters):
-    for filt in filters:
-        fr = await _call_or_await(filt.func, *filt.args, **filt.kwargs)
+    for f in filters:
+        fr = await _call_or_await(f.func, *f.args, **f.kwargs)
         assert isinstance(fr, bool), \
-            f'Filter `{filt.func.__name__}` returns `{type(fr)}` while `bool` is expected!'
+            f'Filter `{f.func.__name__}` returns `{type(fr)}` while `bool` is expected!'
         if not fr:
             return False
 
@@ -93,12 +93,12 @@ class Dispatcher(BaseDispatcher):
 
         return waiter
 
-    async def __run_generator(self, anext: bool, handler, scope):
+    async def __run_generator(self, a_next: bool, handler, scope):
         wait = None  # noqa
 
         with suppress(StopAsyncIteration):
             gen = handler.handler
-            if not anext:
+            if not a_next:
                 gen = gen()
             wait = await gen.asend(None)
 
@@ -141,7 +141,7 @@ class Dispatcher(BaseDispatcher):
                 if await _run_filters(pre.filters):
                     await _call_or_await(pre.handler)
 
-            anext = False
+            a_next = False
             scope = _user_scope()
             handler = None
 
@@ -150,13 +150,13 @@ class Dispatcher(BaseDispatcher):
             if scope:
                 handler = await self.__find_waiter(scope)
             if handler:
-                anext = True
+                a_next = True
 
             # Find handler from handlers list.
             if not handler:
-                for hdlr in self._handlers:
-                    if await _run_filters(hdlr.filters):
-                        handler = hdlr
+                for h in self._handlers:
+                    if await _run_filters(h.filters):
+                        handler = h
                         break
 
             # No handlers found. Exiting.
@@ -167,10 +167,10 @@ class Dispatcher(BaseDispatcher):
             if isasyncgenfunction(handler.handler) or isasyncgen(handler.handler):
                 # handler is async generator...
                 if not scope:
-                    emsg = f'Found async generator `{handler.handler.__name__}` but user_scope' \
+                    msg = f'Found async generator `{handler.handler.__name__}` but user_scope' \
                            f'is undefined for update `{context.update.update_id}`'
-                    raise TypeError(emsg)
-                await self.__run_generator(anext, handler, scope)
+                    raise TypeError(msg)
+                await self.__run_generator(a_next, handler, scope)
             else:
                 # This is normal handler.
                 r = handler.handler()
