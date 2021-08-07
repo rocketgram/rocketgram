@@ -4,8 +4,12 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Deprecated
+- `MessageEntity.entity_type` is deprecated and will be removed in version 4. Use `MessageEntity.type` instead.
+
 ### Fixed
-- bug in entity parser tool.
+- Bug in entity parser tool.
+- Reuse of the message entity object when sending messages.
 
 
 ## [3.3.1] - 2021-06-26

@@ -77,28 +77,28 @@ def parse(text: str, entities: List[MessageEntity], get_tag: Callable[[bool, Mes
 
 
 def get_html_tag(is_open: bool, entity: MessageEntity) -> Optional[str]:
-    tag = HTML.get(entity.entity_type)
+    tag = HTML.get(entity.type)
     if not tag:
         return None
 
-    if entity.entity_type == EntityType.text_link and is_open:
+    if entity.type == EntityType.text_link and is_open:
         return tag.open % entity.url
 
-    if entity.entity_type == EntityType.text_mention and is_open:
+    if entity.type == EntityType.text_mention and is_open:
         return tag.open % entity.user.user_id
 
     return tag.open if is_open else tag.close
 
 
 def get_md_tag(is_open: bool, entity: MessageEntity, tags: Dict[EntityType, Tag]) -> Optional[str]:
-    tag = tags.get(entity.entity_type)
+    tag = tags.get(entity.type)
     if not tag:
         return None
 
-    if entity.entity_type == EntityType.text_link and not is_open:
+    if entity.type == EntityType.text_link and not is_open:
         return tag.close % entity.url
 
-    if entity.entity_type == EntityType.text_mention and not is_open:
+    if entity.type == EntityType.text_mention and not is_open:
         return tag.close % entity.user.user_id
 
     return tag.open if is_open else tag.close

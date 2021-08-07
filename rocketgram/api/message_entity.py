@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass
 from typing import Optional
 
@@ -15,12 +16,9 @@ class MessageEntity:
     """\
     Represents MessageEntity object:
     https://core.telegram.org/bots/api#messageentity
-
-    Differences in field names:
-    type -> entity_type
     """
 
-    entity_type: EntityType
+    type: EntityType
     offset: int
     length: int
     url: Optional[str]
@@ -39,3 +37,9 @@ class MessageEntity:
 
         return cls(entity_type, data['offset'], data['length'], data.get('url'),
                    User.parse(data.get('user')), data.get('language'))
+
+    @property
+    def entity_type(self) -> EntityType:
+        warnings.warn("This field is deprecated. Use `type` instead.", DeprecationWarning)
+
+        return self.type
