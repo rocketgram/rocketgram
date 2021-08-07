@@ -73,7 +73,7 @@ def parse(text: str, entities: List[MessageEntity], get_tag: Callable[[bool, Mes
 
     se = sorted(entities, key=lambda item: item.offset)
 
-    return str().join(p(se, 0, len(text)))
+    return str().join(p(se, 0, len(encoded)))
 
 
 def get_html_tag(is_open: bool, entity: MessageEntity) -> Optional[str]:

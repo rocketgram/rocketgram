@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Fixed
+- bug in entity parser tool.
+
 
 ## [3.3.1] - 2021-06-26
 
