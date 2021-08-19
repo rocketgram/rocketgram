@@ -4,9 +4,13 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- `ChatType.sender` and `ChatType.unknown` variants.
+
 ### Fixed
 - The `command` and `deeplink` filters now only catch messages with `UpdateType.message`.
 - The typing for `context` object.
+- `chat_type` field parsing for inline queries in case when the query is made from a secret chat.
 
 
 ## [3.4.0] - 2021-08-07

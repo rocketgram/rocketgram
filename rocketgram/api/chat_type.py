@@ -13,3 +13,5 @@ class ChatType(EnumAutoName):
     group = auto()
     supergroup = auto()
     channel = auto()
+    sender = auto()
+    unknown = auto()

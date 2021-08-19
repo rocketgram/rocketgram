@@ -34,7 +34,10 @@ class InlineQuery:
         if data is None:
             return None
 
-        chat_type = ChatType(data['chat_type']) if 'chat_type' in data else None
+        try:
+            chat_type = ChatType(data['chat_type'])
+        except (ValueError, KeyError):
+            chat_type = ChatType.unknown
 
         return cls(data['id'], User.parse(data['from']), Location.parse(data.get('location')),
                    data['query'], data['offset'], chat_type)

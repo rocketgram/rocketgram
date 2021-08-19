@@ -44,7 +44,12 @@ class Chat:
         if data is None:
             return None
 
-        return cls(data['id'], ChatType(data['type']), data.get('title'), data.get('username'), data.get('first_name'),
+        try:
+            chat_type = ChatType(data['type'])
+        except ValueError:
+            chat_type = ChatType.unknown
+
+        return cls(data['id'], chat_type, data.get('title'), data.get('username'), data.get('first_name'),
                    data.get('last_name'), ChatPhoto.parse(data.get('photo')), data.get('bio'), data.get('description'),
                    data.get('invite_link'), message.Message.parse(data.get('pinned_message')),
                    ChatPermissions.parse(data.get('permissions')), data.get('slow_mode_delay'),
