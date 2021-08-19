@@ -21,6 +21,8 @@ logger = logging.getLogger('rocketgram.executors.tornado')
 
 
 class TornadoExecutor(WebhookExecutor):
+    __slots__ = ()
+
     def __handler(self, request: HTTPServerRequest):
         err_headers = HTTPHeaders(self.HEADERS_ERROR)
         headers = HTTPHeaders(self.HEADERS)

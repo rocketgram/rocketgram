@@ -9,6 +9,8 @@ from .. import api
 
 
 class Middleware:
+    __slots__ = ()
+
     def init(self) -> Optional[Awaitable]:
         raise NotImplementedError
 
@@ -36,6 +38,8 @@ class Middleware:
 
 
 class EmptyMiddleware(Middleware):
+    __slots__ = ()
+
     def init(self) -> Optional[Awaitable]:
         pass
 

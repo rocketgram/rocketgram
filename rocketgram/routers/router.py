@@ -4,6 +4,8 @@
 
 
 class Router:
+    __slots__ = ()
+
     async def init(self):
         raise NotImplementedError
 

@@ -20,6 +20,8 @@ logger = logging.getLogger('rocketgram.executors.aiohttp')
 
 
 class AioHttpExecutor(WebhookExecutor):
+    __slots__ = ()
+
     async def __handler(self, request: BaseRequest):
         if request.method != 'POST':
             return Response(status=400, text="Bad request.", headers=self.HEADERS_ERROR)

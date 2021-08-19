@@ -18,6 +18,8 @@ logger = logging.getLogger('rocketgram.executors.executor')
 
 
 class Executor:
+    __slots__ = ()
+
     @property
     def bots(self) -> List['Bot']:
         raise NotImplementedError

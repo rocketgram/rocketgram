@@ -19,6 +19,8 @@ logger = logging.getLogger('rocketgram.executors.updates')
 
 
 class UpdatesExecutor(Executor):
+    __slots__ = ('_timeout', '_bots', '_started')
+
     def __init__(self, request_timeout=30):
         self._timeout = request_timeout
 

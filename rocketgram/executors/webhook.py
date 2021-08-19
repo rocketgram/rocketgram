@@ -29,6 +29,8 @@ class WebhookExecutor(Executor):
     HEADERS = {"Server": f"Rocketgram/{version()}", "Content-Type": "application/json"}
     HEADERS_ERROR = {"Server": f"Rocketgram/{version()}", "Content-Type": "text/plain"}
 
+    __slots__ = ('_base_url', '_base_path', '_host', '_port', '_bots', '_srv', '_started', '_tasks')
+
     def __init__(self, base_url: str, base_path: str, *, host: str = 'localhost', port: int = 8080):
         self._base_url = base_url
         self._base_path = base_path

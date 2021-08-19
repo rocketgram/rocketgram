@@ -33,7 +33,7 @@ current_user = ContextVar('current_user')
 
 class Context:
     __instance: 'Context' = None
-    __slots__ = tuple()
+    __slots__ = ()
 
     def __new__(cls):
         if Context.__instance is None:
