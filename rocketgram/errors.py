@@ -86,6 +86,15 @@ class RocketgramRequest401Error(RocketgramRequestError):
 
 
 @RocketgramRequestError.register_exception
+class RocketgramRequest403Error(RocketgramRequestError):
+    """\
+    Exception indicates errors with code 403.
+    """
+
+    error_code = 403
+
+
+@RocketgramRequestError.register_exception
 class RocketgramRequest429Error(RocketgramRequestError):
     """\
     Exception indicates errors with code 429.
