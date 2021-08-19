@@ -13,7 +13,7 @@ class DefaultValuesMiddleware(EmptyMiddleware):
     __slots__ = ('__defaults',)
 
     def __init__(self, **defaults):
-        self.__defaults = defaults
+        self.__defaults = defaults.copy()
 
     @property
     def defaults(self):
