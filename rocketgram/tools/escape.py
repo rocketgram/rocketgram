@@ -12,7 +12,7 @@ MD2_RE = re.compile(r"([_*\[\]()~`>#+\-|{}.!])")
 def html(text: str) -> str:
     """Helper function to escape html symbols"""
 
-    return text.replace(u'&', u'&amp;').replace(u'<', u'&lt;').replace(u'>', u'&gt;')
+    return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 
 def markdown(text: str) -> str:

@@ -12,6 +12,7 @@ All notable changes to this project.
 - The `command` and `deeplink` filters now only catch messages with `UpdateType.message`.
 - The typing for `context` object.
 - `chat_type` field parsing for inline queries in case when the query is made from a secret chat.
+- Escaping text there are no entities in the message.
 
 
 ## [3.4.0] - 2021-08-07

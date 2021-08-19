@@ -116,27 +116,33 @@ def to_html(text: Optional[str], entities: List[MessageEntity], escape_html: boo
     if text is None:
         return None
 
-    if entities is None:
-        return text
+    escape_func = escape.html if escape_html else lambda t: t
 
-    return parse(text, entities, get_html_tag, escape.html if escape_html else lambda t: t)
+    if entities is None:
+        return escape_func(text)
+
+    return parse(text, entities, get_html_tag, escape_func)
 
 
 def to_markdown(text: Optional[str], entities: List[MessageEntity], escape_markdown: bool = True) -> Optional[str]:
     if text is None:
         return None
 
-    if entities is None:
-        return text
+    escape_func = escape.markdown if escape_markdown else lambda t: t
 
-    return parse(text, entities, get_markdown_tag, escape.markdown if escape_markdown else lambda t: t)
+    if entities is None:
+        return escape_func(text)
+
+    return parse(text, entities, get_markdown_tag, escape_func)
 
 
 def to_markdown2(text: Optional[str], entities: List[MessageEntity], escape_markdown2: bool = True) -> Optional[str]:
     if text is None:
         return None
 
-    if entities is None:
-        return text
+    escape_func = escape.markdown2 if escape_markdown2 else lambda t: t
 
-    return parse(text, entities, get_markdown2_tag, escape.markdown2 if escape_markdown2 else lambda t: t)
+    if entities is None:
+        return escape_func(text)
+
+    return parse(text, entities, get_markdown2_tag, escape_func)
