@@ -8,6 +8,8 @@ All notable changes to this project.
 - `ChatType.sender` and `ChatType.unknown` variants.
 - `RocketgramRequest403Error` exception class.
 - `ChatActionType.choose_sticker`. 
+- `ApproveChatJoinRequest` request class.
+- `DeclineChatJoinRequest` request class.
 
 ### Fixed
 - The `command` and `deeplink` filters now only catch messages with `UpdateType.message`.
