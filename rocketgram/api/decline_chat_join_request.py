@@ -13,7 +13,7 @@ from .utils import BoolResultMixin
 @dataclass(frozen=True)
 class DeclineChatJoinRequest(BoolResultMixin, Request):
     """\
-    Represents declineChatJoinRequest request object:
+    Represents DeclineChatJoinRequest request object:
     https://core.telegram.org/bots/api#declinechatjoinrequest
     """
 
