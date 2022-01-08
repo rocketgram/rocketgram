@@ -63,9 +63,11 @@ class Message:
     forward_signature: Optional[str]
     forward_sender_name: Optional[str]
     forward_date: Optional[datetime]
+    is_automatic_forward: Optional[bool]
     reply_to_message: Optional['Message']
     via_bot: Optional[User]
     edit_date: Optional[datetime]
+    has_protected_content: Optional[bool]
     media_group_id: Optional[str]
     author_signature: Optional[str]
 
@@ -139,9 +141,11 @@ class Message:
         forward_sender_name = data.get('forward_sender_name')
         forward_signature = data.get('forward_signature')
         forward_date = datetime.utcfromtimestamp(data['forward_date']) if 'forward_date' in data else None
+        is_automatic_forward = data.get('is_automatic_forward')
         reply_to_message = Message.parse(data.get('reply_to_message'))
         via_bot = User.parse(data.get('via_bot'))
         edit_date = datetime.utcfromtimestamp(data['edit_date']) if 'edit_date' in data else None
+        has_protected_content = data.get('has_protected_content')
         media_group_id = data.get('media_group_id')
         author_signature = data.get('author_signature')
 
@@ -283,15 +287,15 @@ class Message:
             message_type = MessageType.message_auto_delete_timer_changed
 
         return cls(message_id, message_type, user, sender_chat, date, chat, forward_from, forward_from_chat,
-                   forward_from_message_id, forward_signature, forward_sender_name, forward_date, reply_to_message,
-                   via_bot, edit_date, media_group_id, author_signature, text, entities, caption_entities, audio,
-                   document, animation, game, photo, sticker, video, voice, video_note, caption, contact, location,
-                   venue, poll, dice, new_chat_members, left_chat_member, new_chat_title, new_chat_photo,
-                   delete_chat_photo, group_chat_created, supergroup_chat_created, channel_chat_created,
-                   message_auto_delete_timer_changed, migrate_to_chat_id, migrate_from_chat_id, pinned_message, invoice,
-                   successful_payment, connected_website, passport_data, proximity_alert_triggered,
-                   voice_chat_scheduled, voice_chat_started, voice_chat_ended, voice_chat_participants_invited,
-                   reply_markup)
+                   forward_from_message_id, forward_signature, forward_sender_name, forward_date, is_automatic_forward,
+                   reply_to_message, via_bot, edit_date, has_protected_content, media_group_id, author_signature, text,
+                   entities, caption_entities, audio, document, animation, game, photo, sticker, video, voice,
+                   video_note, caption, contact, location, venue, poll, dice, new_chat_members, left_chat_member,
+                   new_chat_title, new_chat_photo, delete_chat_photo, group_chat_created, supergroup_chat_created,
+                   channel_chat_created, message_auto_delete_timer_changed, migrate_to_chat_id, migrate_from_chat_id,
+                   pinned_message, invoice, successful_payment, connected_website, passport_data,
+                   proximity_alert_triggered, voice_chat_scheduled, voice_chat_started, voice_chat_ended,
+                   voice_chat_participants_invited, reply_markup)
 
     @property
     def message_type(self) -> MessageType:

@@ -20,9 +20,15 @@ All notable changes to this project.
 - `creates_join_request` field to `CreateChatInviteLink` and `EditChatInviteLink` request classes.
 - `BanChatSenderChat` request class.
 - `UnbanChatSenderChat` request class.
+- `has_private_forwards` field to `Chat` class.
+- `message_auto_delete_time` field to `Chat` class.
+- `has_protected_content` field to `Chat` class.
+- `has_protected_content` field to `Message` class.
+- `is_automatic_forward` field to `Message` class.
 
 ### Changed
 - Framework is now corresponds to Telegram Bot API 5.4.
+- Framework is now corresponds to Telegram Bot API 5.5.
 
 ### Fixed
 - The `command` and `deeplink` filters now only catch messages with `UpdateType.message`.

@@ -29,11 +29,14 @@ class Chat:
     last_name: Optional[str]
     photo: Optional[ChatPhoto]
     bio: Optional[str]
+    has_private_forwards: Optional[bool]
     description: Optional[str]
     invite_link: Optional[str]
     pinned_message: Optional['message.Message']
     permissions: Optional[ChatPermissions]
     slow_mode_delay: Optional[int]
+    message_auto_delete_time: Optional[int]
+    has_protected_content: Optional[bool]
     sticker_set_name: Optional[str]
     can_set_sticker_set: Optional[bool]
     linked_chat_id: Optional[int]
@@ -50,9 +53,10 @@ class Chat:
             chat_type = ChatType.unknown
 
         return cls(data['id'], chat_type, data.get('title'), data.get('username'), data.get('first_name'),
-                   data.get('last_name'), ChatPhoto.parse(data.get('photo')), data.get('bio'), data.get('description'),
-                   data.get('invite_link'), message.Message.parse(data.get('pinned_message')),
-                   ChatPermissions.parse(data.get('permissions')), data.get('slow_mode_delay'),
+                   data.get('last_name'), ChatPhoto.parse(data.get('photo')), data.get('bio'),
+                   data.get('has_private_forwards'), data.get('description'), data.get('invite_link'),
+                   message.Message.parse(data.get('pinned_message')), ChatPermissions.parse(data.get('permissions')),
+                   data.get('slow_mode_delay'), data.get('message_auto_delete_time'), data.get('has_protected_content'),
                    data.get('sticker_set_name'), data.get('can_set_sticker_set'), data.get('linked_chat_id'),
                    ChatLocation.parse(data.get('location')))
 
