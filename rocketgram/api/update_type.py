@@ -22,4 +22,5 @@ class UpdateType(EnumAutoName):
     poll_answer = auto()
     my_chat_member = auto()
     chat_member = auto()
+    chat_join_request = auto()
     unknown = auto()

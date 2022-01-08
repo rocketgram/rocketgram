@@ -25,6 +25,7 @@ from .callback_query import CallbackQuery
 from .chat import Chat
 from .chat_action_type import ChatActionType
 from .chat_invite_link import ChatInviteLink
+from .chat_join_request import ChatJoinRequest
 from .chat_location import ChatLocation
 from .chat_member import ChatMember
 from .chat_member_status_type import ChatMemberStatusType

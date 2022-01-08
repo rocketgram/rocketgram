@@ -10,6 +10,9 @@ All notable changes to this project.
 - `ChatActionType.choose_sticker`. 
 - `ApproveChatJoinRequest` request class.
 - `DeclineChatJoinRequest` request class.
+- `ChatJoinRequest` class.
+- `chat_join_request` field to `Update` class.
+- `chat_join_request` to `UpdateType`.
 
 ### Fixed
 - The `command` and `deeplink` filters now only catch messages with `UpdateType.message`.

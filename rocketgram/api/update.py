@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 
 from .callback_query import CallbackQuery
+from .chat_join_request import ChatJoinRequest
 from .chat_member_updated import ChatMemberUpdated
 from .chosen_inline_result import ChosenInlineResult
 from .inline_query import InlineQuery
@@ -46,6 +47,7 @@ class Update:
     poll_answer: Optional[PollAnswer]
     my_chat_member: Optional[ChatMemberUpdated]
     chat_member: Optional[ChatMemberUpdated]
+    chat_join_request: Optional[ChatJoinRequest]
 
     @classmethod
     def parse(cls, data: Dict) -> 'Update':
@@ -62,6 +64,7 @@ class Update:
         poll_answer = PollAnswer.parse(data.get('poll_answer'))
         my_chat_member = ChatMemberUpdated.parse(data.get('my_chat_member'))
         chat_member = ChatMemberUpdated.parse(data.get('chat_member'))
+        chat_join_request = ChatJoinRequest.parse(data.get('chat_join_request'))
 
         update_type = UpdateType.unknown
         if message:
@@ -90,10 +93,12 @@ class Update:
             update_type = UpdateType.my_chat_member
         elif chat_member:
             update_type = UpdateType.chat_member
+        elif chat_join_request:
+            update_type = UpdateType.chat_join_request
 
         return cls(data, data['update_id'], update_type, message, edited_message, channel_post, edited_channel_post,
                    inline_query, chosen_inline_result, callback_query, shipping_query, pre_checkout_query, poll,
-                   poll_answer, my_chat_member, chat_member)
+                   poll_answer, my_chat_member, chat_member, chat_join_request)
 
     @property
     def update_type(self) -> UpdateType:
