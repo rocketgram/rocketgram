@@ -19,6 +19,7 @@ HTML = {
     EntityType.italic: Tag('<i>', '</i>'),
     EntityType.underline: Tag('<u>', '</u>'),
     EntityType.strikethrough: Tag('<s>', '</s>'),
+    EntityType.spoiler: Tag('<span class="tg-spoiler">', '</span>'),
     EntityType.code: Tag('<code>', '</code>'),
     EntityType.pre: Tag('<pre>', '</pre>'),
     EntityType.text_link: Tag('<a href="%s">', '</a>'),
@@ -38,6 +39,7 @@ MARKDOWN2 = MARKDOWN.copy()
 MARKDOWN2.update({
     EntityType.underline: Tag('\r__\r', '\r__\r'),
     EntityType.strikethrough: Tag('~', '~'),
+    EntityType.spoiler: Tag('||', '||'),
 })
 
 

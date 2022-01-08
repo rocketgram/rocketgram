@@ -20,6 +20,7 @@ class EntityType(EnumAutoName):
     italic = auto()
     underline = auto()
     strikethrough = auto()
+    spoiler = auto()
     code = auto()
     pre = auto()
     text_link = auto()

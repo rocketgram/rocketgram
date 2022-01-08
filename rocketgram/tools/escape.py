@@ -6,7 +6,7 @@
 import re
 
 MD_RE = re.compile(r"([*_`\[])")
-MD2_RE = re.compile(r"([_*\[\]()~`>#+\-|{}.!])")
+MD2_RE = re.compile(r"([_*\[\]()~`>#+\-=|{}.!\\])")
 
 
 def html(text: str) -> str:

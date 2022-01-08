@@ -25,6 +25,7 @@ All notable changes to this project.
 - `has_protected_content` field to `Chat` class.
 - `has_protected_content` field to `Message` class.
 - `is_automatic_forward` field to `Message` class.
+- support of `spoiler` entity type.
 
 ### Changed
 - Framework is now corresponds to Telegram Bot API 5.4.
