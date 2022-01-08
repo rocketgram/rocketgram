@@ -12,6 +12,7 @@ from .answer_shipping_query import AnswerShippingQuery
 from .approve_chat_join_request import ApproveChatJoinRequest
 from .audio import Audio
 from .ban_chat_member import BanChatMember, KickChatMember
+from .ban_chat_sender_chat import BanChatSenderChat
 from .bot_command import BotCommand
 from .bot_command_scope import BotCommandScope
 from .bot_command_scope_all_chat_administrators import BotCommandScopeAllChatAdministrators
@@ -195,6 +196,7 @@ from .stop_poll import StopPoll
 from .successful_payment import SuccessfulPayment
 from .thumb_mime_type import ThumbMimeType
 from .unban_chat_member import UnbanChatMember
+from .unban_chat_sender_chat import UnbanChatSenderChat
 from .unpin_all_chat_messages import UnpinAllChatMessages
 from .unpin_chat_message import UnpinChatMessage
 from .update import Update

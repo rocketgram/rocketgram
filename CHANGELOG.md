@@ -18,6 +18,8 @@ All notable changes to this project.
 - `pending_join_request_count` field to `ChatInviteLink` class.
 - `name` field to `CreateChatInviteLink` and `EditChatInviteLink` request classes.
 - `creates_join_request` field to `CreateChatInviteLink` and `EditChatInviteLink` request classes.
+- `BanChatSenderChat` request class.
+- `UnbanChatSenderChat` request class.
 
 ### Changed
 - Framework is now corresponds to Telegram Bot API 5.4.
