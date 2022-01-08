@@ -26,10 +26,12 @@ All notable changes to this project.
 - `has_protected_content` field to `Message` class.
 - `is_automatic_forward` field to `Message` class.
 - support of `spoiler` entity type.
+- `protect_content` field to several request classes.
 
 ### Changed
 - Framework is now corresponds to Telegram Bot API 5.4.
 - Framework is now corresponds to Telegram Bot API 5.5.
+- Framework is now corresponds to Telegram Bot API 5.6.
 
 ### Fixed
 - The `command` and `deeplink` filters now only catch messages with `UpdateType.message`.

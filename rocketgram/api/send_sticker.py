@@ -21,6 +21,7 @@ class SendSticker(MessageResultMixin, Request):
     chat_id: Union[int, str]
     sticker: Union[InputFile, str]
     disable_notification: Optional[bool] = None
+    protect_content: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     allow_sending_without_reply: Optional[bool] = None
     reply_markup: Optional[ALL_KEYBOARDS] = None

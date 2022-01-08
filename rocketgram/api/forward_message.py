@@ -21,3 +21,4 @@ class ForwardMessage(MessageResultMixin, Request):
     from_chat_id: Union[int, str]
     message_id: int
     disable_notification: Optional[bool] = None
+    protect_content: Optional[bool] = None
