@@ -13,6 +13,11 @@ All notable changes to this project.
 - `ChatJoinRequest` class.
 - `chat_join_request` field to `Update` class.
 - `chat_join_request` to `UpdateType`.
+- `creates_join_request` field to `ChatInviteLink` class.
+- `name` field to `ChatInviteLink` class.
+- `pending_join_request_count` field to `ChatInviteLink` class.
+- `name` field to `CreateChatInviteLink` and `EditChatInviteLink` request classes.
+- `creates_join_request` field to `CreateChatInviteLink` and `EditChatInviteLink` request classes.
 
 ### Fixed
 - The `command` and `deeplink` filters now only catch messages with `UpdateType.message`.

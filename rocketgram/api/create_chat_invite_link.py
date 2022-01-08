@@ -19,5 +19,7 @@ class CreateChatInviteLink(ChatInviteLinkResultMixin, Request):
     """
 
     chat_id: Union[int, str]
+    name: Optional[str] = None
     expire_date: Optional[datetime] = None
     member_limit: Optional[int] = None
+    creates_join_request: Optional[bool] = None

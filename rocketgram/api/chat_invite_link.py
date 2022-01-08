@@ -19,10 +19,13 @@ class ChatInviteLink:
 
     invite_link: str
     creator: 'user.User'
+    creates_join_request: bool
     is_primary: bool
     is_revoked: bool
+    name: Optional[str]
     expire_date: Optional[datetime]
     member_limit: Optional[int]
+    pending_join_request_count: Optional[int]
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['ChatInviteLink']:
@@ -31,5 +34,6 @@ class ChatInviteLink:
 
         expire_date = datetime.utcfromtimestamp(data['expire_date']) if 'expire_date' in data else None
 
-        return cls(data['invite_link'], user.User.parse(data['creator']), data['is_primary'], data['is_revoked'],
-                   expire_date, data['member_limit'])
+        return cls(data['invite_link'], user.User.parse(data['creator']), data['creates_join_request'],
+                   data['is_primary'], data['is_revoked'], data.get('name'), expire_date, data.get('member_limit'),
+                   data.get('pending_join_request_count'))
