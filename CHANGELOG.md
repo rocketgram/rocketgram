@@ -19,6 +19,9 @@ All notable changes to this project.
 - `name` field to `CreateChatInviteLink` and `EditChatInviteLink` request classes.
 - `creates_join_request` field to `CreateChatInviteLink` and `EditChatInviteLink` request classes.
 
+### Changed
+- Framework is now corresponds to Telegram Bot API 5.4.
+
 ### Fixed
 - The `command` and `deeplink` filters now only catch messages with `UpdateType.message`.
 - The typing for `context` object.
