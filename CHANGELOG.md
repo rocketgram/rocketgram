@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [3.5.0] - 2022-01-08
+
 ### Added
 - `ChatType.sender` and `ChatType.unknown` variants.
 - `RocketgramRequest403Error` exception class.
