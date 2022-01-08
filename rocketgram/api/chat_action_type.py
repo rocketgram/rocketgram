@@ -23,6 +23,7 @@ class ChatActionType(EnumAutoName):
     record_voice = auto()
     upload_voice = auto()
     upload_document = auto()
+    choose_sticker = auto()
     find_location = auto()
     record_video_note = auto()
     upload_video_note = auto()
