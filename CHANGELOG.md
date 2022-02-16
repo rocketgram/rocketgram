@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [3.6.0] - 2022-02-16
+
 ### Added
 - `webm_sticker` field to `CreateNewStickerSet` and `AddStickerToSet` request classes.
 - `is_video` field to `Sticker` and `StickerSet` classes.
