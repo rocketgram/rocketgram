@@ -22,9 +22,10 @@ class CreateNewStickerSet(BoolResultMixin, Request):
     user_id: int
     name: str
     title: str
-    png_sticker: Optional[Union[InputFile, str]]
-    tgs_sticker: Optional[InputFile]
     emojis: str
+    png_sticker: Optional[Union[InputFile, str]] = None
+    tgs_sticker: Optional[InputFile] = None
+    webm_sticker: Optional[InputFile] = None
     contains_masks: Optional[bool] = None
     mask_position: Optional[MaskPosition] = None
 

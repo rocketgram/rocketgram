@@ -19,6 +19,8 @@ class StickerSet:
 
     name: str
     title: str
+    is_animated: Optional[bool]
+    is_video: Optional[bool]
     contains_masks: bool
     stickers: List[Sticker]
     thumb: Optional[PhotoSize]
@@ -30,4 +32,5 @@ class StickerSet:
 
         stickers = [Sticker.parse(s) for s in data['stickers']]
 
-        return cls(data['name'], data['title'], data['contains_masks'], stickers, PhotoSize.parse(data['thumb']))
+        return cls(data['name'], data['title'], data['is_animated'], data['is_video'], data['contains_masks'], stickers,
+                   PhotoSize.parse(data['thumb']))

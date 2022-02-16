@@ -22,6 +22,7 @@ class Sticker:
     width: int
     height: int
     is_animated: Optional[bool]
+    is_video: Optional[bool]
     thumb: Optional[PhotoSize]
     emoji: Optional[str]
     set_name: Optional[str]
@@ -34,5 +35,5 @@ class Sticker:
             return None
 
         return cls(data['file_id'], data['file_unique_id'], data['width'], data['height'], data['is_animated'],
-                   PhotoSize.parse(data.get('thumb')), data.get('emoji'), data.get('set_name'),
+                   data['is_video'], PhotoSize.parse(data.get('thumb')), data.get('emoji'), data.get('set_name'),
                    MaskPosition.parse(data.get('mask_position')), data.get('file_size'))

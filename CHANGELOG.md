@@ -4,6 +4,16 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- `webm_sticker` field to `CreateNewStickerSet` and `AddStickerToSet` request classes.
+- `is_video` field to `Sticker` and `StickerSet` classes.
+
+### Changed
+- Framework is now corresponds to Telegram Bot API 5.7.
+
+### Fixed
+- Added missed `is_animated` field to `StickerSet` class.
+
 
 ## [3.5.0] - 2022-01-08
 
