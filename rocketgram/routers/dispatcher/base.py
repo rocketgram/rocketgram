@@ -12,8 +12,6 @@ from typing import Callable, Coroutine, AsyncGenerator, Union, List
 from .filters import FILTERS_ATTR, PRIORITY_ATTR, WAITER_ASSIGNED_ATTR, HANDLER_ASSIGNED_ATTR
 from .filters import FilterParams, _check_sig
 from ..router import Router
-from ... import bot
-from ...context import context
 
 logger = logging.getLogger('rocketgram.dispatcher')
 
@@ -54,7 +52,7 @@ class BaseDispatcher(Router):
         self._pre: List[Handler] = list()
         self._post: List[Handler] = list()
         self._default_priority = default_priority
-        self._bots: List['bot.Bot'] = list()
+        self._bots: int = 0
 
     @property
     def default_priority(self):
@@ -94,16 +92,16 @@ class BaseDispatcher(Router):
         self._post.extend(dispatcher.afters)
 
         # if handler added in runtime - resort handlers
-        if len(self._bots):
+        if self._bots:
             self._resort_handlers()
 
     async def init(self):
         logger.debug('Performing init...')
 
-        if not len(self._bots):
+        if not self._bots:
             self._resort_handlers()
 
-        self._bots.append(context.bot)
+        self._bots += 1
 
         for func in self._init:
             await _call_or_await(func)
@@ -114,7 +112,7 @@ class BaseDispatcher(Router):
         for func in reversed(self._shutdown):
             await _call_or_await(func)
 
-        self._bots.remove(context.bot)
+        self._bots -= 1
 
     def on_init(self, func):
         """Registers init"""
@@ -151,7 +149,7 @@ class BaseDispatcher(Router):
         setattr(function, HANDLER_ASSIGNED_ATTR, True)
 
         # if handler added in runtime - resort handlers
-        if len(self._bots):
+        if self._bots:
             self._resort_handlers()
 
     def handler(self, handler: Callable[..., None]):
