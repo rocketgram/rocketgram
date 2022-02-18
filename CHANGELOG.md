@@ -4,6 +4,10 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Deprecated
+- `TornadoConnector` is deprecated and will be removed in version 4.
+- `TornadoExecutor` is deprecated and will be removed in version 4.
+
 
 ## [3.6.0] - 2022-02-16
 

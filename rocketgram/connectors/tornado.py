@@ -6,6 +6,7 @@
 import asyncio
 import logging
 import uuid
+import warnings
 from json import JSONDecodeError
 
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
@@ -27,6 +28,7 @@ class TornadoConnector(Connector):
 
     def __init__(self, *, timeout: int = 35, api_url: str = Connector.API_URL,
                  api_file_url: str = Connector.API_FILE_URL):
+        warnings.warn("This class is deprecated.", DeprecationWarning)
         super().__init__(timeout=timeout, api_url=api_url, api_file_url=api_file_url)
         self._client = AsyncHTTPClient()
 

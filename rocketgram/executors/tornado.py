@@ -5,6 +5,7 @@
 
 import asyncio
 import logging
+import warnings
 
 from tornado.httpserver import HTTPServer
 from tornado.httputil import HTTPServerRequest, HTTPHeaders, ResponseStartLine
@@ -22,6 +23,10 @@ logger = logging.getLogger('rocketgram.executors.tornado')
 
 class TornadoExecutor(WebhookExecutor):
     __slots__ = ()
+
+    def __init__(self, *args, **kwargs):
+        warnings.warn("This class is deprecated.", DeprecationWarning)
+        super().__init__(*args, **kwargs)
 
     def __handler(self, request: HTTPServerRequest):
         err_headers = HTTPHeaders(self.HEADERS_ERROR)
