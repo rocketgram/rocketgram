@@ -9,6 +9,7 @@ All notable changes to this project.
 
 ### Fixed
 - Avoid throwing unnecessary `RocketgramNetworkError` exceptions in poll mode.
+- Replaced deprecated `Task.all_tasks` call to `asyncio.all_tasks` call.
 
 ### Deprecated
 - `TornadoConnector` is deprecated and will be removed in version 4.

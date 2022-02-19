@@ -81,13 +81,13 @@ class Executor:
 
         loop.run_until_complete(stop())
 
-        pending = asyncio.Task.all_tasks()
+        pending = asyncio.all_tasks()
         waits = asyncio.wait_for(asyncio.shield(asyncio.gather(*pending)), shutdown_wait)
 
         with suppress(asyncio.TimeoutError):
             loop.run_until_complete(waits)
 
-        pending = asyncio.Task.all_tasks()
+        pending = asyncio.all_tasks()
         for t in pending:
             if not t.done():
                 logger.error('Cancelled pending task during shutdown: %s', t)
