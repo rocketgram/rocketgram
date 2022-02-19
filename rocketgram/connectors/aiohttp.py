@@ -11,7 +11,7 @@ import aiohttp
 
 from .connector import Connector
 from ..api import Request, Response
-from ..errors import RocketgramNetworkError, RocketgramParseError
+from ..errors import RocketgramNetworkError, RocketgramParseError, RocketgramNetworkTimeoutError
 
 try:
     import ujson as json
@@ -60,9 +60,11 @@ class AioHttpConnector(Connector):
                                                     timeout=self._timeout)
 
             return Response.parse(json.loads(await response.read()), request)
-        except JSONDecodeError as e:
-            raise RocketgramParseError(e)
+        except JSONDecodeError as error:
+            raise RocketgramParseError(error)
         except asyncio.CancelledError:
             raise
+        except TimeoutError as error:
+            raise RocketgramNetworkTimeoutError(error)
         except Exception as error:
             raise RocketgramNetworkError(error) from error

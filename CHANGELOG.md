@@ -4,6 +4,12 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- `RocketgramNetworkTimeoutError` exception class.
+
+### Fixed
+- Avoid throwing unnecessary `RocketgramNetworkError` exceptions in poll mode.
+
 ### Deprecated
 - `TornadoConnector` is deprecated and will be removed in version 4.
 - `TornadoExecutor` is deprecated and will be removed in version 4.

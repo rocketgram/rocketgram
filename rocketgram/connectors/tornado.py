@@ -9,11 +9,11 @@ import uuid
 import warnings
 from json import JSONDecodeError
 
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest, HTTPClientError
 
 from .connector import Connector
 from ..api import Request, Response
-from ..errors import RocketgramNetworkError, RocketgramParseError
+from ..errors import RocketgramNetworkError, RocketgramParseError, RocketgramNetworkTimeoutError
 
 try:
     import ujson as json
@@ -100,9 +100,13 @@ class TornadoConnector(Connector):
             response = await self._client.fetch(req, raise_error=False)
 
             return Response.parse(json.loads(response.body), request)
-        except JSONDecodeError as e:
-            raise RocketgramParseError(e)
+        except JSONDecodeError as error:
+            raise RocketgramParseError(error)
         except asyncio.CancelledError:
             raise
+        except HTTPClientError as error:
+            if error.code == 599:
+                raise RocketgramNetworkTimeoutError(error)
+            raise RocketgramNetworkError(error) from error
         except Exception as error:
             raise RocketgramNetworkError(error) from error

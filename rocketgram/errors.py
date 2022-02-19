@@ -2,6 +2,7 @@
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
+
 from typing import ClassVar
 
 from . import api
@@ -22,6 +23,12 @@ class RocketgramNetworkError(RocketgramError):
 
     def __str__(self):
         return "Network error: %s: %s" % (type(self.exception).__name__, self.exception)
+
+
+class RocketgramNetworkTimeoutError(RocketgramNetworkError):
+    """\
+    This exception raised when the request times out.
+    """
 
 
 class RocketgramParseError(RocketgramError):

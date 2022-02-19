@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Union, Optional, Dict, List, Set
 
 from .executor import Executor
 from ..api import GetMe, GetUpdates, DeleteWebhook, UpdateType
-from ..errors import RocketgramNetworkError
+from ..errors import RocketgramNetworkError, RocketgramNetworkTimeoutError
 
 if TYPE_CHECKING:
     from ..bot import Bot
@@ -91,6 +91,8 @@ class UpdatesExecutor(Executor):
                     pending.add(task)
 
                 pending = {t for t in pending if not t.done()}
+            except RocketgramNetworkTimeoutError:
+                pass
             except RocketgramNetworkError:
                 logging.exception('Exception while processing updates')
             except asyncio.CancelledError:
