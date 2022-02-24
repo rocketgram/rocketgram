@@ -6,7 +6,7 @@
 from dataclasses import replace
 
 from .middleware import EmptyMiddleware
-from .. import api
+from ..api import Request
 
 
 class DefaultValuesMiddleware(EmptyMiddleware):
@@ -19,7 +19,7 @@ class DefaultValuesMiddleware(EmptyMiddleware):
     def defaults(self):
         return self.__defaults.copy()
 
-    def before_request(self, request: 'api.Request') -> 'api.Request':
+    def before_request(self, request: Request) -> Request:
         replaces = dict()
 
         for k, v in self.__defaults.items():
