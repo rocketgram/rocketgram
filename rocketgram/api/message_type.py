@@ -45,4 +45,5 @@ class MessageType(EnumAutoName):
     voice_chat_ended = auto()
     voice_chat_participants_invited = auto()
     message_auto_delete_timer_changed = auto()
+    web_app_data = auto()
     unknown = auto()

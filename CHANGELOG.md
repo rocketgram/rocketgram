@@ -9,6 +9,9 @@ All notable changes to this project.
 - `WebAppInfo` class.
 - `web_app` field to `KeyboardButton` and `InlineKeyboardButton` classes.
 - `web` method to `ReplyKeyboard` and `InlineKeyboard` keyboard classes.
+- `WebAppData` class.
+- `web_app_data` field to `Message` class.
+- `MessageType.web_app_data` message type.
 
 ### Fixed
 - Avoid throwing unnecessary `RocketgramNetworkError` exceptions in poll mode.

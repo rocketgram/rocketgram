@@ -36,6 +36,7 @@ from .voice_chat_ended import VoiceChatEnded
 from .voice_chat_participants_invited import VoiceChatParticipantsInvited
 from .voice_chat_scheduled import VoiceChatScheduled
 from .voice_chat_started import VoiceChatStarted
+from .web_app_data import WebAppData
 
 
 @dataclass(frozen=True)
@@ -123,6 +124,8 @@ class Message:
     voice_chat_ended: Optional[VoiceChatEnded]
     voice_chat_participants_invited: Optional[VoiceChatParticipantsInvited]
 
+    web_app_data: Optional[WebAppData]
+
     reply_markup: Optional[InlineKeyboardMarkup]
 
     @classmethod
@@ -209,6 +212,8 @@ class Message:
         voice_chat_participants_invited = VoiceChatParticipantsInvited.parse(
             data.get('voice_chat_participants_invited'))
 
+        web_app_data = WebAppData.parse(data.get('web_app_data'))
+
         reply_markup = InlineKeyboardMarkup.parse(data.get('reply_markup'))
 
         message_type = MessageType.unknown
@@ -285,6 +290,8 @@ class Message:
             message_type = MessageType.voice_chat_participants_invited
         elif message_auto_delete_timer_changed:
             message_type = MessageType.message_auto_delete_timer_changed
+        elif web_app_data:
+            message_type = MessageType.web_app_data
 
         return cls(message_id, message_type, user, sender_chat, date, chat, forward_from, forward_from_chat,
                    forward_from_message_id, forward_signature, forward_sender_name, forward_date, is_automatic_forward,
@@ -295,7 +302,7 @@ class Message:
                    channel_chat_created, message_auto_delete_timer_changed, migrate_to_chat_id, migrate_from_chat_id,
                    pinned_message, invoice, successful_payment, connected_website, passport_data,
                    proximity_alert_triggered, voice_chat_scheduled, voice_chat_started, voice_chat_ended,
-                   voice_chat_participants_invited, reply_markup)
+                   voice_chat_participants_invited, web_app_data, reply_markup)
 
     @property
     def message_type(self) -> MessageType:
