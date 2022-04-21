@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from .keyboard_button_poll_type import KeyboardButtonPollType
+from .web_app_info import WebAppInfo
 
 
 @dataclass(frozen=True)
@@ -20,3 +21,4 @@ class KeyboardButton:
     request_contact: Optional[bool] = None
     request_location: Optional[bool] = None
     request_poll: Optional[KeyboardButtonPollType] = None
+    web_app: Optional[WebAppInfo] = None

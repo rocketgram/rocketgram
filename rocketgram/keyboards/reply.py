@@ -57,6 +57,10 @@ class ReplyKeyboard(Keyboard):
         self.add(api.KeyboardButton(text=text, request_poll=api.KeyboardButtonPollType(request_poll)))
         return self
 
+    def web(self, text: str, url: str) -> 'ReplyKeyboard':
+        self.add(api.InlineKeyboardButton(text=text, web_app=api.WebAppInfo(url=url)))
+        return self
+
     def row(self) -> 'ReplyKeyboard':
         return super().row()
 

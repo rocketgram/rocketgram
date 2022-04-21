@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Optional, Dict
 
 from .login_url import LoginUrl
+from .web_app_info import WebAppInfo
 
 
 @dataclass(frozen=True)
@@ -20,6 +21,7 @@ class InlineKeyboardButton:
     url: Optional[str] = None
     login_url: Optional[LoginUrl] = None
     callback_data: Optional[str] = None
+    web_app: Optional[WebAppInfo] = None
     switch_inline_query: Optional[str] = None
     switch_inline_query_current_chat: Optional[str] = None
     callback_game: Optional[str] = None
@@ -30,17 +32,6 @@ class InlineKeyboardButton:
         if data is None:
             return None
 
-        if 'url' in data:
-            return cls(data['text'], url=data['url'])
-        if 'login_url' in data:
-            return cls(data['text'], login_url=LoginUrl.parse(data['login_url']))
-        if 'callback_data' in data:
-            return cls(data['text'], callback_data=data['callback_data'])
-        if 'switch_inline_query' in data:
-            return cls(data['text'], switch_inline_query=data['switch_inline_query'])
-        if 'switch_inline_query_current_chat' in data:
-            return cls(data['text'], switch_inline_query_current_chat=data['switch_inline_query_current_chat'])
-        if 'callback_game' in data:
-            return cls(data['text'], callback_game=data['callback_game'])
-        if 'pay' in data:
-            return cls(data['text'], pay=data['pay'])
+        return cls(data['text'], data.get('url'), LoginUrl.parse(data['login_url']), data.get('callback_data'),
+                   WebAppInfo.parse(data['web_app']), data.get('switch_inline_query'),
+                   data.get('switch_inline_query_current_chat'), data.get('callback_game'), data.get('pay'))

@@ -6,6 +6,9 @@ All notable changes to this project.
 
 ### Added
 - `RocketgramNetworkTimeoutError` exception class.
+- `WebAppInfo` class.
+- `web_app` field to `KeyboardButton` and `InlineKeyboardButton` classes.
+- `web` method to `ReplyKeyboard` and `InlineKeyboard` keyboard classes.
 
 ### Fixed
 - Avoid throwing unnecessary `RocketgramNetworkError` exceptions in poll mode.

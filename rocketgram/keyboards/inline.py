@@ -26,6 +26,10 @@ class InlineKeyboard(Keyboard):
         self.add(api.InlineKeyboardButton(text=text, callback_data=callback_data))
         return self
 
+    def web(self, text: str, url: str) -> 'InlineKeyboard':
+        self.add(api.InlineKeyboardButton(text=text, web_app=api.WebAppInfo(url=url)))
+        return self
+
     def inline(self, text: str, switch_inline_query: str = str()) -> 'InlineKeyboard':
         self.add(api.InlineKeyboardButton(text=text, switch_inline_query=switch_inline_query))
         return self
