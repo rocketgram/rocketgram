@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass
 from typing import Union, Optional
 
@@ -25,8 +26,14 @@ class PromoteChatMember(BoolResultMixin, Request):
     can_post_messages: Optional[bool] = None
     can_edit_messages: Optional[bool] = None
     can_delete_messages: Optional[bool] = None
-    can_manage_voice_chats: Optional[bool] = None
+    can_manage_video_chats: Optional[bool] = None
     can_invite_users: Optional[bool] = None
     can_restrict_members: Optional[bool] = None
     can_promote_members: Optional[bool] = None
     can_pin_messages: Optional[bool] = None
+
+    @property
+    def can_manage_voice_chats(self) -> Optional[bool]:
+        warnings.warn("This field is deprecated. Use `can_manage_video_chats` instead.", DeprecationWarning)
+
+        return self.can_manage_video_chats

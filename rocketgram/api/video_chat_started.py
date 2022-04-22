@@ -1,0 +1,29 @@
+# Copyright (C) 2015-2022 by Vd.
+# This file is part of Rocketgram, the modern Telegram bot framework.
+# Rocketgram is released under the MIT License (see LICENSE).
+
+
+import warnings
+from dataclasses import dataclass
+from typing import Dict, Optional
+
+
+@dataclass(frozen=True)
+class VideoChatStarted:
+    """\
+    Represents VideoChatStarted object:
+    https://core.telegram.org/bots/api#videochatstarted
+    """
+
+    @classmethod
+    def parse(cls, data: Optional[Dict]) -> Optional['VideoChatStarted']:
+        if data is None:
+            return None
+
+        return cls()
+
+
+def VoiceChatStarted(*args, **kwargs):
+    warnings.warn("This class is deprecated. Use `VideoChatStarted` instead.", DeprecationWarning)
+
+    return VideoChatStarted()

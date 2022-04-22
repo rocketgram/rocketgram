@@ -3,6 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
+import warnings
 from dataclasses import dataclass
 from typing import Dict, Optional, List
 
@@ -10,17 +11,23 @@ from . import user
 
 
 @dataclass(frozen=True)
-class VoiceChatParticipantsInvited:
+class VideoChatParticipantsInvited:
     """\
-    Represents VoiceChatParticipantsInvited object:
+    Represents VideoChatParticipantsInvited object:
     https://core.telegram.org/bots/api#voicechatparticipantsinvited
     """
 
     users: List['user.User']
 
     @classmethod
-    def parse(cls, data: Optional[Dict]) -> Optional['VoiceChatParticipantsInvited']:
+    def parse(cls, data: Optional[Dict]) -> Optional['VideoChatParticipantsInvited']:
         if data is None:
             return None
 
         return cls([user.User.parse(u) for u in data['users']])
+
+
+def VoiceChatParticipantsInvited(*args, **kwargs):
+    warnings.warn("This class is deprecated. Use `VideoChatParticipantsInvited` instead.", DeprecationWarning)
+
+    return VideoChatParticipantsInvited(*args, **kwargs)

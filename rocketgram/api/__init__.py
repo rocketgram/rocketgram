@@ -214,12 +214,12 @@ from .user import User
 from .user_profile_photos import UserProfilePhotos
 from .venue import Venue
 from .video import Video
+from .video_chat_ended import VideoChatEnded, VoiceChatEnded
+from .video_chat_participants_invited import VideoChatParticipantsInvited, VoiceChatParticipantsInvited
+from .video_chat_scheduled import VideoChatScheduled, VoiceChatScheduled
+from .video_chat_started import VideoChatStarted, VoiceChatStarted
 from .video_note import VideoNote
 from .voice import Voice
-from .voice_chat_ended import VoiceChatEnded
-from .voice_chat_participants_invited import VoiceChatParticipantsInvited
-from .voice_chat_scheduled import VoiceChatScheduled
-from .voice_chat_started import VoiceChatStarted
 from .web_app_data import WebAppData
 from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo

@@ -30,12 +30,12 @@ from .successful_payment import SuccessfulPayment
 from .user import User
 from .venue import Venue
 from .video import Video
+from .video_chat_ended import VideoChatEnded
+from .video_chat_participants_invited import VideoChatParticipantsInvited
+from .video_chat_scheduled import VideoChatScheduled
+from .video_chat_started import VideoChatStarted
 from .video_note import VideoNote
 from .voice import Voice
-from .voice_chat_ended import VoiceChatEnded
-from .voice_chat_participants_invited import VoiceChatParticipantsInvited
-from .voice_chat_scheduled import VoiceChatScheduled
-from .voice_chat_started import VoiceChatStarted
 from .web_app_data import WebAppData
 
 
@@ -119,10 +119,10 @@ class Message:
 
     proximity_alert_triggered: Optional[ProximityAlertTriggered]
 
-    voice_chat_scheduled: Optional[VoiceChatScheduled]
-    voice_chat_started: Optional[VoiceChatStarted]
-    voice_chat_ended: Optional[VoiceChatEnded]
-    voice_chat_participants_invited: Optional[VoiceChatParticipantsInvited]
+    video_chat_scheduled: Optional[VideoChatScheduled]
+    video_chat_started: Optional[VideoChatStarted]
+    video_chat_ended: Optional[VideoChatEnded]
+    video_chat_participants_invited: Optional[VideoChatParticipantsInvited]
 
     web_app_data: Optional[WebAppData]
 
@@ -206,11 +206,11 @@ class Message:
 
         proximity_alert_triggered = ProximityAlertTriggered.parse(data.get('proximity_alert_triggered'))
 
-        voice_chat_scheduled = VoiceChatScheduled.parse(data.get('voice_chat_scheduled'))
-        voice_chat_started = VoiceChatStarted.parse(data.get('voice_chat_started'))
-        voice_chat_ended = VoiceChatEnded.parse(data.get('voice_chat_ended'))
-        voice_chat_participants_invited = VoiceChatParticipantsInvited.parse(
-            data.get('voice_chat_participants_invited'))
+        video_chat_scheduled = VideoChatScheduled.parse(data.get('video_chat_scheduled'))
+        video_chat_started = VideoChatStarted.parse(data.get('video_chat_started'))
+        video_chat_ended = VideoChatEnded.parse(data.get('video_chat_ended'))
+        video_chat_participants_invited = VideoChatParticipantsInvited.parse(
+            data.get('video_chat_participants_invited'))
 
         web_app_data = WebAppData.parse(data.get('web_app_data'))
 
@@ -280,14 +280,14 @@ class Message:
             message_type = MessageType.passport_data
         elif proximity_alert_triggered:
             message_type = MessageType.proximity_alert_triggered
-        elif voice_chat_scheduled:
-            message_type = MessageType.voice_chat_scheduled
-        elif voice_chat_started:
-            message_type = MessageType.voice_chat_started
-        elif voice_chat_ended:
-            message_type = MessageType.voice_chat_ended
-        elif voice_chat_participants_invited:
-            message_type = MessageType.voice_chat_participants_invited
+        elif video_chat_scheduled:
+            message_type = MessageType.video_chat_scheduled
+        elif video_chat_started:
+            message_type = MessageType.video_chat_started
+        elif video_chat_ended:
+            message_type = MessageType.video_chat_ended
+        elif video_chat_participants_invited:
+            message_type = MessageType.video_chat_participants_invited
         elif message_auto_delete_timer_changed:
             message_type = MessageType.message_auto_delete_timer_changed
         elif web_app_data:
@@ -301,8 +301,34 @@ class Message:
                    new_chat_title, new_chat_photo, delete_chat_photo, group_chat_created, supergroup_chat_created,
                    channel_chat_created, message_auto_delete_timer_changed, migrate_to_chat_id, migrate_from_chat_id,
                    pinned_message, invoice, successful_payment, connected_website, passport_data,
-                   proximity_alert_triggered, voice_chat_scheduled, voice_chat_started, voice_chat_ended,
-                   voice_chat_participants_invited, web_app_data, reply_markup)
+                   proximity_alert_triggered, video_chat_scheduled, video_chat_started, video_chat_ended,
+                   video_chat_participants_invited, web_app_data, reply_markup)
+
+
+    @property
+    def voice_chat_scheduled(self) -> Optional[bool]:
+        warnings.warn("This field is deprecated. Use `video_chat_scheduled` instead.", DeprecationWarning)
+
+        return self.video_chat_scheduled
+
+    @property
+    def voice_chat_started(self) -> Optional[bool]:
+        warnings.warn("This field is deprecated. Use `video_chat_started` instead.", DeprecationWarning)
+
+        return self.video_chat_started
+
+    @property
+    def voice_chat_ended(self) -> Optional[bool]:
+        warnings.warn("This field is deprecated. Use `video_chat_ended` instead.", DeprecationWarning)
+
+        return self.video_chat_ended
+
+    @property
+    def voice_chat_participants_invited(self) -> Optional[bool]:
+        warnings.warn("This field is deprecated. Use `video_chat_participants_invited` instead.", DeprecationWarning)
+
+        return self.video_chat_participants_invited
+
 
     @property
     def message_type(self) -> MessageType:

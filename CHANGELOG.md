@@ -17,6 +17,16 @@ All notable changes to this project.
 - `ChatAdministratorRights` class.
 - `SetMyDefaultAdministratorRights` and `GetMyDefaultAdministratorRights` request classes.
 - `last_synchronization_error_date` field to `WebhookInfo` class.
+- `MessageType.voice_chat_scheduled` message type.
+- `MessageType.voice_chat_started` message type.
+- `MessageType.voice_chat_ended` message type.
+- `MessageType.voice_chat_participants_invited` message type.
+- `voice_chat_scheduled` field to `Message` class.
+- `voice_chat_started` field to `Message` class.
+- `voice_chat_ended` field to `Message` class.
+- `voice_chat_participants_invited` field to `Message` class.
+- `can_manage_voice_chats` field to `ChatMember` class.
+- `can_manage_voice_chats` field to `PromoteChatMember` class.
 
 ### Fixed
 - Avoid throwing unnecessary `RocketgramNetworkError` exceptions in poll mode.
@@ -26,6 +36,20 @@ All notable changes to this project.
 ### Deprecated
 - `TornadoConnector` is deprecated and will be removed in version 4.
 - `TornadoExecutor` is deprecated and will be removed in version 4.
+- `VoiceChatStarted` is deprecated and will be removed in version 4.
+- `VoiceChatEnded` is deprecated and will be removed in version 4.
+- `VoiceChatParticipantsInvited` is deprecated and will be removed in version 4.
+- `VoiceChatScheduled` is deprecated and will be removed in version 4.
+- `MessageType.voice_chat_scheduled` is deprecated and will be removed in version 4.
+- `MessageType.voice_chat_started` is deprecated and will be removed in version 4.
+- `MessageType.voice_chat_ended` is deprecated and will be removed in version 4.
+- `MessageType.voice_chat_participants_invited` is deprecated and will be removed in version 4.
+- `Message.voice_chat_scheduled` is deprecated and will be removed in version 4.
+- `Message.voice_chat_started` is deprecated and will be removed in version 4.
+- `Message.voice_chat_ended` is deprecated and will be removed in version 4.
+- `Message.voice_chat_participants_invited` is deprecated and will be removed in version 4.
+- `ChatMember.can_manage_voice_chats` is deprecated and will be removed in version 4.
+- `PromoteChatMember.can_manage_voice_chats` is deprecated and will be removed in version 4.
 
 
 ## [3.6.0] - 2022-02-16
