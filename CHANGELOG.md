@@ -33,6 +33,9 @@ All notable changes to this project.
 - `AnswerWebAppQuery` request class.
 - `SentWebAppMessage` class.
 
+### Changed
+- Framework is now corresponds to Telegram Bot API 6.0.
+
 ### Fixed
 - Avoid throwing unnecessary `RocketgramNetworkError` exceptions in poll mode.
 - Replaced deprecated `Task.all_tasks` call to `asyncio.all_tasks` call.
