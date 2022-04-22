@@ -27,6 +27,8 @@ All notable changes to this project.
 - `voice_chat_participants_invited` field to `Message` class.
 - `can_manage_voice_chats` field to `ChatMember` class.
 - `can_manage_voice_chats` field to `PromoteChatMember` class.
+- `AnswerWebAppQuery` request class.
+- `SentWebAppMessage` class.
 
 ### Fixed
 - Avoid throwing unnecessary `RocketgramNetworkError` exceptions in poll mode.

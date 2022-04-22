@@ -9,6 +9,7 @@ from .answer_callback_query import AnswerCallbackQuery
 from .answer_inline_query import AnswerInlineQuery
 from .answer_pre_checkout_query import AnswerPreCheckoutQuery
 from .answer_shipping_query import AnswerShippingQuery
+from .answer_web_app_query import AnswerWebAppQuery
 from .approve_chat_join_request import ApproveChatJoinRequest
 from .audio import Audio
 from .ban_chat_member import BanChatMember, KickChatMember
@@ -180,6 +181,7 @@ from .send_venue import SendVenue
 from .send_video import SendVideo
 from .send_video_note import SendVideoNote
 from .send_voice import SendVoice
+from .sent_web_app_message import SentWebAppMessage
 from .set_chat_administrator_custom_title import SetChatAdministratorCustomTitle
 from .set_chat_description import SetChatDescription
 from .set_chat_menu_button import SetChatMenuButton
