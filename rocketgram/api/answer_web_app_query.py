@@ -7,8 +7,9 @@ from dataclasses import dataclass
 
 from .inline_query_result import InlineQueryResult
 from .request import Request
+from .sent_web_app_message import SentWebAppMessage
 from .utils import BoolResultMixin
-from .. import context, SentWebAppMessage
+from ..context import context
 
 
 @dataclass(frozen=True)
