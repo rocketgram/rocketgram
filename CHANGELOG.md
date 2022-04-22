@@ -16,6 +16,7 @@ All notable changes to this project.
 - `SetChatMenuButton` and `GetChatAdministrators` request classes.
 - `ChatAdministratorRights` class.
 - `SetMyDefaultAdministratorRights` and `GetMyDefaultAdministratorRights` request classes.
+- `last_synchronization_error_date` field to `WebhookInfo` class.
 
 ### Fixed
 - Avoid throwing unnecessary `RocketgramNetworkError` exceptions in poll mode.
