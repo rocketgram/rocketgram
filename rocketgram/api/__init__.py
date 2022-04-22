@@ -70,6 +70,7 @@ from .get_chat import GetChat
 from .get_chat_administrators import GetChatAdministrators
 from .get_chat_member import GetChatMember
 from .get_chat_member_count import GetChatMemberCount, GetChatMembersCount
+from .get_chat_menu_button import GetChatMenuButton
 from .get_file import GetFile
 from .get_game_high_scores import GetGameHighScores
 from .get_me import GetMe
@@ -122,6 +123,9 @@ from .log_out import LogOut
 from .login_url import LoginUrl
 from .mask_position import MaskPosition
 from .mask_position_point_type import MaskPositionPointType
+from .menu_button_commands import MenuButtonCommands
+from .menu_button_default import MenuButtonDefault
+from .menu_button_web_app import MenuButtonWebApp
 from .message import Message
 from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
@@ -176,6 +180,7 @@ from .send_video_note import SendVideoNote
 from .send_voice import SendVoice
 from .set_chat_administrator_custom_title import SetChatAdministratorCustomTitle
 from .set_chat_description import SetChatDescription
+from .set_chat_menu_button import SetChatMenuButton
 from .set_chat_permissions import SetChatPermissions
 from .set_chat_photo import SetChatPhoto
 from .set_chat_sticker_set import SetChatStickerSet

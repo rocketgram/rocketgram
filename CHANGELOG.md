@@ -12,6 +12,8 @@ All notable changes to this project.
 - `WebAppData` class.
 - `web_app_data` field to `Message` class.
 - `MessageType.web_app_data` message type.
+- `MenuButtonCommands`, `MenuButtonDefault` and `MenuButtonWebApp` classes.
+- `SetChatMenuButton` and `GetChatAdministrators` request classes.
 
 ### Fixed
 - Avoid throwing unnecessary `RocketgramNetworkError` exceptions in poll mode.
