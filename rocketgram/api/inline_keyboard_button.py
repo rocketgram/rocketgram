@@ -32,6 +32,6 @@ class InlineKeyboardButton:
         if data is None:
             return None
 
-        return cls(data['text'], data.get('url'), LoginUrl.parse(data['login_url']), data.get('callback_data'),
-                   WebAppInfo.parse(data['web_app']), data.get('switch_inline_query'),
+        return cls(data['text'], data.get('url'), LoginUrl.parse(data.get('login_url')), data.get('callback_data'),
+                   WebAppInfo.parse(data.get('web_app')), data.get('switch_inline_query'),
                    data.get('switch_inline_query_current_chat'), data.get('callback_game'), data.get('pay'))
