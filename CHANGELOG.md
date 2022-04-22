@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [3.7.0] - 2022-04-22
+
 ### Added
 - `RocketgramNetworkTimeoutError` exception class.
 - `WebAppInfo` class.
