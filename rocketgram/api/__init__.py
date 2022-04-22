@@ -25,6 +25,7 @@ from .bot_command_scope_default import BotCommandScopeDefault
 from .callback_query import CallbackQuery
 from .chat import Chat
 from .chat_action_type import ChatActionType
+from .chat_administrator_rights import ChatAdministratorRights
 from .chat_invite_link import ChatInviteLink
 from .chat_join_request import ChatJoinRequest
 from .chat_location import ChatLocation
@@ -75,6 +76,7 @@ from .get_file import GetFile
 from .get_game_high_scores import GetGameHighScores
 from .get_me import GetMe
 from .get_my_commands import GetMyCommands
+from .get_my_default_administrator_rights import GetMyDefaultAdministratorRights
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_profile_photos import GetUserProfilePhotos
@@ -187,6 +189,7 @@ from .set_chat_sticker_set import SetChatStickerSet
 from .set_chat_title import SetChatTitle
 from .set_game_score import SetGameScore
 from .set_my_commands import SetMyCommands
+from .set_my_default_administrator_rights import SetMyDefaultAdministratorRights
 from .set_passport_data_errors import SetPassportDataErrors
 from .set_sticker_position_in_set import SetStickerPositionInSet
 from .set_sticker_set_thumb import SetStickerSetThumb
