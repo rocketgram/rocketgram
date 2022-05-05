@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import warnings
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
@@ -26,9 +25,3 @@ class VideoChatScheduled:
         start_date = datetime.utcfromtimestamp(data['start_date']) if 'start_date' in data else None
 
         return cls(start_date)
-
-
-def VoiceChatScheduled(*args, **kwargs):
-    warnings.warn("This class is deprecated. Use `VideoChatScheduled` instead.", DeprecationWarning)
-
-    return VideoChatScheduled(*args, **kwargs)

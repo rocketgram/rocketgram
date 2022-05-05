@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import warnings
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional
@@ -303,35 +302,3 @@ class Message:
                    pinned_message, invoice, successful_payment, connected_website, passport_data,
                    proximity_alert_triggered, video_chat_scheduled, video_chat_started, video_chat_ended,
                    video_chat_participants_invited, web_app_data, reply_markup)
-
-
-    @property
-    def voice_chat_scheduled(self) -> Optional[bool]:
-        warnings.warn("This field is deprecated. Use `video_chat_scheduled` instead.", DeprecationWarning)
-
-        return self.video_chat_scheduled
-
-    @property
-    def voice_chat_started(self) -> Optional[bool]:
-        warnings.warn("This field is deprecated. Use `video_chat_started` instead.", DeprecationWarning)
-
-        return self.video_chat_started
-
-    @property
-    def voice_chat_ended(self) -> Optional[bool]:
-        warnings.warn("This field is deprecated. Use `video_chat_ended` instead.", DeprecationWarning)
-
-        return self.video_chat_ended
-
-    @property
-    def voice_chat_participants_invited(self) -> Optional[bool]:
-        warnings.warn("This field is deprecated. Use `video_chat_participants_invited` instead.", DeprecationWarning)
-
-        return self.video_chat_participants_invited
-
-
-    @property
-    def message_type(self) -> MessageType:
-        warnings.warn("This field is deprecated. Use `type` instead.", DeprecationWarning)
-
-        return self.type

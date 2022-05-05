@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import warnings
 from dataclasses import dataclass
 from typing import Dict, Optional
 
@@ -23,9 +22,3 @@ class VideoChatEnded:
             return None
 
         return cls(data['duration'])
-
-
-def VoiceChatEnded(*args, **kwargs):
-    warnings.warn("This class is deprecated. Use `VideoChatEnded` instead.", DeprecationWarning)
-
-    return VideoChatEnded(*args, **kwargs)

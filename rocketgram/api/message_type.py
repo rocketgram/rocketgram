@@ -47,8 +47,3 @@ class MessageType(EnumAutoName):
     message_auto_delete_timer_changed = auto()
     web_app_data = auto()
     unknown = auto()
-
-    voice_chat_scheduled = video_chat_scheduled  # deprecated
-    voice_chat_started = video_chat_started  # deprecated
-    voice_chat_ended = video_chat_ended  # deprecated
-    voice_chat_participants_invited = video_chat_participants_invited  # deprecated

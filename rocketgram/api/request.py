@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import warnings
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import Enum
@@ -73,11 +72,6 @@ class Request:
         """Sends this request with current context."""
 
         raise NotImplementedError
-
-    async def send2(self):
-        warnings.warn("This method is deprecated. Use send() instead.", DeprecationWarning)
-
-        return await self.send()
 
     def webhook(self):
         """\

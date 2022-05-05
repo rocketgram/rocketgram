@@ -18,8 +18,8 @@ class ChatActionType(EnumAutoName):
     upload_photo = auto()
     record_video = auto()
     upload_video = auto()
-    record_audio = auto()  # Deprecated
-    upload_audio = auto()  # Deprecated
+    record_audio = auto()
+    upload_audio = auto()
     record_voice = auto()
     upload_voice = auto()
     upload_document = auto()

@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import warnings
 from dataclasses import dataclass
 from typing import Dict, Optional
 
@@ -33,9 +32,3 @@ class User:
         return cls(data['id'], data['is_bot'], data['first_name'], data.get('last_name'), data.get('username'),
                    data.get('language_code'), data.get('can_join_groups'), data.get('can_read_all_group_messages'),
                    data.get('supports_inline_queries'))
-
-    @property
-    def user_id(self) -> int:
-        warnings.warn("This field is deprecated. Use `id` instead.", DeprecationWarning)
-
-        return self.id

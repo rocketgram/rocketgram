@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import warnings
 from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
@@ -48,15 +47,3 @@ class Poll:
                    data['is_anonymous'], PollType(data['type']), data['allows_multiple_answers'],
                    data.get('correct_option_id'), data.get('explanation'), explanation_entities,
                    data.get('open_period'), close_date)
-
-    @property
-    def pool_id(self) -> str:
-        warnings.warn("This field is deprecated. Use `id` instead.", DeprecationWarning)
-
-        return self.id
-
-    @property
-    def poll_type(self) -> PollType:
-        warnings.warn("This field is deprecated. Use `type` instead.", DeprecationWarning)
-
-        return self.type

@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import warnings
 from dataclasses import dataclass
 from typing import Optional
 
@@ -41,9 +40,3 @@ class InlineQuery:
 
         return cls(data['id'], User.parse(data['from']), Location.parse(data.get('location')),
                    data['query'], data['offset'], chat_type)
-
-    @property
-    def query_id(self) -> str:
-        warnings.warn("This field is deprecated. Use `id` instead.", DeprecationWarning)
-
-        return self.id

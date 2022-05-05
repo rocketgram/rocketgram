@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import warnings
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
@@ -41,12 +40,6 @@ class ChatMember:
     can_send_polls: Optional[bool]
     can_send_other_messages: Optional[bool]
     can_add_web_page_previews: Optional[bool]
-
-    @property
-    def can_manage_voice_chats(self) -> Optional[bool]:
-        warnings.warn("This field is deprecated. Use `can_manage_video_chats` instead.", DeprecationWarning)
-
-        return self.can_manage_video_chats
 
     @classmethod
     def parse(cls, data: dict) -> Optional['ChatMember']:

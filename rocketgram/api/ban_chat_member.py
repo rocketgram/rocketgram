@@ -22,6 +22,3 @@ class BanChatMember(BoolResultMixin, Request):
     user_id: int
     until_date: Optional[datetime] = None
     revoke_messages: Optional[bool] = None
-
-
-KickChatMember = BanChatMember  # Deprecated! Will be removed in version 4.

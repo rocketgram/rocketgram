@@ -18,6 +18,3 @@ class GetChatMemberCount(IntResultMixin, Request):
     """
 
     chat_id: Union[int, str]
-
-
-GetChatMembersCount = GetChatMemberCount  # Deprecated! Will be removed in version 4.

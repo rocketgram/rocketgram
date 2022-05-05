@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import warnings
 from dataclasses import dataclass
 from typing import Dict, Optional
 
@@ -59,15 +58,3 @@ class Chat:
                    data.get('slow_mode_delay'), data.get('message_auto_delete_time'), data.get('has_protected_content'),
                    data.get('sticker_set_name'), data.get('can_set_sticker_set'), data.get('linked_chat_id'),
                    ChatLocation.parse(data.get('location')))
-
-    @property
-    def chat_id(self) -> int:
-        warnings.warn("This field is deprecated. Use `id` instead.", DeprecationWarning)
-
-        return self.id
-
-    @property
-    def chat_type(self) -> ChatType:
-        warnings.warn("This field is deprecated. Use `type` instead.", DeprecationWarning)
-
-        return self.type

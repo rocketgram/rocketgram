@@ -12,7 +12,7 @@ from .answer_shipping_query import AnswerShippingQuery
 from .answer_web_app_query import AnswerWebAppQuery
 from .approve_chat_join_request import ApproveChatJoinRequest
 from .audio import Audio
-from .ban_chat_member import BanChatMember, KickChatMember
+from .ban_chat_member import BanChatMember
 from .ban_chat_sender_chat import BanChatSenderChat
 from .bot_command import BotCommand
 from .bot_command_scope import BotCommandScope
@@ -71,7 +71,7 @@ from .game_high_score import GameHighScore
 from .get_chat import GetChat
 from .get_chat_administrators import GetChatAdministrators
 from .get_chat_member import GetChatMember
-from .get_chat_member_count import GetChatMemberCount, GetChatMembersCount
+from .get_chat_member_count import GetChatMemberCount
 from .get_chat_menu_button import GetChatMenuButton
 from .get_file import GetFile
 from .get_game_high_scores import GetGameHighScores
@@ -216,10 +216,10 @@ from .user import User
 from .user_profile_photos import UserProfilePhotos
 from .venue import Venue
 from .video import Video
-from .video_chat_ended import VideoChatEnded, VoiceChatEnded
-from .video_chat_participants_invited import VideoChatParticipantsInvited, VoiceChatParticipantsInvited
-from .video_chat_scheduled import VideoChatScheduled, VoiceChatScheduled
-from .video_chat_started import VideoChatStarted, VoiceChatStarted
+from .video_chat_ended import VideoChatEnded
+from .video_chat_participants_invited import VideoChatParticipantsInvited
+from .video_chat_scheduled import VideoChatScheduled
+from .video_chat_started import VideoChatStarted
 from .video_note import VideoNote
 from .voice import Voice
 from .web_app_data import WebAppData

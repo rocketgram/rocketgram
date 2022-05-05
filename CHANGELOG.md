@@ -10,6 +10,27 @@ All notable changes to this project.
 
 ### Removed
 - Tornado support: `TornadoExecutor` and `TornadoConnector` classes.
+- `VoiceChatStarted` class.
+- `VoiceChatScheduled` class.
+- `VoiceChatParticipantsInvited` class.
+- `VoiceChatEnded` class.
+- `user_id` field from `User` class.
+- `update_type` field from `Update` class.
+- `query_id` field from `ShippingQuery` class.
+- `send2` method from `Request` and child classes.
+- `can_manage_voice_chats` field from `PromoteChatMember` class.
+- `query_id` field from `PreCheckoutQuery` class.
+- `pool_id` and `poll_type` fields from `Poll` class.
+- `entity_type` field from `MessageEntity` class.
+- `voice_chat_scheduled`, `voice_chat_started`, `voice_chat_ended`, `voice_chat_participants_invited` and `message_type` fields from `Message` class.
+- `query_id` field from `InlineQuery` class.
+- `encrypted_passport_element_type` field from `EncryptedPassportElement` class.
+- `can_manage_voice_chats` field from `ChatMember` class.
+- `chat_id` and `chat_type` fields from `Chat` class.
+- `query_id` field from `CallbackQuery` class.
+- `voice_chat_scheduled`, `voice_chat_started`, `voice_chat_ended` and `voice_chat_participants_invited` variants from `MessageType` enum class.
+- `GetChatMembersCount` class.
+- `KickChatMember` class.
 
 
 ## [3.7.0] - 2022-04-22
