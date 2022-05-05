@@ -22,15 +22,15 @@ pip install rocketgram[aiohttp,ujson]
 
 ## Dependencies
 
-All dependencies are optional but you should install one of `aiohttp` and `tornado` to use framework.
+All dependencies are optional, but you should install one of `aiohttp` and `tornado` to use framework.
 
 `ujson` is highly recommended to speedup json parsing.
 
-Also you can use `uvloop` as alternative to standard event loop.
+Also, you can use `uvloop` as alternative to standard event loop.
 
 * Python >= 3.7
-* aiohttp >= 3.6.2
-* ujson >= 1.35
+* aiohttp >= 3.8.1
+* ujson >= 5.2.0
 * tornado >= 6.0.2
 * uvloop >= 0.12.1
 

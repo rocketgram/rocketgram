@@ -4,6 +4,10 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Changed
+- The minimum required version of `aiohttp` is now `3.8.1`.
+- The minimum required version of `ujson` is now `5.2.0`.
+
 
 ## [3.7.0] - 2022-04-22
 
