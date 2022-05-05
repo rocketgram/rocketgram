@@ -6,6 +6,19 @@ Modern and powerful asynchronous telegram bot framework.
 
 Release news available here: [@RocketgramNews](https://t.me/RocketgramNews)
 
+## Dependencies
+
+All dependencies are optional, but you should install `aiohttp` to use the framework.
+
+`ujson` is highly recommended to speedup json parsing.
+
+Also, you can use `uvloop` as alternative to standard event loop.
+
+* Python >= 3.7
+* aiohttp >= 3.8.1
+* ujson >= 5.2.0
+* uvloop >= 0.12.1
+
 ## How to install
 
 #### For development
@@ -19,20 +32,6 @@ pip install rocketgram[aiohttp]
 ```bash
 pip install rocketgram[aiohttp,ujson]
 ```
-
-## Dependencies
-
-All dependencies are optional, but you should install one of `aiohttp` and `tornado` to use framework.
-
-`ujson` is highly recommended to speedup json parsing.
-
-Also, you can use `uvloop` as alternative to standard event loop.
-
-* Python >= 3.7
-* aiohttp >= 3.8.1
-* ujson >= 5.2.0
-* tornado >= 6.0.2
-* uvloop >= 0.12.1
 
 ## Example
 

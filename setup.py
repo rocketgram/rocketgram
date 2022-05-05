@@ -23,7 +23,6 @@ setuptools.setup(
     python_requires=">=3.7",
     extras_require={
         'aiohttp': ["aiohttp >= 3.8.1"],
-        'tornado': ["tornado >= 6.0.2"],
         'ujson': ["ujson >= 5.2.0"],
         'uvloop': ["uvloop >= 0.12.1"]
     },

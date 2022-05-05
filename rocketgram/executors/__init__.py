@@ -11,5 +11,3 @@ from .webhook import WebhookExecutor
 
 with suppress(ImportError):
     from .aiohttp import AioHttpExecutor
-with suppress(ImportError):
-    from .tornado import TornadoExecutor
