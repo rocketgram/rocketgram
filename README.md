@@ -10,7 +10,7 @@ Release news available here: [@RocketgramNews](https://t.me/RocketgramNews)
 
 All dependencies are optional, but you should install `aiohttp` to use the framework.
 
-`ujson` is highly recommended to speedup json parsing.
+`orjson` or `ujson` is highly recommended to speedup json parsing.
 
 Also, you can use `uvloop` as alternative to standard event loop.
 
@@ -30,7 +30,7 @@ pip install rocketgram[aiohttp]
 #### For production
 
 ```bash
-pip install rocketgram[aiohttp,ujson]
+pip install uvloop rocketgram[aiohttp,orjson]
 ```
 
 ## Example

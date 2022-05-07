@@ -6,27 +6,25 @@
 import asyncio
 import logging
 from json import JSONDecodeError
+from typing import Type
 
 import aiohttp
 
 from .connector import Connector
 from ..api import Request, Response
 from ..errors import RocketgramNetworkError, RocketgramParseError, RocketgramNetworkTimeoutError
-
-try:
-    import ujson as json
-except ImportError:
-    import json
+from ..json_adapters import BaseJsonAdapter, default_json_adapter
 
 logger = logging.getLogger('rocketgram.connectors.aiohttp')
 
 
 class AioHttpConnector(Connector):
-    __slots__ = ('_api_url', '_api_file_url', '_session', '_timeout')
+    __slots__ = ('_api_url', '_api_file_url', '_session', '_timeout', '_dumps', '_loads')
 
     def __init__(self, *, timeout: int = 35, api_url: str = Connector.API_URL,
-                 api_file_url: str = Connector.API_FILE_URL):
-        super().__init__(timeout=timeout, api_url=api_url, api_file_url=api_file_url)
+                 api_file_url: str = Connector.API_FILE_URL,
+                 json_adapter: Type[BaseJsonAdapter] = default_json_adapter()):
+        super().__init__(timeout=timeout, api_url=api_url, api_file_url=api_file_url, json_adapter=json_adapter)
         self._session = aiohttp.ClientSession(loop=asyncio.get_event_loop())
 
     async def init(self):
@@ -47,7 +45,7 @@ class AioHttpConnector(Connector):
                 data = aiohttp.FormData(quote_fields=False)
                 for name, field in request_data.items():
                     if isinstance(field, (dict, list, tuple)):
-                        data.add_field(name, json.dumps(field), content_type='application/json')
+                        data.add_field(name, self._dumps(field), content_type='application/json')
                         continue
                     data.add_field(name, str(field), content_type='text/plain')
 
@@ -56,10 +54,10 @@ class AioHttpConnector(Connector):
 
                 response = await self._session.post(url, data=data, timeout=self._timeout)
             else:
-                response = await self._session.post(url, data=json.dumps(request_data), headers=self.HEADERS,
+                response = await self._session.post(url, data=self._dumps(request_data), headers=self.HEADERS,
                                                     timeout=self._timeout)
 
-            return Response.parse(json.loads(await response.read()), request)
+            return Response.parse(self._loads(await response.read()), request)
         except JSONDecodeError as error:
             raise RocketgramParseError(error)
         except asyncio.CancelledError:

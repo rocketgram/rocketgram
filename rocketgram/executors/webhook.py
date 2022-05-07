@@ -6,18 +6,14 @@
 import asyncio
 import logging
 import signal
-from typing import TYPE_CHECKING, Union, Dict, List, Set, Optional
+from typing import TYPE_CHECKING, Union, Dict, List, Set, Optional, Type
 
 from .executor import Executor
 from ..api import Request, GetMe, SetWebhook, DeleteWebhook
 from ..api import UpdateType, InputFile
 from ..errors import RocketgramRequestError
+from ..json_adapters import BaseJsonAdapter, default_json_adapter
 from ..version import version
-
-try:
-    import ujson as json
-except ImportError:
-    import json
 
 if TYPE_CHECKING:
     from ..bot import Bot
@@ -29,9 +25,10 @@ class WebhookExecutor(Executor):
     HEADERS = {"Server": f"Rocketgram/{version()}", "Content-Type": "application/json"}
     HEADERS_ERROR = {"Server": f"Rocketgram/{version()}", "Content-Type": "text/plain"}
 
-    __slots__ = ('_base_url', '_base_path', '_host', '_port', '_bots', '_srv', '_started', '_tasks')
+    __slots__ = ('_base_url', '_base_path', '_host', '_port', '_bots', '_srv', '_started', '_tasks', '_dumps', '_loads')
 
-    def __init__(self, base_url: str, base_path: str, *, host: str = 'localhost', port: int = 8080):
+    def __init__(self, base_url: str, base_path: str, *, host: str = 'localhost', port: int = 8080,
+                 json_adapter: Type[BaseJsonAdapter] = default_json_adapter()):
         self._base_url = base_url
         self._base_path = base_path
         self._host = host
@@ -40,6 +37,9 @@ class WebhookExecutor(Executor):
         self._bots = dict()
         self._srv = None
         self._started = False
+
+        self._loads = json_adapter.loads
+        self._dumps = json_adapter.dumps
 
         self._tasks: Dict['Bot', Set[asyncio.Task]] = dict()
 
@@ -125,9 +125,10 @@ class WebhookExecutor(Executor):
             port: int = 8080, webhook_setup: bool = True, webhook_remove: bool = True,
             certificate: Optional[InputFile] = None, ip_address: Optional[str] = None,
             allowed_updates: Optional[List[UpdateType]] = None, drop_pending_updates: bool = False,
-            signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait: int = 10):
+            signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait: int = 10,
+            json_adapter: Type[BaseJsonAdapter] = default_json_adapter()):
 
-        executor = cls(base_url, base_path, host=host, port=port)
+        executor = cls(base_url, base_path, host=host, port=port, json_adapter=json_adapter)
 
         def add(bot: 'Bot'):
             return executor.add_bot(bot, certificate=certificate, ip_address=ip_address,

@@ -11,11 +11,6 @@ from aiohttp.web import Server, ServerRunner, BaseRequest, TCPSite, Response
 from .webhook import WebhookExecutor
 from ..api import Request, Update
 
-try:
-    import ujson as json
-except ImportError:
-    import json
-
 logger = logging.getLogger('rocketgram.executors.aiohttp')
 
 
@@ -36,7 +31,7 @@ class AioHttpExecutor(WebhookExecutor):
             self._tasks[bot] = set()
 
         try:
-            parsed = Update.parse(json.loads(await request.read()))
+            parsed = Update.parse(self._loads(await request.read()))
         except Exception:  # noqa
             logger.exception("Got exception while parsing update:")
             return Response(status=500, text="Server error.", headers=self.HEADERS_ERROR)
@@ -51,7 +46,7 @@ class AioHttpExecutor(WebhookExecutor):
             return Response(status=500, text="Server error.", headers=self.HEADERS_ERROR)
 
         if response:
-            data = json.dumps(response.render(with_method=True))
+            data = self._dumps(response.render(with_method=True))
             return Response(body=data, headers=self.HEADERS)
 
         self._tasks[bot] = {t for t in self._tasks[bot] if not t.done()}

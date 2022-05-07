@@ -10,6 +10,7 @@ from .connectors import *
 from .context import context
 from .errors import *
 from .executors import *
+from .json_adapters import *
 from .keyboards import *
 from .middlewares import *
 from .routers import *

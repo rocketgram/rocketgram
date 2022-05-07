@@ -4,8 +4,10 @@
 
 
 import logging
+from typing import Type
 
 from ..api import Request, Response
+from ..json_adapters import BaseJsonAdapter, default_json_adapter
 from ..version import version
 
 logger = logging.getLogger('rocketgram.connectors.connector')
@@ -17,10 +19,13 @@ class Connector:
     API_URL = "https://api.telegram.org/bot%s/"
     API_FILE_URL = "https://api.telegram.org/file/bot%s/%s"
 
-    def __init__(self, *, timeout: int = 35, api_url: str = API_URL, api_file_url: str = API_FILE_URL):
+    def __init__(self, *, timeout: int = 35, api_url: str = API_URL, api_file_url: str = API_FILE_URL,
+                 json_adapter: Type[BaseJsonAdapter] = default_json_adapter()):
         self._api_file_url = api_file_url
         self._api_url = api_url
         self._timeout = timeout
+        self._dumps = json_adapter.dumps
+        self._loads = json_adapter.loads
 
     async def init(self):
         raise NotImplementedError

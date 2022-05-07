@@ -24,6 +24,7 @@ setuptools.setup(
     extras_require={
         'aiohttp': ["aiohttp >= 3.8.1"],
         'ujson': ["ujson >= 5.2.0"],
+        'orjson': ["orjson >= 3.6.8"],
         'uvloop': ["uvloop >= 0.12.1"]
     },
     classifiers=[
