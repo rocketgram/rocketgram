@@ -11,6 +11,7 @@ All notable changes to this project.
 - the `CreateInvoiceLink` request class.
 - the field `is_premium` to the class `User`. 
 - the field `premium_animation` to the class `Sticker`.
+- The field `added_to_attachment_menu` to the class `User`. 
 
 ### Changed
 - The minimum required version of `aiohttp` is now `3.8.1`.

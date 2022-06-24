@@ -21,6 +21,7 @@ class User:
     username: Optional[str]
     language_code: Optional[str]
     is_premium: Optional[bool]
+    added_to_attachment_menu: Optional[bool]
     can_join_groups: Optional[bool]
     can_read_all_group_messages: Optional[bool]
     supports_inline_queries: Optional[bool]
@@ -31,5 +32,6 @@ class User:
             return None
 
         return cls(data['id'], data['is_bot'], data['first_name'], data.get('last_name'), data.get('username'),
-                   data.get('language_code'), data.get('is_premium'), data.get('can_join_groups'),
-                   data.get('can_read_all_group_messages'), data.get('supports_inline_queries'))
+                   data.get('language_code'), data.get('is_premium'), data.get('added_to_attachment_menu'),
+                   data.get('can_join_groups'), data.get('can_read_all_group_messages'),
+                   data.get('supports_inline_queries'))
