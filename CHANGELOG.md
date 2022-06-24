@@ -8,9 +8,9 @@ All notable changes to this project.
 - `orjson` support version `3.6.8` and above.
 - Adapter classes to be able to explicitly select a json parser.
 - The fields `join_to_send_messages` and `join_by_request` to the class `Chat`.
-- the `CreateInvoiceLink` request class.
-- the field `is_premium` to the class `User`. 
-- the field `premium_animation` to the class `Sticker`.
+- The `CreateInvoiceLink` request class.
+- The field `is_premium` to the class `User`. 
+- The field `premium_animation` to the class `Sticker`.
 - The field `added_to_attachment_menu` to the class `User`. 
 
 ### Changed
@@ -18,7 +18,7 @@ All notable changes to this project.
 - The minimum required version of `ujson` is now `5.2.0`.
 
 ### Fixed
-- the `SendInvoice` request class.
+- The `SendInvoice` request class.
 
 ### Removed
 - Tornado support: `TornadoExecutor` and `TornadoConnector` classes.
