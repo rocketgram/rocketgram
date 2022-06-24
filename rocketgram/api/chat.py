@@ -29,6 +29,8 @@ class Chat:
     photo: Optional[ChatPhoto]
     bio: Optional[str]
     has_private_forwards: Optional[bool]
+    join_to_send_messages: Optional[bool]
+    join_by_request: Optional[bool]
     description: Optional[str]
     invite_link: Optional[str]
     pinned_message: Optional['message.Message']
@@ -53,8 +55,9 @@ class Chat:
 
         return cls(data['id'], chat_type, data.get('title'), data.get('username'), data.get('first_name'),
                    data.get('last_name'), ChatPhoto.parse(data.get('photo')), data.get('bio'),
-                   data.get('has_private_forwards'), data.get('description'), data.get('invite_link'),
-                   message.Message.parse(data.get('pinned_message')), ChatPermissions.parse(data.get('permissions')),
-                   data.get('slow_mode_delay'), data.get('message_auto_delete_time'), data.get('has_protected_content'),
+                   data.get('has_private_forwards'), data.get('join_to_send_messages'), data.get('join_by_request'),
+                   data.get('description'), data.get('invite_link'), message.Message.parse(data.get('pinned_message')),
+                   ChatPermissions.parse(data.get('permissions')), data.get('slow_mode_delay'),
+                   data.get('message_auto_delete_time'), data.get('has_protected_content'),
                    data.get('sticker_set_name'), data.get('can_set_sticker_set'), data.get('linked_chat_id'),
                    ChatLocation.parse(data.get('location')))
