@@ -9,6 +9,7 @@ All notable changes to this project.
 - Adapter classes to be able to explicitly select a json parser.
 - The fields `join_to_send_messages` and `join_by_request` to the class `Chat`.
 - the `CreateInvoiceLink` request class.
+- the field `is_premium` to the class `User`.
 
 ### Changed
 - The minimum required version of `aiohttp` is now `3.8.1`.
