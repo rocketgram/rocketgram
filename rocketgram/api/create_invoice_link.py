@@ -8,17 +8,16 @@ from typing import Optional, List
 
 from .labeled_price import LabeledPrice
 from .request import Request
-from .utils import INLINE_KEYBOARDS, MessageResultMixin
+from .utils import StrResultMixin
 
 
 @dataclass(frozen=True)
-class SendInvoice(MessageResultMixin, Request):
+class CreateInvoiceLink(StrResultMixin, Request):
     """\
-    Represents SendInvoice request object:
-    https://core.telegram.org/bots/api#sendinvoice
+    Represents CreateInvoiceLink request object:
+    https://core.telegram.org/bots/api#createinvoicelink
     """
 
-    chat_id: int
     title: str
     description: str
     payload: str
@@ -27,7 +26,6 @@ class SendInvoice(MessageResultMixin, Request):
     prices: List[LabeledPrice]
     max_tip_amount: Optional[int] = None
     suggested_tip_amounts: Optional[List[int]] = None
-    start_parameter: Optional[str] = None
     provider_data: Optional[str] = None
     photo_url: Optional[str] = None
     photo_size: Optional[int] = None
@@ -40,8 +38,3 @@ class SendInvoice(MessageResultMixin, Request):
     send_phone_number_to_provider: Optional[bool] = None
     send_email_to_provider: Optional[bool] = None
     is_flexible: Optional[bool] = None
-    disable_notification: Optional[bool] = None
-    protect_content: Optional[bool] = None
-    reply_to_message_id: Optional[bool] = None
-    allow_sending_without_reply: Optional[bool] = None
-    reply_markup: Optional[INLINE_KEYBOARDS] = None

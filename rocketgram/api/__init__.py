@@ -41,6 +41,7 @@ from .close import Close
 from .contact import Contact
 from .copy_message import CopyMessage
 from .create_chat_invite_link import CreateChatInviteLink
+from .create_invoice_link import CreateInvoiceLink
 from .create_new_sticker_set import CreateNewStickerSet
 from .decline_chat_join_request import DeclineChatJoinRequest
 from .delete_chat_photo import DeleteChatPhoto

@@ -8,10 +8,14 @@ All notable changes to this project.
 - `orjson` support version `3.6.8` and above.
 - Adapter classes to be able to explicitly select a json parser.
 - The fields `join_to_send_messages` and `join_by_request` to the class `Chat`.
+- the `CreateInvoiceLink` request class.
 
 ### Changed
 - The minimum required version of `aiohttp` is now `3.8.1`.
 - The minimum required version of `ujson` is now `5.2.0`.
+
+### Fixed
+- the `SendInvoice` request class.
 
 ### Removed
 - Tornado support: `TornadoExecutor` and `TornadoConnector` classes.
