@@ -6,6 +6,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from .file import File
 from .mask_position import MaskPosition
 from .photo_size import PhotoSize
 
@@ -26,6 +27,7 @@ class Sticker:
     thumb: Optional[PhotoSize]
     emoji: Optional[str]
     set_name: Optional[str]
+    premium_animation: Optional[File]
     mask_position: Optional[MaskPosition]
     file_size: Optional[str]
 
@@ -36,4 +38,5 @@ class Sticker:
 
         return cls(data['file_id'], data['file_unique_id'], data['width'], data['height'], data['is_animated'],
                    data['is_video'], PhotoSize.parse(data.get('thumb')), data.get('emoji'), data.get('set_name'),
-                   MaskPosition.parse(data.get('mask_position')), data.get('file_size'))
+                   File.parse(data.get('set_name')), MaskPosition.parse(data.get('mask_position')),
+                   data.get('file_size'))
