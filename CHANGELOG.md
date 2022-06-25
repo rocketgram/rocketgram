@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [4.0.0] - 2022-06-25
+
 ### Added
 - `orjson` support version `3.6.8` and above.
 - Adapter classes to be able to explicitly select a json parser.
