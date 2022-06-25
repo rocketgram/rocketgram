@@ -6,7 +6,8 @@
 import asyncio
 import logging
 import signal
-from typing import TYPE_CHECKING, Union, Dict, List, Set, Optional, Type
+from secrets import token_urlsafe
+from typing import TYPE_CHECKING, Union, Dict, List, Set, Optional, Type, Tuple
 
 from .executor import Executor
 from ..api import Request, GetMe, SetWebhook, DeleteWebhook
@@ -24,17 +25,25 @@ logger = logging.getLogger('rocketgram.executors.webhook')
 class WebhookExecutor(Executor):
     HEADERS = {"Server": f"Rocketgram/{version()}", "Content-Type": "application/json"}
     HEADERS_ERROR = {"Server": f"Rocketgram/{version()}", "Content-Type": "text/plain"}
+    HEADER_SECRET = "X-Telegram-Bot-Api-Secret-Token"
 
-    __slots__ = ('_base_url', '_base_path', '_host', '_port', '_bots', '_srv', '_started', '_tasks', '_dumps', '_loads')
+    __slots__ = ('_base_url', '_base_path', '_host', '_port', '_bots', '_srv',
+                 '_started', '_tasks', '_dumps', '_loads', '_secret_token', '_secret_tokens')
 
     def __init__(self, base_url: str, base_path: str, *, host: str = 'localhost', port: int = 8080,
+                 secret_token: Union[bool, str] = False,
                  json_adapter: Type[BaseJsonAdapter] = default_json_adapter()):
+
         self._base_url = base_url
         self._base_path = base_path
         self._host = host
         self._port = port
 
-        self._bots = dict()
+        self._secret_token = secret_token
+
+        self._bots: Dict[str, 'Bot'] = dict()
+        self._secret_tokens: Dict['Bot', Optional[str]] = dict()
+
         self._srv = None
         self._started = False
 
@@ -57,7 +66,7 @@ class WebhookExecutor(Executor):
     async def add_bot(self, bot: 'Bot', *, allowed_updates: Optional[List[UpdateType]] = None,
                       drop_pending_updates: bool = False, certificate: Optional[InputFile] = None,
                       ip_address: Optional[str] = None, suffix: str = None, set_webhook: bool = True,
-                      max_connections: int = None):
+                      secret_token: Optional[Union[bool, str]] = None, max_connections: int = None):
 
         if bot in self._bots.values():
             raise ValueError('Bot already added.')
@@ -75,12 +84,18 @@ class WebhookExecutor(Executor):
 
         await bot.init()
 
+        set_secret_token, secret_token = self._gen_secret_token(secret_token)
+
         self._bots[full_path] = bot
+        self._secret_tokens[bot] = secret_token
+        self._tasks[bot] = set()
+
         logger.info('Added bot @%s', bot.name)
 
-        if set_webhook or drop_pending_updates:
+        if set_webhook or drop_pending_updates or set_secret_token:
             swh = SetWebhook(full_url, certificate=certificate, ip_address=ip_address, allowed_updates=allowed_updates,
-                             drop_pending_updates=drop_pending_updates, max_connections=max_connections)
+                             drop_pending_updates=drop_pending_updates, secret_token=secret_token,
+                             max_connections=max_connections)
             await bot.send(swh)
             logger.debug('Webhook setup done for bot @%s', bot.name)
 
@@ -92,10 +107,11 @@ class WebhookExecutor(Executor):
             raise ValueError('Bot was not found.')
 
         self._bots = {k: v for k, v in self._bots.items() if v != bot}
+        del self._secret_tokens[bot]
 
         if bot in self._tasks:
             tasks = self._tasks[bot]
-            self._tasks[bot] = set()
+            del self._tasks[bot]
             await self._wait_tasks(tasks)
 
         if delete_webhook:
@@ -107,6 +123,14 @@ class WebhookExecutor(Executor):
         await bot.shutdown()
 
         logger.info('Removed bot @%s', bot.name)
+
+    def _gen_secret_token(self, secret_token: Optional[Union[bool, str]]) -> Tuple[bool, Optional[str]]:
+        secret_token = secret_token if secret_token is not None else self._secret_token
+
+        if not secret_token:
+            return False, None
+
+        return (True, token_urlsafe()) if secret_token is True else (False, secret_token)
 
     async def start(self):
         raise NotImplementedError
@@ -126,9 +150,9 @@ class WebhookExecutor(Executor):
             certificate: Optional[InputFile] = None, ip_address: Optional[str] = None,
             allowed_updates: Optional[List[UpdateType]] = None, drop_pending_updates: bool = False,
             signals: tuple = (signal.SIGINT, signal.SIGTERM), shutdown_wait: int = 10,
-            json_adapter: Type[BaseJsonAdapter] = default_json_adapter()):
+            secret_token: Union[bool, str] = False, json_adapter: Type[BaseJsonAdapter] = default_json_adapter()):
 
-        executor = cls(base_url, base_path, host=host, port=port, json_adapter=json_adapter)
+        executor = cls(base_url, base_path, host=host, port=port, secret_token=secret_token, json_adapter=json_adapter)
 
         def add(bot: 'Bot'):
             return executor.add_bot(bot, certificate=certificate, ip_address=ip_address,

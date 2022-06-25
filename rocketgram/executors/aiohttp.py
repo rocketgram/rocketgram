@@ -5,6 +5,7 @@
 
 import asyncio
 import logging
+from secrets import compare_digest
 
 from aiohttp.web import Server, ServerRunner, BaseRequest, TCPSite, Response
 
@@ -27,8 +28,11 @@ class AioHttpExecutor(WebhookExecutor):
             logger.warning("Bot not found for request `%s`.", request.path)
             return Response(status=404, text="Not found.", headers=self.HEADERS_ERROR)
 
-        if bot not in self._tasks:
-            self._tasks[bot] = set()
+        token = self._secret_tokens.get(bot)
+
+        if token and not compare_digest(token, request.headers.get(self.HEADER_SECRET, '')):
+            logger.warning("Wrong token was provided for the bot `%s`.", bot.name)
+            return Response(status=403, text="Wrong token.", headers=self.HEADERS_ERROR)
 
         try:
             parsed = Update.parse(self._loads(await request.read()))

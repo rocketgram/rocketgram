@@ -12,10 +12,14 @@ All notable changes to this project.
 - The field `is_premium` to the class `User`. 
 - The field `premium_animation` to the class `Sticker`.
 - The field `added_to_attachment_menu` to the class `User`. 
+- The field `secret_token` to the class `SetWebhook`.
+- The `secret_token` parameter to `__init__`, `add_bot` and `run` functions in `WebhookExecutor` executor class.
+- The `secret_token` parameter to the `run` function in `AioHttpExecutor` executor class.
 
 ### Changed
 - The minimum required version of `aiohttp` is now `3.8.1`.
 - The minimum required version of `ujson` is now `5.2.0`.
+- Framework is now corresponds to Telegram Bot API 6.1.
 
 ### Fixed
 - The `SendInvoice` request class.

@@ -25,6 +25,7 @@ class SetWebhook(BoolResultMixin, Request):
     max_connections: Optional[int] = None
     allowed_updates: Optional[List[UpdateType]] = None
     drop_pending_updates: Optional[bool] = None
+    secret_token: Optional[str] = None
 
     def files(self) -> List[InputFile]:
         if isinstance(self.certificate, InputFile):
