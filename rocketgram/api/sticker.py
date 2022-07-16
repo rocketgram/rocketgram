@@ -38,5 +38,5 @@ class Sticker:
 
         return cls(data['file_id'], data['file_unique_id'], data['width'], data['height'], data['is_animated'],
                    data['is_video'], PhotoSize.parse(data.get('thumb')), data.get('emoji'), data.get('set_name'),
-                   File.parse(data.get('set_name')), MaskPosition.parse(data.get('mask_position')),
+                   File.parse(data.get('premium_animation')), MaskPosition.parse(data.get('mask_position')),
                    data.get('file_size'))

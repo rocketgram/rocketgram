@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Fixed
+- The `Sticker` class.
+
 
 ## [4.0.0] - 2022-06-25
 
