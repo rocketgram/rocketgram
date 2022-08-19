@@ -13,6 +13,9 @@ All notable changes to this project.
 - The field `custom_emoji_id` to the class `Sticker`. 
 - The field `sticker_type` to `StickerSet` and `CreateNewStickerSet` classes. 
 
+### Changed.
+- Framework is now corresponds to Telegram Bot API 6.2.
+
 ### Deprecated
 - `StickerSet.contains_masks` is deprecated and will be removed in version 5.
 - `CreateNewStickerSet.contains_masks` is deprecated and will be removed in version 5.
