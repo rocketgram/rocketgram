@@ -7,6 +7,7 @@ All notable changes to this project.
 ### Added
 - The `EntityType.custom_emoji` entity type.
 - The field custom_emoji_id to the class MessageEntity.
+- The field `has_restricted_voice_and_video_messages` to the class `Chat`.
 
 
 ## [4.0.1] - 2022-07-16
