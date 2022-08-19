@@ -25,4 +25,5 @@ class EntityType(EnumAutoName):
     pre = auto()
     text_link = auto()
     text_mention = auto()
+    custom_emoji = auto()
     unknown = auto()

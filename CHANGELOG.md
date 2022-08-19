@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- The `EntityType.custom_emoji` entity type.
+
 
 ## [4.0.1] - 2022-07-16
 
