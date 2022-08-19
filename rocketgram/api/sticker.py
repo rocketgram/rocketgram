@@ -9,6 +9,7 @@ from typing import Optional
 from .file import File
 from .mask_position import MaskPosition
 from .photo_size import PhotoSize
+from .sticker_type import StickerType
 
 
 @dataclass(frozen=True)
@@ -20,6 +21,7 @@ class Sticker:
 
     file_id: str
     file_unique_id: str
+    type: StickerType
     width: int
     height: int
     is_animated: Optional[bool]
@@ -29,6 +31,7 @@ class Sticker:
     set_name: Optional[str]
     premium_animation: Optional[File]
     mask_position: Optional[MaskPosition]
+    custom_emoji_id: Optional[str]
     file_size: Optional[str]
 
     @classmethod
@@ -36,7 +39,12 @@ class Sticker:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['file_unique_id'], data['width'], data['height'], data['is_animated'],
-                   data['is_video'], PhotoSize.parse(data.get('thumb')), data.get('emoji'), data.get('set_name'),
-                   File.parse(data.get('premium_animation')), MaskPosition.parse(data.get('mask_position')),
-                   data.get('file_size'))
+        try:
+            sticker_type = StickerType(data['type'])
+        except ValueError:
+            sticker_type = StickerType.unknown
+
+        return cls(data['file_id'], data['file_unique_id'], sticker_type, data['width'], data['height'],
+                   data['is_animated'], data['is_video'], PhotoSize.parse(data.get('thumb')), data.get('emoji'),
+                   data.get('set_name'), File.parse(data.get('premium_animation')),
+                   MaskPosition.parse(data.get('mask_position')), data.get('custom_emoji_id'), data.get('file_size'))

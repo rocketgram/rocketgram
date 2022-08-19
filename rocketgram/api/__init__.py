@@ -74,6 +74,7 @@ from .get_chat_administrators import GetChatAdministrators
 from .get_chat_member import GetChatMember
 from .get_chat_member_count import GetChatMemberCount
 from .get_chat_menu_button import GetChatMenuButton
+from .get_custom_emoji_stickers import GetCustomEmojiStickers
 from .get_file import GetFile
 from .get_game_high_scores import GetGameHighScores
 from .get_me import GetMe
@@ -202,6 +203,7 @@ from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
 from .sticker import Sticker
 from .sticker_set import StickerSet
+from .sticker_type import StickerType
 from .stop_message_live_location import StopMessageLiveLocation
 from .stop_poll import StopPoll
 from .successful_payment import SuccessfulPayment

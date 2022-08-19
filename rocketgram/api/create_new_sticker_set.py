@@ -9,6 +9,7 @@ from typing import Union, Optional, List
 from .input_file import InputFile
 from .mask_position import MaskPosition
 from .request import Request
+from .sticker_type import StickerType
 from .utils import BoolResultMixin
 
 
@@ -26,7 +27,8 @@ class CreateNewStickerSet(BoolResultMixin, Request):
     png_sticker: Optional[Union[InputFile, str]] = None
     tgs_sticker: Optional[InputFile] = None
     webm_sticker: Optional[InputFile] = None
-    contains_masks: Optional[bool] = None
+    contains_masks: Optional[bool] = None  # deprecated
+    sticker_type: Optional[StickerType] = None
     mask_position: Optional[MaskPosition] = None
 
     def files(self) -> List[InputFile]:

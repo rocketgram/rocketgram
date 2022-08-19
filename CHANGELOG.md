@@ -8,6 +8,14 @@ All notable changes to this project.
 - The `EntityType.custom_emoji` entity type.
 - The field custom_emoji_id to the class MessageEntity.
 - The field `has_restricted_voice_and_video_messages` to the class `Chat`.
+- The `StickerType` enum.
+- The `GetCustomEmojiStickers` request class.
+- The field `custom_emoji_id` to the class `Sticker`. 
+- The field `sticker_type` to `StickerSet` and `CreateNewStickerSet` classes. 
+
+### Deprecated
+- `StickerSet.contains_masks` is deprecated and will be removed in version 5.
+- `CreateNewStickerSet.contains_masks` is deprecated and will be removed in version 5.
 
 
 ## [4.0.1] - 2022-07-16
