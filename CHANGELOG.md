@@ -6,6 +6,7 @@ All notable changes to this project.
 
 ### Added
 - The `EntityType.custom_emoji` entity type.
+- The field custom_emoji_id to the class MessageEntity.
 
 
 ## [4.0.1] - 2022-07-16

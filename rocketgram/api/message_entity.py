@@ -23,6 +23,7 @@ class MessageEntity:
     url: Optional[str]
     user: Optional[User]
     language: Optional[str]
+    custom_emoji_id: Optional[str]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['MessageEntity']:
@@ -35,4 +36,4 @@ class MessageEntity:
             entity_type = EntityType.unknown
 
         return cls(entity_type, data['offset'], data['length'], data.get('url'),
-                   User.parse(data.get('user')), data.get('language'))
+                   User.parse(data.get('user')), data.get('language'), data.get('custom_emoji_id'))
