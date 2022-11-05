@@ -5,6 +5,12 @@ All notable changes to this project.
 ## [Unreleased]
 
 
+## [4.1.1] - 2022-07-16
+
+### Fixed
+- Removed redundant Timeout exception.
+
+
 ## [4.1.0] - 2022-08-19
 
 ### Added
