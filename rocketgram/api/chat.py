@@ -41,6 +41,10 @@ class Chat:
     permissions: Optional[ChatPermissions]
     slow_mode_delay: Optional[int]
     message_auto_delete_time: Optional[int]
+
+    has_aggressive_anti_spam_enabled: Optional[bool]
+    has_hidden_members: Optional[bool]
+
     has_protected_content: Optional[bool]
     sticker_set_name: Optional[str]
     can_set_sticker_set: Optional[bool]
@@ -79,6 +83,8 @@ class Chat:
             ChatPermissions.parse(data.get('permissions')),
             data.get('slow_mode_delay'),
             data.get('message_auto_delete_time'),
+            data.get('has_aggressive_anti_spam_enabled'),
+            data.get('has_hidden_members'),
             data.get('has_protected_content'),
             data.get('sticker_set_name'),
             data.get('can_set_sticker_set'),

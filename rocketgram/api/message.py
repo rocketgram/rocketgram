@@ -15,8 +15,11 @@ from .dice import Dice
 from .document import Document
 from .forum_topic_closed import ForumTopicClosed
 from .forum_topic_created import ForumTopicCreated
+from .forum_topic_edited import ForumTopicEdited
 from .forum_topic_reopened import ForumTopicReopened
 from .game import Game
+from .general_forum_topic_hidden import GeneralForumTopicHidden
+from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
 from .inline_keyboard_markup import InlineKeyboardMarkup
 from .invoice import Invoice
 from .location import Location
@@ -39,6 +42,7 @@ from .video_chat_started import VideoChatStarted
 from .video_note import VideoNote
 from .voice import Voice
 from .web_app_data import WebAppData
+from .write_access_allowed import WriteAccessAllowed
 
 
 @dataclass(frozen=True)
@@ -80,6 +84,8 @@ class Message:
     entities: Optional[List[MessageEntity]]
     caption_entities: Optional[List[MessageEntity]]
 
+    has_media_spoiler: Optional[bool]
+
     audio: Optional[Audio]
     document: Optional[Document]
     animation: Optional[Animation]
@@ -119,13 +125,20 @@ class Message:
     successful_payment: Optional[SuccessfulPayment]
 
     connected_website: Optional[str]
+
+    write_access_allowed: Optional[WriteAccessAllowed]
+
     passport_data: Optional[PassportData]
 
     proximity_alert_triggered: Optional[ProximityAlertTriggered]
 
     forum_topic_created: Optional[ForumTopicCreated]
+    forum_topic_edited: Optional[ForumTopicEdited]
     forum_topic_closed: Optional[ForumTopicClosed]
     forum_topic_reopened: Optional[ForumTopicReopened]
+
+    general_forum_topic_hidden: Optional[GeneralForumTopicHidden]
+    general_forum_topic_unhidden: Optional[GeneralForumTopicUnhidden]
 
     video_chat_scheduled: Optional[VideoChatScheduled]
     video_chat_started: Optional[VideoChatStarted]
@@ -167,6 +180,8 @@ class Message:
         entities = [MessageEntity.parse(d) for d in data.get('entities')] if 'entities' in data else None
         caption_entities = [MessageEntity.parse(d) for d in
                             data.get('caption_entities')] if 'caption_entities' in data else None
+
+        has_media_spoiler = data.get('has_media_spoiler')
 
         audio = Audio.parse(data.get('audio'))
         document = Document.parse(data.get('document'))
@@ -212,13 +227,20 @@ class Message:
         successful_payment = SuccessfulPayment.parse(data.get('successful_payment'))
 
         connected_website = data.get('connected_website')
+
+        write_access_allowed = WriteAccessAllowed.parse(data.get('write_access_allowed'))
+
         passport_data = PassportData.parse(data.get('passport_data'))
 
         proximity_alert_triggered = ProximityAlertTriggered.parse(data.get('proximity_alert_triggered'))
 
         forum_topic_created = ForumTopicCreated.parse(data.get('forum_topic_created'))
+        forum_topic_edited = ForumTopicCreated.parse(data.get('forum_topic_edited'))
         forum_topic_closed = ForumTopicClosed.parse(data.get('forum_topic_closed'))
         forum_topic_reopened = ForumTopicReopened.parse(data.get('forum_topic_reopened'))
+
+        general_forum_topic_hidden = GeneralForumTopicHidden.parse(data.get('general_forum_topic_hidden'))
+        general_forum_topic_unhidden = GeneralForumTopicUnhidden.parse(data.get('general_forum_topic_unhidden'))
 
         video_chat_scheduled = VideoChatScheduled.parse(data.get('video_chat_scheduled'))
         video_chat_started = VideoChatStarted.parse(data.get('video_chat_started'))
@@ -290,16 +312,24 @@ class Message:
             message_type = MessageType.successful_payment
         elif connected_website:
             message_type = MessageType.connected_website
+        elif write_access_allowed:
+            message_type = MessageType.write_access_allowed
         elif passport_data:
             message_type = MessageType.passport_data
         elif proximity_alert_triggered:
             message_type = MessageType.proximity_alert_triggered
         elif forum_topic_created:
             message_type = MessageType.forum_topic_created
+        elif forum_topic_edited:
+            message_type = MessageType.forum_topic_edited
         elif forum_topic_closed:
             message_type = MessageType.forum_topic_closed
         elif forum_topic_reopened:
             message_type = MessageType.forum_topic_reopened
+        elif general_forum_topic_hidden:
+            message_type = MessageType.general_forum_topic_hidden
+        elif general_forum_topic_unhidden:
+            message_type = MessageType.general_forum_topic_unhidden
         elif video_chat_scheduled:
             message_type = MessageType.video_chat_scheduled
         elif video_chat_started:
@@ -313,16 +343,75 @@ class Message:
         elif web_app_data:
             message_type = MessageType.web_app_data
 
-        return cls(message_type, message_id, message_thread_id, user, sender_chat, date, chat, forward_from,
-                   forward_from_chat,
-                   forward_from_message_id, forward_signature, forward_sender_name, forward_date, is_topic_message,
-                   is_automatic_forward,
-                   reply_to_message, via_bot, edit_date, has_protected_content, media_group_id, author_signature, text,
-                   entities, caption_entities, audio, document, animation, game, photo, sticker, video, voice,
-                   video_note, caption, contact, location, venue, poll, dice, new_chat_members, left_chat_member,
-                   new_chat_title, new_chat_photo, delete_chat_photo, group_chat_created, supergroup_chat_created,
-                   channel_chat_created, message_auto_delete_timer_changed, migrate_to_chat_id, migrate_from_chat_id,
-                   pinned_message, invoice, successful_payment, connected_website, passport_data,
-                   proximity_alert_triggered, forum_topic_created, forum_topic_closed, forum_topic_reopened,
-                   video_chat_scheduled, video_chat_started, video_chat_ended,
-                   video_chat_participants_invited, web_app_data, reply_markup)
+        return cls(
+            message_type,
+            message_id,
+            message_thread_id,
+            user,
+            sender_chat,
+            date,
+            chat,
+            forward_from,
+            forward_from_chat,
+            forward_from_message_id,
+            forward_signature,
+            forward_sender_name,
+            forward_date,
+            is_topic_message,
+            is_automatic_forward,
+            reply_to_message,
+            via_bot,
+            edit_date,
+            has_protected_content,
+            media_group_id,
+            author_signature,
+            text,
+            entities,
+            caption_entities,
+            has_media_spoiler,
+            audio,
+            document,
+            animation,
+            game,
+            photo,
+            sticker,
+            video,
+            voice,
+            video_note,
+            caption,
+            contact,
+            location,
+            venue,
+            poll,
+            dice,
+            new_chat_members,
+            left_chat_member,
+            new_chat_title,
+            new_chat_photo,
+            delete_chat_photo,
+            group_chat_created,
+            supergroup_chat_created,
+            channel_chat_created,
+            message_auto_delete_timer_changed,
+            migrate_to_chat_id,
+            migrate_from_chat_id,
+            pinned_message,
+            invoice,
+            successful_payment,
+            connected_website,
+            write_access_allowed,
+            passport_data,
+            proximity_alert_triggered,
+            forum_topic_created,
+            forum_topic_edited,
+            forum_topic_closed,
+            forum_topic_reopened,
+            general_forum_topic_hidden,
+            general_forum_topic_unhidden,
+            video_chat_scheduled,
+            video_chat_started,
+            video_chat_ended,
+            video_chat_participants_invited,
+            web_app_data,
+            reply_markup
+        )

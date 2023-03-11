@@ -25,3 +25,4 @@ class InputMediaPhoto(InputMedia):
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None
+    has_spoiler: Optional[bool] = None

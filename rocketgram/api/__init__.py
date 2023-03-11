@@ -39,6 +39,7 @@ from .chat_type import ChatType
 from .chosen_inline_result import ChosenInlineResult
 from .close import Close
 from .close_forum_topic import CloseForumTopic
+from .close_general_forum_topic import CloseGeneralForumTopic
 from .contact import Contact
 from .copy_message import CopyMessage
 from .create_chat_invite_link import CreateChatInviteLink
@@ -58,6 +59,7 @@ from .dice_type import DiceType
 from .document import Document
 from .edit_chat_invite_link import EditChatInviteLink
 from .edit_forum_topic import EditForumTopic
+from .edit_general_forum_topic import EditGeneralForumTopic
 from .edit_message_caption import EditMessageCaption
 from .edit_message_live_location import EditMessageLiveLocation
 from .edit_message_media import EditMessageMedia
@@ -73,10 +75,13 @@ from .force_reply import ForceReply
 from .forum_topic import ForumTopic
 from .forum_topic_closed import ForumTopicClosed
 from .forum_topic_created import ForumTopicCreated
+from .forum_topic_edited import ForumTopicEdited
 from .forum_topic_reopened import ForumTopicReopened
 from .forward_message import ForwardMessage
 from .game import Game
 from .game_high_score import GameHighScore
+from .general_forum_topic_hidden import GeneralForumTopicHidden
+from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
 from .get_chat import GetChat
 from .get_chat_administrators import GetChatAdministrators
 from .get_chat_member import GetChatMember
@@ -93,6 +98,7 @@ from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_profile_photos import GetUserProfilePhotos
 from .get_webhook_info import GetWebhookInfo
+from .hide_general_forum_topic import HideGeneralForumTopic
 from .inline_keyboard_button import InlineKeyboardButton
 from .inline_keyboard_markup import InlineKeyboardMarkup
 from .inline_query import InlineQuery
@@ -168,6 +174,7 @@ from .pre_checkout_query import PreCheckoutQuery
 from .promote_chat_member import PromoteChatMember
 from .proximity_alert_triggered import ProximityAlertTriggered
 from .reopen_forum_topic import ReopenForumTopic
+from .reopen_general_forum_topic import ReopenGeneralForumTopic
 from .reply_keyboard_markup import ReplyKeyboardMarkup
 from .reply_keyboard_remove import ReplyKeyboardRemove
 from .request import Request
@@ -220,6 +227,7 @@ from .successful_payment import SuccessfulPayment
 from .thumb_mime_type import ThumbMimeType
 from .unban_chat_member import UnbanChatMember
 from .unban_chat_sender_chat import UnbanChatSenderChat
+from .unhide_general_forum_topic import UnhideGeneralForumTopic
 from .unpin_all_chat_messages import UnpinAllChatMessages
 from .unpin_all_forum_topic_messages import UnpinAllForumTopicMessages
 from .unpin_chat_message import UnpinChatMessage
@@ -239,3 +247,4 @@ from .voice import Voice
 from .web_app_data import WebAppData
 from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo
+from .write_access_allowed import WriteAccessAllowed

@@ -4,20 +4,17 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional
+from typing import Union
 
-from .chat_action_type import ChatActionType
 from .request import Request
 from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SendChatAction(BoolResultMixin, Request):
+class HideGeneralForumTopic(BoolResultMixin, Request):
     """\
-    Represents SendChatAction request object:
-    https://core.telegram.org/bots/api#sendchataction
+    Represents HideGeneralForumTopic request object:
+    https://core.telegram.org/bots/api#hidegeneralforumtopic
     """
 
     chat_id: Union[int, str]
-    action: ChatActionType
-    message_thread_id: Optional[int]

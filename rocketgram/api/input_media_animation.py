@@ -29,3 +29,4 @@ class InputMediaAnimation(InputMedia):
     width: Optional[int] = None
     height: Optional[int] = None
     duration: Optional[int] = None
+    has_spoiler: Optional[bool] = None

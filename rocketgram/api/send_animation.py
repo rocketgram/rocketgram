@@ -30,6 +30,7 @@ class SendAnimation(MessageResultMixin, Request):
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None
+    has_spoiler: Optional[bool] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
