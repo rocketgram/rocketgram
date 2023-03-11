@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Fixed
+- WebhookInfo parsing issue.
+
 
 ## [4.1.1] - 2022-11-05
 
