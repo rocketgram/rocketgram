@@ -6,7 +6,7 @@
 from enum import Enum
 
 
-class ThumbMimeType(Enum):
+class ThumbnailMimeType(Enum):
     """\
     Mime type for gif and mpeg4gif inline results
 

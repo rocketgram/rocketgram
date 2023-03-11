@@ -29,7 +29,7 @@ class SendAudio(MessageResultMixin, Request):
     duration: Optional[int] = None
     performer: Optional[str] = None
     title: Optional[str] = None
-    thumb: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[Union[InputFile, str]] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
@@ -40,6 +40,6 @@ class SendAudio(MessageResultMixin, Request):
         out = list()
         if isinstance(self.audio, InputFile):
             out.append(self.audio)
-        if isinstance(self.thumb, InputFile):
-            out.append(self.thumb)
+        if isinstance(self.thumbnail, InputFile):
+            out.append(self.thumbnail)
         return out

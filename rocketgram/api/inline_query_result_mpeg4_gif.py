@@ -11,7 +11,7 @@ from .inline_query_result import InlineQueryResult
 from .input_message_content import InputMessageContent
 from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
-from .thumb_mime_type import ThumbMimeType
+from .thumbnail_mime_type import ThumbnailMimeType
 
 
 @dataclass(frozen=True)
@@ -25,8 +25,8 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
 
     id: str
     mpeg4_url: str
-    thumb_url: str
-    thumb_mime_type: Optional[ThumbMimeType] = None
+    thumbnail_url: str
+    thumbnail_mime_type: Optional[ThumbnailMimeType] = None
     mpeg4_width: Optional[int] = None
     mpeg4_height: Optional[int] = None
     mpeg4_duration: Optional[int] = None

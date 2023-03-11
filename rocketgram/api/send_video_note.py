@@ -23,7 +23,7 @@ class SendVideoNote(MessageResultMixin, Request):
     message_thread_id: Optional[int] = None
     duration: Optional[int] = None
     length: Optional[int] = None
-    thumb: Union[InputFile, str] = None
+    thumbnail: Union[InputFile, str] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
@@ -34,6 +34,6 @@ class SendVideoNote(MessageResultMixin, Request):
         out = list()
         if isinstance(self.video_note, InputFile):
             out.append(self.video_note)
-        if isinstance(self.thumb, InputFile):
-            out.append(self.thumb)
+        if isinstance(self.thumbnail, InputFile):
+            out.append(self.thumbnail)
         return out

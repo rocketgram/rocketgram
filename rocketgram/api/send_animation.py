@@ -26,7 +26,7 @@ class SendAnimation(MessageResultMixin, Request):
     duration: Optional[int] = None
     width: Optional[int] = None
     height: Optional[int] = None
-    thumb: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None
@@ -41,6 +41,6 @@ class SendAnimation(MessageResultMixin, Request):
         out = list()
         if isinstance(self.animation, InputFile):
             out.append(self.animation)
-        if isinstance(self.thumb, InputFile):
-            out.append(self.thumb)
+        if isinstance(self.thumbnail, InputFile):
+            out.append(self.thumbnail)
         return out

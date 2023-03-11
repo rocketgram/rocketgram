@@ -22,7 +22,7 @@ class InputMediaAnimation(InputMedia):
     type: str = field(init=False, default='animation')
 
     media: Union[InputFile, str]
-    thumb: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None

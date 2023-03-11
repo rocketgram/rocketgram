@@ -26,12 +26,13 @@ class Sticker:
     height: int
     is_animated: Optional[bool]
     is_video: Optional[bool]
-    thumb: Optional[PhotoSize]
+    thumbnail: Optional[PhotoSize]
     emoji: Optional[str]
     set_name: Optional[str]
     premium_animation: Optional[File]
     mask_position: Optional[MaskPosition]
     custom_emoji_id: Optional[str]
+    needs_repainting: Optional[bool]
     file_size: Optional[str]
 
     @classmethod
@@ -44,7 +45,20 @@ class Sticker:
         except ValueError:
             sticker_type = StickerType.unknown
 
-        return cls(data['file_id'], data['file_unique_id'], sticker_type, data['width'], data['height'],
-                   data['is_animated'], data['is_video'], PhotoSize.parse(data.get('thumb')), data.get('emoji'),
-                   data.get('set_name'), File.parse(data.get('premium_animation')),
-                   MaskPosition.parse(data.get('mask_position')), data.get('custom_emoji_id'), data.get('file_size'))
+        return cls(
+            data['file_id'],
+            data['file_unique_id'],
+            sticker_type,
+            data['width'],
+            data['height'],
+            data['is_animated'],
+            data['is_video'],
+            PhotoSize.parse(data.get('thumbnail')),
+            data.get('emoji'),
+            data.get('set_name'),
+            File.parse(data.get('premium_animation')),
+            MaskPosition.parse(data.get('mask_position')),
+            data.get('custom_emoji_id'),
+            data.get('needs_repainting'),
+            data.get('file_size')
+        )

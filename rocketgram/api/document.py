@@ -18,7 +18,7 @@ class Document:
 
     file_id: str
     file_unique_id: str
-    thumb: Optional[PhotoSize]
+    thumbnail: Optional[PhotoSize]
     file_name: Optional[str]
     mime_type: Optional[str]
     file_size: Optional[int]
@@ -28,5 +28,11 @@ class Document:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['file_unique_id'], PhotoSize.parse(data.get('thumb')), data.get('file_name'),
-                   data.get('mime_type'), data.get('file_size'))
+        return cls(
+            data['file_id'],
+            data['file_unique_id'],
+            PhotoSize.parse(data.get('thumbnail')),
+            data.get('file_name'),
+            data.get('mime_type'),
+            data.get('file_size')
+        )

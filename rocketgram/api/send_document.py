@@ -23,7 +23,7 @@ class SendDocument(MessageResultMixin, Request):
     chat_id: Union[int, str]
     document: Union[InputFile, str]
     message_thread_id: Optional[int] = None
-    thumb: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None
@@ -38,6 +38,6 @@ class SendDocument(MessageResultMixin, Request):
         out = list()
         if isinstance(self.document, InputFile):
             out.append(self.document)
-        if isinstance(self.thumb, InputFile):
-            out.append(self.thumb)
+        if isinstance(self.thumbnail, InputFile):
+            out.append(self.thumbnail)
         return out

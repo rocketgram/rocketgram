@@ -20,7 +20,7 @@ class VideoNote:
     file_unique_id: str
     length: int
     duration: int
-    thumb: Optional[PhotoSize]
+    thumbnail: Optional[PhotoSize]
     file_size: Optional[int]
 
     @classmethod
@@ -28,5 +28,11 @@ class VideoNote:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['file_unique_id'], data['length'], data['duration'],
-                   PhotoSize.parse(data.get('thumb')), data.get('file_size'))
+        return cls(
+            data['file_id'],
+            data['file_unique_id'],
+            data['length'],
+            data['duration'],
+            PhotoSize.parse(data.get('thumbnail')),
+            data.get('file_size')
+        )

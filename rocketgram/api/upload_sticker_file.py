@@ -8,6 +8,7 @@ from typing import List
 
 from .input_file import InputFile
 from .request import Request
+from .sticker_format import StickerFormat
 from .utils import FileResultMixin
 
 
@@ -19,9 +20,10 @@ class UploadStickerFile(FileResultMixin, Request):
     """
 
     user_id: int
-    png_sticker: InputFile
+    sticker: InputFile
+    sticker_format: StickerFormat
 
     def files(self) -> List[InputFile]:
-        if isinstance(self.png_sticker, InputFile):
-            return [self.png_sticker]
+        if isinstance(self.sticker, InputFile):
+            return [self.sticker]
         return list()

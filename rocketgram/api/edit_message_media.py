@@ -31,7 +31,7 @@ class EditMessageMedia(MessageOrBoolResultMixin, Request):
 
         if hasattr(media, 'media') and isinstance(media.media, InputFile):
             out.append(media.media)
-        if hasattr(media, 'thumb') and isinstance(media.thumb, InputFile):
-            out.append(media.thumb)
+        if hasattr(media, 'thumbnail') and isinstance(media.thumbnail, InputFile):
+            out.append(media.thumbnail)
 
         return out

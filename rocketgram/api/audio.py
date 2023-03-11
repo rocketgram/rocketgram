@@ -24,13 +24,21 @@ class Audio:
     file_name: Optional[str]
     mime_type: Optional[str]
     file_size: Optional[int]
-    thumb: Optional[PhotoSize]
+    thumbnail: Optional[PhotoSize]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['Audio']:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['file_unique_id'], data['duration'], data.get('performer'), data.get('title'),
-                   data.get('file_name'), data.get('mime_type'), data.get('file_size'),
-                   PhotoSize.parse(data.get('thumb')))
+        return cls(
+            data['file_id'],
+            data['file_unique_id'],
+            data['duration'],
+            data.get('performer'),
+            data.get('title'),
+            data.get('file_name'),
+            data.get('mime_type'),
+            data.get('file_size'),
+            PhotoSize.parse(data.get('thumbnail'))
+        )

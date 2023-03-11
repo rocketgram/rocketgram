@@ -25,7 +25,7 @@ class StickerSet:
     is_animated: Optional[bool]
     is_video: Optional[bool]
     stickers: List[Sticker]
-    thumb: Optional[PhotoSize]
+    thumbnail: Optional[PhotoSize]
 
     @property
     def contains_masks(self) -> bool:
@@ -37,12 +37,17 @@ class StickerSet:
         if data is None:
             return None
 
-        stickers = [Sticker.parse(s) for s in data['stickers']]
-
         try:
             sticker_type = StickerType(data['sticker_type'])
         except ValueError:
             sticker_type = StickerType.unknown
 
-        return cls(data['name'], data['title'], sticker_type, data['is_animated'], data['is_video'], stickers,
-                   PhotoSize.parse(data['thumb']))
+        return cls(
+            data['name'],
+            data['title'],
+            sticker_type,
+            data['is_animated'],
+            data['is_video'],
+            [Sticker.parse(s) for s in data['stickers']],
+            PhotoSize.parse(data['thumbnail'])
+        )

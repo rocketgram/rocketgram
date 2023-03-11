@@ -27,6 +27,6 @@ class InlineQueryResultArticle(InlineQueryResult):
     url: Optional[str] = None
     hide_url: Optional[bool] = None
     description: Optional[str] = None
-    thumb_url: Optional[str] = None
-    thumb_width: Optional[int] = None
-    thumb_height: Optional[int] = None
+    thumbnail_url: Optional[str] = None
+    thumbnail_width: Optional[int] = None
+    thumbnail_height: Optional[int] = None

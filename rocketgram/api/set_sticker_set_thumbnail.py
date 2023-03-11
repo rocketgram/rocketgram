@@ -12,17 +12,17 @@ from .utils import BoolResultMixin
 
 
 @dataclass(frozen=True)
-class SetStickerSetThumb(BoolResultMixin, Request):
+class SetStickerSetThumbnail(BoolResultMixin, Request):
     """\
-    Represents SetStickerSetThumb request object:
-    https://core.telegram.org/bots/api#setstickersetthumb
+    Represents SetStickerSetThumbnail request object:
+    https://core.telegram.org/bots/api#setstickersetthumbnail
     """
 
     name: str
     user_id: int
-    thumb: Optional[Union[InputFile, str]]
+    thumbnail: Optional[Union[InputFile, str]] = None
 
     def files(self) -> List[InputFile]:
-        if isinstance(self.thumb, InputFile):
-            return [self.thumb]
+        if isinstance(self.thumbnail, InputFile):
+            return [self.thumbnail]
         return list()

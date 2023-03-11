@@ -4,11 +4,13 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Optional, List
 
 from .input_file import InputFile
+from .input_sticker import InputSticker
 from .mask_position import MaskPosition
 from .request import Request
+from .sticker_format import StickerFormat
 from .sticker_type import StickerType
 from .utils import BoolResultMixin
 
@@ -23,18 +25,14 @@ class CreateNewStickerSet(BoolResultMixin, Request):
     user_id: int
     name: str
     title: str
-    emojis: str
-    png_sticker: Optional[Union[InputFile, str]] = None
-    tgs_sticker: Optional[InputFile] = None
-    webm_sticker: Optional[InputFile] = None
-    contains_masks: Optional[bool] = None  # deprecated
+    stickers: List[InputSticker]
+    sticker_format: StickerFormat
     sticker_type: Optional[StickerType] = None
-    mask_position: Optional[MaskPosition] = None
+    needs_repainting: Optional[MaskPosition] = None
 
     def files(self) -> List[InputFile]:
         files = list()
-        if isinstance(self.png_sticker, InputFile):
-            files.append(self.png_sticker)
-        if self.tgs_sticker is not None:
-            files.append(self.tgs_sticker)
+        for sticker in self.stickers:
+            if isinstance(sticker.sticker, InputFile):
+                files.append(sticker.sticker)
         return files

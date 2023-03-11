@@ -26,7 +26,7 @@ class SendVideo(MessageResultMixin, Request):
     duration: Optional[int] = None
     width: Optional[int] = None
     height: Optional[int] = None
-    thumb: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None
@@ -42,6 +42,6 @@ class SendVideo(MessageResultMixin, Request):
         out = list()
         if isinstance(self.video, InputFile):
             out.append(self.video)
-        if isinstance(self.thumb, InputFile):
-            out.append(self.thumb)
+        if isinstance(self.thumbnail, InputFile):
+            out.append(self.thumbnail)
         return out

@@ -21,7 +21,7 @@ class Video:
     width: int
     height: int
     duration: int
-    thumb: Optional[PhotoSize]
+    thumbnail: Optional[PhotoSize]
     file_name: Optional[str]
     mime_type: Optional[str]
     file_size: Optional[int]
@@ -31,6 +31,13 @@ class Video:
         if data is None:
             return None
 
-        return cls(data['file_id'], data['file_unique_id'], data['width'], data['height'], data['duration'],
-                   PhotoSize.parse(data.get('thumb')), data.get('file_name'), data.get('mime_type'),
-                   data.get('file_size'))
+        return cls(
+            data['file_id'],
+            data['file_unique_id'],
+            data['width'], data['height'],
+            data['duration'],
+            PhotoSize.parse(data.get('thumbnail')),
+            data.get('file_name'),
+            data.get('mime_type'),
+            data.get('file_size')
+        )

@@ -21,6 +21,7 @@ class SendSticker(MessageResultMixin, Request):
     chat_id: Union[int, str]
     sticker: Union[InputFile, str]
     message_thread_id: Optional[int] = None
+    emoji: Optional[str] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
     reply_to_message_id: Optional[int] = None

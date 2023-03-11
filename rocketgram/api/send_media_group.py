@@ -35,8 +35,8 @@ class SendMediaGroup(Request):
             if hasattr(e, 'media') and isinstance(e.media, InputFile):
                 out.append(e.media)
                 continue
-            if hasattr(e, 'thumb') and isinstance(e.thumb, InputFile):
-                out.append(e.thumb)
+            if hasattr(e, 'thumbnail') and isinstance(e.thumbnail, InputFile):
+                out.append(e.thumbnail)
 
         return out
 
