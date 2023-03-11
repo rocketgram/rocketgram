@@ -10,16 +10,26 @@ from .. import api
 
 
 class ReplyKeyboard(Keyboard):
-    __slots__ = ('__resize', '__one_time', '__placeholder', '__selective')
+    __slots__ = ('__persistent', '__resize', '__one_time', '__placeholder', '__selective')
 
-    def __init__(self, *, resize: bool = True, placeholder: Optional[str] = None, one_time: bool = False,
+    def __init__(self, *,
+                 persistent: bool = False,
+                 resize: bool = True,
+                 placeholder: Optional[str] = None,
+                 one_time: bool = False,
                  selective: bool = False):
         super().__init__()
 
+        self.__persistent = persistent
         self.__resize = resize
         self.__one_time = one_time
         self.__placeholder = placeholder
         self.__selective = selective
+
+    def set_persistent(self, resize=False):
+        self.__resize = resize
+
+    persistent = property(fget=lambda self: self.__persistent, fset=set_persistent)
 
     def set_resize(self, resize=False):
         self.__resize = resize
@@ -65,8 +75,11 @@ class ReplyKeyboard(Keyboard):
         return super().row()
 
     def render(self) -> 'api.ReplyKeyboardMarkup':
-        return api.ReplyKeyboardMarkup(self.render_buttons(),
-                                       resize_keyboard=self.resize if self.resize else None,
-                                       one_time_keyboard=self.one_time if self.one_time else None,
-                                       input_field_placeholder=self.placeholder,
-                                       selective=self.selective if self.selective else None)
+        return api.ReplyKeyboardMarkup(
+            self.render_buttons(),
+            is_persistent=self.persistent if self.persistent else None,
+            resize_keyboard=self.resize if self.resize else None,
+            one_time_keyboard=self.one_time if self.one_time else None,
+            input_field_placeholder=self.placeholder,
+            selective=self.selective if self.selective else None
+        )

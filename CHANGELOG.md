@@ -16,9 +16,18 @@ All notable changes to this project.
 - the parameter `message_thread_id` to the request classes `SendMessage`, `SendPhoto`, `SendVideo`, `SendAnimation`, `SendAudio`, `SendDocument`, `SendSticker`, `SendVideoNote`, `SendVoice`, `SendLocation`, `SendVenue`, `SendContact`, `SendPoll`, `SendDice`, `SendInvoice`, `SendGame`, `SendMediaGroup`, `CopyMessage`, `ForwardMessage`.
 - support for Multiple Usernames via the field `active_usernames` in the class `Chat`.
 - the field `emoji_status_custom_emoji_id` to the class `Chat`.
+- the field `is_persistent` to the class `ReplyKeyboardMarkup` and persistent parameter to the `ReplyKeyboard` helper class, allowing to control when the keyboard is shown.
+- the parameter `has_spoiler` to the request classes `SendPhoto`, `SendVideo`, and `SendAnimation`.
+- the field `has_spoiler` to the classes `InputMediaPhoto`, `InputMediaVideo`, and `InputMediaAnimation`.
+- the field `has_media_spoiler` to the class `Message`.
+- the classes `ForumTopicEdited`, `GeneralForumTopicHidden`, `GeneralForumTopicUnhidden`, and `WriteAccessAllowed` and the fields `forum_topic_edited`, `general_forum_topic_hidden`, `general_forum_topic_unhidden`, and `write_access_allowed` to the class Message.
+- the methods `EditGeneralForumTopic`, `CloseGeneralForumTopic`, `ReopenGeneralForumTopic`, `HideGeneralForumTopic`, `UnhideGeneralForumTopic` for managing the General topic in forums.
+- the parameter `message_thread_id` to the method `SendChatAction` for sending chat actions to a specific message thread or a forum topic.
+- the field `has_hidden_members` and `has_aggressive_anti_spam_enabled` to the class `Chat`.
 
 ### Changed.
 - Framework is now corresponds to Telegram Bot API 6.3.
+- Framework is now corresponds to Telegram Bot API 6.4.
 
 ### Fixed
 - WebhookInfo parsing issue.
