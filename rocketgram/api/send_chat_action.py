@@ -20,4 +20,4 @@ class SendChatAction(BoolResultMixin, Request):
 
     chat_id: Union[int, str]
     action: ChatActionType
-    message_thread_id: Optional[int]
+    message_thread_id: Optional[int] = None
