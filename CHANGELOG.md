@@ -29,12 +29,34 @@ All notable changes to this project.
 - the classes `UserShared`, `ChatShared` and the fields `user_shared`, and `chat_shared` to the class `Message`.
 - the parameter `use_independent_chat_permissions` to the request classes `RestrictChatMember` and `SetChatPermissions`.
 - the field `user_chat_id` to the class `ChatJoinRequest`.
+- the request classes `setMyDescription`, `getMyDescription`, `setMyShortDescription` and `getMyShortDescription`.
+- the classes `BotDescription` and `BotShortDescription`.
+- the parameter `emoji` to the method `SendSticker` to specify an emoji for just uploaded stickers.
+- the parameter `needs_repainting` to the method `CreateNewStickerSet` to automatically change the color of emoji based on context.
+- the field `needs_repainting` to the class `Sticker`.
+- the request class `SetCustomEmojiStickerSetThumbnail` for editing the thumbnail of custom emoji sticker sets created by the bot.
+- the request class `SetStickerSetTitle` for editing the title of sticker sets created by the bot.
+- the request class `DeleteStickerSet` for complete deletion of a given sticker set that was created by the bot.
+- the request class `SetStickerEmojiList` for changing the list of emoji associated with a sticker.
+- the request class `SetStickerKeywords` for changing the search keywords assigned to a sticker.
+- the request class `SetStickerMaskPosition` for changing the mask position of a mask sticker.
+- the request class `SetStickerMaskPosition` for changing the mask position of a mask sticker.
 
 ### Changed.
 - Framework is now corresponds to Telegram Bot API 6.3.
 - Framework is now corresponds to Telegram Bot API 6.4.
 - Framework is now corresponds to Telegram Bot API 6.5.
 - Replaced the fields `can_send_media_messages` in the classes `ChatMember` and `ChatPermissions` with separate fields `can_send_audios`, `can_send_documents`, `can_send_photos`, `can_send_videos`, `can_send_video_notes`, and `can_send_voice_notes` for different media types.
+- Replaced the parameters `png_sticker`, `tgs_sticker`, `webm_sticker`, `emojis` and `mask_position` in the request class `CreateNewStickerSet` with the parameters `stickers` and `sticker_format`.
+- Replaced the parameters `png_sticker`, `tgs_sticker`, `webm_sticker`, `emojis` and `mask_position` in the request class `AddStickerToSet` with the parameter sticker of the type `InputSticker`.
+- Replaced the parameter `png_sticker` in the request class `UploadStickerFile` with the parameters `sticker` and `sticker_format`.
+- Renamed the field `thumb` in the classes `Animation`, `Audio`, `Document`, `Sticker`, `Video`, `VideoNote`, `InputMediaAnimation`, `InputMediaAudio`, `InputMediaDocument`, `InputMediaVideo`, `StickerSet` to `thumbnail`.
+- Renamed the parameter `thumb` in the request classes `SendAnimation`, `SendAudio`, `SendDocument`, `SendVideo`, `SendVideoNote` to `thumbnail`.
+- Renamed the request class `SetStickerSetThumb` to `SetStickerSetThumbnail` and its parameter `thumb` to `thumbnail`.
+- Renamed the fields `thumb_url`, `thumb_width`, and `thumb_height` in the classes `InlineQueryResultArticle`, `InlineQueryResultContact`, `InlineQueryResultDocument`, `InlineQueryResultLocation`, and `InlineQueryResultVenue` to `thumbnail_url`, `thumbnail_width`, and `thumbnail_height` respectively.
+- Renamed the field `thumb_url` in the classes `InlineQueryResultPhoto` and `InlineQueryResultVideo` to `thumbnail_url`.
+- Renamed the fields `thumb_url` and `thumb_mime_type` in the classes `InlineQueryResultGif`, and `InlineQueryResultMpeg4Gif` to `thumbnail_url` and `thumbnail_mime_type` respectively.
+- Framework is now corresponds to Telegram Bot API 6.6.
 
 ### Fixed
 - `WebhookInfo` parsing issue.
