@@ -82,7 +82,7 @@ class WebhookExecutor(Executor):
             bot.name = response.result.username
             logger.info('Bot authorized as @%s', response.result.username)
 
-        await bot.init()
+        await bot.init(self)
 
         set_secret_token, secret_token = self._gen_secret_token(secret_token)
 
@@ -120,7 +120,7 @@ class WebhookExecutor(Executor):
             except RocketgramRequestError:
                 logger.error('Error while removing webhook for %s.' % bot.name)
 
-        await bot.shutdown()
+        await bot.shutdown(self)
 
         logger.info('Removed bot @%s', bot.name)
 

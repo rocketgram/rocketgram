@@ -4,9 +4,9 @@
 
 
 import asyncio
-from inspect import isawaitable
 import logging
 from contextlib import suppress
+from inspect import isawaitable
 from typing import List, Optional
 
 from . import executors, routers, connectors, middlewares
@@ -95,7 +95,7 @@ class Bot:
 
         self.__middlewares.append(middleware)
 
-    async def init(self):
+    async def init(self, executor: 'executors.Executor'):
         """Initializes connector and dispatcher.
         Performs bot initialization authorize bot on telegram and sets bot's name.
 
@@ -104,6 +104,7 @@ class Bot:
         logger.debug('Performing init...')
 
         context.bot = self
+        context.executor = executor
 
         if self.__own_connector:
             await self.connector.init()
@@ -117,7 +118,7 @@ class Bot:
 
         return True
 
-    async def shutdown(self):
+    async def shutdown(self, executor: 'executors.Executor'):
         """Release bot's resources.
 
         Must be called after bot work was done."""
@@ -125,6 +126,7 @@ class Bot:
         logger.debug('Performing shutdown...')
 
         context.bot = self
+        context.executor = executor
 
         await self.router.shutdown()
 

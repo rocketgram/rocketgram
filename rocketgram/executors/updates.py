@@ -48,7 +48,7 @@ class UpdatesExecutor(Executor):
             bot.name = response.result.username
             logger.info('Bot authorized as @%s', response.result.username)
 
-        await bot.init()
+        await bot.init(self)
 
         logger.info('Added bot @%s', bot.name)
 
@@ -72,7 +72,7 @@ class UpdatesExecutor(Executor):
         if tasks:
             await self._wait_tasks({tasks})
 
-        await bot.shutdown()
+        await bot.shutdown(self)
 
         logger.info('Removed bot @%s', bot.name)
 

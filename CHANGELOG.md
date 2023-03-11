@@ -57,6 +57,7 @@ All notable changes to this project.
 - Renamed the field `thumb_url` in the classes `InlineQueryResultPhoto` and `InlineQueryResultVideo` to `thumbnail_url`.
 - Renamed the fields `thumb_url` and `thumb_mime_type` in the classes `InlineQueryResultGif`, and `InlineQueryResultMpeg4Gif` to `thumbnail_url` and `thumbnail_mime_type` respectively.
 - Framework is now corresponds to Telegram Bot API 6.6.
+- `Executor` are now available in `init` and `shutdown` events through `context`.
 
 ### Fixed
 - `WebhookInfo` parsing issue.
