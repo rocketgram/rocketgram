@@ -27,11 +27,6 @@ class StickerSet:
     stickers: List[Sticker]
     thumbnail: Optional[PhotoSize]
 
-    @property
-    def contains_masks(self) -> bool:
-        warnings.warn("This field is deprecated.", DeprecationWarning)
-        return self.sticker_type is StickerType.mask
-
     @classmethod
     def parse(cls, data: dict) -> Optional['StickerSet']:
         if data is None:

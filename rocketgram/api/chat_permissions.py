@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import warnings
 from dataclasses import dataclass
 from typing import Optional
 
@@ -29,11 +28,6 @@ class ChatPermissions:
     can_invite_users: Optional[bool]
     can_pin_messages: Optional[bool]
     can_manage_topics: Optional[bool]
-
-    @property
-    def can_send_media_messages(self) -> bool:
-        warnings.warn("This field is deprecated.", DeprecationWarning)
-        return self.can_send_other_messages
 
     @classmethod
     def parse(cls, data: dict) -> Optional['ChatPermissions']:

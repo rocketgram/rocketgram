@@ -63,8 +63,9 @@ All notable changes to this project.
 - `WebhookInfo` parsing issue.
 - Crush on shutdown.
 
-### Deprecated
-- `can_send_media_messages` in the classes `ChatMember` and `ChatPermissions` is deprecated and will be removed in version 5.
+### Removed
+- `can_send_media_messages` from classes `ChatMember` and `ChatPermissions`.
+- `contains_masks` from the class `StickerSet`.
 
 
 ## [4.1.1] - 2022-11-05
