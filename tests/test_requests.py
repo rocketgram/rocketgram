@@ -120,19 +120,19 @@ def test_SendAudio():
     assert req.files() == []
 
     audio_file = api.InputFile('audio.mp3', 'audio/mpeg', BytesIO())
-    thumb_file = api.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
+    thumbnail_file = api.InputFile('thumbnail.jpg', 'image/jpeg', BytesIO())
 
     kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
     req = api.SendAudio(1000, audio_file, duration=300, performer="Beethoven", title="Symphony No. 5",
-                             thumb=thumb_file, caption="Hello, World!", parse_mode=api.ParseModeType.html,
+                             thumbnail=thumbnail_file, caption="Hello, World!", parse_mode=api.ParseModeType.html,
                              disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'audio': 'attach://audio.mp3', 'duration': 300, 'performer': "Beethoven",
-                            'title': "Symphony No. 5", 'thumb': 'attach://thumb.jpg', 'caption': 'Hello, World!',
+                            'title': "Symphony No. 5", 'thumbnail': 'attach://thumbnail.jpg', 'caption': 'Hello, World!',
                             'parse_mode': 'html', 'disable_notification': True, 'reply_to_message_id': 100,
                             'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
 
-    assert req.files() == [audio_file, thumb_file]
+    assert req.files() == [audio_file, thumbnail_file]
 
 
 def test_SendDocument():
@@ -143,19 +143,19 @@ def test_SendDocument():
     assert req.files() == []
 
     document_file = api.InputFile('document.pdf', 'application/pdf', BytesIO())
-    thumb_file = api.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
+    thumbnail_file = api.InputFile('thumbnail.jpg', 'image/jpeg', BytesIO())
 
     kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
-    req = api.SendDocument(1000, document_file, thumb=thumb_file, caption="Hello, World!",
+    req = api.SendDocument(1000, document_file, thumbnail=thumbnail_file, caption="Hello, World!",
                                 parse_mode=api.ParseModeType.html, disable_notification=True, reply_to_message_id=100,
                                 reply_markup=kb)
 
-    assert req.render() == {'chat_id': 1000, 'document': 'attach://document.pdf', 'thumb': 'attach://thumb.jpg',
+    assert req.render() == {'chat_id': 1000, 'document': 'attach://document.pdf', 'thumbnail': 'attach://thumbnail.jpg',
                             'caption': 'Hello, World!', 'parse_mode': 'html', 'disable_notification': True,
                             'reply_to_message_id': 100,
                             'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
 
-    assert req.files() == [document_file, thumb_file]
+    assert req.files() == [document_file, thumbnail_file]
 
 
 def test_SendVideo():
@@ -166,20 +166,20 @@ def test_SendVideo():
     assert req.files() == []
 
     video_file = api.InputFile('video.mp4', 'video/mp4', BytesIO())
-    thumb_file = api.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
+    thumbnail_file = api.InputFile('thumbnail.jpg', 'image/jpeg', BytesIO())
 
     kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
     req = api.SendVideo(1000, video_file, duration=300, width=640, height=480, supports_streaming=True,
-                             thumb=thumb_file, caption="Hello, World!", parse_mode=api.ParseModeType.html,
+                             thumbnail=thumbnail_file, caption="Hello, World!", parse_mode=api.ParseModeType.html,
                              disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'video': 'attach://video.mp4', 'duration': 300, 'width': 640,
-                            'height': 480, 'supports_streaming': True, 'thumb': 'attach://thumb.jpg',
+                            'height': 480, 'supports_streaming': True, 'thumbnail': 'attach://thumbnail.jpg',
                             'caption': 'Hello, World!', 'parse_mode': 'html', 'disable_notification': True,
                             'reply_to_message_id': 100,
                             'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
 
-    assert req.files() == [video_file, thumb_file]
+    assert req.files() == [video_file, thumbnail_file]
 
 
 def test_SendAnimation():
@@ -190,20 +190,20 @@ def test_SendAnimation():
     assert req.files() == []
 
     animation_file = api.InputFile('animation.mp4', 'video/mp4', BytesIO())
-    thumb_file = api.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
+    thumbnail_file = api.InputFile('thumbnail.jpg', 'image/jpeg', BytesIO())
 
     kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
     req = api.SendAnimation(1000, animation_file, duration=300, width=640, height=480,
-                                 thumb=thumb_file, caption="Hello, World!", parse_mode=api.ParseModeType.html,
+                                 thumbnail=thumbnail_file, caption="Hello, World!", parse_mode=api.ParseModeType.html,
                                  disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'animation': 'attach://animation.mp4', 'duration': 300, 'width': 640,
-                            'height': 480, 'thumb': 'attach://thumb.jpg',
+                            'height': 480, 'thumbnail': 'attach://thumbnail.jpg',
                             'caption': 'Hello, World!', 'parse_mode': 'html', 'disable_notification': True,
                             'reply_to_message_id': 100,
                             'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
 
-    assert req.files() == [animation_file, thumb_file]
+    assert req.files() == [animation_file, thumbnail_file]
 
 
 def test_SendVoice():
@@ -236,17 +236,17 @@ def test_SendVideoNote():
     assert req.files() == []
 
     note_file = api.InputFile('voice.opus', 'audio/ogg', BytesIO())
-    thumb_file = api.InputFile('thumb.jpg', 'image/jpeg', BytesIO())
+    thumbnail_file = api.InputFile('thumbnail.jpg', 'image/jpeg', BytesIO())
 
     kb = api.InlineKeyboardMarkup([[api.InlineKeyboardButton('Button', callback_data='data')]])
-    req = api.SendVideoNote(1000, note_file, duration=300, length=500, thumb=thumb_file,
+    req = api.SendVideoNote(1000, note_file, duration=300, length=500, thumbnail=thumbnail_file,
                                  disable_notification=True, reply_to_message_id=100, reply_markup=kb)
 
     assert req.render() == {'chat_id': 1000, 'video_note': 'attach://voice.opus', 'duration': 300, 'length': 500,
-                            'thumb': 'attach://thumb.jpg', 'disable_notification': True, 'reply_to_message_id': 100,
+                            'thumbnail': 'attach://thumbnail.jpg', 'disable_notification': True, 'reply_to_message_id': 100,
                             'reply_markup': {'inline_keyboard': [[{'callback_data': 'data', 'text': 'Button'}]]}}
 
-    assert req.files() == [note_file, thumb_file]
+    assert req.files() == [note_file, thumbnail_file]
 
 
 def test_SendMediaGroupe():
