@@ -92,8 +92,8 @@ class ReplyKeyboard(Keyboard):
             request_id: int,
             chat_has_username: Optional[bool] = None,
             chat_is_created: Optional[bool] = None,
-            user_administrator_rights: Optional[api.ChatAdministratorRights] = None,
-            bot_administrator_rights: Optional[api.ChatAdministratorRights] = None,
+            user_administrator_rights: Optional['api.ChatAdministratorRights'] = None,
+            bot_administrator_rights: Optional['api.ChatAdministratorRights'] = None,
             bot_is_member: Optional[bool] = None
     ) -> 'ReplyKeyboard':
         request_chat = api.KeyboardButtonRequestChat(
