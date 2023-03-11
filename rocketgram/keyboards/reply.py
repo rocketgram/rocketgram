@@ -68,7 +68,43 @@ class ReplyKeyboard(Keyboard):
         return self
 
     def web(self, text: str, url: str) -> 'ReplyKeyboard':
-        self.add(api.InlineKeyboardButton(text=text, web_app=api.WebAppInfo(url=url)))
+        self.add(api.KeyboardButton(text=text, web_app=api.WebAppInfo(url=url)))
+        return self
+
+    def request_user(
+            self,
+            text: str,
+            request_id: int,
+            user_is_bot: Optional[bool] = None,
+            user_is_premium: Optional[bool] = None
+    ) -> 'ReplyKeyboard':
+        request_user = api.KeyboardButtonRequestUser(
+            request_id=request_id,
+            user_is_bot=user_is_bot,
+            user_is_premium=user_is_premium
+        )
+        self.add(api.KeyboardButton(text=text, request_user=request_user))
+        return self
+
+    def request_chat(
+            self,
+            text: str,
+            request_id: int,
+            chat_has_username: Optional[bool] = None,
+            chat_is_created: Optional[bool] = None,
+            user_administrator_rights: Optional[api.ChatAdministratorRights] = None,
+            bot_administrator_rights: Optional[api.ChatAdministratorRights] = None,
+            bot_is_member: Optional[bool] = None
+    ) -> 'ReplyKeyboard':
+        request_chat = api.KeyboardButtonRequestChat(
+            request_id=request_id,
+            chat_has_username=chat_has_username,
+            chat_is_created=chat_is_created,
+            user_administrator_rights=user_administrator_rights,
+            bot_administrator_rights=bot_administrator_rights,
+            bot_is_member=bot_is_member
+        )
+        self.add(api.KeyboardButton(text=text, request_chat=request_chat))
         return self
 
     def row(self) -> 'ReplyKeyboard':

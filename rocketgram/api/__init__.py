@@ -35,6 +35,7 @@ from .chat_member_status_type import ChatMemberStatusType
 from .chat_member_updated import ChatMemberUpdated
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
+from .chat_shared import ChatShared
 from .chat_type import ChatType
 from .chosen_inline_result import ChosenInlineResult
 from .close import Close
@@ -136,6 +137,8 @@ from .input_venue_message_content import InputVenueMessageContent
 from .invoice import Invoice
 from .keyboard_button import KeyboardButton
 from .keyboard_button_poll_type import KeyboardButtonPollType
+from .keyboard_button_request_chat import KeyboardButtonRequestChat
+from .keyboard_button_request_user import KeyboardButtonRequestUser
 from .labeled_price import LabeledPrice
 from .leave_chat import LeaveChat
 from .location import Location
@@ -236,6 +239,7 @@ from .update_type import UpdateType
 from .upload_sticker_file import UploadStickerFile
 from .user import User
 from .user_profile_photos import UserProfilePhotos
+from .user_shared import UserShared
 from .venue import Venue
 from .video import Video
 from .video_chat_ended import VideoChatEnded

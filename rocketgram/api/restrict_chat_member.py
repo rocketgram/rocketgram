@@ -22,4 +22,5 @@ class RestrictChatMember(BoolResultMixin, Request):
     chat_id: Union[int, str]
     user_id: int
     permissions: ChatPermissions
+    use_independent_chat_permissions: Optional[bool] = None
     until_date: Optional[datetime] = None

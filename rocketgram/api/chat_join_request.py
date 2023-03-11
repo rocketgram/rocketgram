@@ -24,6 +24,7 @@ class ChatJoinRequest:
 
     chat: Chat
     user: User
+    user_chat_id: int
     date: datetime
     bio: Optional[str]
     invite_link: Optional[ChatInviteLink]
@@ -33,5 +34,11 @@ class ChatJoinRequest:
         if data is None:
             return None
 
-        return cls(Chat.parse(data['chat']), User.parse(data['from']), datetime.utcfromtimestamp(data['date']),
-                   data.get('bio'), ChatInviteLink.parse(data.get('invite_link')))
+        return cls(
+            Chat.parse(data['chat']),
+            User.parse(data['from']),
+            data['user_chat_id'],
+            datetime.utcfromtimestamp(data['date']),
+            data.get('bio'),
+            ChatInviteLink.parse(data.get('invite_link'))
+        )

@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union
+from typing import Union, Optional
 
 from .chat_permissions import ChatPermissions
 from .request import Request
@@ -20,3 +20,4 @@ class SetChatPermissions(BoolResultMixin, Request):
 
     user_id: Union[int, str]
     permissions: ChatPermissions
+    use_independent_chat_permissions: Optional[bool] = None

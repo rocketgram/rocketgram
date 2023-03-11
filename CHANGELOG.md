@@ -24,13 +24,23 @@ All notable changes to this project.
 - the methods `EditGeneralForumTopic`, `CloseGeneralForumTopic`, `ReopenGeneralForumTopic`, `HideGeneralForumTopic`, `UnhideGeneralForumTopic` for managing the General topic in forums.
 - the parameter `message_thread_id` to the method `SendChatAction` for sending chat actions to a specific message thread or a forum topic.
 - the field `has_hidden_members` and `has_aggressive_anti_spam_enabled` to the class `Chat`.
+- the class `KeyboardButtonRequestUser` and the field `request_user` to the class `KeyboardButton`.
+- the class `KeyboardButtonRequestChat` and the field `request_chat` to the class `KeyboardButton`.
+- the classes `UserShared`, `ChatShared` and the fields `user_shared`, and `chat_shared` to the class `Message`.
+- the parameter `use_independent_chat_permissions` to the request classes `RestrictChatMember` and `SetChatPermissions`.
+- the field `user_chat_id` to the class `ChatJoinRequest`.
 
 ### Changed.
 - Framework is now corresponds to Telegram Bot API 6.3.
 - Framework is now corresponds to Telegram Bot API 6.4.
+- Framework is now corresponds to Telegram Bot API 6.5.
+- Replaced the fields `can_send_media_messages` in the classes `ChatMember` and `ChatPermissions` with separate fields `can_send_audios`, `can_send_documents`, `can_send_photos`, `can_send_videos`, `can_send_video_notes`, and `can_send_voice_notes` for different media types.
 
 ### Fixed
-- WebhookInfo parsing issue.
+- `WebhookInfo` parsing issue.
+
+### Deprecated
+- `can_send_media_messages` in the classes `ChatMember` and `ChatPermissions` is deprecated and will be removed in version 5.
 
 
 ## [4.1.1] - 2022-11-05

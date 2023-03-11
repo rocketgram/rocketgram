@@ -10,6 +10,7 @@ from typing import Dict, List, Optional
 from .animation import Animation
 from .audio import Audio
 from .chat import Chat
+from .chat_shared import ChatShared
 from .contact import Contact
 from .dice import Dice
 from .document import Document
@@ -33,6 +34,7 @@ from .proximity_alert_triggered import ProximityAlertTriggered
 from .sticker import Sticker
 from .successful_payment import SuccessfulPayment
 from .user import User
+from .user_shared import UserShared
 from .venue import Venue
 from .video import Video
 from .video_chat_ended import VideoChatEnded
@@ -123,6 +125,9 @@ class Message:
 
     invoice: Optional[Invoice]
     successful_payment: Optional[SuccessfulPayment]
+
+    user_shared: Optional[UserShared]
+    chat_shared: Optional[ChatShared]
 
     connected_website: Optional[str]
 
@@ -226,6 +231,9 @@ class Message:
         invoice = Invoice.parse(data.get('invoice'))
         successful_payment = SuccessfulPayment.parse(data.get('successful_payment'))
 
+        user_shared = UserShared.parse(data.get('user_shared'))
+        chat_shared = ChatShared.parse(data.get('chat_shared'))
+
         connected_website = data.get('connected_website')
 
         write_access_allowed = WriteAccessAllowed.parse(data.get('write_access_allowed'))
@@ -310,6 +318,10 @@ class Message:
             message_type = MessageType.invoice
         elif successful_payment:
             message_type = MessageType.successful_payment
+        elif user_shared:
+            message_type = MessageType.user_shared
+        elif chat_shared:
+            message_type = MessageType.chat_shared
         elif connected_website:
             message_type = MessageType.connected_website
         elif write_access_allowed:
@@ -398,6 +410,8 @@ class Message:
             pinned_message,
             invoice,
             successful_payment,
+            user_shared,
+            chat_shared,
             connected_website,
             write_access_allowed,
             passport_data,

@@ -37,6 +37,8 @@ class MessageType(EnumAutoName):
     pinned_message = auto()
     invoice = auto()
     successful_payment = auto()
+    user_shared = auto()
+    chat_shared = auto()
     connected_website = auto()
     write_access_allowed = auto()
     passport_data = auto()
