@@ -24,6 +24,7 @@ class SendPoll(MessageResultMixin, Request):
     chat_id: Union[int, str]
     question: str
     options: List[str]
+    message_thread_id: Optional[int] = None
     is_anonymous: Optional[bool] = None
     type: Optional['PollType'] = None
     allows_multiple_answers: Optional[bool] = None

@@ -22,6 +22,7 @@ class SendVoice(MessageResultMixin, Request):
 
     chat_id: Union[int, str]
     voice: Union[InputFile, str]
+    message_thread_id: Optional[int] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None

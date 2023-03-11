@@ -22,6 +22,7 @@ class SendVenue(MessageResultMixin, Request):
     longitude: float
     title: str
     address: str
+    message_thread_id: Optional[int] = None
     foursquare_id: Optional[str] = None
     foursquare_type: Optional[str] = None
     google_place_id: Optional[str] = None

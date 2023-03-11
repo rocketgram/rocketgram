@@ -30,3 +30,4 @@ class PromoteChatMember(BoolResultMixin, Request):
     can_restrict_members: Optional[bool] = None
     can_promote_members: Optional[bool] = None
     can_pin_messages: Optional[bool] = None
+    can_manage_topics: Optional[bool] = None

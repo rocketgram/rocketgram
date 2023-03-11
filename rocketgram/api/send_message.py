@@ -21,6 +21,7 @@ class SendMessage(MessageResultMixin, Request):
 
     chat_id: Union[int, str]
     text: str
+    message_thread_id: Optional[int] = None
     parse_mode: Optional[ParseModeType] = None
     entities: Optional[List[MessageEntity]] = None
     disable_web_page_preview: Optional[bool] = None

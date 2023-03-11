@@ -20,6 +20,7 @@ class SendLocation(MessageResultMixin, Request):
     chat_id: Union[int, str]
     latitude: float
     longitude: float
+    message_thread_id: Optional[int] = None
     horizontal_accuracy: Optional[float] = None
     live_period: Optional[int] = None
     heading: Optional[int] = None

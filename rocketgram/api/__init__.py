@@ -38,14 +38,17 @@ from .chat_photo import ChatPhoto
 from .chat_type import ChatType
 from .chosen_inline_result import ChosenInlineResult
 from .close import Close
+from .close_forum_topic import CloseForumTopic
 from .contact import Contact
 from .copy_message import CopyMessage
 from .create_chat_invite_link import CreateChatInviteLink
+from .create_forum_topic import CreateForumTopic
 from .create_invoice_link import CreateInvoiceLink
 from .create_new_sticker_set import CreateNewStickerSet
 from .decline_chat_join_request import DeclineChatJoinRequest
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
+from .delete_forum_topic import DeleteForumTopic
 from .delete_message import DeleteMessage
 from .delete_my_commands import DeleteMyCommands
 from .delete_sticker_from_set import DeleteStickerFromSet
@@ -54,6 +57,7 @@ from .dice import Dice
 from .dice_type import DiceType
 from .document import Document
 from .edit_chat_invite_link import EditChatInviteLink
+from .edit_forum_topic import EditForumTopic
 from .edit_message_caption import EditMessageCaption
 from .edit_message_live_location import EditMessageLiveLocation
 from .edit_message_media import EditMessageMedia
@@ -66,6 +70,10 @@ from .entity_type import EntityType
 from .export_chat_invite_link import ExportChatInviteLink
 from .file import File
 from .force_reply import ForceReply
+from .forum_topic import ForumTopic
+from .forum_topic_closed import ForumTopicClosed
+from .forum_topic_created import ForumTopicCreated
+from .forum_topic_reopened import ForumTopicReopened
 from .forward_message import ForwardMessage
 from .game import Game
 from .game_high_score import GameHighScore
@@ -76,6 +84,7 @@ from .get_chat_member_count import GetChatMemberCount
 from .get_chat_menu_button import GetChatMenuButton
 from .get_custom_emoji_stickers import GetCustomEmojiStickers
 from .get_file import GetFile
+from .get_forum_topic_icon_stickers import GetForumTopicIconStickers
 from .get_game_high_scores import GetGameHighScores
 from .get_me import GetMe
 from .get_my_commands import GetMyCommands
@@ -158,6 +167,7 @@ from .poll_type import PollType
 from .pre_checkout_query import PreCheckoutQuery
 from .promote_chat_member import PromoteChatMember
 from .proximity_alert_triggered import ProximityAlertTriggered
+from .reopen_forum_topic import ReopenForumTopic
 from .reply_keyboard_markup import ReplyKeyboardMarkup
 from .reply_keyboard_remove import ReplyKeyboardRemove
 from .request import Request
@@ -211,6 +221,7 @@ from .thumb_mime_type import ThumbMimeType
 from .unban_chat_member import UnbanChatMember
 from .unban_chat_sender_chat import UnbanChatSenderChat
 from .unpin_all_chat_messages import UnpinAllChatMessages
+from .unpin_all_forum_topic_messages import UnpinAllForumTopicMessages
 from .unpin_chat_message import UnpinChatMessage
 from .update import Update
 from .update_type import UpdateType

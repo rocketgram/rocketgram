@@ -22,6 +22,7 @@ class SendAnimation(MessageResultMixin, Request):
 
     chat_id: Union[int, str]
     animation: Union[InputFile, str]
+    message_thread_id: Optional[int] = None
     duration: Optional[int] = None
     width: Optional[int] = None
     height: Optional[int] = None

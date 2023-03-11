@@ -20,6 +20,7 @@ class SendVideoNote(MessageResultMixin, Request):
 
     chat_id: Union[int, str]
     video_note: Union[InputFile, str]
+    message_thread_id: Optional[int] = None
     duration: Optional[int] = None
     length: Optional[int] = None
     thumb: Union[InputFile, str] = None

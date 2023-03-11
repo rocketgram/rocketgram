@@ -22,6 +22,7 @@ class ChatPermissions:
     can_change_info: Optional[bool]
     can_invite_users: Optional[bool]
     can_pin_messages: Optional[bool]
+    can_manage_topics: Optional[bool]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['ChatPermissions']:
@@ -30,4 +31,5 @@ class ChatPermissions:
 
         return cls(data.get('can_send_messages'), data.get('can_send_media_messages'), data.get('can_send_polls'),
                    data.get('can_send_other_messages'), data.get('can_add_web_page_previews'),
-                   data.get('can_change_info'), data.get('can_invite_users'), data.get('can_pin_messages'))
+                   data.get('can_change_info'), data.get('can_invite_users'), data.get('can_pin_messages'),
+                   data.get('can_manage_topics'))

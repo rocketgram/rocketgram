@@ -22,9 +22,10 @@ class ChatAdministratorRights:
     can_promote_members: bool
     can_change_info: bool
     can_invite_users: bool
-    can_post_messages: bool
-    can_edit_messages: bool
-    can_pin_messages: bool
+    can_post_messages: Optional[bool]
+    can_edit_messages: Optional[bool]
+    can_pin_messages: Optional[bool]
+    can_manage_topics: Optional[bool]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['ChatAdministratorRights']:
@@ -33,5 +34,5 @@ class ChatAdministratorRights:
 
         return cls(data['is_anonymous'], data['can_manage_chat'], data['can_delete_messages'],
                    data['can_manage_video_chats'], data['can_restrict_members'], data['can_promote_members'],
-                   data['can_change_info'], data['can_invite_users'], data['can_post_messages'],
-                   data['can_edit_messages'], data['can_pin_messages'])
+                   data['can_change_info'], data['can_invite_users'], data.get('can_post_messages'),
+                   data.get('can_edit_messages'), data.get('can_pin_messages'), data.get('can_manage_topics'))

@@ -22,6 +22,7 @@ class SendDocument(MessageResultMixin, Request):
 
     chat_id: Union[int, str]
     document: Union[InputFile, str]
+    message_thread_id: Optional[int] = None
     thumb: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None

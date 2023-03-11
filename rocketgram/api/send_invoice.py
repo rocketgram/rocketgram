@@ -25,6 +25,7 @@ class SendInvoice(MessageResultMixin, Request):
     provider_token: str
     currency: str
     prices: List[LabeledPrice]
+    message_thread_id: Optional[int] = None
     max_tip_amount: Optional[int] = None
     suggested_tip_amounts: Optional[List[int]] = None
     start_parameter: Optional[str] = None

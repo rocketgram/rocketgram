@@ -14,8 +14,15 @@ from .user import User
 @dataclass(frozen=True)
 class ChatMember:
     """\
-    Represents ChatMember object:
+    Represents ChatMember, ChatMemberOwner, ChatMemberAdministrator, ChatMemberMember,
+    ChatMemberRestricted, ChatMemberLeft, and ChatMemberBanned objects:
     https://core.telegram.org/bots/api#chatmember
+    https://core.telegram.org/bots/api#chatmemberowner
+    https://core.telegram.org/bots/api#chatmemberadministrator
+    https://core.telegram.org/bots/api#chatmembermember
+    https://core.telegram.org/bots/api#chatmemberrestricted
+    https://core.telegram.org/bots/api#chatmemberleft
+    https://core.telegram.org/bots/api#chatmemberbanned
     """
 
     user: User
@@ -33,6 +40,7 @@ class ChatMember:
     can_invite_users: Optional[bool]
     can_restrict_members: Optional[bool]
     can_pin_messages: Optional[bool]
+    can_manage_topics: Optional[bool]
     can_promote_members: Optional[bool]
     is_member: Optional[bool]
     can_send_messages: Optional[bool]
@@ -52,7 +60,7 @@ class ChatMember:
                    data.get('is_anonymous'), until_date, data.get('can_be_edited'), data.get('can_manage_chat'),
                    data.get('can_change_info'), data.get('can_post_messages'), data.get('can_edit_messages'),
                    data.get('can_delete_messages'), data.get('can_manage_voice_chats'), data.get('can_invite_users'),
-                   data.get('can_restrict_members'), data.get('can_pin_messages'), data.get('can_promote_members'),
-                   data.get('is_member'), data.get('can_send_messages'), data.get('can_send_media_messages'),
-                   data.get('can_send_polls'), data.get('can_send_other_messages'),
+                   data.get('can_restrict_members'), data.get('can_pin_messages'), data.get('can_manage_topics'),
+                   data.get('can_promote_members'), data.get('is_member'), data.get('can_send_messages'),
+                   data.get('can_send_media_messages'), data.get('can_send_polls'), data.get('can_send_other_messages'),
                    data.get('can_add_web_page_previews'))

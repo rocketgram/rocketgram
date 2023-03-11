@@ -4,6 +4,22 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Added
+- the field `is_forum` to the class `Chat`.
+- the fields `is_topic_message` and `message_thread_id` to the class `Message`.
+- the fields `forum_topic_created`, `forum_topic_closed` and `forum_topic_reopened` to the class `Message`.
+- the classes `ForumTopicCreated`, `ForumTopicClosed`, and `ForumTopicReopened`.
+- the field `can_manage_topics` to the classes `ChatAdministratorRights`, `ChatPermissions` and `ChatMember`.
+- the parameter `can_manage_topics` to the method `promoteChatMember`.
+- the `ForumTopic` class.
+- the request classes `CreateForumTopic`, `EditForumTopic`, `CloseForumTopic`, `ReopenForumTopic`, `DeleteForumTopic`, `UnpinAllForumTopicMessages`, and `GetForumTopicIconStickers` for forum topic management.
+- the parameter `message_thread_id` to the request classes `SendMessage`, `SendPhoto`, `SendVideo`, `SendAnimation`, `SendAudio`, `SendDocument`, `SendSticker`, `SendVideoNote`, `SendVoice`, `SendLocation`, `SendVenue`, `SendContact`, `SendPoll`, `SendDice`, `SendInvoice`, `SendGame`, `SendMediaGroup`, `CopyMessage`, `ForwardMessage`.
+- support for Multiple Usernames via the field `active_usernames` in the class `Chat`.
+- the field `emoji_status_custom_emoji_id` to the class `Chat`.
+
+### Changed.
+- Framework is now corresponds to Telegram Bot API 6.3.
+
 ### Fixed
 - WebhookInfo parsing issue.
 
