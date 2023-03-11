@@ -18,6 +18,6 @@ class EditForumTopic(BoolResultMixin, Request):
     """
 
     chat_id: Union[int, str]
-    name: int
-    icon_color: Optional[int] = None
+    message_thread_id: int
+    name: Optional[str] = None
     icon_custom_emoji_id: Optional[str] = None

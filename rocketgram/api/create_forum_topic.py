@@ -15,11 +15,11 @@ from .. import context
 class CreateForumTopic(Request):
     """\
     Represents CreateForumTopic request object:
-    https://core.telegram.forg/bots/api#createforumtopic
+    https://core.telegram.org/bots/api#createforumtopic
     """
 
     chat_id: Union[int, str]
-    name: int
+    name: str
     icon_color: Optional[int] = None
     icon_custom_emoji_id: Optional[str] = None
 
