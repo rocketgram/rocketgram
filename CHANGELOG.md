@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [5.0.0] - 2023-03-11
+
 ### Added
 - the field `is_forum` to the class `Chat`.
 - the fields `is_topic_message` and `message_thread_id` to the class `Message`.
