@@ -19,4 +19,4 @@ class AnswerPreCheckoutQuery(BoolResultMixin, Request):
 
     pre_checkout_query_id: str
     ok: bool
-    error_message: Optional[str]
+    error_message: Optional[str] = None

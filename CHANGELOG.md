@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Fixed
+- `AnswerPreCheckoutQuery` default parameter.
+
 
 ## [5.0.0] - 2023-03-11
 
