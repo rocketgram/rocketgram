@@ -18,4 +18,4 @@ class SetChatDescription(BoolResultMixin, Request):
     """
 
     chat_id: Union[int, str]
-    description: Optional[str]
+    description: Optional[str] = None

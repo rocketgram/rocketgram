@@ -21,7 +21,7 @@ class GetChatMenuButton(Request):
     https://core.telegram.org/bots/api#getchatmenubutton
     """
 
-    chat_id: Optional[Union[int, str]]
+    chat_id: Optional[Union[int, str]] = None
 
     def parse_result(self, data) -> Union[MenuButtonCommands, MenuButtonDefault, MenuButtonWebApp]:
         assert isinstance(data, dict), "Should be dict."

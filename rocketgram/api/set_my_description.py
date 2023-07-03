@@ -17,5 +17,5 @@ class SetMyDescription(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setmydescription
     """
 
-    description: Optional[str]
+    description: Optional[str] = None
     language_code: Optional[str] = None

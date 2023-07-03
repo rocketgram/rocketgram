@@ -6,6 +6,13 @@ All notable changes to this project.
 
 ### Fixed
 - default parameters in `AnswerPreCheckoutQuery`.
+- default parameters in `AnswerShippingQuery`.
+- default parameters in `DeleteMyCommands`.
+- default parameters in `GetChatMenuButton`.
+- default parameters in `GetMyCommands`.
+- default parameters in `SetChatDescription`.
+- default parameters in `SetMyDescription`.
+- default parameters in `UnbanChatMember`.
 
 
 ## [5.0.0] - 2023-03-11

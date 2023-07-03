@@ -18,5 +18,5 @@ class DeleteMyCommands(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#deletemycommands
     """
 
-    scope: Optional[List[BotCommandScope]]
-    language_code: Optional[str]
+    scope: Optional[List[BotCommandScope]] = None
+    language_code: Optional[str] = None

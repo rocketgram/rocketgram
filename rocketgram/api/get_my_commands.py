@@ -19,8 +19,8 @@ class GetMyCommands(Request):
     https://core.telegram.org/bots/api#getmycommands
     """
 
-    scope: Optional[BotCommandScope]
-    language_code: Optional[str]
+    scope: Optional[BotCommandScope] = None
+    language_code: Optional[str] = None
 
     def parse_result(self, data) -> List['api.BotCommand']:
         assert isinstance(data, list), "Should be list."

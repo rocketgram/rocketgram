@@ -19,4 +19,4 @@ class UnbanChatMember(BoolResultMixin, Request):
 
     chat_id: Union[int, str]
     user_id: int
-    only_if_banned: Optional[bool]
+    only_if_banned: Optional[bool] = None

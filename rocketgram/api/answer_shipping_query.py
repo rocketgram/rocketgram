@@ -20,5 +20,5 @@ class AnswerShippingQuery(BoolResultMixin, Request):
 
     shipping_query_id: str
     ok: bool
-    shipping_options: Optional[List[ShippingOption]]
-    error_message: Optional[str]
+    shipping_options: Optional[List[ShippingOption]] = None
+    error_message: Optional[str] = None
