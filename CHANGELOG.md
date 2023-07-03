@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+
+## [5.0.1] - 2023-07-03
+
 ### Fixed
 - default parameters in `AnswerPreCheckoutQuery`.
 - default parameters in `AnswerShippingQuery`.
