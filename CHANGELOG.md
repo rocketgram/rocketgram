@@ -4,6 +4,9 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Fixed
+- typing in `Animation`.
+
 
 ## [5.0.1] - 2023-07-03
 

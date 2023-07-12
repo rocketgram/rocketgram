@@ -18,9 +18,9 @@ class Animation:
 
     file_id: str
     file_unique_id: str
-    width: str
-    height: str
-    duration: str
+    width: int
+    height: int
+    duration: int
     thumbnail: Optional[PhotoSize]
     file_name: Optional[str]
     mime_type: Optional[str]
