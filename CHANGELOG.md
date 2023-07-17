@@ -4,8 +4,15 @@ All notable changes to this project.
 
 ## [Unreleased]
 
+### Changed.
+- the parameter `executor` is now optional for `init`, `shutdown` and `process` methods of `Bot` class.
+
 ### Fixed
 - typing in `Animation`.
+
+### Deprecated
+- The next major release will no longer officially support Python 3.7.
+- All lists in api classes will be replaced with tuples in the next major version.
 
 
 ## [5.0.1] - 2023-07-03

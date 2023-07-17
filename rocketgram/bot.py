@@ -23,7 +23,8 @@ logger_raw_out = logging.getLogger('rocketgram.raw.out')
 class Bot:
     __slots__ = ('__token', '__name', '__user_id', '__middlewares', '__router', '__own_connector', '__connector')
 
-    def __init__(self, token: str, *, connector: 'connectors.Connector' = None, router: 'routers.Router' = None):
+    def __init__(self, token: str, *, connector: Optional['connectors.Connector'] = None,
+                 router: Optional['routers.Router'] = None):
         """
 
         :param token: Bot's token
@@ -95,7 +96,7 @@ class Bot:
 
         self.__middlewares.append(middleware)
 
-    async def init(self, executor: 'executors.Executor'):
+    async def init(self, executor: Optional['executors.Executor'] = None):
         """Initializes connector and dispatcher.
         Performs bot initialization authorize bot on telegram and sets bot's name.
 
@@ -118,7 +119,7 @@ class Bot:
 
         return True
 
-    async def shutdown(self, executor: 'executors.Executor'):
+    async def shutdown(self, executor: Optional['executors.Executor'] = None):
         """Release bot's resources.
 
         Must be called after bot work was done."""
@@ -138,7 +139,7 @@ class Bot:
         if self.__own_connector:
             await self.connector.shutdown()
 
-    async def process(self, executor: 'executors.Executor', update: Update) -> Optional[Request]:
+    async def process(self, executor: Optional['executors.Executor'], update: Update) -> Optional[Request]:
         logger_raw_in.debug('Raw in: %s', update.raw)
 
         context.assign(executor, self, update)
@@ -155,7 +156,7 @@ class Bot:
 
             for req in context.webhook_requests:
                 # set request to return if it can be processed
-                if webhook_request is None and executor.can_process_webhook_request(req):
+                if executor and webhook_request is None and executor.can_process_webhook_request(req):
                     for mw in self.__middlewares:
                         req = mw.before_request(req)
                         if isawaitable(req):
