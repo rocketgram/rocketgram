@@ -1,15 +1,16 @@
 name: TEST
 
-on: [push]
+on: [ push ]
 
 jobs:
 
-  test-code:
+  code:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10", 3.11]
+        python-version: [ 3.7, 3.8, 3.9, "3.10", 3.11 ]
+        test-mark: [ "api", "dispatcher" ]
 
     steps:
       - uses: actions/checkout@v3
@@ -22,25 +23,18 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip3 install -r requirements-test.txt
+          pip3 install -r tests/requirements.txt
 
-      - name: Lint with flake8
+      - name: test api implementation
         run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          python3 -m pytest -m ${{ matrix.test-mark }} -vv -s --collect-only ./tests/ 
 
-      - name: Test with pytest
-        run: |
-          python3 -m pytest
-
-  test-package:
+  package:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10", 3.11]
+        python-version: [ 3.7, 3.8, 3.9, "3.10", 3.11 ]
 
     steps:
       - uses: actions/checkout@v3
@@ -53,7 +47,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip3 install -r requirements-package.txt
+          pip3 install twine wheel setuptools
 
       - name: Test build and setup
         run: |

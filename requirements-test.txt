@@ -1,6 +1,0 @@
-aiohttp
-ujson
-uvloop
-
-pytest
-flake8
