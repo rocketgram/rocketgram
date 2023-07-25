@@ -472,7 +472,7 @@ All notable changes to this project.
 - Added `answer` context helper.
 - Added well typed `Request.send2()` method. This method returns result directly instead of `Response` object.
 - Added well typed `Response.method` property.
-- Added `File.url` property. This property retrun url of a file requested by `GetFile` method.
+- Added `File.url` property. This property return the url of a file requested by `GetFile` method.
 - Ability to use callable classes and instances as handlers.
 - `explanation`, `explanation_entities`, `open_period`, `close_date` fields to `Poll` class.
 - `explanation`, `explanation_parse_mode`, `open_period`, `close_date` fields to `sendPoll` request class.
