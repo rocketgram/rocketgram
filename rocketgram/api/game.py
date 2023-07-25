@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional, Tuple
 
 from .animation import Animation
 from .message_entity import MessageEntity
@@ -20,9 +20,9 @@ class Game:
 
     title: str
     description: str
-    photo: List[PhotoSize]
+    photo: Tuple[PhotoSize, ...]
     text: Optional[str]
-    text_entities: Optional[List[MessageEntity]]
+    text_entities: Optional[Tuple[MessageEntity, ...]]
     animation: Optional[Animation]
 
     @classmethod
@@ -30,8 +30,9 @@ class Game:
         if data is None:
             return None
 
-        photo = [PhotoSize.parse(s) for s in data['photo']]
-        text_entities = [MessageEntity.parse(s) for s in data['text_entities']] if 'text_entities' in data else None
+        photo = tuple(PhotoSize.parse(s) for s in data['photo'])
+        text_entities = tuple(MessageEntity.parse(s) for s in data['text_entities']) \
+            if 'text_entities' in data else None
 
         return cls(data['title'], data['description'], photo, data.get('text'),
                    text_entities, Animation.parse(data.get('animation')))

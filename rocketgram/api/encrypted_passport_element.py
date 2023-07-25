@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional, Tuple
 
 from .encrypted_passport_element_type import EncryptedPassportElementType
 from .password_file import PassportFile
@@ -24,11 +24,11 @@ class EncryptedPassportElement:
     data: Optional[str]
     phone_number: Optional[str]
     email: Optional[str]
-    files: Optional[List[PassportFile]]
+    files: Optional[Tuple[PassportFile, ...]]
     front_side: Optional[PassportFile]
     reverse_side: Optional[PassportFile]
     selfie: Optional[PassportFile]
-    translation: Optional[List[PassportFile]]
+    translation: Optional[Tuple[PassportFile, ...]]
     hash: str
 
     @classmethod
@@ -36,8 +36,8 @@ class EncryptedPassportElement:
         if data is None:
             return None
 
-        files = [PassportFile.parse(s) for s in data['files']] if 'files' in data else None
-        translation = [PassportFile.parse(s) for s in data['translation']] if 'translation' in data else None
+        files = tuple(PassportFile.parse(s) for s in data['files']) if 'files' in data else None
+        translation = tuple(PassportFile.parse(s) for s in data['translation']) if 'translation' in data else None
 
         return cls(EncryptedPassportElementType(data['type']), data.get('data'), data.get('phone_number'),
                    data.get('email'), files, PassportFile.parse(data.get('front_side')),

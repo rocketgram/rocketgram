@@ -5,7 +5,7 @@
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Dict, List, Optional
+from typing import Dict, Optional, Tuple
 
 from .animation import Animation
 from .audio import Audio
@@ -83,8 +83,8 @@ class Message:
     author_signature: Optional[str]
 
     text: Optional[str]
-    entities: Optional[List[MessageEntity]]
-    caption_entities: Optional[List[MessageEntity]]
+    entities: Optional[Tuple[MessageEntity, ...]]
+    caption_entities: Optional[Tuple[MessageEntity, ...]]
 
     has_media_spoiler: Optional[bool]
 
@@ -92,7 +92,7 @@ class Message:
     document: Optional[Document]
     animation: Optional[Animation]
     game: Optional[Game]
-    photo: Optional[List[PhotoSize]]
+    photo: Optional[Tuple[PhotoSize, ...]]
     sticker: Optional[Sticker]
     video: Optional[Video]
     voice: Optional[Voice]
@@ -106,10 +106,10 @@ class Message:
     poll: Optional[Poll]
     dice: Optional[Dice]
 
-    new_chat_members: Optional[List[User]]
+    new_chat_members: Optional[Tuple[User, ...]]
     left_chat_member: Optional[User]
     new_chat_title: Optional[str]
-    new_chat_photo: Optional[List[PhotoSize]]
+    new_chat_photo: Optional[Tuple[PhotoSize, ...]]
     delete_chat_photo: Optional[bool]
 
     group_chat_created: Optional[bool]
@@ -182,9 +182,9 @@ class Message:
 
         text = data.get('text')
 
-        entities = [MessageEntity.parse(d) for d in data.get('entities')] if 'entities' in data else None
-        caption_entities = [MessageEntity.parse(d) for d in
-                            data.get('caption_entities')] if 'caption_entities' in data else None
+        entities = tuple(MessageEntity.parse(d) for d in data['entities']) if 'entities' in data else None
+        caption_entities = tuple(MessageEntity.parse(d) for d in data['caption_entities']) \
+            if 'caption_entities' in data else None
 
         has_media_spoiler = data.get('has_media_spoiler')
 
@@ -194,7 +194,7 @@ class Message:
         if animation is not None:
             document = None
         game = Game.parse(data.get('game'))
-        photo = [PhotoSize.parse(d) for d in data.get('photo')] if 'photo' in data else None
+        photo = tuple(PhotoSize.parse(d) for d in data['photo']) if 'photo' in data else None
         sticker = Sticker.parse(data.get('sticker'))
         video = Video.parse(data.get('video'))
         voice = Voice.parse(data.get('voice'))
@@ -208,12 +208,11 @@ class Message:
         poll = Poll.parse(data.get('poll'))
         dice = Dice.parse(data.get('dice'))
 
-        new_chat_members = [User.parse(d) for d in
-                            data.get('new_chat_members')] if 'new_chat_members' in data else None
+        new_chat_members = tuple(User.parse(d) for d in data['new_chat_members']) \
+            if 'new_chat_members' in data else None
         left_chat_member = User.parse(data.get('left_chat_member'))
         new_chat_title = data.get('new_chat_title')
-        new_chat_photo = [PhotoSize.parse(d) for d in
-                          data.get('new_chat_photo')] if 'new_chat_photo' in data else None
+        new_chat_photo = tuple(PhotoSize.parse(d) for d in data['new_chat_photo']) if 'new_chat_photo' in data else None
         delete_chat_photo = data.get('delete_chat_photo')
 
         group_chat_created = data.get('group_chat_created')

@@ -5,7 +5,7 @@
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Dict, List, Optional
+from typing import Dict, Optional, Tuple
 
 from .update_type import UpdateType
 
@@ -25,7 +25,7 @@ class WebhookInfo:
     last_error_message: Optional[str]
     last_synchronization_error_date: Optional[int]
     max_connections: Optional[int]
-    allowed_updates: Optional[List[UpdateType]]
+    allowed_updates: Optional[Tuple[UpdateType, ...]]
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['WebhookInfo']:
@@ -36,7 +36,7 @@ class WebhookInfo:
             if 'last_error_date' in data else None
         lsed = data.get('last_synchronization_error_date')
         last_synchronization_error_date = datetime.fromtimestamp(lsed, tz=timezone.utc) if lsed else None
-        allowed_updates = [UpdateType(m) for m in data['allowed_updates']] if 'allowed_updates' in data else None
+        allowed_updates = tuple(UpdateType(m) for m in data['allowed_updates']) if 'allowed_updates' in data else None
 
         return cls(
             data['url'],
