@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from .chat_member_status_type import ChatMemberStatusType
@@ -64,7 +64,7 @@ class ChatMember:
             ChatMemberStatusType(data['status']),
             data.get('custom_title'),
             data.get('is_anonymous'),
-            datetime.utcfromtimestamp(data['until_date']) if 'until_date' in data else None,
+            datetime.fromtimestamp(data['until_date'], tz=timezone.utc) if 'until_date' in data else None,
             data.get('can_be_edited'),
             data.get('can_manage_chat'),
             data.get('can_change_info'),

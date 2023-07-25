@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
 from .update_type import UpdateType
@@ -32,9 +32,10 @@ class WebhookInfo:
         if data is None:
             return None
 
-        last_error_date = datetime.utcfromtimestamp(data['last_error_date']) if 'last_error_date' in data else None
+        last_error_date = datetime.fromtimestamp(data['last_error_date'], tz=timezone.utc) \
+            if 'last_error_date' in data else None
         lsed = data.get('last_synchronization_error_date')
-        last_synchronization_error_date = datetime.utcfromtimestamp(lsed) if lsed else None
+        last_synchronization_error_date = datetime.fromtimestamp(lsed, tz=timezone.utc) if lsed else None
         allowed_updates = [UpdateType(m) for m in data['allowed_updates']] if 'allowed_updates' in data else None
 
         return cls(

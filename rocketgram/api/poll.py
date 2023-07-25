@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 
 from .message_entity import MessageEntity
@@ -41,7 +41,7 @@ class Poll:
         options = [PollOption.parse(i) for i in data['options']]
         explanation_entities = [MessageEntity.parse(d) for d in
                                 data.get('explanation_entities')] if 'explanation_entities' in data else None
-        close_date = datetime.utcfromtimestamp(data['close_date']) if 'close_date' in data else None
+        close_date = datetime.fromtimestamp(data['close_date'], tz=timezone.utc) if 'close_date' in data else None
 
         return cls(data['id'], data['question'], options, data['total_voter_count'], data['is_closed'],
                    data['is_anonymous'], PollType(data['type']), data['allows_multiple_answers'],

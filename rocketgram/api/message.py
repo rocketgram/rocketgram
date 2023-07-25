@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
 from .animation import Animation
@@ -163,19 +163,19 @@ class Message:
         message_thread_id = data.get('message_thread_id')
         user = User.parse(data.get('from'))
         sender_chat = Chat.parse(data.get('sender_chat'))
-        date = datetime.utcfromtimestamp(data['date'])
+        date = datetime.fromtimestamp(data['date'], tz=timezone.utc)
         chat = Chat.parse(data["chat"])
         forward_from = User.parse(data.get('forward_from'))
         forward_from_chat = Chat.parse(data.get('forward_from_chat'))
         forward_from_message_id = data.get('forward_from_message_id')
         forward_sender_name = data.get('forward_sender_name')
         forward_signature = data.get('forward_signature')
-        forward_date = datetime.utcfromtimestamp(data['forward_date']) if 'forward_date' in data else None
+        forward_date = datetime.fromtimestamp(data['forward_date'], tz=timezone.utc) if 'forward_date' in data else None
         is_topic_message = data.get('is_topic_message')
         is_automatic_forward = data.get('is_automatic_forward')
         reply_to_message = Message.parse(data.get('reply_to_message'))
         via_bot = User.parse(data.get('via_bot'))
-        edit_date = datetime.utcfromtimestamp(data['edit_date']) if 'edit_date' in data else None
+        edit_date = datetime.fromtimestamp(data['edit_date'], tz=timezone.utc) if 'edit_date' in data else None
         has_protected_content = data.get('has_protected_content')
         media_group_id = data.get('media_group_id')
         author_signature = data.get('author_signature')

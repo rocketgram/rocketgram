@@ -6,6 +6,7 @@ All notable changes to this project.
 
 ### Changed.
 - the parameter `executor` is now optional for `init`, `shutdown` and `process` methods of `Bot` class.
+- tz-aware datetime objects are now used instead of raw datetime objects.
 
 ### Fixed
 - typing in `Animation`.
