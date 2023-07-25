@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Tuple, Optional
 
 from .bot_command import BotCommand
 from .bot_command_scope import BotCommandScope
@@ -19,6 +19,6 @@ class SetMyCommands(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setmycommands
     """
 
-    commands: List[BotCommand]
+    commands: Tuple[BotCommand, ...]
     scope: Optional[BotCommandScope] = None
     language_code: Optional[str] = None

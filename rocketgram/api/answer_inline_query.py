@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, Tuple
 
 from .inline_query_result import InlineQueryResult
 from .request import Request
@@ -19,7 +19,7 @@ class AnswerInlineQuery(BoolResultMixin, Request):
     """
 
     inline_query_id: str
-    results: List[InlineQueryResult]
+    results: Tuple[InlineQueryResult, ...]
     cache_time: Optional[int] = None
     is_personal: Optional[bool] = None
     next_offset: Optional[str] = None

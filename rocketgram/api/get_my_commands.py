@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Tuple, Optional
 
 from .bot_command_scope import BotCommandScope
 from .request import Request
@@ -22,10 +22,10 @@ class GetMyCommands(Request):
     scope: Optional[BotCommandScope] = None
     language_code: Optional[str] = None
 
-    def parse_result(self, data) -> List['api.BotCommand']:
+    def parse_result(self, data) -> Tuple['api.BotCommand', ...]:
         assert isinstance(data, list), "Should be list."
-        return [api.BotCommand.parse(r) for r in data]
+        return tuple(api.BotCommand.parse(r) for r in data)
 
-    async def send(self) -> List['api.BotCommand']:
+    async def send(self) -> Tuple['api.BotCommand', ...]:
         res = await context.bot.send(self)
         return res.result

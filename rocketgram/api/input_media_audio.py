@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass, field
-from typing import Optional, Union, List
+from typing import Optional, Union, Tuple
 
 from .input_file import InputFile
 from .input_media import InputMedia
@@ -25,7 +25,7 @@ class InputMediaAudio(InputMedia):
     thumbnail: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[Tuple[MessageEntity, ...]] = None
     duration: Optional[int] = None
     performer: Optional[str] = None
     title: Optional[str] = None

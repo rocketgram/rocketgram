@@ -16,7 +16,7 @@ class Dice:
     https://core.telegram.org/bots/api#dice
     """
 
-    emoji: str
+    emoji: DiceType
     value: int
 
     @classmethod

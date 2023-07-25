@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import List
+from typing import Tuple
 
 from .request import Request
 from .sticker import Sticker
@@ -18,12 +18,12 @@ class GetCustomEmojiStickers(Request):
     https://core.telegram.org/bots/api#getcustomemojistickers
     """
 
-    custom_emoji_ids: List[str]
+    custom_emoji_ids: Tuple[str, ...]
 
-    def parse_result(self, data) -> List[Sticker]:
+    def parse_result(self, data) -> Tuple[Sticker, ...]:
         assert isinstance(data, list), "Should be list."
-        return [Sticker.parse(r) for r in data]
+        return tuple(Sticker.parse(r) for r in data)
 
-    async def send(self) -> List[Sticker]:
+    async def send(self) -> Tuple[Sticker, ...]:
         res = await context.bot.send(self)
         return res.result

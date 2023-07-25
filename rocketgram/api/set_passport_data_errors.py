@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import List
+from typing import Tuple
 
 from .passport_element_error import PassportElementError
 from .request import Request
@@ -19,4 +19,4 @@ class SetPassportDataErrors(BoolResultMixin, Request):
     """
 
     user_id: str
-    errors: List[PassportElementError]
+    errors: Tuple[PassportElementError, ...]

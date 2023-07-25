@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union, List
+from typing import Union, Tuple
 
 from .input_file import InputFile
 from .request import Request
@@ -21,7 +21,5 @@ class SetChatPhoto(BoolResultMixin, Request):
     chat_id: Union[int, str]
     photo: Union[InputFile, str]
 
-    def files(self) -> List[InputFile]:
-        if isinstance(self.photo, InputFile):
-            return [self.photo]
-        return list()
+    def files(self) -> Tuple[InputFile, ...]:
+        return (self.photo,) if isinstance(self.photo, InputFile) else tuple()

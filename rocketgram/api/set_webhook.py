@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, Tuple
 
 from .input_file import InputFile
 from .request import Request
@@ -23,11 +23,9 @@ class SetWebhook(BoolResultMixin, Request):
     certificate: Optional[InputFile] = None
     ip_address: Optional[str] = None
     max_connections: Optional[int] = None
-    allowed_updates: Optional[List[UpdateType]] = None
+    allowed_updates: Optional[Tuple[UpdateType, ...]] = None
     drop_pending_updates: Optional[bool] = None
     secret_token: Optional[str] = None
 
-    def files(self) -> List[InputFile]:
-        if isinstance(self.certificate, InputFile):
-            return [self.certificate]
-        return list()
+    def files(self) -> Tuple[InputFile, ...]:
+        return (self.certificate,) if isinstance(self.certificate, InputFile) else tuple()

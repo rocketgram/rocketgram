@@ -6,7 +6,7 @@
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import Enum
-from typing import Union, Dict, List
+from typing import Union, Dict, List, Tuple
 
 from .. import api
 from ..context import context
@@ -58,10 +58,10 @@ class Request:
 
         return self.__prepare(d)
 
-    def files(self) -> List['api.InputFile']:
+    def files(self) -> Tuple['api.InputFile', ...]:
         """Returns list of binary files that exist in request."""
 
-        return list()
+        return tuple()
 
     def parse_result(self, data):
         """Parses result field of Response object."""

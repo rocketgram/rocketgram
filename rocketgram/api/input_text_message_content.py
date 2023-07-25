@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, Tuple
 
 from .input_message_content import InputMessageContent
 from .message_entity import MessageEntity
@@ -20,5 +20,5 @@ class InputTextMessageContent(InputMessageContent):
 
     message_text: str
     parse_mode: Optional[ParseModeType] = None
-    entities: Optional[List[MessageEntity]] = None
+    entities: Optional[Tuple[MessageEntity, ...]] = None
     disable_web_page_preview: Optional[bool] = None

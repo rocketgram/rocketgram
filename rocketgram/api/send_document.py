@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .input_file import InputFile
 from .message_entity import MessageEntity
@@ -26,7 +26,7 @@ class SendDocument(MessageResultMixin, Request):
     thumbnail: Optional[Union[InputFile, str]] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[Tuple[MessageEntity, ...]] = None
     disable_content_type_detection: Optional[bool] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
@@ -34,10 +34,10 @@ class SendDocument(MessageResultMixin, Request):
     allow_sending_without_reply: Optional[bool] = None
     reply_markup: Optional[ALL_KEYBOARDS] = None
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> Tuple[InputFile, ...]:
         out = list()
         if isinstance(self.document, InputFile):
             out.append(self.document)
         if isinstance(self.thumbnail, InputFile):
             out.append(self.thumbnail)
-        return out
+        return tuple(out)

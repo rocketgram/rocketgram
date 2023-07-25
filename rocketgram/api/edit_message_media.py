@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .input_file import InputFile
 from .input_media import InputMedia
@@ -25,7 +25,7 @@ class EditMessageMedia(MessageOrBoolResultMixin, Request):
     inline_message_id: Optional[str] = None
     reply_markup: Optional[INLINE_KEYBOARDS] = None
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> Tuple[InputFile, ...]:
         out = list()
         media = self.media
 
@@ -34,4 +34,4 @@ class EditMessageMedia(MessageOrBoolResultMixin, Request):
         if hasattr(media, 'thumbnail') and isinstance(media.thumbnail, InputFile):
             out.append(media.thumbnail)
 
-        return out
+        return tuple(out)

@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .input_file import InputFile
 from .request import Request
@@ -30,10 +30,10 @@ class SendVideoNote(MessageResultMixin, Request):
     allow_sending_without_reply: Optional[bool] = None
     reply_markup: Optional[ALL_KEYBOARDS] = None
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> Tuple[InputFile, ...]:
         out = list()
         if isinstance(self.video_note, InputFile):
             out.append(self.video_note)
         if isinstance(self.thumbnail, InputFile):
             out.append(self.thumbnail)
-        return out
+        return tuple(out)

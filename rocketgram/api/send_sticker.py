@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .input_file import InputFile
 from .request import Request
@@ -28,7 +28,5 @@ class SendSticker(MessageResultMixin, Request):
     allow_sending_without_reply: Optional[bool] = None
     reply_markup: Optional[ALL_KEYBOARDS] = None
 
-    def files(self) -> List[InputFile]:
-        if isinstance(self.sticker, InputFile):
-            return [self.sticker]
-        return list()
+    def files(self) -> Tuple[InputFile, ...]:
+        return [self.sticker] if isinstance(self.sticker, InputFile) else tuple()

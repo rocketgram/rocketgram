@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional, Tuple
 
 from .inline_keyboard_markup import InlineKeyboardMarkup
 from .inline_query_result import InlineQueryResult
@@ -28,7 +28,7 @@ class InlineQueryResultDocument(InlineQueryResult):
     mime_type: str
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[Tuple[MessageEntity, ...]] = None
     description: Optional[str] = None
     reply_markup: Optional[InlineKeyboardMarkup] = None
     input_message_content: Optional[InputMessageContent] = None

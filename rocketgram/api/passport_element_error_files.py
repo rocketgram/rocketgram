@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass, field
-from typing import List
+from typing import Tuple
 
 from .encrypted_passport_element_type import EncryptedPassportElementType
 from .passport_element_error import PassportElementError
@@ -20,5 +20,5 @@ class PassportElementErrorFiles(PassportElementError):
     source: str = field(init=False, default='files')
 
     type: EncryptedPassportElementType
-    file_hashes: List[str]
+    file_hashes: Tuple[str, ...]
     message: str

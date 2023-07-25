@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import List
+from typing import Tuple
 
 from .labeled_price import LabeledPrice
 
@@ -18,4 +18,4 @@ class ShippingOption:
 
     id: str
     title: str
-    prices: List[LabeledPrice]
+    prices: Tuple[LabeledPrice, ...]

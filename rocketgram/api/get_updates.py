@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, Tuple
 
 from .request import Request
 from .update_type import UpdateType
@@ -22,12 +22,12 @@ class GetUpdates(Request):
     offset: Optional[int] = None
     limit: Optional[int] = None
     timeout: Optional[int] = None
-    allowed_updates: Optional[List[UpdateType]] = None
+    allowed_updates: Optional[Tuple[UpdateType, ...]] = None
 
-    def parse_result(self, data) -> List['api.Update']:
+    def parse_result(self, data) -> Tuple['api.Update', ...]:
         assert isinstance(data, list), "Should be list."
-        return [api.Update.parse(r) for r in data]
+        return tuple(api.Update.parse(r) for r in data)
 
-    async def send(self) -> List['api.Update']:
+    async def send(self) -> Tuple['api.Update', ...]:
         res = await context.bot.send(self)
         return res.result

@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional, List, Union
+from typing import Optional, Union, Tuple
 
 from .input_file import InputFile
 from .mask_position import MaskPosition
@@ -18,6 +18,6 @@ class InputSticker:
     """
 
     sticker: Union[InputFile, str]
-    emoji_list: List[str]
+    emoji_list: Tuple[str, ...]
     mask_position: Optional[MaskPosition] = None
-    keywords: Optional[List[str]] = None
+    keywords: Optional[Tuple[str, ...]] = None

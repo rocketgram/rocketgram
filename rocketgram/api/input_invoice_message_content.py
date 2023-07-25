@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, Tuple
 
 from .input_message_content import InputMessageContent
 from .labeled_price import LabeledPrice
@@ -22,9 +22,9 @@ class InputInvoiceMessageContent(InputMessageContent):
     payload: str
     provider_token: str
     currency: str
-    prices: List[LabeledPrice]
+    prices: Tuple[LabeledPrice, ...]
     max_tip_amount: Optional[int] = None
-    suggested_tip_amounts: Optional[List[int]] = None
+    suggested_tip_amounts: Optional[Tuple[int, ...]] = None
     provider_data: Optional[str] = None
     photo_url: Optional[str] = None
     photo_size: Optional[int] = None

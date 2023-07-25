@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Tuple, Optional
 
 from .request import Request
 from .utils import BoolResultMixin
@@ -18,4 +18,4 @@ class SetStickerKeywords(BoolResultMixin, Request):
     """
 
     name: str
-    keywords: Optional[List[str]] = None
+    keywords: Optional[Tuple[str, ...]] = None

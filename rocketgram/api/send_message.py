@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
@@ -23,7 +23,7 @@ class SendMessage(MessageResultMixin, Request):
     text: str
     message_thread_id: Optional[int] = None
     parse_mode: Optional[ParseModeType] = None
-    entities: Optional[List[MessageEntity]] = None
+    entities: Optional[Tuple[MessageEntity, ...]] = None
     disable_web_page_preview: Optional[bool] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None

@@ -16,7 +16,7 @@ class MaskPosition:
     https://core.telegram.org/bots/api#maskposition
     """
 
-    point: str
+    point: MaskPositionPointType
     x_shift: float
     y_shift: float
     scale: float

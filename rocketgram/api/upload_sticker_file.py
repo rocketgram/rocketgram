@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import List
+from typing import Tuple
 
 from .input_file import InputFile
 from .request import Request
@@ -23,7 +23,5 @@ class UploadStickerFile(FileResultMixin, Request):
     sticker: InputFile
     sticker_format: StickerFormat
 
-    def files(self) -> List[InputFile]:
-        if isinstance(self.sticker, InputFile):
-            return [self.sticker]
-        return list()
+    def files(self) -> Tuple[InputFile, ...]:
+        return (self.sticker,) if isinstance(self.sticker, InputFile) else tuple()

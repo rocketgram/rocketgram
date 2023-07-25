@@ -5,13 +5,13 @@
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .message_entity import MessageEntity
+from .parse_mode_type import ParseModeType
 from .poll_type import PollType
 from .request import Request
 from .utils import ALL_KEYBOARDS, MessageResultMixin
-from .. import api
 
 
 @dataclass(frozen=True)
@@ -23,15 +23,15 @@ class SendPoll(MessageResultMixin, Request):
 
     chat_id: Union[int, str]
     question: str
-    options: List[str]
+    options: Tuple[str, ...]
     message_thread_id: Optional[int] = None
     is_anonymous: Optional[bool] = None
-    type: Optional['PollType'] = None
+    type: Optional[PollType] = None
     allows_multiple_answers: Optional[bool] = None
     correct_option_id: Optional[int] = None
     explanation: Optional[str] = None
-    explanation_parse_mode: Optional['api.ParseModeType'] = None
-    explanation_entities: Optional[List[MessageEntity]] = None
+    explanation_parse_mode: Optional[ParseModeType] = None
+    explanation_entities: Optional[Tuple[MessageEntity, ...]] = None
     open_period: Optional[int] = None
     close_date: Optional[datetime] = None
     is_closed: Optional[bool] = None

@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .message_entity import MessageEntity
 from .message_id import MessageId
@@ -27,7 +27,7 @@ class CopyMessage(Request):
     message_thread_id: Optional[int] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[Tuple[MessageEntity, ...]] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
     reply_to_message_id: Optional[int] = None

@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
@@ -24,6 +24,6 @@ class EditMessageText(MessageOrBoolResultMixin, Request):
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
-    entities: Optional[List[MessageEntity]] = None
+    entities: Optional[Tuple[MessageEntity, ...]] = None
     disable_web_page_preview: Optional[bool] = None
     reply_markup: Optional[INLINE_KEYBOARDS] = None
