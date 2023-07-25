@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 
 from . import chat
@@ -35,7 +35,7 @@ class ChatMemberUpdated:
         if data is None:
             return None
 
-        date = datetime.utcfromtimestamp(data['date']) if 'date' in data else None
+        date = datetime.fromtimestamp(data['date'], tz=timezone.utc) if 'date' in data else None
 
         return cls(chat.Chat.parse(data['chat']), user.User.parse(data['from']), date,
                    chat_member.ChatMember.parse(data['old_chat_member']),

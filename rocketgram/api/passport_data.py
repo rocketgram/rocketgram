@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional, Tuple
 
 from .encrypted_credentials import EncryptedCredentials
 from .encrypted_passport_element import EncryptedPassportElement
@@ -17,7 +17,7 @@ class PassportData:
     https://core.telegram.org/bots/api#passportdata
     """
 
-    data: List[EncryptedPassportElement]
+    data: Tuple[EncryptedPassportElement, ...]
     credentials: EncryptedCredentials
 
     @classmethod
@@ -25,7 +25,7 @@ class PassportData:
         if data is None:
             return None
 
-        list_data = [EncryptedPassportElement.parse(s) for s in data['data']]
+        list_data = tuple(EncryptedPassportElement.parse(s) for s in data['data'])
         credentials = EncryptedCredentials.parse(data['credentials'])
 
         return cls(list_data, credentials)

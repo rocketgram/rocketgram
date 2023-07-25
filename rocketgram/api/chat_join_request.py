@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 
 from .chat import Chat
@@ -38,7 +38,7 @@ class ChatJoinRequest:
             Chat.parse(data['chat']),
             User.parse(data['from']),
             data['user_chat_id'],
-            datetime.utcfromtimestamp(data['date']),
+            datetime.fromtimestamp(data['date'], tz=timezone.utc),
             data.get('bio'),
             ChatInviteLink.parse(data.get('invite_link'))
         )

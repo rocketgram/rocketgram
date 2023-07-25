@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 
@@ -26,4 +26,4 @@ class PassportFile:
             return None
 
         return cls(data['file_id'], data['file_unique_id'], data['file_size'],
-                   datetime.utcfromtimestamp(data['file_date']))
+                   datetime.fromtimestamp(data['file_date'], tz=timezone.utc))

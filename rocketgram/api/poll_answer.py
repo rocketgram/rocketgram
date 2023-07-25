@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional, Tuple
 
 from .user import User
 
@@ -19,11 +19,11 @@ class PollAnswer:
 
     poll_id: str
     user: User
-    option_ids: List[int]
+    option_ids: Tuple[int, ...]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['PollAnswer']:
         if data is None:
             return None
 
-        return cls(data['poll_id'], User.parse(data['user']), data['option_ids'])
+        return cls(data['poll_id'], User.parse(data['user']), tuple(data['option_ids']))

@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 
 from . import user
@@ -32,7 +32,7 @@ class ChatInviteLink:
         if data is None:
             return None
 
-        expire_date = datetime.utcfromtimestamp(data['expire_date']) if 'expire_date' in data else None
+        expire_date = datetime.fromtimestamp(data['expire_date'], tz=timezone.utc) if 'expire_date' in data else None
 
         return cls(data['invite_link'], user.User.parse(data['creator']), data['creates_join_request'],
                    data['is_primary'], data['is_revoked'], data.get('name'), expire_date, data.get('member_limit'),
