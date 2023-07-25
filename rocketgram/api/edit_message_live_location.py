@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
-from .utils import INLINE_KEYBOARDS, MessageOrBoolResultMixin
+from .utils import AnyInlineKeyboard, MessageOrBoolResultMixin
 
 
 @dataclass(frozen=True)
@@ -25,4 +25,4 @@ class EditMessageLiveLocation(MessageOrBoolResultMixin, Request):
     horizontal_accuracy: Optional[float] = None
     heading: Optional[int] = None
     proximity_alert_radius: Optional[int] = None
-    reply_markup: Optional[INLINE_KEYBOARDS] = None
+    reply_markup: Optional[AnyInlineKeyboard] = None

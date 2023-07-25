@@ -8,7 +8,7 @@ from typing import Optional, Tuple
 
 from .labeled_price import LabeledPrice
 from .request import Request
-from .utils import INLINE_KEYBOARDS, MessageResultMixin
+from .utils import AnyInlineKeyboard, MessageResultMixin
 
 
 @dataclass(frozen=True)
@@ -45,4 +45,4 @@ class SendInvoice(MessageResultMixin, Request):
     protect_content: Optional[bool] = None
     reply_to_message_id: Optional[bool] = None
     allow_sending_without_reply: Optional[bool] = None
-    reply_markup: Optional[INLINE_KEYBOARDS] = None
+    reply_markup: Optional[AnyInlineKeyboard] = None

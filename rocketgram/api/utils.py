@@ -21,11 +21,11 @@ class EnumAutoName(Enum):
 class BoolResultMixin:
     """Mixin for request classes that returns bool"""
 
-    def parse_result(self, data) -> bool:  # noqa
+    def parse_result(self, data) -> bool:
         assert isinstance(data, bool), "Should be bool."
         return data
 
-    async def send(self) -> bool:
+    async def send(self: 'api.Request') -> bool:
         res = await context.bot.send(self)
         return res.result
 
@@ -37,7 +37,7 @@ class IntResultMixin:
         assert isinstance(data, int), "Should be int."
         return data
 
-    async def send(self) -> int:
+    async def send(self: 'api.Request') -> int:
         res = await context.bot.send(self)
         return res.result
 
@@ -49,7 +49,7 @@ class StrResultMixin:
         assert isinstance(data, str), "Should be str."
         return data
 
-    async def send(self) -> str:
+    async def send(self: 'api.Request') -> str:
         res = await context.bot.send(self)
         return res.result
 
@@ -61,7 +61,7 @@ class MessageResultMixin:
         assert isinstance(data, dict), "Should be dict."
         return api.Message.parse(data)
 
-    async def send(self) -> 'api.Message':
+    async def send(self: 'api.Request') -> 'api.Message':
         res = await context.bot.send(self)
         return res.result
 
@@ -73,7 +73,7 @@ class MessageOrBoolResultMixin:
         assert isinstance(data, (dict, bool)), "Should be dict or bool."
         return data if isinstance(data, bool) else api.Message.parse(data)
 
-    async def send(self) -> Union['api.Message', bool]:
+    async def send(self: 'api.Request') -> Union['api.Message', bool]:
         res = await context.bot.send(self)
         return res.result
 
@@ -81,11 +81,11 @@ class MessageOrBoolResultMixin:
 class FileResultMixin:
     """Mixin for request classes that returns File"""
 
-    def parse_result(self, data) -> 'api.File':  # noqa
+    def parse_result(self, data) -> 'api.File':
         assert isinstance(data, dict), "Should be dict."
         return api.File.parse(data)
 
-    async def send(self) -> 'api.File':
+    async def send(self: 'api.Request') -> 'api.File':
         res = await context.bot.send(self)
         return res.result
 
@@ -93,19 +93,21 @@ class FileResultMixin:
 class ChatInviteLinkResultMixin:
     """Mixin for request classes that returns ChatInviteLink"""
 
-    def parse_result(self, data) -> 'api.ChatInviteLink':  # noqa
+    def parse_result(self, data) -> 'api.ChatInviteLink':
         assert isinstance(data, dict), "Should be dict."
         return api.ChatInviteLink.parse(data)
 
-    async def send(self) -> 'api.ChatInviteLink':
+    async def send(self: 'api.Request') -> 'api.ChatInviteLink':
         res = await context.bot.send(self)
         return res.result
 
 
-ALL_KEYBOARDS = Union['keyboards.InlineKeyboard',
-                      'keyboards.ReplyKeyboard',
-                      'api.InlineKeyboardMarkup',
-                      'api.ReplyKeyboardMarkup',
-                      'api.ReplyKeyboardRemove',
-                      'api.ForceReply']
-INLINE_KEYBOARDS = Union['keyboards.InlineKeyboard', 'api.InlineKeyboardMarkup']
+AnyInlineKeyboard = Union['keyboards.InlineKeyboard', 'api.InlineKeyboardMarkup']
+
+AnyKeyboard = Union[
+    AnyInlineKeyboard,
+    'keyboards.ReplyKeyboard',
+    'api.ReplyKeyboardMarkup',
+    'api.ReplyKeyboardRemove',
+    'api.ForceReply'
+]

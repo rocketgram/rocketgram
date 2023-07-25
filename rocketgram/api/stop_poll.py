@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
-from .utils import INLINE_KEYBOARDS
+from .utils import AnyInlineKeyboard
 from .. import api
 from ..context import context
 
@@ -21,7 +21,7 @@ class StopPoll(Request):
 
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
-    reply_markup: Optional[INLINE_KEYBOARDS] = None
+    reply_markup: Optional[AnyInlineKeyboard] = None
 
     def parse_result(self, data) -> 'api.Poll':
         assert isinstance(data, dict), "Should be dict."

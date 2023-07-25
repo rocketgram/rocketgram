@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
-from .utils import INLINE_KEYBOARDS, MessageOrBoolResultMixin
+from .utils import AnyInlineKeyboard, MessageOrBoolResultMixin
 
 
 @dataclass(frozen=True)
@@ -21,4 +21,4 @@ class EditMessageReplyMarkup(MessageOrBoolResultMixin, Request):
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
     disable_web_page_preview: Optional[bool] = None
-    reply_markup: Optional[INLINE_KEYBOARDS] = None
+    reply_markup: Optional[AnyInlineKeyboard] = None

@@ -9,7 +9,7 @@ from typing import Union, Optional, Tuple
 from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
 from .request import Request
-from .utils import INLINE_KEYBOARDS, MessageOrBoolResultMixin
+from .utils import AnyInlineKeyboard, MessageOrBoolResultMixin
 
 
 @dataclass(frozen=True)
@@ -25,4 +25,4 @@ class EditMessageCaption(MessageOrBoolResultMixin, Request):
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[Tuple[MessageEntity, ...]] = None
-    reply_markup: Optional[INLINE_KEYBOARDS] = None
+    reply_markup: Optional[AnyInlineKeyboard] = None

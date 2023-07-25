@@ -8,7 +8,7 @@ from typing import Union, Optional, Tuple
 
 from .input_file import InputFile
 from .request import Request
-from .utils import ALL_KEYBOARDS, MessageResultMixin
+from .utils import AnyKeyboard, MessageResultMixin
 
 
 @dataclass(frozen=True)
@@ -26,7 +26,7 @@ class SendSticker(MessageResultMixin, Request):
     protect_content: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     allow_sending_without_reply: Optional[bool] = None
-    reply_markup: Optional[ALL_KEYBOARDS] = None
+    reply_markup: Optional[AnyKeyboard] = None
 
     def files(self) -> Tuple[InputFile, ...]:
         return [self.sticker] if isinstance(self.sticker, InputFile) else tuple()
