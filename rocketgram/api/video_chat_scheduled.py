@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 
@@ -22,6 +22,6 @@ class VideoChatScheduled:
         if data is None:
             return None
 
-        start_date = datetime.utcfromtimestamp(data['start_date']) if 'start_date' in data else None
+        start_date = datetime.fromtimestamp(data['start_date'], tz=timezone.utc) if 'start_date' in data else None
 
         return cls(start_date)

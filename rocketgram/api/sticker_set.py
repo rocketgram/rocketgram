@@ -3,9 +3,8 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import warnings
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional, Tuple
 
 from .photo_size import PhotoSize
 from .sticker import Sticker
@@ -24,7 +23,7 @@ class StickerSet:
     sticker_type: StickerType
     is_animated: Optional[bool]
     is_video: Optional[bool]
-    stickers: List[Sticker]
+    stickers: Tuple[Sticker, ...]
     thumbnail: Optional[PhotoSize]
 
     @classmethod
@@ -43,6 +42,6 @@ class StickerSet:
             sticker_type,
             data['is_animated'],
             data['is_video'],
-            [Sticker.parse(s) for s in data['stickers']],
+            tuple(Sticker.parse(s) for s in data['stickers']),
             PhotoSize.parse(data['thumbnail'])
         )
