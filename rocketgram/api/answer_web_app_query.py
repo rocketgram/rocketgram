@@ -22,7 +22,8 @@ class AnswerWebAppQuery(BoolResultMixin, Request):
     web_app_query_id: str
     results: InlineQueryResult
 
-    def parse_result(self, data) -> SentWebAppMessage:
+    @staticmethod
+    def parse_result(data) -> SentWebAppMessage:
         assert isinstance(data, dict), "Should be dict."
 
         return SentWebAppMessage.parse(data)

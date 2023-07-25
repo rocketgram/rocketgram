@@ -23,7 +23,8 @@ class GetGameHighScores(Request):
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
 
-    def parse_result(self, data) -> Tuple['api.GameHighScore', ...]:
+    @staticmethod
+    def parse_result(data) -> Tuple['api.GameHighScore', ...]:
         assert isinstance(data, list), "Should be dict."
         return tuple(api.GameHighScore.parse(r) for r in data)
 

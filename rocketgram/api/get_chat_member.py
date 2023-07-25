@@ -21,7 +21,8 @@ class GetChatMember(Request):
     chat_id: Union[int, str]
     user_id: int
 
-    def parse_result(self, data) -> 'api.ChatMember':
+    @staticmethod
+    def parse_result(data) -> 'api.ChatMember':
         assert isinstance(data, dict), "Should be dict."
         return api.ChatMember.parse(data)
 

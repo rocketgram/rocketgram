@@ -20,7 +20,8 @@ class GetChatAdministrators(Request):
 
     chat_id: Union[int, str]
 
-    def parse_result(self, data) -> Tuple['api.ChatMember', ...]:
+    @staticmethod
+    def parse_result(data) -> Tuple['api.ChatMember', ...]:
         assert isinstance(data, list), "Should be list."
         return tuple(api.ChatMember.parse(r) for r in data)
 

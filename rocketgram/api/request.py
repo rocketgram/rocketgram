@@ -63,7 +63,8 @@ class Request:
 
         return tuple()
 
-    def parse_result(self, data):
+    @staticmethod
+    def parse_result(data):
         """Parses result field of Response object."""
 
         raise NotImplementedError

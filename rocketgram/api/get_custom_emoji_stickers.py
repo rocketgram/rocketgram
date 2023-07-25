@@ -20,7 +20,8 @@ class GetCustomEmojiStickers(Request):
 
     custom_emoji_ids: Tuple[str, ...]
 
-    def parse_result(self, data) -> Tuple[Sticker, ...]:
+    @staticmethod
+    def parse_result(data) -> Tuple[Sticker, ...]:
         assert isinstance(data, list), "Should be list."
         return tuple(Sticker.parse(r) for r in data)
 

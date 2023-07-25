@@ -24,7 +24,8 @@ class GetUpdates(Request):
     timeout: Optional[int] = None
     allowed_updates: Optional[Tuple[UpdateType, ...]] = None
 
-    def parse_result(self, data) -> Tuple['api.Update', ...]:
+    @staticmethod
+    def parse_result(data) -> Tuple['api.Update', ...]:
         assert isinstance(data, list), "Should be list."
         return tuple(api.Update.parse(r) for r in data)
 

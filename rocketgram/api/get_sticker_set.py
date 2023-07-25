@@ -19,7 +19,8 @@ class GetStickerSet(Request):
 
     name: str
 
-    def parse_result(self, data) -> 'api.StickerSet':
+    @staticmethod
+    def parse_result(data) -> 'api.StickerSet':
         assert isinstance(data, dict), "Should be dict."
         return api.StickerSet.parse(data)
 

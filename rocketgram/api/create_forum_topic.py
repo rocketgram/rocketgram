@@ -23,7 +23,8 @@ class CreateForumTopic(Request):
     icon_color: Optional[int] = None
     icon_custom_emoji_id: Optional[str] = None
 
-    def parse_result(self, data) -> ForumTopic:
+    @staticmethod
+    def parse_result(data) -> ForumTopic:
         assert isinstance(data, dict), "Should be dict."
         return ForumTopic.parse(data)
 

@@ -20,7 +20,8 @@ class GetMyDefaultAdministratorRights(Request):
 
     for_channels: Optional[bool] = None
 
-    def parse_result(self, data) -> ChatAdministratorRights:
+    @staticmethod
+    def parse_result(data) -> ChatAdministratorRights:
         assert isinstance(data, dict), "Should be dict."
 
         return ChatAdministratorRights.parse(data)

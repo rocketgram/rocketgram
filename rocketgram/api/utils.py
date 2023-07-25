@@ -21,7 +21,8 @@ class EnumAutoName(Enum):
 class BoolResultMixin:
     """Mixin for request classes that returns bool"""
 
-    def parse_result(self, data) -> bool:
+    @staticmethod
+    def parse_result(data) -> bool:
         assert isinstance(data, bool), "Should be bool."
         return data
 
@@ -33,7 +34,8 @@ class BoolResultMixin:
 class IntResultMixin:
     """Mixin for request classes that returns int"""
 
-    def parse_result(self, data) -> int:  # noqa
+    @staticmethod
+    def parse_result(data) -> int:  # noqa
         assert isinstance(data, int), "Should be int."
         return data
 
@@ -45,7 +47,8 @@ class IntResultMixin:
 class StrResultMixin:
     """Mixin for request classes that returns str"""
 
-    def parse_result(self, data) -> str:  # noqa
+    @staticmethod
+    def parse_result(data) -> str:  # noqa
         assert isinstance(data, str), "Should be str."
         return data
 
@@ -57,7 +60,8 @@ class StrResultMixin:
 class MessageResultMixin:
     """Mixin for request classes that returns Message"""
 
-    def parse_result(self, data) -> 'api.Message':  # noqa
+    @staticmethod
+    def parse_result(data) -> 'api.Message':  # noqa
         assert isinstance(data, dict), "Should be dict."
         return api.Message.parse(data)
 
@@ -69,7 +73,8 @@ class MessageResultMixin:
 class MessageOrBoolResultMixin:
     """Mixin for request classes that returns Message or bool"""
 
-    def parse_result(self, data) -> Union['api.Message', bool]:  # noqa
+    @staticmethod
+    def parse_result(data) -> Union['api.Message', bool]:  # noqa
         assert isinstance(data, (dict, bool)), "Should be dict or bool."
         return data if isinstance(data, bool) else api.Message.parse(data)
 
@@ -81,7 +86,8 @@ class MessageOrBoolResultMixin:
 class FileResultMixin:
     """Mixin for request classes that returns File"""
 
-    def parse_result(self, data) -> 'api.File':
+    @staticmethod
+    def parse_result(data) -> 'api.File':
         assert isinstance(data, dict), "Should be dict."
         return api.File.parse(data)
 
@@ -93,7 +99,8 @@ class FileResultMixin:
 class ChatInviteLinkResultMixin:
     """Mixin for request classes that returns ChatInviteLink"""
 
-    def parse_result(self, data) -> 'api.ChatInviteLink':
+    @staticmethod
+    def parse_result(data) -> 'api.ChatInviteLink':
         assert isinstance(data, dict), "Should be dict."
         return api.ChatInviteLink.parse(data)
 

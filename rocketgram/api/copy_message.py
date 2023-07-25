@@ -34,7 +34,8 @@ class CopyMessage(Request):
     allow_sending_without_reply: Optional[bool] = None
     reply_markup: Optional[AnyKeyboard] = None
 
-    def parse_result(self, data) -> MessageId:
+    @staticmethod
+    def parse_result(data) -> MessageId:
         assert isinstance(data, dict), "Should be dict."
         return MessageId.parse(data)
 

@@ -18,7 +18,8 @@ class GetForumTopicIconStickers(Request):
     https://core.telegram.org/bots/api#getforumtopiciconstickers
     """
 
-    def parse_result(self, data) -> Tuple[Sticker, ...]:
+    @staticmethod
+    def parse_result(data) -> Tuple[Sticker, ...]:
         assert isinstance(data, list), "Should be list."
         return tuple(Sticker.parse(r) for r in data)
 

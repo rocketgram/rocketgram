@@ -23,7 +23,8 @@ class StopPoll(Request):
     message_id: Optional[int] = None
     reply_markup: Optional[AnyInlineKeyboard] = None
 
-    def parse_result(self, data) -> 'api.Poll':
+    @staticmethod
+    def parse_result(data) -> 'api.Poll':
         assert isinstance(data, dict), "Should be dict."
         return api.Poll.parse(data)
 

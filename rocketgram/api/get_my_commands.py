@@ -22,7 +22,8 @@ class GetMyCommands(Request):
     scope: Optional[BotCommandScope] = None
     language_code: Optional[str] = None
 
-    def parse_result(self, data) -> Tuple['api.BotCommand', ...]:
+    @staticmethod
+    def parse_result(data) -> Tuple['api.BotCommand', ...]:
         assert isinstance(data, list), "Should be list."
         return tuple(api.BotCommand.parse(r) for r in data)
 

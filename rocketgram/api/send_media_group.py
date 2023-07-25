@@ -40,7 +40,8 @@ class SendMediaGroup(Request):
 
         return tuple(out)
 
-    def parse_result(self, data) -> Tuple['api.Message', ...]:
+    @staticmethod
+    def parse_result(data) -> Tuple['api.Message', ...]:
         assert isinstance(data, list), "Should be list."
         return tuple(api.Message.parse(r) for r in data)
 

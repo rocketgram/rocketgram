@@ -20,7 +20,8 @@ class GetMyDescription(Request):
 
     language_code: Optional[str] = None
 
-    def parse_result(self, data) -> BotDescription:
+    @staticmethod
+    def parse_result(data) -> BotDescription:
         assert isinstance(data, dict), "Should be dict."
 
         return BotDescription.parse(data)
