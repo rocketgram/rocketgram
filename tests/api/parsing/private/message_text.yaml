@@ -53,7 +53,7 @@ expected:
           "username": "username",
           "type": "private"
         },
-        "date": 1691234567,
+        "date": "2023-08-05T11:22:47+00:00",
         "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
       }
     }

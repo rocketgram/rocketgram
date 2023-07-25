@@ -83,7 +83,7 @@ expected:
           "username": "username",
           "type": "private"
         },
-        "date": 1691234567,
+        "date": "2023-08-05T11:22:47+00:00",
         "photo": [
           {
             "file_id": "AgAXAuPXDlpBCANW-y1McyzFGmeKPdRw2y8ntC57Qwk2t2yPhwxKbmmUKCzYFajjt5vHXSdptV4Yu3MAAy8E",

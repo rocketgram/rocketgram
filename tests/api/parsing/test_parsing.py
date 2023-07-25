@@ -81,8 +81,10 @@ class ParsingTest:
             if isinstance(v, Enum):
                 v = v.value
             elif isinstance(v, datetime):
-                v = int(v.timestamp())
-                continue  # TODO: remove after fix #12
+                v = v.isoformat()
+
+            if isinstance(ev, list):
+                ev = tuple(ev)
 
             assert ev == v, f"Field `{path}{k}`: expected `{ev}`, got `{v}`"
 
