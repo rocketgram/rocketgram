@@ -107,6 +107,9 @@ def callback(*commands: str, case_sensitive: bool = False, separator=' '):
     if context.update.type is not UpdateType.callback_query:
         return False
 
+    if context.update.callback_query.data is None:
+        return False
+
     split = context.update.callback_query.data.split(sep=separator)
     text = split[0]
     if not case_sensitive:

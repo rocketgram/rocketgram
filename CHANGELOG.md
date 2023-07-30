@@ -10,7 +10,8 @@ All notable changes to this project.
 - Using tuples instead of lists in api classes.
 
 ### Fixed
-- typing in `Animation`.
+- Typing in `Animation`.
+- The `commonfilters.callback` for case where `game` event has arrived.
 
 ### Deprecated
 - The next major release will no longer officially support Python 3.7.
