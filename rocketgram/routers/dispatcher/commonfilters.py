@@ -125,6 +125,36 @@ def callback(*commands: str, case_sensitive: bool = False, separator=' '):
 
 
 @make_filter
+def game(*names: str, case_sensitive: bool = False):
+    """Filters callback query if it is a game with one of certain names.
+    Assumes update_type == callback_query.
+
+    :param names:
+    :param case_sensitive:
+
+    :return: True or False
+    """
+
+    if context.update.type is not UpdateType.callback_query:
+        return False
+
+    if context.update.callback_query.game_short_name is None:
+        return False
+
+    text = context.update.callback_query.game_short_name.strip()
+    if not case_sensitive:
+        text = text.lower()
+
+    for name in names:
+        if not case_sensitive:
+            name = name.lower()
+        if text == name:
+            return True
+
+    return False
+
+
+@make_filter
 def inline_callback():
     """Filters callback_query done in messages posted through inline query.
     Assumes update_type is callback_query.

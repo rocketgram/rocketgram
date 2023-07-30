@@ -1,0 +1,99 @@
+# Copyright (C) 2015-2023 by Vd.
+# This file is part of Rocketgram, the modern Telegram bot framework.
+# Rocketgram is released under the MIT License (see LICENSE).
+
+
+description:
+  Callback in the private chat
+input:
+  {
+    "update_id": 123456789,
+    "callback_query": {
+      "id": "5723987623498478975",
+      "from": {
+        "id": 123456789,
+        "is_bot": false,
+        "first_name": "User",
+        "username": "username",
+        "language_code": "en",
+        "is_premium": true
+      },
+      "message": {
+        "message_id": 672,
+        "from": {
+          "id": 987654321,
+          "is_bot": true,
+          "first_name": "Test Bot",
+          "username": "TestBot"
+        },
+        "chat": {
+          "id": 123456789,
+          "first_name": "User",
+          "username": "username",
+          "type": "private"
+        },
+        "date": 1691234567,
+        "text": "Select command:",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Action",
+                "callback_data": "action"
+              }
+            ]
+          ]
+        }
+      },
+      "chat_instance": "-4389573976648596782",
+      "data": "action"
+    }
+  }
+expected:
+  update_type: callback_query
+  output:
+    {
+      "update_id": 123456789,
+      "type": "callback_query",
+      "callback_query": {
+        "id": "5723987623498478975",
+        "user": {
+          "id": 123456789,
+          "is_bot": false,
+          "first_name": "User",
+          "username": "username",
+          "language_code": "en",
+          "is_premium": true
+        },
+        "message": {
+          "message_id": 672,
+          "type": "text",
+          "user": {
+            "id": 987654321,
+            "is_bot": true,
+            "first_name": "Test Bot",
+            "username": "TestBot"
+          },
+          "chat": {
+            "id": 123456789,
+            "first_name": "User",
+            "username": "username",
+            "type": "private"
+          },
+          "date": "2023-08-05T11:22:47+00:00",
+          "text": "Select command:",
+          "reply_markup": {
+            "inline_keyboard": [
+              [
+                {
+                  "text": "Action",
+                  "callback_data": "action"
+                }
+              ]
+            ]
+          }
+        },
+        "chat_instance": "-4389573976648596782",
+        "data": "action"
+      }
+    }
