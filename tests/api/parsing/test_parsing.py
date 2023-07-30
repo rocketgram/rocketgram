@@ -8,7 +8,7 @@ from dataclasses import asdict
 from datetime import datetime
 from enum import Enum
 from logging import getLogger
-from typing import Sequence
+from typing import Sequence, Union
 
 import pytest
 import yaml
@@ -65,7 +65,12 @@ class ParsingTest:
         self._check_extra_fields(update_dict, self._e_output)
 
     @classmethod
-    def _check_extra_fields(cls, element: dict, expected: dict, path: str = ''):
+    def _check_extra_fields(cls, element: Union[dict, list, tuple], expected: Union[dict, list, tuple], path: str = ''):
+        if isinstance(element, (list, tuple)):
+            for i in range(len(expected)):
+                cls._check_extra_fields(element[i], expected[i], f"{path}{i}.")
+            return
+
         # Check extra fields
         for k in set(element.keys()) - set(expected.keys()):
             assert element[k] is None, f"Field `{path}{k}` is none"
@@ -84,7 +89,9 @@ class ParsingTest:
                 v = v.isoformat()
 
             if isinstance(ev, list):
-                ev = tuple(ev)
+                for i in range(len(ev)):
+                    cls._check_extra_fields(element[k][i], expected[k][i], f"{path}{k}.{i}.")
+                continue
 
             assert ev == v, f"Field `{path}{k}`: expected `{ev}`, got `{v}`"
 
