@@ -1,0 +1,152 @@
+# Copyright (C) 2015-2023 by Vd.
+# This file is part of Rocketgram, the modern Telegram bot framework.
+# Rocketgram is released under the MIT License (see LICENSE).
+
+
+description:
+  Game callback in the private chat
+input:
+  {
+    "update_id": 123456789,
+    "callback_query": {
+      "id": "5723987623498478975",
+      "from": {
+        "id": 123456789,
+        "is_bot": false,
+        "first_name": "User",
+        "username": "username",
+        "language_code": "en",
+        "is_premium": true
+      },
+      "message": {
+        "message_id": 742,
+        "from": {
+          "id": 987654321,
+          "is_bot": true,
+          "first_name": "Test Bot",
+          "username": "TestBot"
+        },
+        "chat": {
+          "id": 123456789,
+          "first_name": "User",
+          "username": "username",
+          "type": "private"
+        },
+        "date": 1691234567,
+        "game": {
+          "title": "Tetris",
+          "description": "Tetris game",
+          "photo": [
+            {
+              "file_id": "AgAXAuPXDlpBCANW-y1McyzFGmeKPdRw2y8ntC57Qwk2t2yPhwxKbmmUKCzYFajjt5vHXSdptV4Yu3M",
+              "file_unique_id": "PoZG3sUAFTDXL5C4",
+              "file_size": 1162,
+              "width": 90,
+              "height": 51
+            },
+            {
+              "file_id": "AgAXAuPXDlpBCANW-y1McyzFGmeKPdRw2y8ntC57Qwk2t2yPhwxKbmmUKCzYFajjt5vHXSdptV4Yu20",
+              "file_unique_id": "PoZG3sUAFTDXL5Cy",
+              "file_size": 8030,
+              "width": 320,
+              "height": 180
+            },
+            {
+              "file_id": "AgAXAuPXDlpBCANW-y1McyzFGmeKPdRw2y8ntC57Qwk2t2yPhwxKbmmUKCzYFajjt5vHXSdptV4Yu3k",
+              "file_unique_id": "PoZG3sUAFTDXL5C-",
+              "file_size": 14180,
+              "width": 640,
+              "height": 360
+            }
+          ]
+        },
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Play Tetris",
+                "callback_game": { }
+              }
+            ]
+          ]
+        }
+      },
+      "chat_instance": "-5879843758365676931",
+      "game_short_name": "tetris"
+    }
+  }
+expected:
+  update_type: callback_query
+  output:
+    {
+      "update_id": 123456789,
+      "type": "callback_query",
+      "callback_query": {
+        "id": "5723987623498478975",
+        "user": {
+          "id": 123456789,
+          "is_bot": false,
+          "first_name": "User",
+          "username": "username",
+          "language_code": "en",
+          "is_premium": true
+        },
+        "message": {
+          "message_id": 742,
+          "type": "game",
+          "user": {
+            "id": 987654321,
+            "is_bot": true,
+            "first_name": "Test Bot",
+            "username": "TestBot"
+          },
+          "chat": {
+            "id": 123456789,
+            "first_name": "User",
+            "username": "username",
+            "type": "private"
+          },
+          "date": "2023-08-05T11:22:47+00:00",
+          "game": {
+            "title": "Tetris",
+            "description": "Tetris game",
+            "photo": [
+              {
+                "file_id": "AgAXAuPXDlpBCANW-y1McyzFGmeKPdRw2y8ntC57Qwk2t2yPhwxKbmmUKCzYFajjt5vHXSdptV4Yu3M",
+                "file_unique_id": "PoZG3sUAFTDXL5C4",
+                "file_size": 1162,
+                "width": 90,
+                "height": 51
+              },
+              {
+                "file_id": "AgAXAuPXDlpBCANW-y1McyzFGmeKPdRw2y8ntC57Qwk2t2yPhwxKbmmUKCzYFajjt5vHXSdptV4Yu20",
+                "file_unique_id": "PoZG3sUAFTDXL5Cy",
+                "file_size": 8030,
+                "width": 320,
+                "height": 180
+              },
+              {
+                "file_id": "AgAXAuPXDlpBCANW-y1McyzFGmeKPdRw2y8ntC57Qwk2t2yPhwxKbmmUKCzYFajjt5vHXSdptV4Yu3k",
+                "file_unique_id": "PoZG3sUAFTDXL5C-",
+                "file_size": 14180,
+                "width": 640,
+                "height": 360
+              }
+            ]
+          },
+          "reply_markup": {
+            "inline_keyboard": [
+              [
+                {
+                  "login_url": null,
+                  "text": "Play Tetris",
+                  "callback_game": { }
+                }
+              ]
+            ]
+          }
+        },
+        "chat_instance": "-5879843758365676931",
+        "game_short_name": "tetris"
+      }
+    }
