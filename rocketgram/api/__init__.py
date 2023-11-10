@@ -128,6 +128,7 @@ from .inline_query_result_photo import InlineQueryResultPhoto
 from .inline_query_result_venue import InlineQueryResultVenue
 from .inline_query_result_video import InlineQueryResultVideo
 from .inline_query_result_voice import InlineQueryResultVoice
+from .inline_query_results_button import InlineQueryResultsButton
 from .input_contact_message_content import InputContactMessageContent
 from .input_file import InputFile
 from .input_invoice_message_content import InputInvoiceMessageContent
