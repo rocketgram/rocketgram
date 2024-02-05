@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -22,7 +22,8 @@ class AnswerWebAppQuery(BoolResultMixin, Request):
     web_app_query_id: str
     results: InlineQueryResult
 
-    def parse_result(self, data) -> SentWebAppMessage:
+    @staticmethod
+    def parse_result(data) -> SentWebAppMessage:
         assert isinstance(data, dict), "Should be dict."
 
         return SentWebAppMessage.parse(data)

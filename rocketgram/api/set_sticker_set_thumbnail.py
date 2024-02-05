@@ -1,10 +1,10 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .input_file import InputFile
 from .request import Request
@@ -22,7 +22,5 @@ class SetStickerSetThumbnail(BoolResultMixin, Request):
     user_id: int
     thumbnail: Optional[Union[InputFile, str]] = None
 
-    def files(self) -> List[InputFile]:
-        if isinstance(self.thumbnail, InputFile):
-            return [self.thumbnail]
-        return list()
+    def files(self) -> Tuple[InputFile, ...]:
+        return (self.thumbnail,) if isinstance(self.thumbnail, InputFile) else tuple()

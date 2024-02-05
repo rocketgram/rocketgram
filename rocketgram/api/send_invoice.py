@@ -1,14 +1,14 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, Tuple
 
 from .labeled_price import LabeledPrice
 from .request import Request
-from .utils import INLINE_KEYBOARDS, MessageResultMixin
+from .utils import AnyInlineKeyboard, MessageResultMixin
 
 
 @dataclass(frozen=True)
@@ -24,10 +24,10 @@ class SendInvoice(MessageResultMixin, Request):
     payload: str
     provider_token: str
     currency: str
-    prices: List[LabeledPrice]
+    prices: Tuple[LabeledPrice, ...]
     message_thread_id: Optional[int] = None
     max_tip_amount: Optional[int] = None
-    suggested_tip_amounts: Optional[List[int]] = None
+    suggested_tip_amounts: Optional[Tuple[int, ...]] = None
     start_parameter: Optional[str] = None
     provider_data: Optional[str] = None
     photo_url: Optional[str] = None
@@ -45,4 +45,4 @@ class SendInvoice(MessageResultMixin, Request):
     protect_content: Optional[bool] = None
     reply_to_message_id: Optional[bool] = None
     allow_sending_without_reply: Optional[bool] = None
-    reply_markup: Optional[INLINE_KEYBOARDS] = None
+    reply_markup: Optional[AnyInlineKeyboard] = None

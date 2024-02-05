@@ -1,10 +1,10 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass
-from typing import List
+from typing import Tuple
 
 from .labeled_price import LabeledPrice
 
@@ -18,4 +18,4 @@ class ShippingOption:
 
     id: str
     title: str
-    prices: List[LabeledPrice]
+    prices: Tuple[LabeledPrice, ...]

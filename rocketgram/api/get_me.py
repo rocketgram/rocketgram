@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -17,7 +17,8 @@ class GetMe(Request):
     https://core.telegram.org/bots/api#getme
     """
 
-    def parse_result(self, data) -> 'api.User':
+    @staticmethod
+    def parse_result(data) -> 'api.User':
         assert isinstance(data, dict), "Should be dict."
         return api.User.parse(data)
 

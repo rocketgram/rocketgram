@@ -6,6 +6,8 @@ All notable changes to this project.
 
 ### Added
 - The `commonfilters.gamne` filter.
+- The `InlineQueryResultsButton` class and `button` field for `AnswerInlineQuery` class.
+- The `from_request`, `from_response` and `from_error` fields to `WriteAccessAllowed` class.
 
 ### Changed.
 - The parameter `executor` is now optional for `init`, `shutdown` and `process` methods of `Bot` class.
@@ -15,6 +17,9 @@ All notable changes to this project.
 ### Fixed
 - Typing in `Animation`.
 - The `commonfilters.callback` filter for case where `game` event has arrived.
+
+### Removed
+- `switch_pm_text` and `switch_pm_parameter` fields from `AnswerInlineQuery` class.
 
 ### Deprecated
 - The next major release will no longer officially support Python 3.7.
@@ -476,7 +481,7 @@ All notable changes to this project.
 - Added `answer` context helper.
 - Added well typed `Request.send2()` method. This method returns result directly instead of `Response` object.
 - Added well typed `Response.method` property.
-- Added `File.url` property. This property retrun url of a file requested by `GetFile` method.
+- Added `File.url` property. This property return the url of a file requested by `GetFile` method.
 - Ability to use callable classes and instances as handlers.
 - `explanation`, `explanation_entities`, `open_period`, `close_date` fields to `Poll` class.
 - `explanation`, `explanation_parse_mode`, `open_period`, `close_date` fields to `sendPoll` request class.

@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -37,6 +37,8 @@ setuptools.setup(
         'Natural Language :: English',
         'Operating System :: OS Independent',
         "Environment :: Web Environment",
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.8',

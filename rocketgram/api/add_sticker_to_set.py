@@ -1,10 +1,10 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass
-from typing import List
+from typing import Tuple
 
 from .input_file import InputFile
 from .input_sticker import InputSticker
@@ -23,7 +23,7 @@ class AddStickerToSet(BoolResultMixin, Request):
     name: str
     sticker: InputSticker
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> Tuple[InputFile, ...]:
         if isinstance(self.sticker.sticker, InputFile):
-            return [self.sticker.sticker]
-        return list()
+            return (self.sticker.sticker,)
+        return tuple()

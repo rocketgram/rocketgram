@@ -1,12 +1,13 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, Tuple
 
 from .inline_query_result import InlineQueryResult
+from .inline_query_results_button import InlineQueryResultsButton
 from .request import Request
 from .utils import BoolResultMixin
 
@@ -19,9 +20,8 @@ class AnswerInlineQuery(BoolResultMixin, Request):
     """
 
     inline_query_id: str
-    results: List[InlineQueryResult]
+    results: Tuple[InlineQueryResult, ...]
     cache_time: Optional[int] = None
     is_personal: Optional[bool] = None
     next_offset: Optional[str] = None
-    switch_pm_text: Optional[str] = None
-    switch_pm_parameter: Optional[str] = None
+    button: Optional[InlineQueryResultsButton] = None

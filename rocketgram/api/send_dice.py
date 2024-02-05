@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -8,7 +8,7 @@ from typing import Union, Optional
 
 from .dice_type import DiceType
 from .request import Request
-from .utils import ALL_KEYBOARDS, MessageResultMixin
+from .utils import AnyKeyboard, MessageResultMixin
 
 
 @dataclass(frozen=True)
@@ -25,4 +25,4 @@ class SendDice(MessageResultMixin, Request):
     protect_content: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     allow_sending_without_reply: Optional[bool] = None
-    reply_markup: Optional[ALL_KEYBOARDS] = None
+    reply_markup: Optional[AnyKeyboard] = None

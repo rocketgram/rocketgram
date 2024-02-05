@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -6,7 +6,7 @@
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import Enum
-from typing import Union, Dict, List
+from typing import Union, Dict, List, Tuple
 
 from .. import api
 from ..context import context
@@ -20,7 +20,8 @@ class Request:
     """
 
     def __prepare(self, d: Union[Dict, List]) -> Union[Dict, List]:
-        assert isinstance(d, (list, dict))
+
+        assert isinstance(d, (list, dict, tuple))
 
         for k, v in d.items() if isinstance(d, dict) else enumerate(d):
             if isinstance(v, Enum):
@@ -35,8 +36,8 @@ class Request:
             if isinstance(v, keyboard.Keyboard):
                 d[k] = self.__prepare(asdict(v.render()))
                 continue
-            if isinstance(v, (list, dict)):
-                d[k] = self.__prepare(v)
+            if isinstance(v, (list, dict, tuple)):
+                d[k] = self.__prepare(list(v) if isinstance(v, tuple) else v)
 
         if isinstance(d, dict):
             return {k: v for k, v in d.items() if v is not None}
@@ -58,12 +59,13 @@ class Request:
 
         return self.__prepare(d)
 
-    def files(self) -> List['api.InputFile']:
+    def files(self) -> Tuple['api.InputFile', ...]:
         """Returns list of binary files that exist in request."""
 
-        return list()
+        return tuple()
 
-    def parse_result(self, data):
+    @staticmethod
+    def parse_result(data):
         """Parses result field of Response object."""
 
         raise NotImplementedError

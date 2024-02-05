@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -20,7 +20,8 @@ class GetChat(Request):
 
     chat_id: Union[int, str]
 
-    def parse_result(self, data) -> 'api.Chat':
+    @staticmethod
+    def parse_result(data) -> 'api.Chat':
         assert isinstance(data, dict), "Should be dict."
         return api.Chat.parse(data)
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -22,7 +22,8 @@ class GetUserProfilePhotos(Request):
     offset: Optional[int] = None
     limit: Optional[int] = None
 
-    def parse_result(self, data) -> 'api.UserProfilePhotos':
+    @staticmethod
+    def parse_result(data) -> 'api.UserProfilePhotos':
         assert isinstance(data, dict), "Should be dict."
         return api.UserProfilePhotos.parse(data)
 

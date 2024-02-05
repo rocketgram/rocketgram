@@ -1,9 +1,7 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
-
-from typing import ClassVar
 
 from . import api
 
@@ -11,6 +9,13 @@ from . import api
 class RocketgramError(Exception):
     """Base exception for all RocketgramErrors"""
     pass
+
+
+class RocketgramStopRequest(RocketgramError):
+    """\
+    A special exception that can be raised to abort request processing.
+    Should never be intercepted in user code.
+    """
 
 
 class RocketgramNetworkError(RocketgramError):
@@ -55,17 +60,15 @@ class RocketgramRequestError(RocketgramError):
         self.request = request
         self.response = response
 
+    def __init_subclass__(cls, **kwargs):
+        assert cls.error_code is not None
+        assert cls.error_code not in cls._exceptions
+        assert issubclass(cls, RocketgramRequestError)
+
+        cls._exceptions[cls.error_code] = cls
+
     def __str__(self):
         return self.response.description
-
-    @classmethod
-    def register_exception(cls, exception: ClassVar['RocketgramRequestError']) -> ClassVar['RocketgramRequestError']:
-        assert exception.error_code is not None
-        assert exception.error_code not in cls._exceptions
-        assert issubclass(exception, RocketgramRequestError)
-
-        cls._exceptions[exception.error_code] = exception
-        return exception
 
     @classmethod
     def get_exception(cls, request: 'api.Request', response: 'api.Response') -> 'RocketgramRequestError':
@@ -74,7 +77,6 @@ class RocketgramRequestError(RocketgramError):
         return exception(request, response)
 
 
-@RocketgramRequestError.register_exception
 class RocketgramRequest400Error(RocketgramRequestError):
     """\
     Exception indicates errors with code 400.
@@ -83,7 +85,6 @@ class RocketgramRequest400Error(RocketgramRequestError):
     error_code = 400
 
 
-@RocketgramRequestError.register_exception
 class RocketgramRequest401Error(RocketgramRequestError):
     """\
     Exception indicates errors with code 401.
@@ -92,7 +93,6 @@ class RocketgramRequest401Error(RocketgramRequestError):
     error_code = 401
 
 
-@RocketgramRequestError.register_exception
 class RocketgramRequest403Error(RocketgramRequestError):
     """\
     Exception indicates errors with code 403.
@@ -101,17 +101,9 @@ class RocketgramRequest403Error(RocketgramRequestError):
     error_code = 403
 
 
-@RocketgramRequestError.register_exception
 class RocketgramRequest429Error(RocketgramRequestError):
     """\
     Exception indicates errors with code 429.
     """
 
     error_code = 429
-
-
-class RocketgramStopRequest(RocketgramError):
-    """\
-    A special exception that can be raised to abort request processing.
-    Should never be intercepted in user code.
-    """

@@ -1,10 +1,10 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional, Tuple
 
 from .bot_command_scope import BotCommandScope
 from .request import Request
@@ -18,5 +18,5 @@ class DeleteMyCommands(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#deletemycommands
     """
 
-    scope: Optional[List[BotCommandScope]] = None
+    scope: Optional[Tuple[BotCommandScope, ...]] = None
     language_code: Optional[str] = None

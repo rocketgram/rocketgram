@@ -1,10 +1,10 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, Tuple
 
 from .request import Request
 from .shipping_option import ShippingOption
@@ -20,5 +20,5 @@ class AnswerShippingQuery(BoolResultMixin, Request):
 
     shipping_query_id: str
     ok: bool
-    shipping_options: Optional[List[ShippingOption]] = None
+    shipping_options: Optional[Tuple[ShippingOption, ...]] = None
     error_message: Optional[str] = None

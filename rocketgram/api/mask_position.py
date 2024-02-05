@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -16,7 +16,7 @@ class MaskPosition:
     https://core.telegram.org/bots/api#maskposition
     """
 
-    point: str
+    point: MaskPositionPointType
     x_shift: float
     y_shift: float
     scale: float

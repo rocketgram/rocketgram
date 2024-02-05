@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -20,7 +20,8 @@ class GetMyDefaultAdministratorRights(Request):
 
     for_channels: Optional[bool] = None
 
-    def parse_result(self, data) -> ChatAdministratorRights:
+    @staticmethod
+    def parse_result(data) -> ChatAdministratorRights:
         assert isinstance(data, dict), "Should be dict."
 
         return ChatAdministratorRights.parse(data)

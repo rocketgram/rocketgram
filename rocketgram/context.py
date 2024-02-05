@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -12,23 +12,24 @@ if TYPE_CHECKING:
     from .executors import Executor
     from .bot import Bot
 
-current_executor = ContextVar('current_executor')
-current_bot = ContextVar('current_bot')
-current_webhook_requests = ContextVar('current_webhook_requests')
 
-current_update = ContextVar('current_update')
-current_message = ContextVar('current_message')
-current_callback = ContextVar('current_callback')
-current_inline = ContextVar('current_inline')
-current_result = ContextVar('current_result')
-current_shipping = ContextVar('current_shipping')
-current_checkout = ContextVar('current_checkout')
-current_poll = ContextVar('current_poll')
-current_answer = ContextVar('current_answer')
-current_member = ContextVar('current_member')
+_current_executor = ContextVar('current_executor')
+_current_bot = ContextVar('current_bot')
+_current_webhook_requests = ContextVar('current_webhook_requests')
 
-current_chat = ContextVar('current_chat')
-current_user = ContextVar('current_user')
+_current_update = ContextVar('current_update')
+_current_message = ContextVar('current_message')
+_current_callback = ContextVar('current_callback')
+_current_inline = ContextVar('current_inline')
+_current_result = ContextVar('current_result')
+_current_shipping = ContextVar('current_shipping')
+_current_checkout = ContextVar('current_checkout')
+_current_poll = ContextVar('current_poll')
+_current_answer = ContextVar('current_answer')
+_current_member = ContextVar('current_member')
+
+_current_chat = ContextVar('current_chat')
+_current_user = ContextVar('current_user')
 
 
 class Context:
@@ -48,159 +49,159 @@ class Context:
     def executor(self) -> Optional['Executor']:
         """Returns Executor object for current request."""
 
-        return current_executor.get(None)
+        return _current_executor.get(None)
 
     @executor.setter
     def executor(self, executor: 'Executor'):
-        current_executor.set(executor)
+        _current_executor.set(executor)
 
     @property
     def bot(self) -> Optional['Bot']:
         """Returns current Bot object."""
 
-        return current_bot.get(None)
+        return _current_bot.get(None)
 
     @bot.setter
     def bot(self, bot: 'Bot'):
-        current_bot.set(bot)
+        _current_bot.set(bot)
 
     @property
     def update(self) -> Optional['api.Update']:
         """Returns Update object for current request."""
 
-        return current_update.get(None)
+        return _current_update.get(None)
 
     @update.setter
     def update(self, update: 'api.Update'):
-        current_update.set(update)
+        _current_update.set(update)
 
     @property
     def message(self) -> Optional['api.Message']:
         """Returns Message object for current request."""
 
-        return current_message.get(None)
+        return _current_message.get(None)
 
     @message.setter
     def message(self, update: 'api.Message'):
-        current_message.set(update)
+        _current_message.set(update)
 
     @property
     def chat(self) -> Optional['api.Chat']:
         """Returns Chat object for current request."""
 
-        return current_chat.get(None)
+        return _current_chat.get(None)
 
     @chat.setter
     def chat(self, chat: 'api.Chat'):
-        current_chat.set(chat)
+        _current_chat.set(chat)
 
     @property
     def user(self) -> Optional['api.User']:
         """Returns User object for current request."""
 
-        return current_user.get(None)
+        return _current_user.get(None)
 
     @user.setter
     def user(self, user: 'api.User'):
-        current_user.set(user)
+        _current_user.set(user)
 
     @property
     def callback(self) -> Optional['api.CallbackQuery']:
         """Returns CallbackQuery object for current request."""
 
-        return current_callback.get(None)
+        return _current_callback.get(None)
 
     @callback.setter
     def callback(self, callback: 'api.CallbackQuery'):
-        current_callback.set(callback)
+        _current_callback.set(callback)
 
     @property
     def inline(self) -> Optional['api.InlineQuery']:
         """Returns InlineQuery object for current request."""
 
-        return current_inline.get(None)
+        return _current_inline.get(None)
 
     @inline.setter
     def inline(self, inline: 'api.InlineQuery'):
-        current_inline.set(inline)
+        _current_inline.set(inline)
 
     @property
     def result(self) -> Optional['api.ChosenInlineResult']:
         """Returns ChosenInlineResult object for current request."""
 
-        return current_result.get(None)
+        return _current_result.get(None)
 
     @result.setter
     def result(self, result: 'api.ChosenInlineResult'):
-        current_result.set(result)
+        _current_result.set(result)
 
     @property
     def shipping(self) -> Optional['api.ShippingQuery']:
         """Returns ShippingQuery object for current request."""
 
-        return current_shipping.get(None)
+        return _current_shipping.get(None)
 
     @shipping.setter
     def shipping(self, shipping: 'api.ShippingQuery'):
-        current_shipping.set(shipping)
+        _current_shipping.set(shipping)
 
     @property
     def checkout(self) -> Optional['api.PreCheckoutQuery']:
         """Returns PreCheckoutQuery object for current request."""
 
-        return current_checkout.get(None)
+        return _current_checkout.get(None)
 
     @checkout.setter
     def checkout(self, checkout: 'api.PreCheckoutQuery'):
-        current_checkout.set(checkout)
+        _current_checkout.set(checkout)
 
     @property
     def poll(self) -> Optional['api.Poll']:
         """Returns Poll object for current request."""
 
-        return current_poll.get(None)
+        return _current_poll.get(None)
 
     @poll.setter
     def poll(self, poll: 'api.Poll'):
-        current_poll.set(poll)
+        _current_poll.set(poll)
 
     @property
     def answer(self) -> Optional['api.PollAnswer']:
         """Returns PollAnswer object for current request."""
 
-        return current_answer.get(None)
+        return _current_answer.get(None)
 
     @answer.setter
     def answer(self, answer: 'api.PollAnswer'):
-        current_answer.set(answer)
+        _current_answer.set(answer)
 
     @property
     def member(self) -> Optional['api.ChatMemberUpdated']:
         """Returns ChatMemberUpdated object for current request."""
 
-        return current_member.get(None)
+        return _current_member.get(None)
 
     @member.setter
     def member(self, member: 'api.ChatMemberUpdated'):
-        current_member.set(member)
+        _current_member.set(member)
 
     @staticmethod
     def webhook(request: 'api.Request'):
         """Sets Request object to be sent through webhook-request mechanism."""
 
-        current_webhook_requests.get().append(request)
+        _current_webhook_requests.get().append(request)
 
     @property
     def webhook_requests(self) -> List['api.Request']:
         """Returns list of current requests awaits sent through webhook-request mechanism."""
 
-        return current_webhook_requests.get()
+        return _current_webhook_requests.get()
 
     @webhook_requests.setter
     def webhook_requests(self, webhook_requests):
         """Returns list of current requests awaits sent through webhook-request mechanism."""
 
-        current_webhook_requests.set(webhook_requests)
+        _current_webhook_requests.set(webhook_requests)
 
     def assign(self, executor: 'Executor', bot: 'Bot', update: 'api.Update'):
 

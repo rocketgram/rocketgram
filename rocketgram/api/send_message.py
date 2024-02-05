@@ -1,15 +1,15 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
 from .request import Request
-from .utils import ALL_KEYBOARDS, MessageResultMixin
+from .utils import AnyKeyboard, MessageResultMixin
 
 
 @dataclass(frozen=True)
@@ -23,10 +23,10 @@ class SendMessage(MessageResultMixin, Request):
     text: str
     message_thread_id: Optional[int] = None
     parse_mode: Optional[ParseModeType] = None
-    entities: Optional[List[MessageEntity]] = None
+    entities: Optional[Tuple[MessageEntity, ...]] = None
     disable_web_page_preview: Optional[bool] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     allow_sending_without_reply: Optional[bool] = None
-    reply_markup: Optional[ALL_KEYBOARDS] = None
+    reply_markup: Optional[AnyKeyboard] = None

@@ -1,10 +1,10 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass, field
-from typing import Optional, Union, List
+from typing import Optional, Union, Tuple
 
 from .input_file import InputFile
 from .input_media import InputMedia
@@ -24,5 +24,5 @@ class InputMediaPhoto(InputMedia):
     media: Union[InputFile, str]
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[Tuple[MessageEntity, ...]] = None
     has_spoiler: Optional[bool] = None

@@ -1,15 +1,15 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .input_file import InputFile
 from .input_media import InputMedia
 from .request import Request
-from .utils import INLINE_KEYBOARDS, MessageOrBoolResultMixin
+from .utils import AnyInlineKeyboard, MessageOrBoolResultMixin
 
 
 @dataclass(frozen=True)
@@ -23,9 +23,9 @@ class EditMessageMedia(MessageOrBoolResultMixin, Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    reply_markup: Optional[INLINE_KEYBOARDS] = None
+    reply_markup: Optional[AnyInlineKeyboard] = None
 
-    def files(self) -> List[InputFile]:
+    def files(self) -> Tuple[InputFile, ...]:
         out = list()
         media = self.media
 
@@ -34,4 +34,4 @@ class EditMessageMedia(MessageOrBoolResultMixin, Request):
         if hasattr(media, 'thumbnail') and isinstance(media.thumbnail, InputFile):
             out.append(media.thumbnail)
 
-        return out
+        return tuple(out)

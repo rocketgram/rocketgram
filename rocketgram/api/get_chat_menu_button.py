@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -23,7 +23,8 @@ class GetChatMenuButton(Request):
 
     chat_id: Optional[Union[int, str]] = None
 
-    def parse_result(self, data) -> Union[MenuButtonCommands, MenuButtonDefault, MenuButtonWebApp]:
+    @staticmethod
+    def parse_result(data) -> Union[MenuButtonCommands, MenuButtonDefault, MenuButtonWebApp]:
         assert isinstance(data, dict), "Should be dict."
 
         result_type = data['type']

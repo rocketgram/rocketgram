@@ -1,16 +1,16 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass
-from typing import Union, Optional, List
+from typing import Union, Optional, Tuple
 
 from .input_file import InputFile
 from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
 from .request import Request
-from .utils import ALL_KEYBOARDS, MessageResultMixin
+from .utils import AnyKeyboard, MessageResultMixin
 
 
 @dataclass(frozen=True)
@@ -25,15 +25,13 @@ class SendPhoto(MessageResultMixin, Request):
     message_thread_id: Optional[int] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[Tuple[MessageEntity, ...]] = None
     has_spoiler: Optional[bool] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
     reply_to_message_id: Optional[int] = None
     allow_sending_without_reply: Optional[bool] = None
-    reply_markup: Optional[ALL_KEYBOARDS] = None
+    reply_markup: Optional[AnyKeyboard] = None
 
-    def files(self) -> List[InputFile]:
-        if isinstance(self.photo, InputFile):
-            return [self.photo]
-        return list()
+    def files(self) -> Tuple[InputFile, ...]:
+        return (self.photo,) if isinstance(self.photo, InputFile) else tuple()

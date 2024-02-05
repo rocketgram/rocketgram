@@ -1,10 +1,10 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
 from dataclasses import dataclass, field
-from typing import List
+from typing import Tuple
 
 from .encrypted_passport_element_type import EncryptedPassportElementType
 from .passport_element_error import PassportElementError
@@ -20,5 +20,5 @@ class PassportElementErrorFiles(PassportElementError):
     source: str = field(init=False, default='files')
 
     type: EncryptedPassportElementType
-    file_hashes: List[str]
+    file_hashes: Tuple[str, ...]
     message: str
