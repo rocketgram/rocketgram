@@ -20,7 +20,8 @@ class Request:
     """
 
     def __prepare(self, d: Union[Dict, List]) -> Union[Dict, List]:
-        assert isinstance(d, (list, dict))
+
+        assert isinstance(d, (list, dict, tuple))
 
         for k, v in d.items() if isinstance(d, dict) else enumerate(d):
             if isinstance(v, Enum):
@@ -35,8 +36,8 @@ class Request:
             if isinstance(v, keyboard.Keyboard):
                 d[k] = self.__prepare(asdict(v.render()))
                 continue
-            if isinstance(v, (list, dict)):
-                d[k] = self.__prepare(v)
+            if isinstance(v, (list, dict, tuple)):
+                d[k] = self.__prepare(list(v) if isinstance(v, tuple) else v)
 
         if isinstance(d, dict):
             return {k: v for k, v in d.items() if v is not None}
