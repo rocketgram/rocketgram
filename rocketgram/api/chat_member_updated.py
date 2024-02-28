@@ -29,15 +29,19 @@ class ChatMemberUpdated:
     old_chat_member: 'chat_member.ChatMember'
     new_chat_member: 'chat_member.ChatMember'
     invite_link: Optional['chat_invite_link.ChatInviteLink']
+    via_chat_folder_invite_link: Optional[bool]
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['ChatMemberUpdated']:
         if data is None:
             return None
 
-        date = datetime.fromtimestamp(data['date'], tz=timezone.utc) if 'date' in data else None
-
-        return cls(chat.Chat.parse(data['chat']), user.User.parse(data['from']), date,
-                   chat_member.ChatMember.parse(data['old_chat_member']),
-                   chat_member.ChatMember.parse(data['new_chat_member']),
-                   chat_invite_link.ChatInviteLink.parse(data.get('invite_link')))
+        return cls(
+            chat.Chat.parse(data['chat']),
+            user.User.parse(data['from']),
+            datetime.fromtimestamp(data['date'], tz=timezone.utc) if 'date' in data else None,
+            chat_member.ChatMember.parse(data['old_chat_member']),
+            chat_member.ChatMember.parse(data['new_chat_member']),
+            chat_invite_link.ChatInviteLink.parse(data.get('invite_link')),
+            data.get('via_chat_folder_invite_link')
+        )
