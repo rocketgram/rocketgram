@@ -30,6 +30,7 @@ from .callback_query import CallbackQuery
 from .chat import Chat
 from .chat_action_type import ChatActionType
 from .chat_administrator_rights import ChatAdministratorRights
+from .chat_boost_added import ChatBoostAdded
 from .chat_invite_link import ChatInviteLink
 from .chat_join_request import ChatJoinRequest
 from .chat_location import ChatLocation
@@ -75,6 +76,7 @@ from .encrypted_passport_element import EncryptedPassportElement
 from .encrypted_passport_element_type import EncryptedPassportElementType
 from .entity_type import EntityType
 from .export_chat_invite_link import ExportChatInviteLink
+from .external_reply_info import ExternalReplyInfo
 from .file import File
 from .force_reply import ForceReply
 from .forum_topic import ForumTopic
@@ -106,6 +108,10 @@ from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_profile_photos import GetUserProfilePhotos
 from .get_webhook_info import GetWebhookInfo
+from .giveaway import Giveaway
+from .giveaway_completed import GiveawayCompleted
+from .giveaway_created import GiveawayCreated
+from .giveaway_winners import GiveawayWinners
 from .hide_general_forum_topic import HideGeneralForumTopic
 from .inline_keyboard_button import InlineKeyboardButton
 from .inline_keyboard_markup import InlineKeyboardMarkup
@@ -150,6 +156,7 @@ from .keyboard_button_request_chat import KeyboardButtonRequestChat
 from .keyboard_button_request_user import KeyboardButtonRequestUser
 from .labeled_price import LabeledPrice
 from .leave_chat import LeaveChat
+from .link_preview_options import LinkPreviewOptions
 from .location import Location
 from .log_out import LogOut
 from .login_url import LoginUrl
@@ -162,6 +169,8 @@ from .message import Message
 from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
 from .message_id import MessageId
+from .message_origin import MessageOrigin
+from .message_origin_type import MessageOriginType
 from .message_type import MessageType
 from .order_info import OrderInfo
 from .parse_mode_type import ParseModeType
@@ -249,6 +258,7 @@ from .stop_poll import StopPoll
 from .story import Story
 from .successful_payment import SuccessfulPayment
 from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
+from .text_quote import TextQuote
 from .thumbnail_mime_type import ThumbnailMimeType
 from .unban_chat_member import UnbanChatMember
 from .unban_chat_sender_chat import UnbanChatSenderChat
