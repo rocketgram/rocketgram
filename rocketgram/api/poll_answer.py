@@ -6,6 +6,7 @@
 from dataclasses import dataclass
 from typing import Optional, List
 
+from .chat import Chat
 from .user import User
 
 
@@ -18,7 +19,8 @@ class PollAnswer:
     """
 
     poll_id: str
-    user: User
+    voter_chat: Optional[Chat]
+    user: Optional[User]
     option_ids: List[int]
 
     @classmethod
@@ -26,4 +28,9 @@ class PollAnswer:
         if data is None:
             return None
 
-        return cls(data['poll_id'], User.parse(data['user']), data['option_ids'])
+        return cls(
+            data['poll_id'],
+            Chat.parse(data.get('voter_chat')),
+            User.parse(data.get('user')),
+            data['option_ids']
+        )
