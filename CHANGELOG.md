@@ -8,6 +8,9 @@ All notable changes to this project.
 - The `commonfilters.gamne` filter.
 - The `InlineQueryResultsButton` class and `button` field for `AnswerInlineQuery` class.
 - The `from_request`, `from_response` and `from_error` fields to `WriteAccessAllowed` class.
+- The `GetMyName` request class.
+- The `SetMyName` request class.
+- The `BotName` class.
 
 ### Changed.
 - The parameter `executor` is now optional for `init`, `shutdown` and `process` methodds of `Bot` class.

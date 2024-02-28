@@ -24,6 +24,7 @@ from .bot_command_scope_chat_administrators import BotCommandScopeChatAdministra
 from .bot_command_scope_chat_member import BotCommandScopeChatMember
 from .bot_command_scope_default import BotCommandScopeDefault
 from .bot_description import BotDescription
+from .bot_name import BotName
 from .bot_short_description import BotShortDescription
 from .callback_query import CallbackQuery
 from .chat import Chat
@@ -99,6 +100,7 @@ from .get_me import GetMe
 from .get_my_commands import GetMyCommands
 from .get_my_default_administrator_rights import GetMyDefaultAdministratorRights
 from .get_my_description import GetMyDescription
+from .get_my_name import GetMyName
 from .get_my_short_description import GetMyShortDescription
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
@@ -223,6 +225,7 @@ from .set_game_score import SetGameScore
 from .set_my_commands import SetMyCommands
 from .set_my_default_administrator_rights import SetMyDefaultAdministratorRights
 from .set_my_description import SetMyDescription
+from .set_my_name import SetMyName
 from .set_my_short_description import SetMyShortDescription
 from .set_passport_data_errors import SetPassportDataErrors
 from .set_sticker_emoji_list import SetStickerEmojiList
