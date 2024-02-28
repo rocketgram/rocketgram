@@ -38,6 +38,9 @@ class ChatMember:
     can_delete_messages: Optional[bool]
     can_manage_video_chats: Optional[bool]
     can_invite_users: Optional[bool]
+    can_post_stories: Optional[bool]
+    can_edit_stories: Optional[bool]
+    can_delete_stories: Optional[bool]
     can_restrict_members: Optional[bool]
     can_pin_messages: Optional[bool]
     can_manage_topics: Optional[bool]
@@ -73,6 +76,9 @@ class ChatMember:
             data.get('can_delete_messages'),
             data.get('can_manage_video_chats'),
             data.get('can_invite_users'),
+            data.get('can_post_stories'),
+            data.get('can_edit_stories'),
+            data.get('can_delete_stories'),
             data.get('can_restrict_members'),
             data.get('can_pin_messages'),
             data.get('can_manage_topics'),

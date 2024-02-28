@@ -14,14 +14,17 @@ class ChatAdministratorRights:
     https://core.telegram.org/bots/api#chatadministratorrights
     """
 
-    is_anonymous: bool
-    can_manage_chat: bool
-    can_delete_messages: bool
-    can_manage_video_chats: bool
-    can_restrict_members: bool
-    can_promote_members: bool
-    can_change_info: bool
-    can_invite_users: bool
+    is_anonymous: Optional[bool]
+    can_manage_chat: Optional[bool]
+    can_delete_messages: Optional[bool]
+    can_manage_video_chats: Optional[bool]
+    can_restrict_members: Optional[bool]
+    can_promote_members: Optional[bool]
+    can_change_info: Optional[bool]
+    can_invite_users: Optional[bool]
+    can_post_stories: Optional[bool]
+    can_edit_stories: Optional[bool]
+    can_delete_stories: Optional[bool]
     can_post_messages: Optional[bool]
     can_edit_messages: Optional[bool]
     can_pin_messages: Optional[bool]
@@ -32,7 +35,20 @@ class ChatAdministratorRights:
         if data is None:
             return None
 
-        return cls(data['is_anonymous'], data['can_manage_chat'], data['can_delete_messages'],
-                   data['can_manage_video_chats'], data['can_restrict_members'], data['can_promote_members'],
-                   data['can_change_info'], data['can_invite_users'], data.get('can_post_messages'),
-                   data.get('can_edit_messages'), data.get('can_pin_messages'), data.get('can_manage_topics'))
+        return cls(
+            data.get('is_anonymous'),
+            data.get('can_manage_chat'),
+            data.get('can_delete_messages'),
+            data.get('can_manage_video_chats'),
+            data.get('can_restrict_members'),
+            data.get('can_promote_members'),
+            data.get('can_change_info'),
+            data.get('can_invite_users'),
+            data.get('can_post_stories'),
+            data.get('can_edit_stories'),
+            data.get('can_delete_stories'),
+            data.get('can_post_messages'),
+            data.get('can_edit_messages'),
+            data.get('can_pin_messages'),
+            data.get('can_manage_topics')
+        )
