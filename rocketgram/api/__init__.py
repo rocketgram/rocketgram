@@ -1,4 +1,4 @@
-# Copyright (C) 2015-2023 by Vd.
+# Copyright (C) 2015-2024 by Vd.
 # This file is part of Rocketgram, the modern Telegram bot framework.
 # Rocketgram is released under the MIT License (see LICENSE).
 
@@ -128,6 +128,7 @@ from .inline_query_result_photo import InlineQueryResultPhoto
 from .inline_query_result_venue import InlineQueryResultVenue
 from .inline_query_result_video import InlineQueryResultVideo
 from .inline_query_result_voice import InlineQueryResultVoice
+from .inline_query_results_button import InlineQueryResultsButton
 from .input_contact_message_content import InputContactMessageContent
 from .input_file import InputFile
 from .input_invoice_message_content import InputInvoiceMessageContent
