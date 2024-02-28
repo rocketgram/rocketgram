@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Optional, List
 
 from .photo_size import PhotoSize
 from .sticker import Sticker
@@ -23,7 +23,7 @@ class StickerSet:
     sticker_type: StickerType
     is_animated: Optional[bool]
     is_video: Optional[bool]
-    stickers: Tuple[Sticker, ...]
+    stickers: List[Sticker]
     thumbnail: Optional[PhotoSize]
 
     @classmethod
@@ -42,6 +42,6 @@ class StickerSet:
             sticker_type,
             data['is_animated'],
             data['is_video'],
-            tuple(Sticker.parse(s) for s in data['stickers']),
+            [Sticker.parse(s) for s in data['stickers']],
             PhotoSize.parse(data['thumbnail'])
         )

@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, List
 
 from . import user
 
@@ -16,11 +16,11 @@ class VideoChatParticipantsInvited:
     https://core.telegram.org/bots/api#voicechatparticipantsinvited
     """
 
-    users: Tuple['user.User', ...]
+    users: List['user.User']
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['VideoChatParticipantsInvited']:
         if data is None:
             return None
 
-        return cls(tuple(user.User.parse(u) for u in data['users']))
+        return cls([user.User.parse(u) for u in data['users']])

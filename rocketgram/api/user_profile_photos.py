@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Optional, List
 
 from .photo_size import PhotoSize
 
@@ -17,13 +17,13 @@ class UserProfilePhotos:
     """
 
     total_count: int
-    photos: Tuple[Tuple[PhotoSize, ...], ...]
+    photos: List[List[PhotoSize]]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['UserProfilePhotos']:
         if data is None:
             return None
 
-        photos = tuple(tuple(PhotoSize.parse(i) for i in p) for p in data['photos'])
+        photos = [[PhotoSize.parse(i) for i in p] for p in data['photos']]
 
         return cls(data['total_count'], photos)

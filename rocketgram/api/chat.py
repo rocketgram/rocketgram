@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, List
 
 from . import message
 from .chat_location import ChatLocation
@@ -30,7 +30,7 @@ class Chat:
     photo: Optional[ChatPhoto]
     bio: Optional[str]
     has_private_forwards: Optional[bool]
-    active_usernames: Optional[Tuple[str, ...]]
+    active_usernames: Optional[List[str, ...]]
     emoji_status_custom_emoji_id: Optional[str]
     has_restricted_voice_and_video_messages: Optional[bool]
     join_to_send_messages: Optional[bool]
@@ -72,7 +72,7 @@ class Chat:
             ChatPhoto.parse(data.get('photo')),
             data.get('bio'),
             data.get('has_private_forwards'),
-            tuple(data['active_usernames']) if 'active_usernames' in data else None,
+            data['active_usernames'] if 'active_usernames' in data else None,
             data.get('emoji_status_custom_emoji_id'),
             data.get('has_restricted_voice_and_video_messages'),
             data.get('join_to_send_messages'),

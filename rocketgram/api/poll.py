@@ -5,7 +5,7 @@
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Optional, Tuple
+from typing import Optional, List
 
 from .message_entity import MessageEntity
 from .poll_option import PollOption
@@ -21,7 +21,7 @@ class Poll:
 
     id: str
     question: str
-    options: Tuple[PollOption, ...]
+    options: List[PollOption]
     total_voter_count: int
     is_closed: bool
     is_anonymous: bool
@@ -29,7 +29,7 @@ class Poll:
     allows_multiple_answers: bool
     correct_option_id: Optional[int]
     explanation: Optional[str]
-    explanation_entities: Optional[Tuple[MessageEntity, ...]]
+    explanation_entities: Optional[List[MessageEntity]]
     open_period: Optional[int]
     close_date: Optional[datetime]
 
@@ -38,8 +38,8 @@ class Poll:
         if data is None:
             return None
 
-        options = tuple(PollOption.parse(i) for i in data['options'])
-        explanation_entities = tuple(MessageEntity.parse(d) for d in data['explanation_entities']) \
+        options = [PollOption.parse(i) for i in data['options']]
+        explanation_entities = [MessageEntity.parse(d) for d in data['explanation_entities']] \
             if 'explanation_entities' in data else None
         close_date = datetime.fromtimestamp(data['close_date'], tz=timezone.utc) if 'close_date' in data else None
 
