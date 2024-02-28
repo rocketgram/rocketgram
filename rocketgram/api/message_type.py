@@ -16,6 +16,7 @@ class MessageType(EnumAutoName):
     game = auto()
     photo = auto()
     sticker = auto()
+    story = auto()
     video = auto()
     voice = auto()
     video_note = auto()

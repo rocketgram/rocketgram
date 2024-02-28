@@ -32,6 +32,7 @@ from .photo_size import PhotoSize
 from .poll import Poll
 from .proximity_alert_triggered import ProximityAlertTriggered
 from .sticker import Sticker
+from .story import Story
 from .successful_payment import SuccessfulPayment
 from .user import User
 from .user_shared import UserShared
@@ -94,6 +95,7 @@ class Message:
     game: Optional[Game]
     photo: Optional[List[PhotoSize]]
     sticker: Optional[Sticker]
+    story: Optional[Story]
     video: Optional[Video]
     voice: Optional[Voice]
     video_note: Optional[VideoNote]
@@ -196,6 +198,7 @@ class Message:
         game = Game.parse(data.get('game'))
         photo = [PhotoSize.parse(d) for d in data['photo']] if 'photo' in data else None
         sticker = Sticker.parse(data.get('sticker'))
+        story = Story.parse(data.get('story'))
         video = Video.parse(data.get('video'))
         voice = Voice.parse(data.get('voice'))
         video_note = VideoNote.parse(data.get('video_note'))
@@ -275,6 +278,8 @@ class Message:
             message_type = MessageType.photo
         elif sticker:
             message_type = MessageType.sticker
+        elif story:
+            message_type = MessageType.story
         elif video:
             message_type = MessageType.video
         elif voice:
@@ -386,6 +391,7 @@ class Message:
             game,
             photo,
             sticker,
+            story,
             video,
             voice,
             video_note,
