@@ -185,6 +185,8 @@ from .poll_type import PollType
 from .pre_checkout_query import PreCheckoutQuery
 from .promote_chat_member import PromoteChatMember
 from .proximity_alert_triggered import ProximityAlertTriggered
+from .reaction_type import ReactionType
+from .reaction_type_type import ReactionTypeType
 from .reopen_forum_topic import ReopenForumTopic
 from .reopen_general_forum_topic import ReopenGeneralForumTopic
 from .reply_keyboard_markup import ReplyKeyboardMarkup
