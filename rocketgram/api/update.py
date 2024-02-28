@@ -7,11 +7,15 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 
 from .callback_query import CallbackQuery
+from .chat_boost_removed import ChatBoostRemoved
+from .chat_boost_updated import ChatBoostUpdated
 from .chat_join_request import ChatJoinRequest
 from .chat_member_updated import ChatMemberUpdated
 from .chosen_inline_result import ChosenInlineResult
 from .inline_query import InlineQuery
 from .message import Message
+from .message_reaction_count_updated import MessageReactionCountUpdated
+from .message_reaction_updated import MessageReactionUpdated
 from .poll import Poll
 from .poll_answer import PollAnswer
 from .pre_checkout_query import PreCheckoutQuery
@@ -37,6 +41,8 @@ class Update:
     edited_message: Optional[Message]
     channel_post: Optional[Message]
     edited_channel_post: Optional[Message]
+    message_reaction: Optional[MessageReactionUpdated]
+    message_reaction_count: Optional[MessageReactionCountUpdated]
     inline_query: Optional[InlineQuery]
     chosen_inline_result: Optional[ChosenInlineResult]
     callback_query: Optional[CallbackQuery]
@@ -47,6 +53,8 @@ class Update:
     my_chat_member: Optional[ChatMemberUpdated]
     chat_member: Optional[ChatMemberUpdated]
     chat_join_request: Optional[ChatJoinRequest]
+    chat_boost: Optional[ChatBoostUpdated]
+    removed_chat_boost: Optional[ChatBoostRemoved]
 
     @classmethod
     def parse(cls, data: Dict) -> 'Update':
@@ -54,6 +62,8 @@ class Update:
         edited_message = Message.parse(data.get('edited_message'))
         channel_post = Message.parse(data.get('channel_post'))
         edited_channel_post = Message.parse(data.get('edited_channel_post'))
+        message_reaction = MessageReactionUpdated.parse(data.get('message_reaction'))
+        message_reaction_count = MessageReactionCountUpdated.parse(data.get('message_reaction_count'))
         inline_query = InlineQuery.parse(data.get('inline_query'))
         chosen_inline_result = ChosenInlineResult.parse(data.get('chosen_inline_result'))
         callback_query = CallbackQuery.parse(data.get('callback_query'))
@@ -64,6 +74,8 @@ class Update:
         my_chat_member = ChatMemberUpdated.parse(data.get('my_chat_member'))
         chat_member = ChatMemberUpdated.parse(data.get('chat_member'))
         chat_join_request = ChatJoinRequest.parse(data.get('chat_join_request'))
+        chat_boost = ChatBoostUpdated.parse(data.get('chat_boost'))
+        removed_chat_boost = ChatBoostRemoved.parse(data.get('removed_chat_boost'))
 
         update_type = UpdateType.unknown
         if message:
@@ -74,6 +86,10 @@ class Update:
             update_type = UpdateType.channel_post
         elif edited_channel_post:
             update_type = UpdateType.edited_channel_post
+        elif message_reaction:
+            update_type = UpdateType.message_reaction
+        elif message_reaction_count:
+            update_type = UpdateType.message_reaction_count
         elif inline_query:
             update_type = UpdateType.inline_query
         elif chosen_inline_result:
@@ -94,7 +110,31 @@ class Update:
             update_type = UpdateType.chat_member
         elif chat_join_request:
             update_type = UpdateType.chat_join_request
+        elif chat_boost:
+            update_type = UpdateType.chat_boost
+        elif removed_chat_boost:
+            update_type = UpdateType.removed_chat_boost
 
-        return cls(data, data['update_id'], update_type, message, edited_message, channel_post, edited_channel_post,
-                   inline_query, chosen_inline_result, callback_query, shipping_query, pre_checkout_query, poll,
-                   poll_answer, my_chat_member, chat_member, chat_join_request)
+        return cls(
+            data,
+            data['update_id'],
+            update_type,
+            message,
+            edited_message,
+            channel_post,
+            edited_channel_post,
+            message_reaction,
+            message_reaction_count,
+            inline_query,
+            chosen_inline_result,
+            callback_query,
+            shipping_query,
+            pre_checkout_query,
+            poll,
+            poll_answer,
+            my_chat_member,
+            chat_member,
+            chat_join_request,
+            chat_boost,
+            removed_chat_boost
+        )

@@ -30,7 +30,12 @@ from .callback_query import CallbackQuery
 from .chat import Chat
 from .chat_action_type import ChatActionType
 from .chat_administrator_rights import ChatAdministratorRights
+from .chat_boost import ChatBoost
 from .chat_boost_added import ChatBoostAdded
+from .chat_boost_removed import ChatBoostRemoved
+from .chat_boost_source import ChatBoostSource
+from .chat_boost_source_type import ChatBoostSourceType
+from .chat_boost_updated import ChatBoostUpdated
 from .chat_invite_link import ChatInviteLink
 from .chat_join_request import ChatJoinRequest
 from .chat_location import ChatLocation
@@ -171,6 +176,8 @@ from .message_entity import MessageEntity
 from .message_id import MessageId
 from .message_origin import MessageOrigin
 from .message_origin_type import MessageOriginType
+from .message_reaction_count_updated import MessageReactionCountUpdated
+from .message_reaction_updated import MessageReactionUpdated
 from .message_type import MessageType
 from .order_info import OrderInfo
 from .parse_mode_type import ParseModeType
@@ -194,6 +201,7 @@ from .poll_type import PollType
 from .pre_checkout_query import PreCheckoutQuery
 from .promote_chat_member import PromoteChatMember
 from .proximity_alert_triggered import ProximityAlertTriggered
+from .reaction_count import ReactionCount
 from .reaction_type import ReactionType
 from .reaction_type_type import ReactionTypeType
 from .reopen_forum_topic import ReopenForumTopic
