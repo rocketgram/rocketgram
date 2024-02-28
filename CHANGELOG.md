@@ -6,6 +6,8 @@ All notable changes to this project.
 
 ### Added
 - The `commonfilters.gamne` filter.
+- The `InlineQueryResultsButton` class and `button` field for `AnswerInlineQuery` class.
+- The `from_request`, `from_response` and `from_error` fields to `WriteAccessAllowed` class.
 
 ### Changed.
 - The parameter `executor` is now optional for `init`, `shutdown` and `process` methods of `Bot` class.
@@ -15,6 +17,9 @@ All notable changes to this project.
 ### Fixed
 - Typing in `Animation`.
 - The `commonfilters.callback` filter for case where `game` event has arrived.
+
+### Removed
+- `switch_pm_text` and `switch_pm_parameter` fields from `AnswerInlineQuery` class.
 
 ### Deprecated
 - The next major release will no longer officially support Python 3.7.
