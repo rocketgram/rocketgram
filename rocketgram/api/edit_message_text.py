@@ -9,7 +9,7 @@ from typing import Union, Optional, List
 from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
 from .request import Request
-from .utils import INLINE_KEYBOARDS, MessageOrBoolResultMixin
+from .utils import AnyInlineKeyboard, MessageOrBoolResultMixin
 
 
 @dataclass(frozen=True)
@@ -26,4 +26,4 @@ class EditMessageText(MessageOrBoolResultMixin, Request):
     parse_mode: Optional[ParseModeType] = None
     entities: Optional[List[MessageEntity]] = None
     disable_web_page_preview: Optional[bool] = None
-    reply_markup: Optional[INLINE_KEYBOARDS] = None
+    reply_markup: Optional[AnyInlineKeyboard] = None

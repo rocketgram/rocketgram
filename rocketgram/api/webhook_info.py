@@ -34,8 +34,8 @@ class WebhookInfo:
 
         last_error_date = datetime.fromtimestamp(data['last_error_date'], tz=timezone.utc) \
             if 'last_error_date' in data else None
-        lsed = data.get('last_synchronization_error_date')
-        last_synchronization_error_date = datetime.fromtimestamp(lsed, tz=timezone.utc) if lsed else None
+        l_s_e_d = data.get('last_synchronization_error_date')
+        last_synchronization_error_date = datetime.fromtimestamp(l_s_e_d, tz=timezone.utc) if l_s_e_d else None
         allowed_updates = tuple(UpdateType(m) for m in data['allowed_updates']) if 'allowed_updates' in data else None
 
         return cls(

@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
-from .utils import INLINE_KEYBOARDS, MessageOrBoolResultMixin
+from .utils import AnyInlineKeyboard, MessageOrBoolResultMixin
 
 
 @dataclass(frozen=True)
@@ -20,4 +20,4 @@ class StopMessageLiveLocation(MessageOrBoolResultMixin, Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    reply_markup: Optional[INLINE_KEYBOARDS] = None
+    reply_markup: Optional[AnyInlineKeyboard] = None

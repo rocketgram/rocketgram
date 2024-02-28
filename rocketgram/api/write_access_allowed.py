@@ -14,6 +14,10 @@ class WriteAccessAllowed:
     https://core.telegram.org/bots/api#writeaccessallowed
     """
 
+    from_request: Optional[bool] = None
+    web_app_name: Optional[str] = None
+    from_attachment_menu: Optional[bool] = None
+
     @classmethod
     def parse(cls, data: dict) -> Optional['WriteAccessAllowed']:
         if data is None:
