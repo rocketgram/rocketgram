@@ -28,8 +28,8 @@ class Bot:
         """
 
         :param token: Bot's token
-        :param connector: Connector object. If not specified Bot will try AioHttpConnector
-        :param router: Router object. If not specified Bot will try Dispatcher
+        :param connector: Connector object. If not specified, Bot will try AioHttpConnector
+        :param router: Router object. If not specified, Bot will try Dispatcher
         """
         self.__token = token
 
@@ -98,7 +98,7 @@ class Bot:
 
     async def init(self, executor: Optional['executors.Executor'] = None):
         """Initializes connector and dispatcher.
-        Performs bot initialization authorize bot on telegram and sets bot's name.
+        Performs bot initialization, authorizes bot in the telegram and sets bot's name.
 
         Must be called before any operation with bot."""
 

@@ -64,7 +64,7 @@ class Request:
         return list()
 
     def parse_result(self, data):
-        """Parses result field of Response object."""
+        """Parses the result field of a Response object."""
 
         raise NotImplementedError
 

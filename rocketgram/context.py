@@ -187,19 +187,19 @@ class Context:
 
     @staticmethod
     def webhook(request: 'api.Request'):
-        """Sets Request object to be sent through webhook-request mechanism."""
+        """Sets the Request object to be sent through the webhook-request mechanism."""
 
         _current_webhook_requests.get().append(request)
 
     @property
     def webhook_requests(self) -> List['api.Request']:
-        """Returns list of current requests awaits sent through webhook-request mechanism."""
+        """Returns list of current requests that awaits sent through webhook-request mechanism."""
 
         return _current_webhook_requests.get()
 
     @webhook_requests.setter
     def webhook_requests(self, webhook_requests):
-        """Returns list of current requests awaits sent through webhook-request mechanism."""
+        """Returns list of current requests that awaits sent through webhook-request mechanism."""
 
         _current_webhook_requests.set(webhook_requests)
 

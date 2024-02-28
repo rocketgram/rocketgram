@@ -10,7 +10,7 @@ Release news available here: [@RocketgramNews](https://t.me/RocketgramNews)
 
 All dependencies are optional, but you should install `aiohttp` to use the framework.
 
-`orjson` or `ujson` is highly recommended to speedup json parsing.
+`orjson` or `ujson` is highly recommended to speed up json parsing.
 
 Also, you can use `uvloop` as alternative to standard event loop.
 
@@ -65,7 +65,7 @@ UpdatesExecutor.run(bot)
 # Testing
 
 Code tested automatically using `Github Actions`. 
-You can see build status **[here](https://github.com/rocketgram/rocketgram/actions)**.
+You can see the build status **[here](https://github.com/rocketgram/rocketgram/actions)**.
 
 To test code manually install and run `pytest`:
 

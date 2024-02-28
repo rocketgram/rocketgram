@@ -8,10 +8,10 @@ from datetime import datetime
 from typing import Union, Optional, List
 
 from .message_entity import MessageEntity
-from .parse_mode_type import ParseModeType
 from .poll_type import PollType
 from .request import Request
 from .utils import AnyKeyboard, MessageResultMixin
+from .. import api
 
 
 @dataclass(frozen=True)

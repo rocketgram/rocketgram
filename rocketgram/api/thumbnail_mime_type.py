@@ -8,9 +8,9 @@ from enum import Enum
 
 class ThumbnailMimeType(Enum):
     """\
-    Mime type for gif and mpeg4gif inline results
+    Mime-type for gif and mpeg4gif inline results
 
-    https://core.telegram.org/bots/api#inlinequeryresultgif
+    Https://core.telegram.org/bots/api#inlinequeryresultgif
     https://core.telegram.org/bots/api#inlinequeryresultmpeg4gif
     """
 

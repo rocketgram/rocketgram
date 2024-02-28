@@ -10,7 +10,7 @@ from ...context import context
 
 @make_filter
 def command(*commands: str, case_sensitive: bool = False, separator: str = ' '):
-    """Filters message begins with one of commands.
+    """Filters messages begin with one of the commands.
     Filters commands for other bots in groups.
     Assumes update_type == message and message_type == text.
 
@@ -46,7 +46,7 @@ def command(*commands: str, case_sensitive: bool = False, separator: str = ' '):
 @make_filter
 def deeplink(*commands: str, case_sensitive: bool = False):
     """Filters deep links parameters passed to /start command.
-    If no commands was present then all deep links will be cached.
+    If no commands were present, then all deep links will be cached.
     Filters commands for other bots in groups.
     Assumes update_type == message and message_type == text.
 
@@ -94,7 +94,7 @@ def deeplink(*commands: str, case_sensitive: bool = False):
 
 @make_filter
 def callback(*commands: str, case_sensitive: bool = False, separator=' '):
-    """Filters callback query begins with one of commands.
+    """Filters a callback query begin with one of the commands.
     Assumes update_type == callback_query.
 
     :param commands:
@@ -173,7 +173,7 @@ def inline_callback():
 
 @make_filter
 def inline(*commands: str, case_sensitive: bool = False):
-    """Filters inline_query begins with one of commands.
+    """Filters inline_query begin with one of the commands.
     Assumes update_type is inline_query.
 
     :param commands:
@@ -200,7 +200,7 @@ def inline(*commands: str, case_sensitive: bool = False):
 
 @make_filter
 def chosen(*commands: str, case_sensitive: bool = False):
-    """Filters chosen_inline_result with query begins with one of commands.
+    """Filters chosen_inline_result with a query begins with one of the commands.
     Assumes update_type is chosen_inline_result.
 
     :param commands:
@@ -257,9 +257,9 @@ def message_type(*types: MessageType):
 
 @make_filter
 def chat_type(*types: ChatType):
-    """Filters chat_type with one of selected types.
-    Assumes update_type one of message, edited_message, channel_post, edited_channel_post, callback_query.
-    Note: For callbacks it not works for callbacks from messages posted through inline query.
+    """Filters chat_type with one of the selected types.
+    Assumes update_type one of messages, edited_message, channel_post, edited_channel_post, callback_query.
+    Note: It does not work for callbacks from messages posted through an inline query.
 
     :param types:
     
@@ -277,7 +277,7 @@ def chat_type(*types: ChatType):
 @make_filter
 def catch_all():
     """\
-    Simply catch all updates.
+    Catches all updates.
 
     :return: always True
     """
