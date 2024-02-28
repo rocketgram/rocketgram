@@ -10,7 +10,7 @@ All notable changes to this project.
 - The `from_request`, `from_response` and `from_error` fields to `WriteAccessAllowed` class.
 
 ### Changed.
-- The parameter `executor` is now optional for `init`, `shutdown` and `process` methods of `Bot` class.
+- The parameter `executor` is now optional for `init`, `shutdown` and `process` methodds of `Bot` class.
 - Tz-aware datetime objects are now used instead of raw datetime objects.
 
 ### Fixed
