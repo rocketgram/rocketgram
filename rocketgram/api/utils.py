@@ -102,10 +102,12 @@ class ChatInviteLinkResultMixin:
         return res.result
 
 
-ALL_KEYBOARDS = Union['keyboards.InlineKeyboard',
-                      'keyboards.ReplyKeyboard',
-                      'api.InlineKeyboardMarkup',
-                      'api.ReplyKeyboardMarkup',
-                      'api.ReplyKeyboardRemove',
-                      'api.ForceReply']
-INLINE_KEYBOARDS = Union['keyboards.InlineKeyboard', 'api.InlineKeyboardMarkup']
+AnyInlineKeyboard = Union['keyboards.InlineKeyboard', 'api.InlineKeyboardMarkup']
+
+AnyKeyboard = Union[
+    AnyInlineKeyboard,
+    'keyboards.ReplyKeyboard',
+    'api.ReplyKeyboardMarkup',
+    'api.ReplyKeyboardRemove',
+    'api.ForceReply'
+]
