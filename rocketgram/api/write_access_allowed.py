@@ -23,4 +23,8 @@ class WriteAccessAllowed:
         if data is None:
             return None
 
-        return cls()
+        return cls(
+            data.get('from_request'),
+            data.get('web_app_name'),
+            data.get('from_attachment_menu')
+        )
