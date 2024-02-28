@@ -245,6 +245,7 @@ from .sticker_type import StickerType
 from .stop_message_live_location import StopMessageLiveLocation
 from .stop_poll import StopPoll
 from .successful_payment import SuccessfulPayment
+from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
 from .thumbnail_mime_type import ThumbnailMimeType
 from .unban_chat_member import UnbanChatMember
 from .unban_chat_sender_chat import UnbanChatSenderChat
