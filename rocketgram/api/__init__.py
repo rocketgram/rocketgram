@@ -246,6 +246,7 @@ from .set_chat_sticker_set import SetChatStickerSet
 from .set_chat_title import SetChatTitle
 from .set_custom_emoji_sticker_set_thumbnail import SetCustomEmojiStickerSetThumbnail
 from .set_game_score import SetGameScore
+from .set_message_reaction import SetMessageReaction
 from .set_my_commands import SetMyCommands
 from .set_my_default_administrator_rights import SetMyDefaultAdministratorRights
 from .set_my_description import SetMyDescription
