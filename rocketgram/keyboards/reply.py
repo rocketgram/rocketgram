@@ -71,19 +71,21 @@ class ReplyKeyboard(Keyboard):
         self.add(api.KeyboardButton(text=text, web_app=api.WebAppInfo(url=url)))
         return self
 
-    def request_user(
+    def request_users(
             self,
             text: str,
             request_id: int,
             user_is_bot: Optional[bool] = None,
-            user_is_premium: Optional[bool] = None
+            user_is_premium: Optional[bool] = None,
+            max_quantity: Optional[int] = None
     ) -> 'ReplyKeyboard':
-        request_user = api.KeyboardButtonRequestUser(
+        request_users = api.KeyboardButtonRequestUsers(
             request_id=request_id,
             user_is_bot=user_is_bot,
-            user_is_premium=user_is_premium
+            user_is_premium=user_is_premium,
+            max_quantity=max_quantity
         )
-        self.add(api.KeyboardButton(text=text, request_user=request_user))
+        self.add(api.KeyboardButton(text=text, request_users=request_users))
         return self
 
     def request_chat(

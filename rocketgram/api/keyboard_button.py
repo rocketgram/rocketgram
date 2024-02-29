@@ -8,7 +8,7 @@ from typing import Optional
 
 from .keyboard_button_poll_type import KeyboardButtonPollType
 from .keyboard_button_request_chat import KeyboardButtonRequestChat
-from .keyboard_button_request_user import KeyboardButtonRequestUser
+from .keyboard_button_request_users import KeyboardButtonRequestUsers
 from .web_app_info import WebAppInfo
 
 
@@ -20,7 +20,7 @@ class KeyboardButton:
     """
 
     text: str
-    request_user: Optional[KeyboardButtonRequestUser] = None
+    request_users: Optional[KeyboardButtonRequestUsers] = None
     request_chat: Optional[KeyboardButtonRequestChat] = None
     request_contact: Optional[bool] = None
     request_location: Optional[bool] = None

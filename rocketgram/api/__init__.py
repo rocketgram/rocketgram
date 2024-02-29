@@ -159,7 +159,7 @@ from .invoice import Invoice
 from .keyboard_button import KeyboardButton
 from .keyboard_button_poll_type import KeyboardButtonPollType
 from .keyboard_button_request_chat import KeyboardButtonRequestChat
-from .keyboard_button_request_user import KeyboardButtonRequestUser
+from .keyboard_button_request_users import KeyboardButtonRequestUsers
 from .labeled_price import LabeledPrice
 from .leave_chat import LeaveChat
 from .link_preview_options import LinkPreviewOptions

@@ -8,7 +8,7 @@ from typing import Optional
 
 
 @dataclass(frozen=True)
-class KeyboardButtonRequestUser:
+class KeyboardButtonRequestUsers:
     """\
     Represents KeyboardButtonRequestUser keyboard object:
     https://core.telegram.org/bots/api#keyboardbuttonrequestuser
@@ -17,3 +17,4 @@ class KeyboardButtonRequestUser:
     request_id: int
     user_is_bot: Optional[bool] = None
     user_is_premium: Optional[bool] = None
+    max_quantity: Optional[int] = None
