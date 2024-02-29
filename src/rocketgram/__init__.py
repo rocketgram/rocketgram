@@ -18,3 +18,6 @@ from .version import version
 
 API_URL = Connector.API_URL
 API_FILE_URL = Connector.API_FILE_URL
+
+VERSION = version()
+__version__ = VERSION
