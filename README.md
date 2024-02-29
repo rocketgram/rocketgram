@@ -14,7 +14,7 @@ All dependencies are optional, but you should install `aiohttp` to use the frame
 
 Also, you can use `uvloop` as alternative to standard event loop.
 
-* Python >= 3.7
+* Python >= 3.8
 * aiohttp >= 3.8.1
 * ujson >= 5.2.0
 * orjson >= 3.6.8
@@ -67,9 +67,8 @@ UpdatesExecutor.run(bot)
 Code tested automatically using `Github Actions`. 
 You can see the build status **[here](https://github.com/rocketgram/rocketgram/actions)**.
 
-To test code manually install and run `pytest`:
+To test code manually run `pytest`:
 
 ```bash
-pip install pytest
-python -m pytest
+pytest
 ```
