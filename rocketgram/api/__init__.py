@@ -212,6 +212,7 @@ from .reopen_forum_topic import ReopenForumTopic
 from .reopen_general_forum_topic import ReopenGeneralForumTopic
 from .reply_keyboard_markup import ReplyKeyboardMarkup
 from .reply_keyboard_remove import ReplyKeyboardRemove
+from .reply_parameters import ReplyParameters
 from .request import Request
 from .response import Response
 from .response_parameters import ResponseParameters

@@ -6,6 +6,7 @@
 from dataclasses import dataclass
 from typing import Optional, List
 
+from . import link_preview_options
 from .input_message_content import InputMessageContent
 from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
@@ -21,4 +22,4 @@ class InputTextMessageContent(InputMessageContent):
     message_text: str
     parse_mode: Optional[ParseModeType] = None
     entities: Optional[List[MessageEntity]] = None
-    disable_web_page_preview: Optional[bool] = None
+    link_preview_options: Optional['link_preview_options.LinkPreviewOptions'] = None

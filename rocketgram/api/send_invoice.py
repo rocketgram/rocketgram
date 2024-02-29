@@ -6,6 +6,7 @@
 from dataclasses import dataclass
 from typing import Optional, List
 
+from . import reply_parameters
 from .labeled_price import LabeledPrice
 from .request import Request
 from .utils import AnyInlineKeyboard, MessageResultMixin
@@ -43,6 +44,5 @@ class SendInvoice(MessageResultMixin, Request):
     is_flexible: Optional[bool] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
-    reply_to_message_id: Optional[bool] = None
-    allow_sending_without_reply: Optional[bool] = None
+    reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyInlineKeyboard] = None

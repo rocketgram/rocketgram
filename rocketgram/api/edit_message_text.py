@@ -6,6 +6,7 @@
 from dataclasses import dataclass
 from typing import Union, Optional, List
 
+from . import link_preview_options
 from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
 from .request import Request
@@ -25,5 +26,5 @@ class EditMessageText(MessageOrBoolResultMixin, Request):
     inline_message_id: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     entities: Optional[List[MessageEntity]] = None
-    disable_web_page_preview: Optional[bool] = None
+    link_preview_options: Optional['link_preview_options.LinkPreviewOptions'] = None
     reply_markup: Optional[AnyInlineKeyboard] = None

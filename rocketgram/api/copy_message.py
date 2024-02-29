@@ -6,6 +6,7 @@
 from dataclasses import dataclass
 from typing import Union, Optional, List
 
+from . import reply_parameters
 from .message_entity import MessageEntity
 from .message_id import MessageId
 from .parse_mode_type import ParseModeType
@@ -30,8 +31,7 @@ class CopyMessage(Request):
     caption_entities: Optional[List[MessageEntity]] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
-    reply_to_message_id: Optional[int] = None
-    allow_sending_without_reply: Optional[bool] = None
+    reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyKeyboard] = None
 
     def parse_result(self, data) -> MessageId:

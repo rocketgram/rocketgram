@@ -6,6 +6,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from . import reply_parameters
 from .request import Request
 from .utils import AnyInlineKeyboard, MessageResultMixin
 
@@ -22,6 +23,5 @@ class SendGame(MessageResultMixin, Request):
     message_thread_id: Optional[int] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
-    reply_to_message_id: Optional[int] = None
-    allow_sending_without_reply: Optional[bool] = None
+    reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyInlineKeyboard] = None

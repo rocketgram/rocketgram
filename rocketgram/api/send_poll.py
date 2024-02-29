@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Union, Optional, List
 
+from . import reply_parameters
 from .message_entity import MessageEntity
 from .poll_type import PollType
 from .request import Request
@@ -37,6 +38,5 @@ class SendPoll(MessageResultMixin, Request):
     is_closed: Optional[bool] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
-    reply_to_message_id: Optional[int] = None
-    allow_sending_without_reply: Optional[bool] = None
+    reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyKeyboard] = None
