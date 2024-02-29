@@ -20,5 +20,4 @@ class EditMessageReplyMarkup(MessageOrBoolResultMixin, Request):
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None
-    disable_web_page_preview: Optional[bool] = None
     reply_markup: Optional[AnyInlineKeyboard] = None
