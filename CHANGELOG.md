@@ -5,7 +5,7 @@ All notable changes to this project.
 ## [Unreleased]
 
 ### Added
-- The `commonfilters.gamne` filter.
+- The `commonfilters.game` filter.
 
 ### Changed.
 - The Framework now corresponds to Telegram Bot API 6.7.
@@ -13,7 +13,7 @@ All notable changes to this project.
 - The Framework now corresponds to Telegram Bot API 6.9.
 - The Framework now corresponds to Telegram Bot API 7.0.
 - The Framework now corresponds to Telegram Bot API 7.1.
-- The parameter `executor` is now optional for `init`, `shutdown` and `process` methodds of `Bot` class.
+- The parameter `executor` is now optional for `init`, `shutdown` and `process` methods of `Bot` class.
 - Tz-aware datetime objects are now used instead of raw datetime objects.
 
 ### Fixed
