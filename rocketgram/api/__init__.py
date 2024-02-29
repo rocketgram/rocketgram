@@ -52,6 +52,7 @@ from .close_forum_topic import CloseForumTopic
 from .close_general_forum_topic import CloseGeneralForumTopic
 from .contact import Contact
 from .copy_message import CopyMessage
+from .copy_messages import CopyMessages
 from .create_chat_invite_link import CreateChatInviteLink
 from .create_forum_topic import CreateForumTopic
 from .create_invoice_link import CreateInvoiceLink
@@ -61,6 +62,7 @@ from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
 from .delete_forum_topic import DeleteForumTopic
 from .delete_message import DeleteMessage
+from .delete_messages import DeleteMessages
 from .delete_my_commands import DeleteMyCommands
 from .delete_sticker_from_set import DeleteStickerFromSet
 from .delete_sticker_set import DeleteStickerSet
@@ -90,6 +92,7 @@ from .forum_topic_created import ForumTopicCreated
 from .forum_topic_edited import ForumTopicEdited
 from .forum_topic_reopened import ForumTopicReopened
 from .forward_message import ForwardMessage
+from .forward_messages import ForwardMessages
 from .game import Game
 from .game_high_score import GameHighScore
 from .general_forum_topic_hidden import GeneralForumTopicHidden
