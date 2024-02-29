@@ -28,4 +28,4 @@ jobs:
 
       - name: test api implementation
         run: |
-          python3 -m pytest -m ${{ matrix.test-mark }} -vv -s --collect-only ./tests/ 
+          pdm run pytest -m ${{ matrix.test-mark }} -vv -s --collect-only ./tests/ 
