@@ -111,6 +111,7 @@ from .get_my_name import GetMyName
 from .get_my_short_description import GetMyShortDescription
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
+from .get_user_chat_boosts import GetUserChatBoosts
 from .get_user_profile_photos import GetUserProfilePhotos
 from .get_webhook_info import GetWebhookInfo
 from .giveaway import Giveaway
@@ -279,6 +280,7 @@ from .update import Update
 from .update_type import UpdateType
 from .upload_sticker_file import UploadStickerFile
 from .user import User
+from .user_chat_boosts import UserChatBoosts
 from .user_profile_photos import UserProfilePhotos
 from .user_shared import UserShared
 from .venue import Venue
