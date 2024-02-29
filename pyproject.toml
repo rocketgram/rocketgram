@@ -51,9 +51,6 @@ ujson = [
 orjson = [
     "orjson~=3.9.15",
 ]
-uvloop = [
-    "uvloop~=0.19.0",
-]
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"

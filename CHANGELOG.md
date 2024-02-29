@@ -15,13 +15,13 @@ All notable changes to this project.
 - The Framework now corresponds to Telegram Bot API 7.1.
 - The parameter `executor` is now optional for `init`, `shutdown` and `process` methods of `Bot` class.
 - Tz-aware datetime objects are now used instead of raw datetime objects.
+- Dropped support for Python 3.7.
 
 ### Fixed
 - The `commonfilters.callback` filter for case where `game` event has arrived.
 - Passing update types to `UpdatesExecutor`.
 
 ### Deprecated
-- The next major release will no longer officially support Python 3.7.
 - All lists in api classes will be replaced with tuples in the next major version.
 
 
