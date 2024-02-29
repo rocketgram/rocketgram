@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 from . import animation
 from . import audio
@@ -20,7 +20,7 @@ from . import link_preview_options
 from . import location
 from . import message_origin
 from . import message_type
-from . import photo
+from . import photo_size
 from . import poll
 from . import sticker
 from . import story
@@ -49,7 +49,7 @@ class ExternalReplyInfo:
     animation: Optional['animation.Animation']
     audio: Optional['audio.Audio']
     document: Optional['document.Document']
-    photo: Optional['photo.Photo']
+    photo: Optional[List['photo_size.PhotoSize']]
     sticker: Optional['sticker.Sticker']
     story: Optional['story.Story']
     video: Optional['video.Video']
@@ -78,7 +78,7 @@ class ExternalReplyInfo:
         animation_ = animation.Animation.parse(data.get('animation'))
         audio_ = audio.Audio.parse(data.get('audio'))
         document_ = document.Document.parse(data.get('document'))
-        photo_ = photo.Photo.parse(data.get('photo'))
+        photo_size_ = [photo_size.PhotoSize.parse(e) for e in data['photo']] if 'photo' in data else None
         sticker_ = sticker.Sticker.parse(data.get('sticker'))
         story_ = story.Story.parse(data.get('story'))
         video_ = video.Video.parse(data.get('video'))
@@ -105,7 +105,7 @@ class ExternalReplyInfo:
             message_type_ = message_type.MessageType.animation
         elif game_:
             message_type_ = message_type.MessageType.game
-        elif photo_:
+        elif photo_size_:
             message_type_ = message_type.MessageType.photo
         elif sticker_:
             message_type_ = message_type.MessageType.sticker
@@ -143,7 +143,7 @@ class ExternalReplyInfo:
             animation_,
             audio_,
             document_,
-            photo_,
+            photo_size_,
             sticker_,
             story_,
             video_,
