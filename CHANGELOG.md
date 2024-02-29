@@ -18,6 +18,7 @@ All notable changes to this project.
 
 ### Fixed
 - The `commonfilters.callback` filter for case where `game` event has arrived.
+- Passing update types to `UpdatesExecutor`.
 
 ### Deprecated
 - The next major release will no longer officially support Python 3.7.
