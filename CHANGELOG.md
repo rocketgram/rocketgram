@@ -11,6 +11,7 @@ All notable changes to this project.
 - The Framework now corresponds to Telegram Bot API 6.7.
 - The Framework now corresponds to Telegram Bot API 6.8.
 - The Framework now corresponds to Telegram Bot API 6.9.
+- The Framework now corresponds to Telegram Bot API 7.0.
 - The parameter `executor` is now optional for `init`, `shutdown` and `process` methodds of `Bot` class.
 - Tz-aware datetime objects are now used instead of raw datetime objects.
 
