@@ -14,11 +14,11 @@ class LinkPreviewOptions:
     https://core.telegram.org/bots/api#linkpreviewoptions
     """
 
-    is_disabled: Optional[bool]
-    url: Optional[str]
-    prefer_small_media: Optional[bool]
-    prefer_large_media: Optional[bool]
-    show_above_text: Optional[bool]
+    is_disabled: Optional[bool] = None
+    url: Optional[str] = None
+    prefer_small_media: Optional[bool] = None
+    prefer_large_media: Optional[bool] = None
+    show_above_text: Optional[bool] = None
 
     @classmethod
     def parse(cls, data: dict) -> Optional['LinkPreviewOptions']:
