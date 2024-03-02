@@ -11,7 +11,7 @@ import pytest
 
 from rocketgram import Bot, Update, Dispatcher, Connector
 from rocketgram import context as ctx
-from rocketgram.routers.dispatcher import commonfilters
+from rocketgram import commonfilters
 
 logger = getLogger(__name__)
 
