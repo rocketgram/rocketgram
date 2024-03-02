@@ -3,5 +3,4 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-from . import entities
-from . import escape
+from .parser import *

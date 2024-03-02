@@ -16,6 +16,7 @@ All notable changes to this project.
 - The parameter `executor` is now optional for `init`, `shutdown` and `process` methods of `Bot` class.
 - Tz-aware datetime objects are now used instead of raw datetime objects.
 - Dropped support for Python 3.7.
+- The new entity parser.
 
 ### Fixed
 - The `commonfilters.callback` filter for case where `game` event has arrived.
