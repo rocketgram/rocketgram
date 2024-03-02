@@ -1,0 +1,31 @@
+# Copyright (C) 2015-2024 by Vd.
+# This file is part of Rocketgram, the modern Telegram bot framework.
+# Rocketgram is released under the MIT License (see LICENSE).
+
+
+from dataclasses import dataclass
+from typing import Optional
+
+from .bot_name import BotName
+from .request import Request
+from ..context import context
+
+
+@dataclass(frozen=True)
+class GetMyName(Request):
+    """\
+    Represents GetMyName request object:
+    https://core.telegram.org/bots/api#getmyname
+    """
+
+    language_code: Optional[str] = None
+
+    def parse_result(self, data) -> BotName:
+        assert isinstance(data, dict), "Should be dict."
+
+        return BotName.parse(data)
+
+    async def send(self) -> BotName:
+        res = await context.bot.send(self)
+
+        return res.result

@@ -1,0 +1,74 @@
+[project]
+name = "rocketgram"
+version = "5.0.1"
+description = "Modern and powerful asynchronous telegram bot framework."
+keywords = [
+    "telegram", "bot", "framework", "rocketgram", "async", "asyncio", "rocket"
+]
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Framework :: AsyncIO',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Education',
+    'Intended Audience :: Information Technology',
+    'License :: OSI Approved :: MIT License',
+    'Natural Language :: English',
+    'Operating System :: OS Independent',
+    "Environment :: Web Environment",
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3 :: Only',
+    'Topic :: Communications :: Chat',
+    'Topic :: Internet',
+    'Topic :: Utilities',
+    'Topic :: Software Development',
+    'Topic :: Software Development :: Libraries',
+    'Topic :: Software Development :: Libraries :: Application Frameworks',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+]
+authors = [{ name = "Vd", email = "rocketgram@vd2.org" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8,<3.13"
+dependencies = []
+
+[project.urls]
+homepage = "https://github.com/vd2org/wultiplexor"
+repository = "https://github.com/vd2org/wultiplexor.git"
+issues = "https://github.com/vd2org/wultiplexor/issues"
+
+[project.optional-dependencies]
+aiohttp = [
+    "aiohttp~=3.9.3",
+]
+ujson = [
+    "ujson~=5.9.0",
+]
+orjson = [
+    "orjson~=3.9.15",
+]
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "requests~=2.31.0",
+    "pytest~=8.0.2",
+    "pyyaml>=6.0.1",
+    "ubump~=0.1.10; python_version >= '3.11'",
+]
+
+[tool.ubump]
+template = "v${major}.${minor}.${patch}"
+message = "Bump to ${version}"
+tag = true
+files = ["src/rocketgram/version.py"]
