@@ -2,7 +2,7 @@
 All notable changes to this project.
 
 
-## [6.0.0] - 2024-03-01
+## [6.0.0] - 2024-03-02
 
 ### Added
 - The `commonfilters.game` filter.
