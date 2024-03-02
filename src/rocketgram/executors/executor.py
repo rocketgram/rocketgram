@@ -54,9 +54,9 @@ class Executor:
             bots = (bots,)
 
         async def run():
+            await executor.start()
             for bot in bots:
                 await add(bot)
-            await executor.start()
 
         async def stop():
             await executor.stop()

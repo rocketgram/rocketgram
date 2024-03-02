@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from .executors import Executor
     from .bot import Bot
 
-
 _current_executor = ContextVar('current_executor')
 _current_bot = ContextVar('current_bot')
 _current_webhook_requests = ContextVar('current_webhook_requests')
@@ -27,6 +26,11 @@ _current_checkout = ContextVar('current_checkout')
 _current_poll = ContextVar('current_poll')
 _current_answer = ContextVar('current_answer')
 _current_member = ContextVar('current_member')
+
+_current_reaction = ContextVar('current_reaction')
+_current_reaction_count = ContextVar('current_reaction_count')
+_current_boost = ContextVar('current_boost')
+_current_removed_boost = ContextVar('current_removed_boost')
 
 _current_chat = ContextVar('current_chat')
 _current_user = ContextVar('current_user')
@@ -185,21 +189,61 @@ class Context:
     def member(self, member: 'api.ChatMemberUpdated'):
         _current_member.set(member)
 
+    @property
+    def reaction(self) -> Optional['api.MessageReactionUpdated']:
+        """Returns MessageReaction object for current request."""
+
+        return _current_reaction.get(None)
+
+    @reaction.setter
+    def reaction(self, reaction: 'api.MessageReactionUpdated'):
+        _current_reaction.set(reaction)
+
+    @property
+    def reaction_count(self) -> Optional['api.MessageReactionCountUpdated']:
+        """Returns MessageReactionCount object for current request."""
+
+        return _current_reaction_count.get(None)
+
+    @reaction_count.setter
+    def reaction_count(self, reaction_count: 'api.MessageReactionCountUpdated'):
+        _current_reaction_count.set(reaction_count)
+
+    @property
+    def boost(self) -> Optional['api.ChatBoostUpdated']:
+        """Returns ChatBoostUpdated object for current request."""
+
+        return _current_boost.get(None)
+
+    @boost.setter
+    def boost(self, boost: 'api.ChatBoostUpdated'):
+        _current_boost.set(boost)
+
+    @property
+    def removed_boost(self) -> Optional['api.ChatBoostRemoved']:
+        """Returns ChatBoostRemoved object for current request."""
+
+        return _current_removed_boost.get(None)
+
+    @removed_boost.setter
+    def removed_boost(self, removed_boost: 'api.ChatBoostRemoved'):
+        _current_removed_boost.set(removed_boost)
+
     @staticmethod
     def webhook(request: 'api.Request'):
-        """Sets Request object to be sent through webhook-request mechanism."""
+        """Sets the Request object to be sent through the webhook-request mechanism."""
 
         _current_webhook_requests.get().append(request)
 
     @property
     def webhook_requests(self) -> List['api.Request']:
-        """Returns list of current requests awaits sent through webhook-request mechanism."""
+        """Returns list of current requests that awaits sent through webhook-request mechanism."""
 
         return _current_webhook_requests.get()
 
     @webhook_requests.setter
     def webhook_requests(self, webhook_requests):
-        """Returns list of current requests awaits sent through webhook-request mechanism."""
+        """Returns list of current requests that awaits sent through webhook-request mechanism."""
 
         _current_webhook_requests.set(webhook_requests)
 
@@ -222,6 +266,11 @@ class Context:
         self.answer = None
         self.member = None
 
+        self.reaction = None
+        self.reaction_count = None
+        self.boost = None
+        self.removed_boost = None
+
         self.chat = None
         self.user = None
 
@@ -241,6 +290,13 @@ class Context:
             self.message = update.edited_channel_post
             self.chat = update.edited_channel_post.chat
             self.user = update.edited_channel_post.user
+        elif update.type is api.UpdateType.message_reaction:
+            self.reaction = update.message_reaction
+            self.chat = update.message_reaction.chat
+            self.user = update.message_reaction.user
+        elif update.type is api.UpdateType.message_reaction_count:
+            self.reaction_count = update.message_reaction_count
+            self.chat = update.message_reaction_count.chat
         elif update.type is api.UpdateType.inline_query:
             self.inline = update.inline_query
             self.user = update.inline_query.user
@@ -272,6 +328,12 @@ class Context:
             self.member = update.chat_member
             self.chat = update.chat_member.chat
             self.user = update.chat_member.user
+        elif update.type is api.UpdateType.chat_boost:
+            self.boost = update.chat_boost
+            self.chat = update.chat_boost.chat
+        elif update.type is api.UpdateType.removed_chat_boost:
+            self.removed_boost = update.removed_chat_boost
+            self.chat = update.removed_chat_boost.chat
 
 
 context: Context = Context.instance()

@@ -119,14 +119,14 @@ class Dispatcher(BaseDispatcher):
         assert not (wait and not hasattr(wait.waiter, WAITER_ASSIGNED_ATTR)), \
             f'Handler `{handler.handler.__name__}` sends waiting function not registered as waiter!'
 
-        # Check if other waiter for scope already exist
+        # Check if another waiter for scope already exists
         if scope in self.__waiters and self.__waiters[scope].handler != gen:
             logger.warning('Overriding old wait in `%s` by `%s` handler for update %s.',
                            self.__waiters[scope].handler.__name__, gen.__name__, context.update.update_id)
             with suppress(StopAsyncIteration):
                 await self.__waiters[scope].handler.aclose()
 
-        # If new wait exist set it for scope otherwise remove scope from waiters
+        # If new wait exists set it for the scope, otherwise remove the scope from waiters
         if wait is not None:
             self.__waiters[scope] = Waiter(int(time()), gen, wait.waiter, wait.args, wait.kwargs, wait.filters)
         elif scope in self.__waiters:
@@ -145,14 +145,14 @@ class Dispatcher(BaseDispatcher):
             scope = _user_scope()
             handler = None
 
-            # if have user scope, try find handler that wait continue
-            # processing through async generators mechanism.
+            # if it has user scope, try to find a handler that waits to continue
+            # processing through the async generators mechanism.
             if scope:
                 handler = await self.__find_waiter(scope)
             if handler:
                 a_next = True
 
-            # Find handler from handlers list.
+            # Find a handler from the handlers list.
             if not handler:
                 for h in self._handlers:
                     if await _run_filters(h.filters):
@@ -172,7 +172,7 @@ class Dispatcher(BaseDispatcher):
                     raise TypeError(msg)
                 await self.__run_generator(a_next, handler, scope)
             else:
-                # This is normal handler.
+                # This is a normal handler.
                 r = handler.handler()
                 if isawaitable(r):
                     await r

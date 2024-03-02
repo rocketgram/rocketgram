@@ -10,15 +10,9 @@ Release news available here: [@RocketgramNews](https://t.me/RocketgramNews)
 
 All dependencies are optional, but you should install `aiohttp` to use the framework.
 
-`orjson` or `ujson` is highly recommended to speedup json parsing.
+`orjson` or `ujson` is highly recommended to speed up json parsing.
 
 Also, you can use `uvloop` as alternative to standard event loop.
-
-* Python >= 3.7
-* aiohttp >= 3.8.1
-* ujson >= 5.2.0
-* orjson >= 3.6.8
-* uvloop >= 0.12.1
 
 ## How to install
 
@@ -44,6 +38,13 @@ from rocketgram import Bot, Dispatcher, UpdatesExecutor
 from rocketgram import context, commonfilters
 from rocketgram import SendMessage
 
+try:
+    import uvloop
+
+    uvloop.install()
+except ImportError:
+    pass
+
 token = f'YOUR_BOT_TOKEN'
 
 router = Dispatcher()
@@ -65,11 +66,10 @@ UpdatesExecutor.run(bot)
 # Testing
 
 Code tested automatically using `Github Actions`. 
-You can see build status **[here](https://github.com/rocketgram/rocketgram/actions)**.
+You can see the build status **[here](https://github.com/rocketgram/rocketgram/actions)**.
 
-To test code manually install and run `pytest`:
+To test code manually run `pytest`:
 
 ```bash
-pip install pytest
-python -m pytest
+pytest
 ```

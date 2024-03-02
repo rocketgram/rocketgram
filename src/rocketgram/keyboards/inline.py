@@ -30,12 +30,24 @@ class InlineKeyboard(Keyboard):
         self.add(api.InlineKeyboardButton(text=text, web_app=api.WebAppInfo(url=url)))
         return self
 
-    def inline(self, text: str, switch_inline_query: str = str()) -> 'InlineKeyboard':
+    def inline(self, text: str, switch_inline_query: str) -> 'InlineKeyboard':
         self.add(api.InlineKeyboardButton(text=text, switch_inline_query=switch_inline_query))
         return self
 
-    def inline_current(self, text: str, switch_inline_query_current_chat: str = str()) -> 'InlineKeyboard':
+    def inline_current(self, text: str, switch_inline_query_current_chat: str) -> 'InlineKeyboard':
         self.add(api.InlineKeyboardButton(text=text, switch_inline_query_current_chat=switch_inline_query_current_chat))
+        return self
+
+    def inline_chosen(
+            self, text: str,
+            query: Optional[str] = None,
+            allow_user_chats: Optional[bool] = None,
+            allow_bot_chats: Optional[bool] = None,
+            allow_group_chats: Optional[bool] = None,
+            allow_channel_chats: Optional[bool] = None) -> 'InlineKeyboard':
+        siqcc = api.SwitchInlineQueryChosenChat(
+            query, allow_user_chats, allow_bot_chats, allow_group_chats, allow_channel_chats)
+        self.add(api.InlineKeyboardButton(text=text, switch_inline_query_chosen_chat=siqcc))
         return self
 
     def game(self, text: str, callback_game: str) -> 'InlineKeyboard':

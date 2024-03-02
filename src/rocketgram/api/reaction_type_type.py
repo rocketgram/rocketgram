@@ -3,4 +3,12 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-from .parser import *
+from enum import auto
+
+from .utils import EnumAutoName
+
+
+class ReactionTypeType(EnumAutoName):
+    emoji = auto()
+    custom_emoji_id = auto()
+    unknown = auto()

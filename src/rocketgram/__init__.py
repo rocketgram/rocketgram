@@ -3,7 +3,6 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-from . import tools
 from .api import *
 from .bot import Bot
 from .connectors import *
@@ -14,7 +13,11 @@ from .json_adapters import *
 from .keyboards import *
 from .middlewares import *
 from .routers import *
+from . import tools
 from .version import version
 
 API_URL = Connector.API_URL
 API_FILE_URL = Connector.API_FILE_URL
+
+VERSION = version()
+__version__ = VERSION

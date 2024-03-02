@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11", "3.12" ]
+        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
         test-mark: [ "api", "dispatcher" ]
 
     steps:
@@ -23,32 +23,9 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip3 install -r tests/requirements.txt
+          pip3 install pdm
+          pdm install --no-self
 
       - name: test api implementation
         run: |
-          python3 -m pytest -m ${{ matrix.test-mark }} -vv -s --collect-only ./tests/ 
-
-  package:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11", "3.12" ]
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          pip3 install twine wheel setuptools
-
-      - name: Test build and setup
-        run: |
-          python setup.py sdist bdist_wheel
+          pdm run pytest -m ${{ matrix.test-mark }} -vv -s --collect-only ./tests/ 

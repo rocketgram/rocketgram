@@ -1,5 +1,0 @@
-pytest
-pyyaml
-aiohttp
-orjson
-uvloop

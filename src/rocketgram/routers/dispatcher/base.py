@@ -127,7 +127,7 @@ class BaseDispatcher(Router):
         return func
 
     def _register(self, what: List[Handler], handler: Callable[..., None]):
-        # Save handler to given handlers list.
+        # Save handler to the given handlers list.
 
         function = _get_function(handler)
 
