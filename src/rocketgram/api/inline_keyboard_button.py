@@ -42,7 +42,7 @@ class InlineKeyboardButton:
             LoginUrl.parse(data.get('login_url')),
             data.get('switch_inline_query'),
             data.get('switch_inline_query_current_chat'),
-            SwitchInlineQueryChosenChat.parse(data.get('switch_inline_query_current_chat')),
+            SwitchInlineQueryChosenChat.parse(data.get('switch_inline_query_chosen_chat')),
             data.get('callback_game'),
             data.get('pay')
         )
