@@ -8,7 +8,7 @@ from typing import List
 
 from .request import Request
 from .sticker import Sticker
-from .. import context
+from ..context import context
 
 
 @dataclass(frozen=True)

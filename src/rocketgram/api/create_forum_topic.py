@@ -8,7 +8,7 @@ from typing import Union, Optional
 
 from .forum_topic import ForumTopic
 from .request import Request
-from .. import context
+from ..context import context
 
 
 @dataclass(frozen=True)

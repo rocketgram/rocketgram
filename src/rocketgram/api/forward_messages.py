@@ -9,7 +9,7 @@ from typing import Union, Optional, List
 from .message_id import MessageId
 from .request import Request
 from .utils import MessageResultMixin
-from .. import context
+from ..context import context
 
 
 @dataclass(frozen=True)
