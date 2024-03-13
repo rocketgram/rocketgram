@@ -1,6 +1,6 @@
 [project]
 name = "rocketgram"
-version = "6.0.1"
+version = "6.0.2"
 description = "Modern and powerful asynchronous telegram bot framework."
 keywords = [
     "telegram", "bot", "framework", "rocketgram", "async", "asyncio", "rocket"
