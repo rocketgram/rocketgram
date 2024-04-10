@@ -269,7 +269,7 @@ class Message:
         boost_added = ChatBoostAdded.parse(data.get('boost_added'))
 
         forum_topic_created = ForumTopicCreated.parse(data.get('forum_topic_created'))
-        forum_topic_edited = ForumTopicCreated.parse(data.get('forum_topic_edited'))
+        forum_topic_edited = ForumTopicEdited.parse(data.get('forum_topic_edited'))
         forum_topic_closed = ForumTopicClosed.parse(data.get('forum_topic_closed'))
         forum_topic_reopened = ForumTopicReopened.parse(data.get('forum_topic_reopened'))
 

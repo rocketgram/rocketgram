@@ -15,7 +15,7 @@ class ForumTopicCreated:
     """
 
     name: str
-    icon_color: Optional[int]
+    icon_color: int
     icon_custom_emoji_id: Optional[str]
 
     @classmethod
@@ -23,4 +23,4 @@ class ForumTopicCreated:
         if data is None:
             return None
 
-        return cls(data['name'], data.get('icon_color'), data.get('icon_custom_emoji_id'))
+        return cls(data['name'], data['icon_color'], data.get('icon_custom_emoji_id'))
