@@ -21,22 +21,31 @@ class Element:
     def __repr__(self):
         return f"Tag({self._message_entity.type if self._message_entity else None}, {self._inner})"
 
+    @staticmethod
+    def _e(text: str) -> bytes:
+        return text.encode("utf-16-le")
+
+    @staticmethod
+    def _d(text: bytes) -> str:
+        return text.decode("utf-16-le")
+
     @classmethod
-    def _parse(cls, text: str, sub: List[MessageEntity], start: int, end: int) -> List['Element']:
+    def _parse(cls, text: bytes, sub: List[MessageEntity], start: int, end: int) -> List['Element']:
         inners = []
 
         for index, entity in enumerate(sub):
-            if entity.offset < start:
+            if entity.offset * 2 < start:
                 continue
-            if entity.offset > start:
-                inners.append(text[start:entity.offset])
+            if entity.offset * 2 > start:
+                inners.append(cls._d(text[start:entity.offset * 2]))
 
-            start = entity.offset + entity.length
-            nested = list(filter(lambda i: start > i.offset, sub[index + 1:]))
-            inners.append(cls(entity, *cls._parse(text, nested, entity.offset, start)))
+            entity_start = entity.offset * 2
+            start = entity.offset * 2 + entity.length * 2
+            nested = list(filter(lambda i: i.offset * 2 < start, sub[index + 1:]))
+            inners.append(cls(entity, *cls._parse(text, nested, entity_start, start)))
 
         if start < end:
-            inners.append(text[start:end])
+            inners.append(cls._d(text[start:end]))
 
         return inners
 
@@ -44,7 +53,8 @@ class Element:
     def parse(cls, text: str, entities: Optional[List[MessageEntity]]) -> 'Element':
         if not entities:
             return cls(None, text)
-        return cls(None, *cls._parse(text, entities, 0, len(text)))
+        text_bytes = cls._e(text)
+        return cls(None, *cls._parse(text_bytes, entities, 0, len(text_bytes)))
 
 
 class Parser(Element):

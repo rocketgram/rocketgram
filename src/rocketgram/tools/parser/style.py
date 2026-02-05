@@ -99,7 +99,7 @@ class HtmlStyle(Style):
     @classmethod
     @Style.styler(EntityType.custom_emoji)
     def _custom_emoji(cls, entity: MessageEntity, text: str) -> str:
-        return f'<tg-emoji emoji-id="{entity.custom_emoji_id}">{text}</a>'
+        return f'<tg-emoji emoji-id="{entity.custom_emoji_id}">{text}</tg-emoji>'
 
     @classmethod
     @Style.styler(EntityType.code)
