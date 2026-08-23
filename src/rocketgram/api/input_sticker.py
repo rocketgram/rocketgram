@@ -8,6 +8,7 @@ from typing import Optional, List, Union
 
 from .input_file import InputFile
 from .mask_position import MaskPosition
+from .sticker_format import StickerFormat
 
 
 @dataclass(frozen=True)
@@ -18,6 +19,7 @@ class InputSticker:
     """
 
     sticker: Union[InputFile, str]
+    format: StickerFormat
     emoji_list: List[str]
     mask_position: Optional[MaskPosition] = None
     keywords: Optional[List[str]] = None

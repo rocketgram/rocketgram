@@ -20,7 +20,7 @@ class AnswerWebAppQuery(BoolResultMixin, Request):
     """
 
     web_app_query_id: str
-    results: InlineQueryResult
+    result: InlineQueryResult
 
     def parse_result(self, data) -> SentWebAppMessage:
         assert isinstance(data, dict), "Should be dict."

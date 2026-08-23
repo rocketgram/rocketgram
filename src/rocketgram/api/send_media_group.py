@@ -25,6 +25,7 @@ class SendMediaGroup(Request):
     media: List[InputMedia]
     business_connection_id: Optional[str] = None
     message_thread_id: Optional[int] = None
+    direct_messages_topic_id: Optional[int] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
     message_effect_id: Optional[str] = None
@@ -37,9 +38,12 @@ class SendMediaGroup(Request):
         for e in self.media:
             if hasattr(e, 'media') and isinstance(e.media, InputFile):
                 out.append(e.media)
-                continue
             if hasattr(e, 'thumbnail') and isinstance(e.thumbnail, InputFile):
                 out.append(e.thumbnail)
+            if hasattr(e, 'cover') and isinstance(e.cover, InputFile):
+                out.append(e.cover)
+            if hasattr(e, 'photo') and isinstance(e.photo, InputFile):
+                out.append(e.photo)
 
         return out
 

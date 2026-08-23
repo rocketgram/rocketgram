@@ -24,6 +24,7 @@ class Giveaway:
     prize_description: Optional[str]
     country_codes: Optional[List[str]]
     premium_subscription_month_count: Optional[int]
+    prize_star_count: Optional[int]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['Giveaway']:
@@ -38,5 +39,6 @@ class Giveaway:
             data.get('has_public_winners'),
             data.get('prize_description'),
             data.get('country_codes'),
-            data.get('premium_subscription_month_count')
+            data.get('premium_subscription_month_count'),
+            data.get('prize_star_count'),
         )

@@ -8,6 +8,7 @@ from typing import Dict, Optional
 
 from .business_connection import BusinessConnection
 from .business_messages_deleted import BusinessMessagesDeleted
+from .bot_subscription_updated import BotSubscriptionUpdated
 from .callback_query import CallbackQuery
 from .chat_boost_removed import ChatBoostRemoved
 from .chat_boost_updated import ChatBoostUpdated
@@ -18,6 +19,7 @@ from .inline_query import InlineQuery
 from .message import Message
 from .message_reaction_count_updated import MessageReactionCountUpdated
 from .message_reaction_updated import MessageReactionUpdated
+from .managed_bot_updated import ManagedBotUpdated
 from .paid_media_purchased import PaidMediaPurchased
 from .poll import Poll
 from .poll_answer import PollAnswer
@@ -44,6 +46,7 @@ class Update:
     edited_message: Optional[Message]
     channel_post: Optional[Message]
     edited_channel_post: Optional[Message]
+    guest_message: Optional[Message]
     business_connection: Optional[BusinessConnection]
     business_message: Optional[Message]
     edited_business_message: Optional[Message]
@@ -63,6 +66,8 @@ class Update:
     chat_boost: Optional[ChatBoostUpdated]
     removed_chat_boost: Optional[ChatBoostRemoved]
     purchased_paid_media: Optional[PaidMediaPurchased]
+    subscription: Optional[BotSubscriptionUpdated]
+    managed_bot: Optional[ManagedBotUpdated]
 
     @classmethod
     def parse(cls, data: Dict) -> 'Update':
@@ -70,6 +75,7 @@ class Update:
         edited_message = Message.parse(data.get('edited_message'))
         channel_post = Message.parse(data.get('channel_post'))
         edited_channel_post = Message.parse(data.get('edited_channel_post'))
+        guest_message = Message.parse(data.get('guest_message'))
         business_connection = BusinessConnection.parse(data.get('business_connection'))
         business_message = Message.parse(data.get('business_message'))
         edited_business_message = Message.parse(data.get('edited_business_message'))
@@ -89,6 +95,8 @@ class Update:
         chat_boost = ChatBoostUpdated.parse(data.get('chat_boost'))
         removed_chat_boost = ChatBoostRemoved.parse(data.get('removed_chat_boost'))
         purchased_paid_media = PaidMediaPurchased.parse(data.get('purchased_paid_media'))
+        subscription = BotSubscriptionUpdated.parse(data.get('subscription'))
+        managed_bot = ManagedBotUpdated.parse(data.get('managed_bot'))
 
         update_type = UpdateType.unknown
         if message:
@@ -99,6 +107,8 @@ class Update:
             update_type = UpdateType.channel_post
         elif edited_channel_post:
             update_type = UpdateType.edited_channel_post
+        elif guest_message:
+            update_type = UpdateType.guest_message
         elif business_connection:
             update_type = UpdateType.business_connection
         elif business_message:
@@ -137,6 +147,10 @@ class Update:
             update_type = UpdateType.removed_chat_boost
         elif purchased_paid_media:
             update_type = UpdateType.purchased_paid_media
+        elif subscription:
+            update_type = UpdateType.subscription
+        elif managed_bot:
+            update_type = UpdateType.managed_bot
 
         return cls(
             data,
@@ -146,6 +160,7 @@ class Update:
             edited_message,
             channel_post,
             edited_channel_post,
+            guest_message,
             business_connection,
             business_message,
             edited_business_message,
@@ -164,5 +179,7 @@ class Update:
             chat_join_request,
             chat_boost,
             removed_chat_boost,
-            purchased_paid_media
+            purchased_paid_media,
+            subscription,
+            managed_bot,
         )

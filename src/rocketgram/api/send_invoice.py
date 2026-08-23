@@ -9,6 +9,7 @@ from typing import Optional, List
 from . import reply_parameters
 from .labeled_price import LabeledPrice
 from .request import Request
+from .suggested_post_parameters import SuggestedPostParameters
 from .utils import AnyInlineKeyboard, MessageResultMixin
 
 
@@ -26,8 +27,8 @@ class SendInvoice(MessageResultMixin, Request):
     currency: str
     prices: List[LabeledPrice]
     provider_token: Optional[str] = None
-    business_connection_id: Optional[str] = None
     message_thread_id: Optional[int] = None
+    direct_messages_topic_id: Optional[int] = None
     max_tip_amount: Optional[int] = None
     suggested_tip_amounts: Optional[List[int]] = None
     start_parameter: Optional[str] = None
@@ -47,5 +48,6 @@ class SendInvoice(MessageResultMixin, Request):
     protect_content: Optional[bool] = None
     message_effect_id: Optional[str] = None
     allow_paid_broadcast: Optional[bool] = None
+    suggested_post_parameters: Optional[SuggestedPostParameters] = None
     reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyInlineKeyboard] = None

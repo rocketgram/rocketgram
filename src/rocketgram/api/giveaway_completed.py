@@ -19,6 +19,7 @@ class GiveawayCompleted:
     winner_count: int
     unclaimed_prize_count: Optional[int]
     giveaway_message: Optional['message.Message']
+    is_star_giveaway: Optional[bool]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['GiveawayCompleted']:
@@ -28,5 +29,6 @@ class GiveawayCompleted:
         return cls(
             data['winner_count'],
             data['unclaimed_prize_count'],
-            message.Message.parse(data.get('giveaway_message'))
+            message.Message.parse(data.get('giveaway_message')),
+            data.get('is_star_giveaway'),
         )

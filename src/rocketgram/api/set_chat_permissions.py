@@ -18,6 +18,6 @@ class SetChatPermissions(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setchatpermissions
     """
 
-    user_id: Union[int, str]
+    chat_id: Union[int, str]
     permissions: ChatPermissions
     use_independent_chat_permissions: Optional[bool] = None

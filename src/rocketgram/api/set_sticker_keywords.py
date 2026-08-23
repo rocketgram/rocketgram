@@ -17,5 +17,5 @@ class SetStickerKeywords(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setstickerkeywords
     """
 
-    name: str
+    sticker: str
     keywords: Optional[List[str]] = None

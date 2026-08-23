@@ -4,9 +4,10 @@
 
 
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, List, Union
 
 from . import message_entity
+from .parse_mode_type import ParseModeType
 
 
 @dataclass(frozen=True)
@@ -16,10 +17,13 @@ class ReplyParameters:
     https://core.telegram.org/bots/api#replyparameters
     """
 
-    message_id: int
-    chat_id: Optional[int] = None
+    message_id: Optional[int] = None
+    ephemeral_message_id: Optional[int] = None
+    chat_id: Optional[Union[int, str]] = None
     allow_sending_without_reply: Optional[bool] = None
     quote: Optional[str] = None
-    quote_parse_mode: Optional[str] = None
+    quote_parse_mode: Optional[ParseModeType] = None
     quote_entities: Optional[List['message_entity.MessageEntity']] = None
     quote_position: Optional[int] = None
+    checklist_task_id: Optional[int] = None
+    poll_option_id: Optional[str] = None

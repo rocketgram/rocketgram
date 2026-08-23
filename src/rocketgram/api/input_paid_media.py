@@ -32,3 +32,14 @@ class InputPaidMediaVideo:
     height: Optional[int] = None
     duration: Optional[int] = None
     supports_streaming: Optional[bool] = None
+
+
+@dataclass(frozen=True)
+class InputPaidMediaLivePhoto:
+    """    Represents InputPaidMediaLivePhoto object:
+    https://core.telegram.org/bots/api#inputpaidmedialivephoto
+    """
+
+    media: Union[InputFile, str]
+    photo: Union[InputFile, str]
+    type: str = "live_photo"

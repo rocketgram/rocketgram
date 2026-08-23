@@ -8,6 +8,8 @@ from .add_sticker_to_set import AddStickerToSet
 from .affiliate_info import AffiliateInfo
 from .animation import Animation
 from .answer_callback_query import AnswerCallbackQuery
+from .answer_chat_join_request_query import AnswerChatJoinRequestQuery
+from .answer_guest_query import AnswerGuestQuery
 from .answer_inline_query import AnswerInlineQuery
 from .answer_pre_checkout_query import AnswerPreCheckoutQuery
 from .answer_shipping_query import AnswerShippingQuery
@@ -22,6 +24,7 @@ from .background_type_type import BackgroundTypeType
 from .ban_chat_member import BanChatMember
 from .ban_chat_sender_chat import BanChatSenderChat
 from .birthdate import Birthdate
+from .bot_access_settings import BotAccessSettings
 from .bot_command import BotCommand
 from .bot_command_scope import BotCommandScope
 from .bot_command_scope_all_chat_administrators import BotCommandScopeAllChatAdministrators
@@ -34,6 +37,7 @@ from .bot_command_scope_default import BotCommandScopeDefault
 from .bot_description import BotDescription
 from .bot_name import BotName
 from .bot_short_description import BotShortDescription
+from .bot_subscription_updated import BotSubscriptionUpdated
 from .business_bot_rights import BusinessBotRights
 from .business_connection import BusinessConnection
 from .business_intro import BusinessIntro
@@ -41,6 +45,7 @@ from .business_location import BusinessLocation
 from .business_messages_deleted import BusinessMessagesDeleted
 from .business_opening_hours import BusinessOpeningHours
 from .business_opening_hours_interval import BusinessOpeningHoursInterval
+from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat
 from .chat_action_type import ChatActionType
@@ -74,6 +79,9 @@ from .close import Close
 from .close_forum_topic import CloseForumTopic
 from .close_general_forum_topic import CloseGeneralForumTopic
 from .contact import Contact
+from .community import Community
+from .community_chat_added import CommunityChatAdded
+from .community_chat_removed import CommunityChatRemoved
 from .convert_gift_to_stars import ConvertGiftToStars
 from .copy_message import CopyMessage
 from .copy_messages import CopyMessages
@@ -85,11 +93,14 @@ from .create_invoice_link import CreateInvoiceLink
 from .create_new_sticker_set import CreateNewStickerSet
 from .decline_chat_join_request import DeclineChatJoinRequest
 from .decline_suggested_post import DeclineSuggestedPost
+from .delete_all_message_reactions import DeleteAllMessageReactions
 from .delete_business_messages import DeleteBusinessMessages
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
+from .delete_ephemeral_message import DeleteEphemeralMessage
 from .delete_forum_topic import DeleteForumTopic
 from .delete_message import DeleteMessage
+from .delete_message_reaction import DeleteMessageReaction
 from .delete_messages import DeleteMessages
 from .delete_my_commands import DeleteMyCommands
 from .delete_sticker_from_set import DeleteStickerFromSet
@@ -103,6 +114,10 @@ from .direct_messages_topic import DirectMessagesTopic
 from .document import Document
 from .edit_chat_invite_link import EditChatInviteLink
 from .edit_chat_subscription_invite_link import EditChatSubscriptionInviteLink
+from .edit_ephemeral_message_caption import EditEphemeralMessageCaption
+from .edit_ephemeral_message_media import EditEphemeralMessageMedia
+from .edit_ephemeral_message_reply_markup import EditEphemeralMessageReplyMarkup
+from .edit_ephemeral_message_text import EditEphemeralMessageText
 from .edit_forum_topic import EditForumTopic
 from .edit_general_forum_topic import EditGeneralForumTopic
 from .edit_message_caption import EditMessageCaption
@@ -146,6 +161,8 @@ from .get_custom_emoji_stickers import GetCustomEmojiStickers
 from .get_file import GetFile
 from .get_forum_topic_icon_stickers import GetForumTopicIconStickers
 from .get_game_high_scores import GetGameHighScores
+from .get_managed_bot_access_settings import GetManagedBotAccessSettings
+from .get_managed_bot_token import GetManagedBotToken
 from .get_me import GetMe
 from .get_my_commands import GetMyCommands
 from .get_my_default_administrator_rights import GetMyDefaultAdministratorRights
@@ -158,6 +175,7 @@ from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_chat_boosts import GetUserChatBoosts
 from .get_user_gifts import GetUserGifts
+from .get_user_personal_chat_messages import GetUserPersonalChatMessages
 from .get_user_profile_audios import GetUserProfileAudios
 from .get_user_profile_photos import GetUserProfilePhotos
 from .get_webhook_info import GetWebhookInfo
@@ -205,11 +223,47 @@ from .input_location_message_content import InputLocationMessageContent
 from .input_media_animation import InputMediaAnimation
 from .input_media_audio import InputMediaAudio
 from .input_media_document import InputMediaDocument
+from .input_media_link import InputMediaLink
+from .input_media_live_photo import InputMediaLivePhoto
+from .input_media_location import InputMediaLocation
 from .input_media_photo import InputMediaPhoto
+from .input_media_sticker import InputMediaSticker
+from .input_media_venue import InputMediaVenue
 from .input_media_video import InputMediaVideo
-from .input_paid_media import InputPaidMediaPhoto, InputPaidMediaVideo
+from .input_media_voice_note import InputMediaVoiceNote
+from .input_paid_media import InputPaidMediaPhoto, InputPaidMediaVideo, InputPaidMediaLivePhoto
+from .input_poll_media import InputPollMedia
 from .input_poll_option import InputPollOption
+from .input_poll_option_media import InputPollOptionMedia
 from .input_profile_photo import InputProfilePhotoStatic, InputProfilePhotoAnimated
+from .input_rich_block import (
+    InputRichBlock,
+    InputRichBlockAnchor,
+    InputRichBlockAnimation,
+    InputRichBlockAudio,
+    InputRichBlockBlockQuotation,
+    InputRichBlockCollage,
+    InputRichBlockDetails,
+    InputRichBlockDivider,
+    InputRichBlockFooter,
+    InputRichBlockList,
+    InputRichBlockMap,
+    InputRichBlockMathematicalExpression,
+    InputRichBlockParagraph,
+    InputRichBlockPhoto,
+    InputRichBlockPreformatted,
+    InputRichBlockPullQuotation,
+    InputRichBlockSectionHeading,
+    InputRichBlockSlideshow,
+    InputRichBlockTable,
+    InputRichBlockThinking,
+    InputRichBlockVideo,
+    InputRichBlockVoiceNote,
+)
+from .input_rich_block_list_item import InputRichBlockListItem
+from .input_rich_message import InputRichMessage
+from .input_rich_message_content import InputRichMessageContent
+from .input_rich_message_media import InputRichMessageMedia
 from .input_sticker import InputSticker
 from .input_story_content import InputStoryContentPhoto, InputStoryContentVideo
 from .input_text_message_content import InputTextMessageContent
@@ -218,15 +272,20 @@ from .invoice import Invoice
 from .keyboard_button import KeyboardButton
 from .keyboard_button_poll_type import KeyboardButtonPollType
 from .keyboard_button_request_chat import KeyboardButtonRequestChat
+from .keyboard_button_request_managed_bot import KeyboardButtonRequestManagedBot
 from .keyboard_button_request_users import KeyboardButtonRequestUsers
 from .labeled_price import LabeledPrice
 from .leave_chat import LeaveChat
 from .link_preview_options import LinkPreviewOptions
+from .link import Link
+from .live_photo import LivePhoto
 from .location import Location
 from .location_address import LocationAddress
 from .log_out import LogOut
 from .login_url import LoginUrl
 from .mask_position import MaskPosition
+from .managed_bot_created import ManagedBotCreated
+from .managed_bot_updated import ManagedBotUpdated
 from .mask_position_point_type import MaskPositionPointType
 from .menu_button_commands import MenuButtonCommands
 from .menu_button_default import MenuButtonDefault
@@ -264,11 +323,15 @@ from .passport_file import PassportFile
 from .photo_size import PhotoSize
 from .pin_chat_message import PinChatMessage
 from .poll import Poll
+from .poll_media import PollMedia
 from .poll_answer import PollAnswer
 from .poll_option import PollOption
+from .poll_option_added import PollOptionAdded
+from .poll_option_deleted import PollOptionDeleted
 from .poll_type import PollType
 from .post_story import PostStory
 from .pre_checkout_query import PreCheckoutQuery
+from .prepared_keyboard_button import PreparedKeyboardButton
 from .prepared_inline_message import PreparedInlineMessage
 from .promote_chat_member import PromoteChatMember
 from .proximity_alert_triggered import ProximityAlertTriggered
@@ -285,9 +348,66 @@ from .remove_user_verification import RemoveUserVerification
 from .reopen_forum_topic import ReopenForumTopic
 from .reopen_general_forum_topic import ReopenGeneralForumTopic
 from .replace_sticker_in_set import ReplaceStickerInSet
+from .replace_managed_bot_token import ReplaceManagedBotToken
 from .reply_keyboard_markup import ReplyKeyboardMarkup
 from .reply_keyboard_remove import ReplyKeyboardRemove
 from .reply_parameters import ReplyParameters
+from .rich_block import (
+    RichBlock,
+    RichBlockAnchor,
+    RichBlockAnimation,
+    RichBlockAudio,
+    RichBlockBlockQuotation,
+    RichBlockCollage,
+    RichBlockDetails,
+    RichBlockDivider,
+    RichBlockFooter,
+    RichBlockList,
+    RichBlockMap,
+    RichBlockMathematicalExpression,
+    RichBlockParagraph,
+    RichBlockPhoto,
+    RichBlockPreformatted,
+    RichBlockPullQuotation,
+    RichBlockSectionHeading,
+    RichBlockSlideshow,
+    RichBlockTable,
+    RichBlockThinking,
+    RichBlockVideo,
+    RichBlockVoiceNote,
+)
+from .rich_block_caption import RichBlockCaption
+from .rich_block_list_item import RichBlockListItem
+from .rich_block_table_cell import RichBlockTableCell
+from .rich_message import RichMessage
+from .rich_text import (
+    RichText,
+    RichTextAnchor,
+    RichTextAnchorLink,
+    RichTextBankCardNumber,
+    RichTextBold,
+    RichTextBotCommand,
+    RichTextCashtag,
+    RichTextCode,
+    RichTextCustomEmoji,
+    RichTextDateTime,
+    RichTextEmailAddress,
+    RichTextHashtag,
+    RichTextItalic,
+    RichTextMarked,
+    RichTextMathematicalExpression,
+    RichTextMention,
+    RichTextPhoneNumber,
+    RichTextReference,
+    RichTextReferenceLink,
+    RichTextSpoiler,
+    RichTextStrikethrough,
+    RichTextSubscript,
+    RichTextSuperscript,
+    RichTextTextMention,
+    RichTextUnderline,
+    RichTextUrl,
+)
 from .repost_story import RepostStory
 from .request import Request
 from .response import Response
@@ -297,9 +417,11 @@ from .revenue_withdrawal_state import RevenueWithdrawalState
 from .revenue_withdrawal_state_type import RevenueWithdrawalStateType
 from .revoke_chat_invite_link import RevokeChatInviteLink
 from .save_prepared_inline_message import SavePreparedInlineMessage
+from .save_prepared_keyboard_button import SavePreparedKeyboardButton
 from .send_animation import SendAnimation
 from .send_audio import SendAudio
 from .send_chat_action import SendChatAction
+from .send_chat_join_request_web_app import SendChatJoinRequestWebApp
 from .send_checklist import SendChecklist
 from .send_contact import SendContact
 from .send_dice import SendDice
@@ -307,6 +429,7 @@ from .send_document import SendDocument
 from .send_game import SendGame
 from .send_gift import SendGift
 from .send_invoice import SendInvoice
+from .send_live_photo import SendLivePhoto
 from .send_location import SendLocation
 from .send_media_group import SendMediaGroup
 from .send_message import SendMessage
@@ -314,18 +437,22 @@ from .send_message_draft import SendMessageDraft
 from .send_paid_media import SendPaidMedia
 from .send_photo import SendPhoto
 from .send_poll import SendPoll
+from .send_rich_message import SendRichMessage
+from .send_rich_message_draft import SendRichMessageDraft
 from .send_sticker import SendSticker
 from .send_venue import SendVenue
 from .send_video import SendVideo
 from .send_video_note import SendVideoNote
 from .send_voice import SendVoice
 from .sent_web_app_message import SentWebAppMessage
+from .sent_guest_message import SentGuestMessage
 from .set_business_account_bio import SetBusinessAccountBio
 from .set_business_account_gift_settings import SetBusinessAccountGiftSettings
 from .set_business_account_name import SetBusinessAccountName
 from .set_business_account_profile_photo import SetBusinessAccountProfilePhoto
 from .set_business_account_username import SetBusinessAccountUsername
 from .set_chat_administrator_custom_title import SetChatAdministratorCustomTitle
+from .set_chat_member_tag import SetChatMemberTag
 from .set_chat_description import SetChatDescription
 from .set_chat_menu_button import SetChatMenuButton
 from .set_chat_permissions import SetChatPermissions
@@ -335,6 +462,7 @@ from .set_chat_title import SetChatTitle
 from .set_custom_emoji_sticker_set_thumbnail import SetCustomEmojiStickerSetThumbnail
 from .set_game_score import SetGameScore
 from .set_message_reaction import SetMessageReaction
+from .set_managed_bot_access_settings import SetManagedBotAccessSettings
 from .set_my_commands import SetMyCommands
 from .set_my_default_administrator_rights import SetMyDefaultAdministratorRights
 from .set_my_description import SetMyDescription

@@ -24,3 +24,6 @@ class KeyboardButtonRequestChat:
     user_administrator_rights: Optional[ChatAdministratorRights] = None
     bot_administrator_rights: Optional[ChatAdministratorRights] = None
     bot_is_member: Optional[bool] = None
+    request_title: Optional[bool] = None
+    request_username: Optional[bool] = None
+    request_photo: Optional[bool] = None

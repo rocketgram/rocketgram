@@ -16,10 +16,11 @@ class BotCommand:
 
     command: str
     description: str
+    is_ephemeral: Optional[bool] = None
 
     @classmethod
     def parse(cls, data: dict) -> Optional['BotCommand']:
         if data is None:
             return None
 
-        return cls(data['command'], data['description'])
+        return cls(data['command'], data['description'], data.get('is_ephemeral'))

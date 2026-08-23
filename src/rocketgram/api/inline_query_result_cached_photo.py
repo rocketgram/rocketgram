@@ -29,5 +29,6 @@ class InlineQueryResultCachedPhoto(InlineQueryResult):
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None
+    show_caption_above_media: Optional[bool] = None
     reply_markup: Optional[InlineKeyboardMarkup] = None
     input_message_content: Optional[InputMessageContent] = None

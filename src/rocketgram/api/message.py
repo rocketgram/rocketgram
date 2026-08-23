@@ -9,7 +9,7 @@ from typing import Dict, Optional, List
 
 from .animation import Animation
 from .audio import Audio
-from .chat import Chat
+from . import chat as chat_mod
 from .chat_background import ChatBackground
 from .chat_boost_added import ChatBoostAdded
 from .chat_owner_changed import ChatOwnerChanged
@@ -19,8 +19,11 @@ from .checklist import Checklist
 from .checklist_tasks_added import ChecklistTasksAdded
 from .checklist_tasks_done import ChecklistTasksDone
 from .contact import Contact
+from .community_chat_added import CommunityChatAdded
+from .community_chat_removed import CommunityChatRemoved
 from .dice import Dice
 from .direct_message_price_changed import DirectMessagePriceChanged
+from .direct_messages_topic import DirectMessagesTopic
 from .document import Document
 from .external_reply_info import ExternalReplyInfo
 from .forum_topic_closed import ForumTopicClosed
@@ -39,6 +42,8 @@ from .inline_keyboard_markup import InlineKeyboardMarkup
 from .invoice import Invoice
 from .link_preview_options import LinkPreviewOptions
 from .location import Location
+from .live_photo import LivePhoto
+from .managed_bot_created import ManagedBotCreated
 from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
 from .message_origin import MessageOrigin
@@ -48,8 +53,11 @@ from .paid_message_price_changed import PaidMessagePriceChanged
 from .passport_data import PassportData
 from .photo_size import PhotoSize
 from .poll import Poll
+from .poll_option_added import PollOptionAdded
+from .poll_option_deleted import PollOptionDeleted
 from .proximity_alert_triggered import ProximityAlertTriggered
 from .refunded_payment import RefundedPayment
+from .rich_message import RichMessage
 from .sticker import Sticker
 from .story import Story
 from .successful_payment import SuccessfulPayment
@@ -92,14 +100,21 @@ class Message:
     type: MessageType
 
     message_id: int
+    ephemeral_message_id: Optional[int]
     message_thread_id: Optional[int]
+    direct_messages_topic: Optional[DirectMessagesTopic]
     user: Optional[User]
-    sender_chat: Optional[Chat]
+    sender_chat: Optional['chat_mod.Chat']
     sender_boost_count: Optional[int]
     sender_business_bot: Optional[User]
+    receiver_user: Optional[User]
+    guest_bot_caller_user: Optional[User]
+    guest_bot_caller_chat: Optional['chat_mod.Chat']
+    sender_tag: Optional[str]
     date: datetime
     business_connection_id: Optional[str]
-    chat: Chat
+    guest_query_id: Optional[str]
+    chat: 'chat_mod.Chat'
     forward_origin: Optional[MessageOrigin]
     is_topic_message: Optional[bool]
     is_automatic_forward: Optional[bool]
@@ -107,6 +122,8 @@ class Message:
     external_reply: Optional[ExternalReplyInfo]
     quote: Optional[TextQuote]
     reply_to_story: Optional[Story]
+    reply_to_checklist_task_id: Optional[int]
+    reply_to_poll_option_id: Optional[str]
     via_bot: Optional[User]
     edit_date: Optional[datetime]
     has_protected_content: Optional[bool]
@@ -114,9 +131,12 @@ class Message:
     media_group_id: Optional[str]
     author_signature: Optional[str]
     effect_id: Optional[str]
+    is_paid_post: Optional[bool]
+    paid_star_count: Optional[int]
 
     text: Optional[str]
     entities: Optional[List[MessageEntity]]
+    rich_message: Optional[RichMessage]
 
     link_preview_options: Optional[LinkPreviewOptions]
 
@@ -125,6 +145,7 @@ class Message:
     document: Optional[Document]
     paid_media: Optional[PaidMediaInfo]
     photo: Optional[List[PhotoSize]]
+    live_photo: Optional[LivePhoto]
     sticker: Optional[Sticker]
     story: Optional[Story]
     video: Optional[Video]
@@ -199,6 +220,7 @@ class Message:
 
     gift: Optional[GiftInfo]
     unique_gift: Optional[UniqueGiftInfo]
+    gift_upgrade_sent: Optional[GiftInfo]
 
     chat_owner_left: Optional[ChatOwnerLeft]
     chat_owner_changed: Optional[ChatOwnerChanged]
@@ -217,6 +239,12 @@ class Message:
 
     suggested_post_info: Optional[SuggestedPostInfo]
 
+    community_chat_added: Optional[CommunityChatAdded]
+    community_chat_removed: Optional[CommunityChatRemoved]
+    managed_bot_created: Optional[ManagedBotCreated]
+    poll_option_added: Optional[PollOptionAdded]
+    poll_option_deleted: Optional[PollOptionDeleted]
+
     video_chat_scheduled: Optional[VideoChatScheduled]
     video_chat_started: Optional[VideoChatStarted]
     video_chat_ended: Optional[VideoChatEnded]
@@ -232,14 +260,21 @@ class Message:
             return None
 
         message_id = data['message_id']
+        ephemeral_message_id = data.get('ephemeral_message_id')
         message_thread_id = data.get('message_thread_id')
+        direct_messages_topic = DirectMessagesTopic.parse(data.get('direct_messages_topic'))
         user = User.parse(data.get('from'))
-        sender_chat = Chat.parse(data.get('sender_chat'))
+        sender_chat = chat_mod.Chat.parse(data.get('sender_chat'))
         sender_boost_count = data.get('sender_boost_count')
         sender_business_bot = User.parse(data.get('sender_business_bot'))
+        receiver_user = User.parse(data.get('receiver_user'))
+        guest_bot_caller_user = User.parse(data.get('guest_bot_caller_user'))
+        guest_bot_caller_chat = chat_mod.Chat.parse(data.get('guest_bot_caller_chat'))
+        sender_tag = data.get('sender_tag')
         date = datetime.fromtimestamp(data['date'], tz=timezone.utc)
         business_connection_id = data.get('business_connection_id')
-        chat = Chat.parse(data["chat"])
+        guest_query_id = data.get('guest_query_id')
+        chat = chat_mod.Chat.parse(data["chat"])
         forward_origin = MessageOrigin.parse(data.get('forward_origin'))
         is_topic_message = data.get('is_topic_message')
         is_automatic_forward = data.get('is_automatic_forward')
@@ -247,6 +282,8 @@ class Message:
         external_reply = ExternalReplyInfo.parse(data.get('external_reply'))
         quote = TextQuote.parse(data.get('quote'))
         reply_to_story = Story.parse(data.get('reply_to_story'))
+        reply_to_checklist_task_id = data.get('reply_to_checklist_task_id')
+        reply_to_poll_option_id = data.get('reply_to_poll_option_id')
         via_bot = User.parse(data.get('via_bot'))
         edit_date = datetime.fromtimestamp(data['edit_date'], tz=timezone.utc) if 'edit_date' in data else None
         has_protected_content = data.get('has_protected_content')
@@ -254,9 +291,12 @@ class Message:
         media_group_id = data.get('media_group_id')
         author_signature = data.get('author_signature')
         effect_id = data.get('effect_id')
+        is_paid_post = data.get('is_paid_post')
+        paid_star_count = data.get('paid_star_count')
 
         text = data.get('text')
         entities = [MessageEntity.parse(d) for d in data['entities']] if 'entities' in data else None
+        rich_message = RichMessage.parse(data.get('rich_message'))
 
         link_preview_options = LinkPreviewOptions.parse(data.get('link_preview_options'))
 
@@ -267,6 +307,7 @@ class Message:
             document = None
         paid_media = PaidMediaInfo.parse(data.get('paid_media'))
         photo = [PhotoSize.parse(d) for d in data['photo']] if 'photo' in data else None
+        live_photo = LivePhoto.parse(data.get('live_photo'))
         sticker = Sticker.parse(data.get('sticker'))
         story = Story.parse(data.get('story'))
         video = Video.parse(data.get('video'))
@@ -344,6 +385,7 @@ class Message:
 
         gift_info = GiftInfo.parse(data.get('gift'))
         unique_gift_info = UniqueGiftInfo.parse(data.get('unique_gift'))
+        gift_upgrade_sent = GiftInfo.parse(data.get('gift_upgrade_sent'))
 
         chat_owner_left = ChatOwnerLeft.parse(data.get('chat_owner_left'))
         chat_owner_changed = ChatOwnerChanged.parse(data.get('chat_owner_changed'))
@@ -364,6 +406,12 @@ class Message:
 
         suggested_post_info = SuggestedPostInfo.parse(data.get('suggested_post_info'))
 
+        community_chat_added = CommunityChatAdded.parse(data.get('community_chat_added'))
+        community_chat_removed = CommunityChatRemoved.parse(data.get('community_chat_removed'))
+        managed_bot_created = ManagedBotCreated.parse(data.get('managed_bot_created'))
+        poll_option_added = PollOptionAdded.parse(data.get('poll_option_added'))
+        poll_option_deleted = PollOptionDeleted.parse(data.get('poll_option_deleted'))
+
         video_chat_scheduled = VideoChatScheduled.parse(data.get('video_chat_scheduled'))
         video_chat_started = VideoChatStarted.parse(data.get('video_chat_started'))
         video_chat_ended = VideoChatEnded.parse(data.get('video_chat_ended'))
@@ -378,6 +426,8 @@ class Message:
 
         if text:
             message_type = MessageType.text
+        elif rich_message:
+            message_type = MessageType.rich_message
         elif audio:
             message_type = MessageType.audio
         elif document:
@@ -390,6 +440,8 @@ class Message:
             message_type = MessageType.paid_media
         elif photo:
             message_type = MessageType.photo
+        elif live_photo:
+            message_type = MessageType.live_photo
         elif sticker:
             message_type = MessageType.sticker
         elif story:
@@ -482,6 +534,8 @@ class Message:
             message_type = MessageType.gift
         elif unique_gift_info:
             message_type = MessageType.unique_gift
+        elif gift_upgrade_sent:
+            message_type = MessageType.gift_upgrade_sent
         elif chat_owner_left:
             message_type = MessageType.chat_owner_left
         elif chat_owner_changed:
@@ -504,6 +558,16 @@ class Message:
             message_type = MessageType.suggested_post_paid
         elif suggested_post_refunded:
             message_type = MessageType.suggested_post_refunded
+        elif community_chat_added:
+            message_type = MessageType.community_chat_added
+        elif community_chat_removed:
+            message_type = MessageType.community_chat_removed
+        elif managed_bot_created:
+            message_type = MessageType.managed_bot_created
+        elif poll_option_added:
+            message_type = MessageType.poll_option_added
+        elif poll_option_deleted:
+            message_type = MessageType.poll_option_deleted
         elif video_chat_scheduled:
             message_type = MessageType.video_chat_scheduled
         elif video_chat_started:
@@ -520,13 +584,20 @@ class Message:
         return cls(
             message_type,
             message_id,
+            ephemeral_message_id,
             message_thread_id,
+            direct_messages_topic,
             user,
             sender_chat,
             sender_boost_count,
             sender_business_bot,
+            receiver_user,
+            guest_bot_caller_user,
+            guest_bot_caller_chat,
+            sender_tag,
             date,
             business_connection_id,
+            guest_query_id,
             chat,
             forward_origin,
             is_topic_message,
@@ -535,6 +606,8 @@ class Message:
             external_reply,
             quote,
             reply_to_story,
+            reply_to_checklist_task_id,
+            reply_to_poll_option_id,
             via_bot,
             edit_date,
             has_protected_content,
@@ -542,14 +615,18 @@ class Message:
             media_group_id,
             author_signature,
             effect_id,
+            is_paid_post,
+            paid_star_count,
             text,
             entities,
+            rich_message,
             link_preview_options,
             animation,
             audio,
             document,
             paid_media,
             photo,
+            live_photo,
             sticker,
             story,
             video,
@@ -602,6 +679,7 @@ class Message:
             giveaway_completed,
             gift_info,
             unique_gift_info,
+            gift_upgrade_sent,
             chat_owner_left,
             chat_owner_changed,
             paid_message_price_changed,
@@ -614,6 +692,11 @@ class Message:
             suggested_post_paid,
             suggested_post_refunded,
             suggested_post_info,
+            community_chat_added,
+            community_chat_removed,
+            managed_bot_created,
+            poll_option_added,
+            poll_option_deleted,
             video_chat_scheduled,
             video_chat_started,
             video_chat_ended,

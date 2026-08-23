@@ -18,4 +18,3 @@ class DeleteChatStickerSet(BoolResultMixin, Request):
     """
 
     chat_id: Union[int, str]
-    sticker_set_name: str

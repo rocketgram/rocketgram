@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Union, Optional
 
 from .request import Request
+from .suggested_post_parameters import SuggestedPostParameters
 from .utils import MessageResultMixin
 
 
@@ -21,6 +22,9 @@ class ForwardMessage(MessageResultMixin, Request):
     from_chat_id: Union[int, str]
     message_id: int
     message_thread_id: Optional[int] = None
+    direct_messages_topic_id: Optional[int] = None
     video_start_timestamp: Optional[int] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
+    message_effect_id: Optional[str] = None
+    suggested_post_parameters: Optional[SuggestedPostParameters] = None

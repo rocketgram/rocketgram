@@ -20,4 +20,5 @@ class SendChatAction(BoolResultMixin, Request):
 
     chat_id: Union[int, str]
     action: ChatActionType
+    business_connection_id: Optional[str] = None
     message_thread_id: Optional[int] = None

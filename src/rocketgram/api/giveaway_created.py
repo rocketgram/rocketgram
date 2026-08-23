@@ -14,9 +14,10 @@ class GiveawayCreated:
     https://core.telegram.org/bots/api#giveawaycreated
     """
 
+    prize_star_count: Optional[int]
+
     @classmethod
     def parse(cls, data: dict) -> Optional['GiveawayCreated']:
         if data is None:
             return None
-
-        return cls()
+        return cls(data.get('prize_star_count'))

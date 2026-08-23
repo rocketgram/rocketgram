@@ -12,5 +12,5 @@ class PaidMediaType(EnumAutoName):
     preview = auto()
     photo = auto()
     video = auto()
+    live_photo = auto()
     unknown = auto()
-

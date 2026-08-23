@@ -28,6 +28,7 @@ class ChatJoinRequest:
     date: datetime
     bio: Optional[str]
     invite_link: Optional[ChatInviteLink]
+    query_id: Optional[str]
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['ChatJoinRequest']:
@@ -40,5 +41,6 @@ class ChatJoinRequest:
             data['user_chat_id'],
             datetime.fromtimestamp(data['date'], tz=timezone.utc),
             data.get('bio'),
-            ChatInviteLink.parse(data.get('invite_link'))
+            ChatInviteLink.parse(data.get('invite_link')),
+            data.get('query_id'),
         )

@@ -57,6 +57,7 @@ class ChatMember:
     can_send_polls: Optional[bool]
     can_send_other_messages: Optional[bool]
     can_add_web_page_previews: Optional[bool]
+    can_react_to_messages: Optional[bool]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['ChatMember']:
@@ -96,4 +97,5 @@ class ChatMember:
             data.get('can_send_polls'),
             data.get('can_send_other_messages'),
             data.get('can_add_web_page_previews'),
+            data.get('can_react_to_messages'),
         )

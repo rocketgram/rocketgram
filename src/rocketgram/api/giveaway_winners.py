@@ -29,6 +29,7 @@ class GiveawayWinners:
     only_new_members: Optional[bool]
     was_refunded: Optional[bool]
     prize_description: Optional[str]
+    prize_star_count: Optional[int]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['GiveawayWinners']:
@@ -46,5 +47,6 @@ class GiveawayWinners:
             data.get('unclaimed_prize_count'),
             data.get('only_new_members'),
             data.get('was_refunded'),
-            data.get('prize_description')
+            data.get('prize_description'),
+            data.get('prize_star_count'),
         )

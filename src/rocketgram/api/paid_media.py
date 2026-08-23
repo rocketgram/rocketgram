@@ -8,6 +8,7 @@ from typing import Optional, List
 
 from .paid_media_type import PaidMediaType
 from .photo_size import PhotoSize
+from .live_photo import LivePhoto
 from .video import Video
 
 
@@ -24,6 +25,7 @@ class PaidMedia:
     duration: Optional[int]
     photo: Optional[List[PhotoSize]]
     video: Optional[Video]
+    live_photo: Optional[LivePhoto]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['PaidMedia']:
@@ -41,6 +43,6 @@ class PaidMedia:
             data.get('height'),
             data.get('duration'),
             [PhotoSize.parse(p) for p in data['photo']] if 'photo' in data else None,
-            Video.parse(data.get('video'))
+            Video.parse(data.get('video')),
+            LivePhoto.parse(data.get('live_photo')),
         )
-

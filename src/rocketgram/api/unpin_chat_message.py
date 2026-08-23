@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional, Union
 
 from .request import Request
 from .utils import BoolResultMixin
@@ -19,3 +19,4 @@ class UnpinChatMessage(BoolResultMixin, Request):
 
     chat_id: Union[int, str]
     message_id: int
+    business_connection_id: Optional[str] = None

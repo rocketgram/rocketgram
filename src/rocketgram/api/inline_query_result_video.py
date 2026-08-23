@@ -30,6 +30,7 @@ class InlineQueryResultVideo(InlineQueryResult):
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None
+    show_caption_above_media: Optional[bool] = None
     video_width: Optional[int] = None
     video_height: Optional[int] = None
     video_duration: Optional[int] = None

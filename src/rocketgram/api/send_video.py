@@ -11,6 +11,7 @@ from .input_file import InputFile
 from .message_entity import MessageEntity
 from .parse_mode_type import ParseModeType
 from .request import Request
+from .suggested_post_parameters import SuggestedPostParameters
 from .utils import AnyKeyboard, MessageResultMixin
 
 
@@ -25,10 +26,15 @@ class SendVideo(MessageResultMixin, Request):
     video: Union[InputFile, str]
     business_connection_id: Optional[str] = None
     message_thread_id: Optional[int] = None
+    direct_messages_topic_id: Optional[int] = None
+    receiver_user_id: Optional[int] = None
+    callback_query_id: Optional[str] = None
     duration: Optional[int] = None
     width: Optional[int] = None
     height: Optional[int] = None
     thumbnail: Optional[Union[InputFile, str]] = None
+    cover: Optional[Union[InputFile, str]] = None
+    start_timestamp: Optional[int] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None
@@ -39,6 +45,7 @@ class SendVideo(MessageResultMixin, Request):
     protect_content: Optional[bool] = None
     message_effect_id: Optional[str] = None
     allow_paid_broadcast: Optional[bool] = None
+    suggested_post_parameters: Optional[SuggestedPostParameters] = None
     reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyKeyboard] = None
 
@@ -48,4 +55,6 @@ class SendVideo(MessageResultMixin, Request):
             out.append(self.video)
         if isinstance(self.thumbnail, InputFile):
             out.append(self.thumbnail)
+        if isinstance(self.cover, InputFile):
+            out.append(self.cover)
         return out

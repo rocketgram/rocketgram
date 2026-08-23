@@ -18,5 +18,5 @@ class SetStickerMaskPosition(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setstickermaskposition
     """
 
-    name: str
+    sticker: str
     mask_position: Optional[MaskPosition] = None

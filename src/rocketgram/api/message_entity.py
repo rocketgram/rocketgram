@@ -4,6 +4,7 @@
 
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Optional
 
 from .entity_type import EntityType
@@ -24,6 +25,8 @@ class MessageEntity:
     user: Optional[User]
     language: Optional[str]
     custom_emoji_id: Optional[str]
+    unix_time: Optional[datetime]
+    date_time_format: Optional[str]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['MessageEntity']:
@@ -36,4 +39,6 @@ class MessageEntity:
             entity_type = EntityType.unknown
 
         return cls(entity_type, data['offset'], data['length'], data.get('url'),
-                   User.parse(data.get('user')), data.get('language'), data.get('custom_emoji_id'))
+                   User.parse(data.get('user')), data.get('language'), data.get('custom_emoji_id'),
+                   datetime.fromtimestamp(data['unix_time'], tz=timezone.utc) if 'unix_time' in data else None,
+                   data.get('date_time_format'))

@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Optional, Dict
 
 from .copy_text_button import CopyTextButton
+from .callback_game import CallbackGame
 from .login_url import LoginUrl
 from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
 from .web_app_info import WebAppInfo
@@ -28,8 +29,10 @@ class InlineKeyboardButton:
     switch_inline_query_current_chat: Optional[str] = None
     switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None
     copy_text: Optional[CopyTextButton] = None
-    callback_game: Optional[str] = None
+    callback_game: Optional[CallbackGame] = None
     pay: Optional[bool] = None
+    icon_custom_emoji_id: Optional[str] = None
+    style: Optional[str] = None
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['InlineKeyboardButton']:
@@ -46,6 +49,8 @@ class InlineKeyboardButton:
             data.get('switch_inline_query_current_chat'),
             SwitchInlineQueryChosenChat.parse(data.get('switch_inline_query_chosen_chat')),
             CopyTextButton.parse(data.get('copy_text')),
-            data.get('callback_game'),
-            data.get('pay')
+            CallbackGame.parse(data.get('callback_game')),
+            data.get('pay'),
+            data.get('icon_custom_emoji_id'),
+            data.get('style'),
         )

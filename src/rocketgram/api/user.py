@@ -27,6 +27,11 @@ class User:
     supports_inline_queries: Optional[bool]
     can_connect_to_business: Optional[bool]
     has_main_web_app: Optional[bool]
+    supports_guest_queries: Optional[bool]
+    supports_join_request_queries: Optional[bool]
+    has_topics_enabled: Optional[bool]
+    allows_users_to_create_topics: Optional[bool]
+    can_manage_bots: Optional[bool]
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['User']:
@@ -37,4 +42,6 @@ class User:
                    data.get('language_code'), data.get('is_premium'), data.get('added_to_attachment_menu'),
                    data.get('can_join_groups'), data.get('can_read_all_group_messages'),
                    data.get('supports_inline_queries'), data.get('can_connect_to_business'),
-                   data.get('has_main_web_app'))
+                   data.get('has_main_web_app'), data.get('supports_guest_queries'),
+                   data.get('supports_join_request_queries'), data.get('has_topics_enabled'),
+                   data.get('allows_users_to_create_topics'), data.get('can_manage_bots'))

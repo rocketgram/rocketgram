@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union, List
+from typing import Union, List, Optional
 
 from .request import Request
 from .. import api
@@ -19,6 +19,7 @@ class GetChatAdministrators(Request):
     """
 
     chat_id: Union[int, str]
+    return_bots: Optional[bool] = None
 
     def parse_result(self, data) -> List['api.ChatMember']:
         assert isinstance(data, list), "Should be list."

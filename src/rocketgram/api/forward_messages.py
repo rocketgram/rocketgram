@@ -23,6 +23,7 @@ class ForwardMessages(MessageResultMixin, Request):
     from_chat_id: Union[int, str]
     message_ids: List[int]
     message_thread_id: Optional[int] = None
+    direct_messages_topic_id: Optional[int] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
 

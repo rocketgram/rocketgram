@@ -12,6 +12,7 @@ from .message_entity import MessageEntity
 from .poll_type import PollType
 from .request import Request
 from .utils import AnyKeyboard, MessageResultMixin
+from .input_poll_media import InputPollMedia
 from .. import api
 
 
@@ -32,10 +33,21 @@ class SendPoll(MessageResultMixin, Request):
     is_anonymous: Optional[bool] = None
     type: Optional['PollType'] = None
     allows_multiple_answers: Optional[bool] = None
-    correct_option_id: Optional[int] = None
     explanation: Optional[str] = None
     explanation_parse_mode: Optional['api.ParseModeType'] = None
     explanation_entities: Optional[List[MessageEntity]] = None
+    media: Optional[InputPollMedia] = None
+    explanation_media: Optional[InputPollMedia] = None
+    members_only: Optional[bool] = None
+    country_codes: Optional[List[str]] = None
+    allows_revoting: Optional[bool] = None
+    shuffle_options: Optional[bool] = None
+    allow_adding_options: Optional[bool] = None
+    hide_results_until_closes: Optional[bool] = None
+    correct_option_ids: Optional[List[int]] = None
+    description: Optional[str] = None
+    description_parse_mode: Optional['api.ParseModeType'] = None
+    description_entities: Optional[List[MessageEntity]] = None
     open_period: Optional[int] = None
     close_date: Optional[datetime] = None
     is_closed: Optional[bool] = None

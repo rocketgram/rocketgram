@@ -19,6 +19,7 @@ from .chat_location import ChatLocation
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .chat_type import ChatType
+from .community import Community
 from .reaction_type import ReactionType
 from .unique_gift_colors import UniqueGiftColors
 from .user_rating import UserRating
@@ -81,6 +82,8 @@ class ChatFullInfo:
     first_profile_audio: Optional[Audio]
     unique_gift_colors: Optional[UniqueGiftColors]
     paid_message_star_count: Optional[int]
+    guard_bot: Optional['chat.Chat']
+    community: Optional[Community]
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['ChatFullInfo']:
@@ -145,4 +148,6 @@ class ChatFullInfo:
             Audio.parse(data.get('first_profile_audio')),
             UniqueGiftColors.parse(data.get('unique_gift_colors')),
             data.get('paid_message_star_count'),
+            chat.Chat.parse(data.get('guard_bot')),
+            Community.parse(data.get('community')),
         )

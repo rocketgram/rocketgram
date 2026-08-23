@@ -17,5 +17,5 @@ class SetStickerEmojiList(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setstickeremojilist
     """
 
-    name: str
+    sticker: str
     emoji_list: List[str]

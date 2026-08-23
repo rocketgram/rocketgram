@@ -19,4 +19,5 @@ class PinChatMessage(BoolResultMixin, Request):
 
     chat_id: Union[int, str]
     message_id: int
+    business_connection_id: Optional[str] = None
     disable_notification: Optional[bool] = None

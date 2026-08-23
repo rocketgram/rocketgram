@@ -8,6 +8,7 @@ from typing import Union, Optional, List
 
 from . import reply_parameters
 from .message_entity import MessageEntity
+from .input_file import InputFile
 from .parse_mode_type import ParseModeType
 from .request import Request
 from .suggested_post_parameters import SuggestedPostParameters
@@ -37,3 +38,12 @@ class SendPaidMedia(MessageResultMixin, Request):
     suggested_post_parameters: Optional[SuggestedPostParameters] = None
     reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyKeyboard] = None
+
+    def files(self) -> List[InputFile]:
+        out = list()
+        for item in self.media:
+            for attribute in ('media', 'thumbnail', 'photo'):
+                value = getattr(item, attribute, None)
+                if isinstance(value, InputFile):
+                    out.append(value)
+        return out

@@ -9,6 +9,7 @@ from typing import Optional, List
 from . import animation
 from . import audio
 from . import chat
+from . import checklist
 from . import contact
 from . import dice
 from . import document
@@ -18,6 +19,7 @@ from . import giveaway_winners
 from . import invoice
 from . import link_preview_options
 from . import location
+from . import live_photo
 from . import message_origin
 from . import message_type
 from . import paid_media_info as paid_media_info_mod
@@ -52,6 +54,7 @@ class ExternalReplyInfo:
     document: Optional['document.Document']
     paid_media: Optional['paid_media_info_mod.PaidMediaInfo']
     photo: Optional[List['photo_size.PhotoSize']]
+    live_photo: Optional['live_photo.LivePhoto']
     sticker: Optional['sticker.Sticker']
     story: Optional['story.Story']
     video: Optional['video.Video']
@@ -67,6 +70,7 @@ class ExternalReplyInfo:
     location: Optional['location.Location']
     poll: Optional['poll.Poll']
     venue: Optional['venue.Venue']
+    checklist: Optional['checklist.Checklist']
 
     @classmethod
     def parse(cls, data: dict) -> Optional['ExternalReplyInfo']:
@@ -82,6 +86,7 @@ class ExternalReplyInfo:
         document_ = document.Document.parse(data.get('document'))
         paid_media_ = paid_media_info_mod.PaidMediaInfo.parse(data.get('paid_media'))
         photo_size_ = [photo_size.PhotoSize.parse(e) for e in data['photo']] if 'photo' in data else None
+        live_photo_ = live_photo.LivePhoto.parse(data.get('live_photo'))
         sticker_ = sticker.Sticker.parse(data.get('sticker'))
         story_ = story.Story.parse(data.get('story'))
         video_ = video.Video.parse(data.get('video'))
@@ -97,6 +102,7 @@ class ExternalReplyInfo:
         location_ = location.Location.parse(data.get('location'))
         poll_ = poll.Poll.parse(data.get('poll'))
         venue_ = venue.Venue.parse(data.get('venue'))
+        checklist_ = checklist.Checklist.parse(data.get('checklist'))
 
         message_type_ = message_type.MessageType.unknown
 
@@ -112,6 +118,8 @@ class ExternalReplyInfo:
             message_type_ = message_type.MessageType.paid_media
         elif photo_size_:
             message_type_ = message_type.MessageType.photo
+        elif live_photo_:
+            message_type_ = message_type.MessageType.live_photo
         elif sticker_:
             message_type_ = message_type.MessageType.sticker
         elif story_:
@@ -138,6 +146,8 @@ class ExternalReplyInfo:
             message_type_ = message_type.MessageType.giveaway
         elif giveaway_winners_:
             message_type_ = message_type.MessageType.giveaway_winners
+        elif checklist_:
+            message_type_ = message_type.MessageType.checklist
 
         return cls(
             message_type_,
@@ -150,6 +160,7 @@ class ExternalReplyInfo:
             document_,
             paid_media_,
             photo_size_,
+            live_photo_,
             sticker_,
             story_,
             video_,
@@ -164,5 +175,6 @@ class ExternalReplyInfo:
             invoice_,
             location_,
             poll_,
-            venue_
+            venue_,
+            checklist_,
         )

@@ -23,6 +23,8 @@ class InputMediaVideo(InputMedia):
 
     media: Union[InputFile, str]
     thumbnail: Optional[Union[InputFile, str]] = None
+    cover: Optional[Union[InputFile, str]] = None
+    start_timestamp: Optional[int] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None

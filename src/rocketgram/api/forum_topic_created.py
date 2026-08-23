@@ -17,10 +17,12 @@ class ForumTopicCreated:
     name: str
     icon_color: int
     icon_custom_emoji_id: Optional[str]
+    is_name_implicit: Optional[bool]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['ForumTopicCreated']:
         if data is None:
             return None
 
-        return cls(data['name'], data['icon_color'], data.get('icon_custom_emoji_id'))
+        return cls(data['name'], data['icon_color'], data.get('icon_custom_emoji_id'),
+                   data.get('is_name_implicit'))

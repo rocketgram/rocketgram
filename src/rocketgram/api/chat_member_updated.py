@@ -30,6 +30,7 @@ class ChatMemberUpdated:
     new_chat_member: 'chat_member.ChatMember'
     invite_link: Optional['chat_invite_link.ChatInviteLink']
     via_chat_folder_invite_link: Optional[bool]
+    via_join_request: Optional[bool]
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['ChatMemberUpdated']:
@@ -43,5 +44,6 @@ class ChatMemberUpdated:
             chat_member.ChatMember.parse(data['old_chat_member']),
             chat_member.ChatMember.parse(data['new_chat_member']),
             chat_invite_link.ChatInviteLink.parse(data.get('invite_link')),
-            data.get('via_chat_folder_invite_link')
+            data.get('via_chat_folder_invite_link'),
+            data.get('via_join_request'),
         )

@@ -25,7 +25,6 @@ class InlineQueryResultArticle(InlineQueryResult):
     input_message_content: InputMessageContent
     reply_markup: Optional[InlineKeyboardMarkup] = None
     url: Optional[str] = None
-    hide_url: Optional[bool] = None
     description: Optional[str] = None
     thumbnail_url: Optional[str] = None
     thumbnail_width: Optional[int] = None

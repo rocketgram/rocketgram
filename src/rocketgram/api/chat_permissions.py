@@ -28,6 +28,8 @@ class ChatPermissions:
     can_invite_users: Optional[bool]
     can_pin_messages: Optional[bool]
     can_manage_topics: Optional[bool]
+    can_react_to_messages: Optional[bool]
+    can_edit_tag: Optional[bool]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['ChatPermissions']:
@@ -48,5 +50,7 @@ class ChatPermissions:
             data.get('can_change_info'),
             data.get('can_invite_users'),
             data.get('can_pin_messages'),
-            data.get('can_manage_topics')
+            data.get('can_manage_topics'),
+            data.get('can_react_to_messages'),
+            data.get('can_edit_tag'),
         )

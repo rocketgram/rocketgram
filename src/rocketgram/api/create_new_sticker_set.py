@@ -8,9 +8,7 @@ from typing import Optional, List
 
 from .input_file import InputFile
 from .input_sticker import InputSticker
-from .mask_position import MaskPosition
 from .request import Request
-from .sticker_format import StickerFormat
 from .sticker_type import StickerType
 from .utils import BoolResultMixin
 
@@ -26,9 +24,8 @@ class CreateNewStickerSet(BoolResultMixin, Request):
     name: str
     title: str
     stickers: List[InputSticker]
-    sticker_format: StickerFormat
     sticker_type: Optional[StickerType] = None
-    needs_repainting: Optional[MaskPosition] = None
+    needs_repainting: Optional[bool] = None
 
     def files(self) -> List[InputFile]:
         files = list()

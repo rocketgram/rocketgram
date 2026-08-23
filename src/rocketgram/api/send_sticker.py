@@ -9,6 +9,7 @@ from typing import Union, Optional, List
 from . import reply_parameters
 from .input_file import InputFile
 from .request import Request
+from .suggested_post_parameters import SuggestedPostParameters
 from .utils import AnyKeyboard, MessageResultMixin
 
 
@@ -23,11 +24,15 @@ class SendSticker(MessageResultMixin, Request):
     sticker: Union[InputFile, str]
     business_connection_id: Optional[str] = None
     message_thread_id: Optional[int] = None
+    direct_messages_topic_id: Optional[int] = None
+    receiver_user_id: Optional[int] = None
+    callback_query_id: Optional[str] = None
     emoji: Optional[str] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
     message_effect_id: Optional[str] = None
     allow_paid_broadcast: Optional[bool] = None
+    suggested_post_parameters: Optional[SuggestedPostParameters] = None
     reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyKeyboard] = None
 

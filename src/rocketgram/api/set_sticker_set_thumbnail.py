@@ -8,6 +8,7 @@ from typing import Union, Optional, List
 
 from .input_file import InputFile
 from .request import Request
+from .sticker_format import StickerFormat
 from .utils import BoolResultMixin
 
 
@@ -20,6 +21,7 @@ class SetStickerSetThumbnail(BoolResultMixin, Request):
 
     name: str
     user_id: int
+    format: StickerFormat
     thumbnail: Optional[Union[InputFile, str]] = None
 
     def files(self) -> List[InputFile]:

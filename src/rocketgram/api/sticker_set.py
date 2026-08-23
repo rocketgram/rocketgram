@@ -21,8 +21,6 @@ class StickerSet:
     name: str
     title: str
     sticker_type: StickerType
-    is_animated: Optional[bool]
-    is_video: Optional[bool]
     stickers: List[Sticker]
     thumbnail: Optional[PhotoSize]
 
@@ -40,8 +38,6 @@ class StickerSet:
             data['name'],
             data['title'],
             sticker_type,
-            data['is_animated'],
-            data['is_video'],
             [Sticker.parse(s) for s in data['stickers']],
-            PhotoSize.parse(data['thumbnail'])
+            PhotoSize.parse(data.get('thumbnail'))
         )

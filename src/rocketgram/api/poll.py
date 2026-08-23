@@ -10,6 +10,7 @@ from typing import Optional, List
 from .message_entity import MessageEntity
 from .poll_option import PollOption
 from .poll_type import PollType
+from .poll_media import PollMedia
 
 
 @dataclass(frozen=True)
@@ -28,11 +29,18 @@ class Poll:
     is_anonymous: bool
     type: PollType
     allows_multiple_answers: bool
-    correct_option_id: Optional[int]
     explanation: Optional[str]
     explanation_entities: Optional[List[MessageEntity]]
     open_period: Optional[int]
     close_date: Optional[datetime]
+    media: Optional[PollMedia]
+    explanation_media: Optional[PollMedia]
+    members_only: Optional[bool]
+    country_codes: Optional[List[str]]
+    allows_revoting: Optional[bool]
+    correct_option_ids: Optional[List[int]]
+    description: Optional[str]
+    description_entities: Optional[List[MessageEntity]]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['Poll']:
@@ -49,5 +57,10 @@ class Poll:
         return cls(data['id'], data['question'], question_entities, options, data['total_voter_count'],
                    data['is_closed'],
                    data['is_anonymous'], PollType(data['type']), data['allows_multiple_answers'],
-                   data.get('correct_option_id'), data.get('explanation'), explanation_entities,
-                   data.get('open_period'), close_date)
+                   data.get('explanation'), explanation_entities,
+                   data.get('open_period'), close_date, PollMedia.parse(data.get('media')),
+                   PollMedia.parse(data.get('explanation_media')), data.get('members_only'),
+                   data.get('country_codes'), data.get('allows_revoting'), data.get('correct_option_ids'),
+                   data.get('description'),
+                   [MessageEntity.parse(d) for d in data['description_entities']]
+                   if 'description_entities' in data else None)
