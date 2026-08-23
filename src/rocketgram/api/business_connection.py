@@ -22,7 +22,7 @@ class BusinessConnection:
     user_chat_id: int
     date: int
     rights: Optional[BusinessBotRights]
-    is_enabled: Optional[bool]
+    is_enabled: bool
 
     @classmethod
     def parse(cls, data: dict) -> Optional['BusinessConnection']:
@@ -35,5 +35,5 @@ class BusinessConnection:
             data['user_chat_id'],
             data['date'],
             BusinessBotRights.parse(data.get('rights')),
-            data.get('is_enabled'),
+            data['is_enabled'],
         )

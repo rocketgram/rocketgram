@@ -35,9 +35,9 @@ class Poll:
     close_date: Optional[datetime]
     media: Optional[PollMedia]
     explanation_media: Optional[PollMedia]
-    members_only: Optional[bool]
+    members_only: bool
     country_codes: Optional[List[str]]
-    allows_revoting: Optional[bool]
+    allows_revoting: bool
     correct_option_ids: Optional[List[int]]
     description: Optional[str]
     description_entities: Optional[List[MessageEntity]]
@@ -59,8 +59,8 @@ class Poll:
                    data['is_anonymous'], PollType(data['type']), data['allows_multiple_answers'],
                    data.get('explanation'), explanation_entities,
                    data.get('open_period'), close_date, PollMedia.parse(data.get('media')),
-                   PollMedia.parse(data.get('explanation_media')), data.get('members_only'),
-                   data.get('country_codes'), data.get('allows_revoting'), data.get('correct_option_ids'),
+                   PollMedia.parse(data.get('explanation_media')), data['members_only'],
+                    data.get('country_codes'), data['allows_revoting'], data.get('correct_option_ids'),
                    data.get('description'),
                    [MessageEntity.parse(d) for d in data['description_entities']]
                    if 'description_entities' in data else None)

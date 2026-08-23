@@ -4,7 +4,10 @@
 
 
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .chat import Chat
 
 
 @dataclass(frozen=True)
@@ -15,7 +18,7 @@ class BusinessMessagesDeleted:
     """
 
     business_connection_id: str
-    chat: Optional[object]
+    chat: 'Chat'
     message_ids: List[int]
 
     @classmethod

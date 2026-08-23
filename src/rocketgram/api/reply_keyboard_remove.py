@@ -4,6 +4,7 @@
 
 
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -13,5 +14,5 @@ class ReplyKeyboardRemove:
     https://core.telegram.org/bots/api#replykeyboardremove
     """
 
-    selective: bool = False
+    selective: Optional[bool] = None
     remove_keyboard: bool = True

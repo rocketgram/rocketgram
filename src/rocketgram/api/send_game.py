@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 
 from . import reply_parameters
 from .request import Request
@@ -18,7 +18,7 @@ class SendGame(MessageResultMixin, Request):
     https://core.telegram.org/bots/api#sendgame
     """
 
-    chat_id: int
+    chat_id: Union[int, str]
     game_short_name: str
     business_connection_id: Optional[str] = None
     message_thread_id: Optional[int] = None
@@ -26,5 +26,5 @@ class SendGame(MessageResultMixin, Request):
     protect_content: Optional[bool] = None
     allow_paid_broadcast: Optional[bool] = None
     message_effect_id: Optional[str] = None
-    reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
+    reply_parameters: Optional[reply_parameters.ReplyParameters] = None
     reply_markup: Optional[AnyInlineKeyboard] = None

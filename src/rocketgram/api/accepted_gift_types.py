@@ -14,11 +14,11 @@ class AcceptedGiftTypes:
     https://core.telegram.org/bots/api#acceptedgifttypes
     """
 
-    unlimited_gifts: Optional[bool]
-    limited_gifts: Optional[bool]
-    unique_gifts: Optional[bool]
-    premium_subscription: Optional[bool]
-    gifts_from_channels: Optional[bool]
+    unlimited_gifts: bool
+    limited_gifts: bool
+    unique_gifts: bool
+    premium_subscription: bool
+    gifts_from_channels: bool
 
     @classmethod
     def parse(cls, data: dict) -> Optional['AcceptedGiftTypes']:
@@ -26,9 +26,9 @@ class AcceptedGiftTypes:
             return None
 
         return cls(
-            data.get('unlimited_gifts'),
-            data.get('limited_gifts'),
-            data.get('unique_gifts'),
-            data.get('premium_subscription'),
-            data.get('gifts_from_channels'),
+            data['unlimited_gifts'],
+            data['limited_gifts'],
+            data['unique_gifts'],
+            data['premium_subscription'],
+            data['gifts_from_channels'],
         )

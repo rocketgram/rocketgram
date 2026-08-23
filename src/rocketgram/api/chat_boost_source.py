@@ -20,7 +20,8 @@ class ChatBoostSource:
 
     source: 'chat_boost_source_type.ChatBoostSourceType'
     giveaway_message_id: Optional[int]
-    user: Optional['user.User']
+    user: Optional[user.User]
+    prize_star_count: Optional[int]
     is_unclaimed: Optional[bool]
 
     @classmethod
@@ -37,5 +38,6 @@ class ChatBoostSource:
             source_,
             data.get('giveaway_message_id'),
             user.User.parse(data.get('user')),
+            data.get('prize_star_count'),
             data.get('is_unclaimed')
         )

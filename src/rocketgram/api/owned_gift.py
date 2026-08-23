@@ -4,9 +4,8 @@
 
 
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, List, Union
 
-from . import chat
 from . import user
 from .gift import Gift
 from .message_entity import MessageEntity
@@ -21,11 +20,10 @@ class OwnedGift:
     """
 
     type: OwnedGiftType
-    gift: Optional[Gift]
-    unique_gift: Optional[UniqueGift]
+    gift: Union[Gift, UniqueGift]
     owned_gift_id: Optional[str]
     sender_user: Optional['user.User']
-    send_date: Optional[int]
+    send_date: int
     text: Optional[str]
     entities: Optional[List[MessageEntity]]
     is_private: Optional[bool]
@@ -34,11 +32,11 @@ class OwnedGift:
     was_refunded: Optional[bool]
     convert_star_count: Optional[int]
     prepaid_upgrade_star_count: Optional[int]
-    title: Optional[str]
-    number: Optional[int]
+    is_upgrade_separate: Optional[bool]
+    unique_gift_number: Optional[int]
+    can_be_transferred: Optional[bool]
     transfer_star_count: Optional[int]
     next_transfer_date: Optional[int]
-    seller_chat: Optional['chat.Chat']
 
     @classmethod
     def parse(cls, data: dict) -> Optional['OwnedGift']:
@@ -50,13 +48,14 @@ class OwnedGift:
         except ValueError:
             gift_type = OwnedGiftType.unknown
 
+        gift = UniqueGift.parse(data['gift']) if gift_type == OwnedGiftType.unique else Gift.parse(data['gift'])
+
         return cls(
             gift_type,
-            Gift.parse(data.get('gift')),
-            UniqueGift.parse(data.get('unique_gift')),
+            gift,
             data.get('owned_gift_id'),
             user.User.parse(data.get('sender_user')),
-            data.get('send_date'),
+            data['send_date'],
             data.get('text'),
             [MessageEntity.parse(e) for e in data['entities']] if 'entities' in data else None,
             data.get('is_private'),
@@ -65,9 +64,9 @@ class OwnedGift:
             data.get('was_refunded'),
             data.get('convert_star_count'),
             data.get('prepaid_upgrade_star_count'),
-            data.get('title'),
-            data.get('number'),
+            data.get('is_upgrade_separate'),
+            data.get('unique_gift_number'),
+            data.get('can_be_transferred'),
             data.get('transfer_star_count'),
             data.get('next_transfer_date'),
-            chat.Chat.parse(data.get('seller_chat'))
         )

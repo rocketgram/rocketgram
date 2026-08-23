@@ -4,8 +4,9 @@
 
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 
+from .inaccessible_message import InaccessibleMessage
 from .message import Message
 from .user import User
 
@@ -22,7 +23,7 @@ class CallbackQuery:
 
     id: str
     user: User
-    message: Optional[Message]
+    message: Optional[Union[Message, InaccessibleMessage]]
     inline_message_id: Optional[str]
     chat_instance: str
     data: Optional[str]
@@ -33,5 +34,11 @@ class CallbackQuery:
         if data is None:
             return None
 
-        return cls(data['id'], User.parse(data['from']), Message.parse(data.get('message')),
+        message_data = data.get('message')
+        message = None
+        if message_data is not None:
+            message = InaccessibleMessage.parse(message_data) \
+                if message_data.get('date') == 0 else Message.parse(message_data)
+
+        return cls(data['id'], User.parse(data['from']), message,
                    data.get('inline_message_id'), data['chat_instance'], data.get('data'), data.get('game_short_name'))

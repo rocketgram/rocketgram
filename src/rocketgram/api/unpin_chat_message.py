@@ -18,5 +18,5 @@ class UnpinChatMessage(BoolResultMixin, Request):
     """
 
     chat_id: Union[int, str]
-    message_id: int
+    message_id: Optional[int] = None
     business_connection_id: Optional[str] = None

@@ -24,8 +24,8 @@ class Sticker:
     type: StickerType
     width: int
     height: int
-    is_animated: Optional[bool]
-    is_video: Optional[bool]
+    is_animated: bool
+    is_video: bool
     thumbnail: Optional[PhotoSize]
     emoji: Optional[str]
     set_name: Optional[str]
@@ -33,7 +33,7 @@ class Sticker:
     mask_position: Optional[MaskPosition]
     custom_emoji_id: Optional[str]
     needs_repainting: Optional[bool]
-    file_size: Optional[str]
+    file_size: Optional[int]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['Sticker']:

@@ -23,8 +23,8 @@ class TransactionPartner:
     """
 
     type: TransactionPartnerType
-    user: Optional['user.User']
-    chat: Optional['chat.Chat']
+    user: Optional[user.User]
+    chat: Optional[chat.Chat]
     affiliate: Optional[AffiliateInfo]
     invoice_payload: Optional[str]
     paid_media: Optional[List[PaidMedia]]
@@ -34,7 +34,9 @@ class TransactionPartner:
     withdrawal_state: Optional[RevenueWithdrawalState]
     commission_per_mille: Optional[int]
     request_count: Optional[int]
-    sponsor_user: Optional['user.User']
+    sponsor_user: Optional[user.User]
+    transaction_type: Optional[str]
+    premium_subscription_duration: Optional[int]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['TransactionPartner']:
@@ -60,4 +62,6 @@ class TransactionPartner:
             data.get('commission_per_mille'),
             data.get('request_count'),
             user.User.parse(data.get('sponsor_user')),
+            data.get('transaction_type'),
+            data.get('premium_subscription_duration'),
         )

@@ -5,7 +5,7 @@
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Union
 
 from .animation import Animation
 from .audio import Audio
@@ -39,6 +39,7 @@ from .giveaway_completed import GiveawayCompleted
 from .giveaway_created import GiveawayCreated
 from .giveaway_winners import GiveawayWinners
 from .inline_keyboard_markup import InlineKeyboardMarkup
+from .inaccessible_message import InaccessibleMessage
 from .invoice import Invoice
 from .link_preview_options import LinkPreviewOptions
 from .location import Location
@@ -183,7 +184,7 @@ class Message:
     migrate_to_chat_id: Optional[int]
     migrate_from_chat_id: Optional[int]
 
-    pinned_message: Optional['Message']
+    pinned_message: Optional[Union['Message', InaccessibleMessage]]
 
     invoice: Optional[Invoice]
     successful_payment: Optional[SuccessfulPayment]
@@ -348,7 +349,11 @@ class Message:
         migrate_to_chat_id = data.get('migrate_to_chat_id')
         migrate_from_chat_id = data.get('migrate_from_chat_id')
 
-        pinned_message = Message.parse(data.get('pinned_message'))
+        pinned_message_data = data.get('pinned_message')
+        pinned_message = None
+        if pinned_message_data is not None:
+            pinned_message = InaccessibleMessage.parse(pinned_message_data) \
+                if pinned_message_data.get('date') == 0 else Message.parse(pinned_message_data)
 
         invoice = Invoice.parse(data.get('invoice'))
         successful_payment = SuccessfulPayment.parse(data.get('successful_payment'))

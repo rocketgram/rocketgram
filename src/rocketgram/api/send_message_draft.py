@@ -21,7 +21,7 @@ class SendMessageDraft(BoolResultMixin, Request):
 
     chat_id: int
     draft_id: int
-    text: str
     message_thread_id: Optional[int] = None
+    text: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     entities: Optional[List[MessageEntity]] = None

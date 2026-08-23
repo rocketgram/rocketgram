@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Union, Optional
+from typing import Optional
 
 from .menu_button import MenuButton
 from .request import Request
@@ -18,5 +18,5 @@ class SetChatMenuButton(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setchatmenubutton
     """
 
-    chat_id: Optional[Union[int, str]] = None
+    chat_id: Optional[int] = None
     menu_button: Optional[MenuButton] = None

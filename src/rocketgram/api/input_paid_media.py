@@ -28,6 +28,8 @@ class InputPaidMediaVideo:
     media: Union[InputFile, str] = ""
     type: str = "video"
     thumbnail: Optional[Union[InputFile, str]] = None
+    cover: Optional[Union[InputFile, str]] = None
+    start_timestamp: Optional[int] = None
     width: Optional[int] = None
     height: Optional[int] = None
     duration: Optional[int] = None
@@ -43,3 +45,6 @@ class InputPaidMediaLivePhoto:
     media: Union[InputFile, str]
     photo: Union[InputFile, str]
     type: str = "live_photo"
+
+
+InputPaidMedia = Union[InputPaidMediaPhoto, InputPaidMediaVideo, InputPaidMediaLivePhoto]

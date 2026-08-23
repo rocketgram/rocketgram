@@ -6,11 +6,9 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from . import location as location_mod
 from .location_address import LocationAddress
 from .reaction_type import ReactionType
 from .story_area_type_type import StoryAreaTypeType
-from .unique_gift import UniqueGift
 
 
 @dataclass(frozen=True)
@@ -31,7 +29,7 @@ class StoryAreaType:
     temperature: Optional[float]
     emoji: Optional[str]
     background_color: Optional[int]
-    gift: Optional[UniqueGift]
+    name: Optional[str]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['StoryAreaType']:
@@ -55,5 +53,5 @@ class StoryAreaType:
             data.get('temperature'),
             data.get('emoji'),
             data.get('background_color'),
-            UniqueGift.parse(data.get('gift'))
+            data.get('name'),
         )

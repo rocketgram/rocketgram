@@ -11,8 +11,8 @@ from .revenue_withdrawal_state_type import RevenueWithdrawalStateType
 
 @dataclass(frozen=True)
 class RevenueWithdrawalState:
-    """
-    \Represents RevenueWithdrawalState, RevenueWithdrawalStatePending,
+    """\
+    Represents RevenueWithdrawalState, RevenueWithdrawalStatePending,
     RevenueWithdrawalStateSucceeded, RevenueWithdrawalStateFailed objects:
     https://core.telegram.org/bots/api#revenuewithdrawalstate
     """

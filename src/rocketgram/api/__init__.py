@@ -231,11 +231,11 @@ from .input_media_sticker import InputMediaSticker
 from .input_media_venue import InputMediaVenue
 from .input_media_video import InputMediaVideo
 from .input_media_voice_note import InputMediaVoiceNote
-from .input_paid_media import InputPaidMediaPhoto, InputPaidMediaVideo, InputPaidMediaLivePhoto
+from .input_paid_media import InputPaidMedia, InputPaidMediaPhoto, InputPaidMediaVideo, InputPaidMediaLivePhoto
 from .input_poll_media import InputPollMedia
 from .input_poll_option import InputPollOption
 from .input_poll_option_media import InputPollOptionMedia
-from .input_profile_photo import InputProfilePhotoStatic, InputProfilePhotoAnimated
+from .input_profile_photo import InputProfilePhoto, InputProfilePhotoStatic, InputProfilePhotoAnimated
 from .input_rich_block import (
     InputRichBlock,
     InputRichBlockAnchor,
@@ -265,7 +265,7 @@ from .input_rich_message import InputRichMessage
 from .input_rich_message_content import InputRichMessageContent
 from .input_rich_message_media import InputRichMessageMedia
 from .input_sticker import InputSticker
-from .input_story_content import InputStoryContentPhoto, InputStoryContentVideo
+from .input_story_content import InputStoryContent, InputStoryContentPhoto, InputStoryContentVideo
 from .input_text_message_content import InputTextMessageContent
 from .input_venue_message_content import InputVenueMessageContent
 from .invoice import Invoice

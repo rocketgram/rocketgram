@@ -7,11 +7,11 @@ from dataclasses import dataclass
 from typing import Optional
 
 from .request import Request
-from .utils import BoolResultMixin
+from .utils import StoryResultMixin
 
 
 @dataclass(frozen=True)
-class RepostStory(BoolResultMixin, Request):
+class RepostStory(StoryResultMixin, Request):
     """\
     Represents RepostStory request object:
     https://core.telegram.org/bots/api#repoststory

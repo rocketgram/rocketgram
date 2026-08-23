@@ -90,6 +90,18 @@ class FileResultMixin:
         return res.result
 
 
+class StoryResultMixin:
+    """Mixin for request classes that return Story"""
+
+    def parse_result(self, data) -> 'api.Story':  # noqa
+        assert isinstance(data, dict), "Should be dict."
+        return api.Story.parse(data)
+
+    async def send(self) -> 'api.Story':
+        res = await context.bot.send(self)
+        return res.result
+
+
 class ChatInviteLinkResultMixin:
     """Mixin for request classes that returns ChatInviteLink"""
 

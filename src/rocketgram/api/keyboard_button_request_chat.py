@@ -17,7 +17,7 @@ class KeyboardButtonRequestChat:
     """
 
     request_id: int
-    chat_is_channel: Optional[bool] = None
+    chat_is_channel: bool
     chat_is_forum: Optional[bool] = None
     chat_has_username: Optional[bool] = None
     chat_is_created: Optional[bool] = None

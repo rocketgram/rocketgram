@@ -28,3 +28,6 @@ class InputProfilePhotoAnimated:
     animation: Union[InputFile, str]
     type: str = "animated"
     main_frame_timestamp: Optional[float] = None
+
+
+InputProfilePhoto = Union[InputProfilePhotoStatic, InputProfilePhotoAnimated]

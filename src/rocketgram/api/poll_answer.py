@@ -22,7 +22,7 @@ class PollAnswer:
     voter_chat: Optional[Chat]
     user: Optional[User]
     option_ids: List[int]
-    option_persistent_ids: Optional[List[str]]
+    option_persistent_ids: List[str]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['PollAnswer']:
@@ -34,5 +34,5 @@ class PollAnswer:
             Chat.parse(data.get('voter_chat')),
             User.parse(data.get('user')),
             data['option_ids'],
-            data.get('option_persistent_ids'),
+            data['option_persistent_ids'],
         )

@@ -5,6 +5,7 @@
 
 from dataclasses import dataclass
 
+from .accepted_gift_types import AcceptedGiftTypes
 from .request import Request
 from .utils import BoolResultMixin
 
@@ -18,4 +19,4 @@ class SetBusinessAccountGiftSettings(BoolResultMixin, Request):
 
     business_connection_id: str
     show_gift_button: bool
-    accepted_gift_types: dict
+    accepted_gift_types: AcceptedGiftTypes

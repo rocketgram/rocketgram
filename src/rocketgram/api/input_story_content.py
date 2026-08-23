@@ -30,3 +30,6 @@ class InputStoryContentVideo:
     duration: Optional[float] = None
     cover_frame_timestamp: Optional[float] = None
     is_animation: Optional[bool] = None
+
+
+InputStoryContent = Union[InputStoryContentPhoto, InputStoryContentVideo]

@@ -18,7 +18,7 @@ class Invoice:
     description: str
     start_parameter: str
     currency: str
-    total_amount: str
+    total_amount: int
 
     @classmethod
     def parse(cls, data: dict) -> Optional['Invoice']:

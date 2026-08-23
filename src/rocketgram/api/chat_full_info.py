@@ -22,6 +22,7 @@ from .chat_type import ChatType
 from .community import Community
 from .reaction_type import ReactionType
 from .unique_gift_colors import UniqueGiftColors
+from .user import User
 from .user_rating import UserRating
 
 
@@ -64,7 +65,7 @@ class ChatFullInfo:
     invite_link: Optional[str]
     pinned_message: Optional['message.Message']
     permissions: Optional[ChatPermissions]
-    accepted_gift_types: Optional[AcceptedGiftTypes]
+    accepted_gift_types: AcceptedGiftTypes
     can_send_paid_media: Optional[bool]
     slow_mode_delay: Optional[int]
     unrestrict_boost_count: Optional[int]
@@ -82,7 +83,7 @@ class ChatFullInfo:
     first_profile_audio: Optional[Audio]
     unique_gift_colors: Optional[UniqueGiftColors]
     paid_message_star_count: Optional[int]
-    guard_bot: Optional['chat.Chat']
+    guard_bot: Optional[User]
     community: Optional[Community]
 
     @classmethod
@@ -130,7 +131,7 @@ class ChatFullInfo:
             data.get('invite_link'),
             message.Message.parse(data.get('pinned_message')),
             ChatPermissions.parse(data.get('permissions')),
-            AcceptedGiftTypes.parse(data.get('accepted_gift_types')),
+            AcceptedGiftTypes.parse(data['accepted_gift_types']),
             data.get('can_send_paid_media'),
             data.get('slow_mode_delay'),
             data.get('unrestrict_boost_count'),
@@ -148,6 +149,6 @@ class ChatFullInfo:
             Audio.parse(data.get('first_profile_audio')),
             UniqueGiftColors.parse(data.get('unique_gift_colors')),
             data.get('paid_message_star_count'),
-            chat.Chat.parse(data.get('guard_bot')),
+            User.parse(data.get('guard_bot')),
             Community.parse(data.get('community')),
         )

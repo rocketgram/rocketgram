@@ -8,6 +8,7 @@ from typing import Optional
 
 from .. import api
 from ..context import context
+from .inline_query_result import InlineQueryResult
 from .request import Request
 
 
@@ -18,7 +19,7 @@ class SavePreparedInlineMessage(Request):
     """
 
     user_id: int
-    result: dict  # InlineQueryResult
+    result: InlineQueryResult
     allow_user_chats: Optional[bool] = None
     allow_bot_chats: Optional[bool] = None
     allow_group_chats: Optional[bool] = None

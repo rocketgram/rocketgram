@@ -4,6 +4,8 @@
 
 
 from dataclasses import dataclass
+from typing import List
+
 from .request import Request
 from .utils import BoolResultMixin
 
@@ -15,4 +17,4 @@ class DeleteBusinessMessages(BoolResultMixin, Request):
     """
 
     business_connection_id: str
-    message_ids: list
+    message_ids: List[int]

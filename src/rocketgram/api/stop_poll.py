@@ -19,9 +19,9 @@ class StopPoll(Request):
     https://core.telegram.org/bots/api#stoppoll
     """
 
+    chat_id: Union[int, str]
+    message_id: int
     business_connection_id: Optional[str] = None
-    chat_id: Optional[Union[int, str]] = None
-    message_id: Optional[int] = None
     reply_markup: Optional[AnyInlineKeyboard] = None
 
     def parse_result(self, data) -> 'api.Poll':

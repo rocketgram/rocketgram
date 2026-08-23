@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 
 from . import reply_parameters
 from .inline_keyboard_markup import InlineKeyboardMarkup
@@ -21,10 +21,10 @@ class SendChecklist(MessageResultMixin, Request):
     """
 
     business_connection_id: str
-    chat_id: int
+    chat_id: Union[int, str]
     checklist: InputChecklist
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
     message_effect_id: Optional[str] = None
-    reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
+    reply_parameters: Optional[reply_parameters.ReplyParameters] = None
     reply_markup: Optional[InlineKeyboardMarkup] = None

@@ -4,6 +4,7 @@
 
 
 from dataclasses import dataclass
+from typing import Optional
 
 from .poll_type import PollType
 
@@ -15,4 +16,4 @@ class KeyboardButtonPollType:
     https://core.telegram.org/bots/api#keyboardbuttonpolltype
     """
 
-    type: PollType
+    type: Optional[PollType] = None

@@ -58,6 +58,9 @@ class ChatMember:
     can_send_other_messages: Optional[bool]
     can_add_web_page_previews: Optional[bool]
     can_react_to_messages: Optional[bool]
+    tag: Optional[str]
+    can_edit_tag: Optional[bool]
+    can_manage_tags: Optional[bool]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['ChatMember']:
@@ -98,4 +101,7 @@ class ChatMember:
             data.get('can_send_other_messages'),
             data.get('can_add_web_page_previews'),
             data.get('can_react_to_messages'),
+            data.get('tag'),
+            data.get('can_edit_tag'),
+            data.get('can_manage_tags'),
         )

@@ -17,8 +17,8 @@ class AffiliateInfo:
     https://core.telegram.org/bots/api#affiliateinfo
     """
 
-    affiliate_user: Optional[chat.Chat]
-    affiliate_chat: Optional[user.User]
+    affiliate_user: Optional[user.User]
+    affiliate_chat: Optional[chat.Chat]
     commission_per_mille: int
     amount: int
     nanostar_amount: Optional[int]

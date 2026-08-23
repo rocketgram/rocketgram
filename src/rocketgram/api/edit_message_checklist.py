@@ -4,7 +4,7 @@
 
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Union
 
 from .inline_keyboard_markup import InlineKeyboardMarkup
 from .input_checklist import InputChecklist
@@ -19,7 +19,7 @@ class EditMessageChecklist(MessageResultMixin, Request):
     """
 
     business_connection_id: str
-    chat_id: int
+    chat_id: Union[int, str]
     message_id: int
     checklist: InputChecklist
     reply_markup: Optional[InlineKeyboardMarkup] = None

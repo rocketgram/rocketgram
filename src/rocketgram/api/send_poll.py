@@ -3,11 +3,13 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-from dataclasses import dataclass
+from dataclasses import dataclass, fields, is_dataclass
 from datetime import datetime
 from typing import Union, Optional, List
 
 from . import reply_parameters
+from .input_file import InputFile
+from .input_poll_option import InputPollOption
 from .message_entity import MessageEntity
 from .poll_type import PollType
 from .request import Request
@@ -25,7 +27,7 @@ class SendPoll(MessageResultMixin, Request):
 
     chat_id: Union[int, str]
     question: str
-    options: list
+    options: List[InputPollOption]
     business_connection_id: Optional[str] = None
     message_thread_id: Optional[int] = None
     question_parse_mode: Optional[str] = None
@@ -55,5 +57,23 @@ class SendPoll(MessageResultMixin, Request):
     protect_content: Optional[bool] = None
     message_effect_id: Optional[str] = None
     allow_paid_broadcast: Optional[bool] = None
-    reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
+    reply_parameters: Optional[reply_parameters.ReplyParameters] = None
     reply_markup: Optional[AnyKeyboard] = None
+
+    def files(self) -> List[InputFile]:
+        out = list()
+
+        def collect(value):
+            if isinstance(value, InputFile):
+                out.append(value)
+            elif is_dataclass(value):
+                for item in fields(value):
+                    collect(getattr(value, item.name))
+            elif isinstance(value, (list, tuple)):
+                for item in value:
+                    collect(item)
+
+        collect(self.options)
+        collect(self.media)
+        collect(self.explanation_media)
+        return out

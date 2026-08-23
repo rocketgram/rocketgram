@@ -18,5 +18,5 @@ class SetPassportDataErrors(BoolResultMixin, Request):
     https://core.telegram.org/bots/api#setpassportdataerrors
     """
 
-    user_id: str
+    user_id: int
     errors: List[PassportElementError]
