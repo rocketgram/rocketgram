@@ -23,6 +23,7 @@ class SendAudio(MessageResultMixin, Request):
 
     chat_id: Union[int, str]
     audio: Union[InputFile, str]
+    business_connection_id: Optional[str] = None
     message_thread_id: Optional[int] = None
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
@@ -33,6 +34,8 @@ class SendAudio(MessageResultMixin, Request):
     thumbnail: Optional[Union[InputFile, str]] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
+    message_effect_id: Optional[str] = None
+    allow_paid_broadcast: Optional[bool] = None
     reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyKeyboard] = None
 

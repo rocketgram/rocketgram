@@ -19,6 +19,9 @@ class SuccessfulPayment:
     currency: str
     total_amount: int
     invoice_payload: str
+    subscription_expiration_date: Optional[int]
+    is_recurring: Optional[bool]
+    is_first_recurring: Optional[bool]
     shipping_option_id: Optional[str]
     order_info: Optional[OrderInfo]
     telegram_payment_charge_id: str
@@ -29,6 +32,9 @@ class SuccessfulPayment:
         if data is None:
             return None
 
-        return cls(data['currency'], data['total_amount'], data['invoice_payload'], data.get('shipping_option_id'),
+        return cls(data['currency'], data['total_amount'], data['invoice_payload'],
+                   data.get('subscription_expiration_date'),
+                   data.get('is_recurring'), data.get('is_first_recurring'),
+                   data.get('shipping_option_id'),
                    OrderInfo.parse(data.get('order_info')), data['telegram_payment_charge_id'],
                    data['provider_payment_charge_id'])

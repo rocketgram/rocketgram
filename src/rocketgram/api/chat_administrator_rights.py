@@ -29,6 +29,7 @@ class ChatAdministratorRights:
     can_edit_messages: Optional[bool]
     can_pin_messages: Optional[bool]
     can_manage_topics: Optional[bool]
+    can_manage_direct_messages: Optional[bool]
 
     @classmethod
     def parse(cls, data: dict) -> Optional['ChatAdministratorRights']:
@@ -50,5 +51,6 @@ class ChatAdministratorRights:
             data.get('can_post_messages'),
             data.get('can_edit_messages'),
             data.get('can_pin_messages'),
-            data.get('can_manage_topics')
+            data.get('can_manage_topics'),
+            data.get('can_manage_direct_messages')
         )

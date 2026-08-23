@@ -6,6 +6,8 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
 
+from .business_connection import BusinessConnection
+from .business_messages_deleted import BusinessMessagesDeleted
 from .callback_query import CallbackQuery
 from .chat_boost_removed import ChatBoostRemoved
 from .chat_boost_updated import ChatBoostUpdated
@@ -16,6 +18,7 @@ from .inline_query import InlineQuery
 from .message import Message
 from .message_reaction_count_updated import MessageReactionCountUpdated
 from .message_reaction_updated import MessageReactionUpdated
+from .paid_media_purchased import PaidMediaPurchased
 from .poll import Poll
 from .poll_answer import PollAnswer
 from .pre_checkout_query import PreCheckoutQuery
@@ -41,6 +44,10 @@ class Update:
     edited_message: Optional[Message]
     channel_post: Optional[Message]
     edited_channel_post: Optional[Message]
+    business_connection: Optional[BusinessConnection]
+    business_message: Optional[Message]
+    edited_business_message: Optional[Message]
+    deleted_business_messages: Optional[BusinessMessagesDeleted]
     message_reaction: Optional[MessageReactionUpdated]
     message_reaction_count: Optional[MessageReactionCountUpdated]
     inline_query: Optional[InlineQuery]
@@ -55,6 +62,7 @@ class Update:
     chat_join_request: Optional[ChatJoinRequest]
     chat_boost: Optional[ChatBoostUpdated]
     removed_chat_boost: Optional[ChatBoostRemoved]
+    purchased_paid_media: Optional[PaidMediaPurchased]
 
     @classmethod
     def parse(cls, data: Dict) -> 'Update':
@@ -62,6 +70,10 @@ class Update:
         edited_message = Message.parse(data.get('edited_message'))
         channel_post = Message.parse(data.get('channel_post'))
         edited_channel_post = Message.parse(data.get('edited_channel_post'))
+        business_connection = BusinessConnection.parse(data.get('business_connection'))
+        business_message = Message.parse(data.get('business_message'))
+        edited_business_message = Message.parse(data.get('edited_business_message'))
+        deleted_business_messages = BusinessMessagesDeleted.parse(data.get('deleted_business_messages'))
         message_reaction = MessageReactionUpdated.parse(data.get('message_reaction'))
         message_reaction_count = MessageReactionCountUpdated.parse(data.get('message_reaction_count'))
         inline_query = InlineQuery.parse(data.get('inline_query'))
@@ -76,6 +88,7 @@ class Update:
         chat_join_request = ChatJoinRequest.parse(data.get('chat_join_request'))
         chat_boost = ChatBoostUpdated.parse(data.get('chat_boost'))
         removed_chat_boost = ChatBoostRemoved.parse(data.get('removed_chat_boost'))
+        purchased_paid_media = PaidMediaPurchased.parse(data.get('purchased_paid_media'))
 
         update_type = UpdateType.unknown
         if message:
@@ -86,6 +99,14 @@ class Update:
             update_type = UpdateType.channel_post
         elif edited_channel_post:
             update_type = UpdateType.edited_channel_post
+        elif business_connection:
+            update_type = UpdateType.business_connection
+        elif business_message:
+            update_type = UpdateType.business_message
+        elif edited_business_message:
+            update_type = UpdateType.edited_business_message
+        elif deleted_business_messages:
+            update_type = UpdateType.deleted_business_messages
         elif message_reaction:
             update_type = UpdateType.message_reaction
         elif message_reaction_count:
@@ -114,6 +135,8 @@ class Update:
             update_type = UpdateType.chat_boost
         elif removed_chat_boost:
             update_type = UpdateType.removed_chat_boost
+        elif purchased_paid_media:
+            update_type = UpdateType.purchased_paid_media
 
         return cls(
             data,
@@ -123,6 +146,10 @@ class Update:
             edited_message,
             channel_post,
             edited_channel_post,
+            business_connection,
+            business_message,
+            edited_business_message,
+            deleted_business_messages,
             message_reaction,
             message_reaction_count,
             inline_query,
@@ -136,5 +163,6 @@ class Update:
             chat_member,
             chat_join_request,
             chat_boost,
-            removed_chat_boost
+            removed_chat_boost,
+            purchased_paid_media
         )

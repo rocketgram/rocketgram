@@ -21,6 +21,7 @@ class Poll:
 
     id: str
     question: str
+    question_entities: Optional[List[MessageEntity]]
     options: List[PollOption]
     total_voter_count: int
     is_closed: bool
@@ -38,12 +39,15 @@ class Poll:
         if data is None:
             return None
 
+        question_entities = [MessageEntity.parse(d) for d in data['question_entities']] \
+            if 'question_entities' in data else None
         options = [PollOption.parse(i) for i in data['options']]
         explanation_entities = [MessageEntity.parse(d) for d in data['explanation_entities']] \
             if 'explanation_entities' in data else None
         close_date = datetime.fromtimestamp(data['close_date'], tz=timezone.utc) if 'close_date' in data else None
 
-        return cls(data['id'], data['question'], options, data['total_voter_count'], data['is_closed'],
+        return cls(data['id'], data['question'], question_entities, options, data['total_voter_count'],
+                   data['is_closed'],
                    data['is_anonymous'], PollType(data['type']), data['allows_multiple_answers'],
                    data.get('correct_option_id'), data.get('explanation'), explanation_entities,
                    data.get('open_period'), close_date)

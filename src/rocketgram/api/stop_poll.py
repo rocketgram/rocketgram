@@ -19,6 +19,7 @@ class StopPoll(Request):
     https://core.telegram.org/bots/api#stoppoll
     """
 
+    business_connection_id: Optional[str] = None
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     reply_markup: Optional[AnyInlineKeyboard] = None

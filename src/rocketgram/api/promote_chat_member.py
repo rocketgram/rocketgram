@@ -34,3 +34,4 @@ class PromoteChatMember(BoolResultMixin, Request):
     can_edit_messages: Optional[bool] = None
     can_pin_messages: Optional[bool] = None
     can_manage_topics: Optional[bool] = None
+    can_manage_direct_messages: Optional[bool] = None

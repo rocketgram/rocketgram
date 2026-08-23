@@ -44,6 +44,7 @@ class ChatMember:
     can_restrict_members: Optional[bool]
     can_pin_messages: Optional[bool]
     can_manage_topics: Optional[bool]
+    can_manage_direct_messages: Optional[bool]
     can_promote_members: Optional[bool]
     is_member: Optional[bool]
     can_send_messages: Optional[bool]
@@ -82,6 +83,7 @@ class ChatMember:
             data.get('can_restrict_members'),
             data.get('can_pin_messages'),
             data.get('can_manage_topics'),
+            data.get('can_manage_direct_messages'),
             data.get('can_promote_members'),
             data.get('is_member'),
             data.get('can_send_messages'),

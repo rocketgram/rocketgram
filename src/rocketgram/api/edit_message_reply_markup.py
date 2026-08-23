@@ -17,6 +17,7 @@ class EditMessageReplyMarkup(MessageOrBoolResultMixin, Request):
     https://core.telegram.org/bots/api#editmessagereplymarkup
     """
 
+    business_connection_id: Optional[str] = None
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None

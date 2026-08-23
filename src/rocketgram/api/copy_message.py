@@ -29,8 +29,11 @@ class CopyMessage(Request):
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None
+    show_caption_above_media: Optional[bool] = None
+    video_start_timestamp: Optional[int] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
+    allow_paid_broadcast: Optional[bool] = None
     reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyKeyboard] = None
 

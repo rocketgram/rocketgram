@@ -10,10 +10,17 @@ from typing import Dict, Optional, List
 from .animation import Animation
 from .audio import Audio
 from .chat import Chat
+from .chat_background import ChatBackground
 from .chat_boost_added import ChatBoostAdded
+from .chat_owner_changed import ChatOwnerChanged
+from .chat_owner_left import ChatOwnerLeft
 from .chat_shared import ChatShared
+from .checklist import Checklist
+from .checklist_tasks_added import ChecklistTasksAdded
+from .checklist_tasks_done import ChecklistTasksDone
 from .contact import Contact
 from .dice import Dice
+from .direct_message_price_changed import DirectMessagePriceChanged
 from .document import Document
 from .external_reply_info import ExternalReplyInfo
 from .forum_topic_closed import ForumTopicClosed
@@ -23,6 +30,7 @@ from .forum_topic_reopened import ForumTopicReopened
 from .game import Game
 from .general_forum_topic_hidden import GeneralForumTopicHidden
 from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
+from .gift_info import GiftInfo
 from .giveaway import Giveaway
 from .giveaway_completed import GiveawayCompleted
 from .giveaway_created import GiveawayCreated
@@ -35,16 +43,27 @@ from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
 from .message_origin import MessageOrigin
 from .message_type import MessageType
+from .paid_media_info import PaidMediaInfo
+from .paid_message_price_changed import PaidMessagePriceChanged
 from .passport_data import PassportData
 from .photo_size import PhotoSize
 from .poll import Poll
 from .proximity_alert_triggered import ProximityAlertTriggered
+from .refunded_payment import RefundedPayment
 from .sticker import Sticker
 from .story import Story
 from .successful_payment import SuccessfulPayment
+from .suggested_post_approval_failed import SuggestedPostApprovalFailed
+from .suggested_post_approved import SuggestedPostApproved
+from .suggested_post_declined import SuggestedPostDeclined
+from .suggested_post_info import SuggestedPostInfo
+from .suggested_post_paid import SuggestedPostPaid
+from .suggested_post_refunded import SuggestedPostRefunded
 from .text_quote import TextQuote
+from .unique_gift_info import UniqueGiftInfo
 from .user import User
 from .user_shared import UserShared
+from .users_shared import UsersShared
 from .venue import Venue
 from .video import Video
 from .video_chat_ended import VideoChatEnded
@@ -77,7 +96,9 @@ class Message:
     user: Optional[User]
     sender_chat: Optional[Chat]
     sender_boost_count: Optional[int]
+    sender_business_bot: Optional[User]
     date: datetime
+    business_connection_id: Optional[str]
     chat: Chat
     forward_origin: Optional[MessageOrigin]
     is_topic_message: Optional[bool]
@@ -89,8 +110,10 @@ class Message:
     via_bot: Optional[User]
     edit_date: Optional[datetime]
     has_protected_content: Optional[bool]
+    is_from_offline: Optional[bool]
     media_group_id: Optional[str]
     author_signature: Optional[str]
+    effect_id: Optional[str]
 
     text: Optional[str]
     entities: Optional[List[MessageEntity]]
@@ -100,6 +123,7 @@ class Message:
     animation: Optional[Animation]
     audio: Optional[Audio]
     document: Optional[Document]
+    paid_media: Optional[PaidMediaInfo]
     photo: Optional[List[PhotoSize]]
     sticker: Optional[Sticker]
     story: Optional[Story]
@@ -110,6 +134,7 @@ class Message:
     caption: Optional[str]
     caption_entities: Optional[List[MessageEntity]]
 
+    show_caption_above_media: Optional[bool]
     has_media_spoiler: Optional[bool]
 
     contact: Optional[Contact]
@@ -118,6 +143,7 @@ class Message:
     poll: Optional[Poll]
     venue: Optional[Venue]
     location: Optional[Location]
+    checklist: Optional[Checklist]
 
     new_chat_members: Optional[List[User]]
     left_chat_member: Optional[User]
@@ -140,7 +166,9 @@ class Message:
 
     invoice: Optional[Invoice]
     successful_payment: Optional[SuccessfulPayment]
+    refunded_payment: Optional[RefundedPayment]
 
+    users_shared: Optional[UsersShared]
     user_shared: Optional[UserShared]
     chat_shared: Optional[ChatShared]
 
@@ -154,6 +182,8 @@ class Message:
 
     boost_added: Optional[ChatBoostAdded]
 
+    chat_background_set: Optional[ChatBackground]
+
     forum_topic_created: Optional[ForumTopicCreated]
     forum_topic_edited: Optional[ForumTopicEdited]
     forum_topic_closed: Optional[ForumTopicClosed]
@@ -166,6 +196,26 @@ class Message:
     giveaway: Optional[Giveaway]
     giveaway_winners: Optional[GiveawayWinners]
     giveaway_completed: Optional[GiveawayCompleted]
+
+    gift: Optional[GiftInfo]
+    unique_gift: Optional[UniqueGiftInfo]
+
+    chat_owner_left: Optional[ChatOwnerLeft]
+    chat_owner_changed: Optional[ChatOwnerChanged]
+
+    paid_message_price_changed: Optional[PaidMessagePriceChanged]
+    direct_message_price_changed: Optional[DirectMessagePriceChanged]
+
+    checklist_tasks_done: Optional[ChecklistTasksDone]
+    checklist_tasks_added: Optional[ChecklistTasksAdded]
+
+    suggested_post_approved: Optional[SuggestedPostApproved]
+    suggested_post_approval_failed: Optional[SuggestedPostApprovalFailed]
+    suggested_post_declined: Optional[SuggestedPostDeclined]
+    suggested_post_paid: Optional[SuggestedPostPaid]
+    suggested_post_refunded: Optional[SuggestedPostRefunded]
+
+    suggested_post_info: Optional[SuggestedPostInfo]
 
     video_chat_scheduled: Optional[VideoChatScheduled]
     video_chat_started: Optional[VideoChatStarted]
@@ -186,7 +236,9 @@ class Message:
         user = User.parse(data.get('from'))
         sender_chat = Chat.parse(data.get('sender_chat'))
         sender_boost_count = data.get('sender_boost_count')
+        sender_business_bot = User.parse(data.get('sender_business_bot'))
         date = datetime.fromtimestamp(data['date'], tz=timezone.utc)
+        business_connection_id = data.get('business_connection_id')
         chat = Chat.parse(data["chat"])
         forward_origin = MessageOrigin.parse(data.get('forward_origin'))
         is_topic_message = data.get('is_topic_message')
@@ -198,8 +250,10 @@ class Message:
         via_bot = User.parse(data.get('via_bot'))
         edit_date = datetime.fromtimestamp(data['edit_date'], tz=timezone.utc) if 'edit_date' in data else None
         has_protected_content = data.get('has_protected_content')
+        is_from_offline = data.get('is_from_offline')
         media_group_id = data.get('media_group_id')
         author_signature = data.get('author_signature')
+        effect_id = data.get('effect_id')
 
         text = data.get('text')
         entities = [MessageEntity.parse(d) for d in data['entities']] if 'entities' in data else None
@@ -211,6 +265,7 @@ class Message:
         document = Document.parse(data.get('document'))
         if animation is not None:
             document = None
+        paid_media = PaidMediaInfo.parse(data.get('paid_media'))
         photo = [PhotoSize.parse(d) for d in data['photo']] if 'photo' in data else None
         sticker = Sticker.parse(data.get('sticker'))
         story = Story.parse(data.get('story'))
@@ -222,6 +277,7 @@ class Message:
         caption_entities = [MessageEntity.parse(d) for d in data['caption_entities']] \
             if 'caption_entities' in data else None
 
+        show_caption_above_media = data.get('show_caption_above_media')
         has_media_spoiler = data.get('has_media_spoiler')
 
         contact = Contact.parse(data.get('contact'))
@@ -230,6 +286,7 @@ class Message:
         poll = Poll.parse(data.get('poll'))
         venue = Venue.parse(data.get('venue'))
         location = Location.parse(data.get('location'))
+        checklist = Checklist.parse(data.get('checklist'))
 
         new_chat_members = [User.parse(d) for d in data['new_chat_members']] \
             if 'new_chat_members' in data else None
@@ -254,7 +311,9 @@ class Message:
 
         invoice = Invoice.parse(data.get('invoice'))
         successful_payment = SuccessfulPayment.parse(data.get('successful_payment'))
+        refunded_payment = RefundedPayment.parse(data.get('refunded_payment'))
 
+        users_shared = UsersShared.parse(data.get('users_shared'))
         user_shared = UserShared.parse(data.get('user_shared'))
         chat_shared = ChatShared.parse(data.get('chat_shared'))
 
@@ -268,6 +327,8 @@ class Message:
 
         boost_added = ChatBoostAdded.parse(data.get('boost_added'))
 
+        chat_background_set = ChatBackground.parse(data.get('chat_background_set'))
+
         forum_topic_created = ForumTopicCreated.parse(data.get('forum_topic_created'))
         forum_topic_edited = ForumTopicEdited.parse(data.get('forum_topic_edited'))
         forum_topic_closed = ForumTopicClosed.parse(data.get('forum_topic_closed'))
@@ -280,6 +341,28 @@ class Message:
         giveaway = Giveaway.parse(data.get('giveaway'))
         giveaway_winners = GiveawayWinners.parse(data.get('giveaway_winners'))
         giveaway_completed = GiveawayCompleted.parse(data.get('giveaway_completed'))
+
+        gift_info = GiftInfo.parse(data.get('gift'))
+        unique_gift_info = UniqueGiftInfo.parse(data.get('unique_gift'))
+
+        chat_owner_left = ChatOwnerLeft.parse(data.get('chat_owner_left'))
+        chat_owner_changed = ChatOwnerChanged.parse(data.get('chat_owner_changed'))
+
+        paid_message_price_changed = PaidMessagePriceChanged.parse(data.get('paid_message_price_changed'))
+        direct_message_price_changed_obj = DirectMessagePriceChanged.parse(
+            data.get('direct_message_price_changed'))
+
+        checklist_tasks_done = ChecklistTasksDone.parse(data.get('checklist_tasks_done'))
+        checklist_tasks_added = ChecklistTasksAdded.parse(data.get('checklist_tasks_added'))
+
+        suggested_post_approved = SuggestedPostApproved.parse(data.get('suggested_post_approved'))
+        suggested_post_approval_failed = SuggestedPostApprovalFailed.parse(
+            data.get('suggested_post_approval_failed'))
+        suggested_post_declined = SuggestedPostDeclined.parse(data.get('suggested_post_declined'))
+        suggested_post_paid = SuggestedPostPaid.parse(data.get('suggested_post_paid'))
+        suggested_post_refunded = SuggestedPostRefunded.parse(data.get('suggested_post_refunded'))
+
+        suggested_post_info = SuggestedPostInfo.parse(data.get('suggested_post_info'))
 
         video_chat_scheduled = VideoChatScheduled.parse(data.get('video_chat_scheduled'))
         video_chat_started = VideoChatStarted.parse(data.get('video_chat_started'))
@@ -303,6 +386,8 @@ class Message:
             message_type = MessageType.animation
         elif game:
             message_type = MessageType.game
+        elif paid_media:
+            message_type = MessageType.paid_media
         elif photo:
             message_type = MessageType.photo
         elif sticker:
@@ -315,6 +400,8 @@ class Message:
             message_type = MessageType.voice
         elif video_note:
             message_type = MessageType.video_note
+        elif checklist:
+            message_type = MessageType.checklist
         elif new_chat_members:
             message_type = MessageType.new_chat_members
         elif contact:
@@ -351,6 +438,10 @@ class Message:
             message_type = MessageType.invoice
         elif successful_payment:
             message_type = MessageType.successful_payment
+        elif refunded_payment:
+            message_type = MessageType.refunded_payment
+        elif users_shared:
+            message_type = MessageType.users_shared
         elif user_shared:
             message_type = MessageType.user_shared
         elif chat_shared:
@@ -365,6 +456,8 @@ class Message:
             message_type = MessageType.proximity_alert_triggered
         elif boost_added:
             message_type = MessageType.boost_added
+        elif chat_background_set:
+            message_type = MessageType.chat_background_set
         elif forum_topic_created:
             message_type = MessageType.forum_topic_created
         elif forum_topic_edited:
@@ -385,6 +478,32 @@ class Message:
             message_type = MessageType.giveaway_winners
         elif giveaway_completed:
             message_type = MessageType.giveaway_completed
+        elif gift_info:
+            message_type = MessageType.gift
+        elif unique_gift_info:
+            message_type = MessageType.unique_gift
+        elif chat_owner_left:
+            message_type = MessageType.chat_owner_left
+        elif chat_owner_changed:
+            message_type = MessageType.chat_owner_changed
+        elif paid_message_price_changed:
+            message_type = MessageType.paid_message_price_changed
+        elif direct_message_price_changed_obj:
+            message_type = MessageType.direct_message_price_changed
+        elif checklist_tasks_done:
+            message_type = MessageType.checklist_tasks_done
+        elif checklist_tasks_added:
+            message_type = MessageType.checklist_tasks_added
+        elif suggested_post_approved:
+            message_type = MessageType.suggested_post_approved
+        elif suggested_post_approval_failed:
+            message_type = MessageType.suggested_post_approval_failed
+        elif suggested_post_declined:
+            message_type = MessageType.suggested_post_declined
+        elif suggested_post_paid:
+            message_type = MessageType.suggested_post_paid
+        elif suggested_post_refunded:
+            message_type = MessageType.suggested_post_refunded
         elif video_chat_scheduled:
             message_type = MessageType.video_chat_scheduled
         elif video_chat_started:
@@ -405,7 +524,9 @@ class Message:
             user,
             sender_chat,
             sender_boost_count,
+            sender_business_bot,
             date,
+            business_connection_id,
             chat,
             forward_origin,
             is_topic_message,
@@ -417,14 +538,17 @@ class Message:
             via_bot,
             edit_date,
             has_protected_content,
+            is_from_offline,
             media_group_id,
             author_signature,
+            effect_id,
             text,
             entities,
             link_preview_options,
             animation,
             audio,
             document,
+            paid_media,
             photo,
             sticker,
             story,
@@ -433,6 +557,7 @@ class Message:
             voice,
             caption,
             caption_entities,
+            show_caption_above_media,
             has_media_spoiler,
             contact,
             dice,
@@ -440,6 +565,7 @@ class Message:
             poll,
             venue,
             location,
+            checklist,
             new_chat_members,
             left_chat_member,
             new_chat_title,
@@ -454,6 +580,8 @@ class Message:
             pinned_message,
             invoice,
             successful_payment,
+            refunded_payment,
+            users_shared,
             user_shared,
             chat_shared,
             connected_website,
@@ -461,6 +589,7 @@ class Message:
             passport_data,
             proximity_alert_triggered,
             boost_added,
+            chat_background_set,
             forum_topic_created,
             forum_topic_edited,
             forum_topic_closed,
@@ -471,6 +600,20 @@ class Message:
             giveaway,
             giveaway_winners,
             giveaway_completed,
+            gift_info,
+            unique_gift_info,
+            chat_owner_left,
+            chat_owner_changed,
+            paid_message_price_changed,
+            direct_message_price_changed_obj,
+            checklist_tasks_done,
+            checklist_tasks_added,
+            suggested_post_approved,
+            suggested_post_approval_failed,
+            suggested_post_declined,
+            suggested_post_paid,
+            suggested_post_refunded,
+            suggested_post_info,
             video_chat_scheduled,
             video_chat_started,
             video_chat_ended,

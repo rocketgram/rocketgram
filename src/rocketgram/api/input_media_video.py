@@ -26,6 +26,7 @@ class InputMediaVideo(InputMedia):
     caption: Optional[str] = None
     parse_mode: Optional[ParseModeType] = None
     caption_entities: Optional[List[MessageEntity]] = None
+    show_caption_above_media: Optional[bool] = None
     width: Optional[int] = None
     height: Optional[int] = None
     duration: Optional[int] = None

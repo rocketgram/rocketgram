@@ -21,12 +21,15 @@ class SendVideoNote(MessageResultMixin, Request):
 
     chat_id: Union[int, str]
     video_note: Union[InputFile, str]
+    business_connection_id: Optional[str] = None
     message_thread_id: Optional[int] = None
     duration: Optional[int] = None
     length: Optional[int] = None
     thumbnail: Union[InputFile, str] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
+    message_effect_id: Optional[str] = None
+    allow_paid_broadcast: Optional[bool] = None
     reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyKeyboard] = None
 

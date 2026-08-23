@@ -4,7 +4,9 @@
 
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
+
+from .message_entity import MessageEntity
 
 
 @dataclass(frozen=True)
@@ -15,6 +17,7 @@ class PollOption:
     """
 
     text: str
+    text_entities: Optional[List[MessageEntity]]
     voter_count: int
 
     @classmethod
@@ -22,4 +25,8 @@ class PollOption:
         if data is None:
             return None
 
-        return cls(data['text'], data['voter_count'])
+        return cls(
+            data['text'],
+            [MessageEntity.parse(e) for e in data['text_entities']] if 'text_entities' in data else None,
+            data['voter_count']
+        )

@@ -21,9 +21,11 @@ class CreateInvoiceLink(StrResultMixin, Request):
     title: str
     description: str
     payload: str
-    provider_token: str
     currency: str
     prices: List[LabeledPrice]
+    provider_token: Optional[str] = None
+    business_connection_id: Optional[str] = None
+    subscription_period: Optional[int] = None
     max_tip_amount: Optional[int] = None
     suggested_tip_amounts: Optional[List[int]] = None
     provider_data: Optional[str] = None

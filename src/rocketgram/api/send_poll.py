@@ -24,8 +24,11 @@ class SendPoll(MessageResultMixin, Request):
 
     chat_id: Union[int, str]
     question: str
-    options: List[str]
+    options: list
+    business_connection_id: Optional[str] = None
     message_thread_id: Optional[int] = None
+    question_parse_mode: Optional[str] = None
+    question_entities: Optional[List[MessageEntity]] = None
     is_anonymous: Optional[bool] = None
     type: Optional['PollType'] = None
     allows_multiple_answers: Optional[bool] = None
@@ -38,5 +41,7 @@ class SendPoll(MessageResultMixin, Request):
     is_closed: Optional[bool] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
+    message_effect_id: Optional[str] = None
+    allow_paid_broadcast: Optional[bool] = None
     reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyKeyboard] = None

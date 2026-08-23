@@ -26,6 +26,8 @@ class ChatInviteLink:
     expire_date: Optional[datetime]
     member_limit: Optional[int]
     pending_join_request_count: Optional[int]
+    subscription_period: Optional[int]
+    subscription_price: Optional[int]
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['ChatInviteLink']:
@@ -36,4 +38,5 @@ class ChatInviteLink:
 
         return cls(data['invite_link'], user.User.parse(data['creator']), data['creates_join_request'],
                    data['is_primary'], data['is_revoked'], data.get('name'), expire_date, data.get('member_limit'),
-                   data.get('pending_join_request_count'))
+                   data.get('pending_join_request_count'), data.get('subscription_period'),
+                   data.get('subscription_price'))

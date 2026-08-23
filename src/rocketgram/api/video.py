@@ -4,9 +4,10 @@
 
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 from .photo_size import PhotoSize
+from .video_quality import VideoQuality
 
 
 @dataclass(frozen=True)
@@ -22,6 +23,9 @@ class Video:
     height: int
     duration: int
     thumbnail: Optional[PhotoSize]
+    cover: Optional[List[PhotoSize]]
+    start_timestamp: Optional[int]
+    qualities: Optional[List[VideoQuality]]
     file_name: Optional[str]
     mime_type: Optional[str]
     file_size: Optional[int]
@@ -37,6 +41,9 @@ class Video:
             data['width'], data['height'],
             data['duration'],
             PhotoSize.parse(data.get('thumbnail')),
+            [PhotoSize.parse(p) for p in data['cover']] if 'cover' in data else None,
+            data.get('start_timestamp'),
+            [VideoQuality.parse(q) for q in data['qualities']] if 'qualities' in data else None,
             data.get('file_name'),
             data.get('mime_type'),
             data.get('file_size')

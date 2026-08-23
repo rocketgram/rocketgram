@@ -20,10 +20,10 @@ class GetChat(Request):
 
     chat_id: Union[int, str]
 
-    def parse_result(self, data) -> 'api.Chat':
+    def parse_result(self, data) -> 'api.ChatFullInfo':
         assert isinstance(data, dict), "Should be dict."
-        return api.Chat.parse(data)
+        return api.ChatFullInfo.parse(data)
 
-    async def send(self) -> 'api.Chat':
+    async def send(self) -> 'api.ChatFullInfo':
         res = await context.bot.send(self)
         return res.result

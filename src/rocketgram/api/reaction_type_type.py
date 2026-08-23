@@ -10,5 +10,6 @@ from .utils import EnumAutoName
 
 class ReactionTypeType(EnumAutoName):
     emoji = auto()
-    custom_emoji_id = auto()
+    custom_emoji = auto()
+    paid = auto()
     unknown = auto()

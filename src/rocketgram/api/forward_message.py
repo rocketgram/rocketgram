@@ -21,5 +21,6 @@ class ForwardMessage(MessageResultMixin, Request):
     from_chat_id: Union[int, str]
     message_id: int
     message_thread_id: Optional[int] = None
+    video_start_timestamp: Optional[int] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None

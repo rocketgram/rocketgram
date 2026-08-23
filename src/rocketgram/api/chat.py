@@ -29,6 +29,7 @@ class Chat:
     first_name: Optional[str]
     last_name: Optional[str]
     is_forum: Optional[bool]
+    is_direct_messages: Optional[bool]
     photo: Optional[ChatPhoto]
     active_usernames: Optional[List[str]]
     available_reactions: Optional[List[ReactionType]]
@@ -69,6 +70,7 @@ class Chat:
             chat_type = ChatType(data['type'])
         except ValueError:
             chat_type = ChatType.unknown
+
         return cls(
             data['id'],
             chat_type,
@@ -77,6 +79,7 @@ class Chat:
             data.get('first_name'),
             data.get('last_name'),
             data.get('is_forum'),
+            data.get('is_direct_messages'),
             ChatPhoto.parse(data.get('photo')),
             data['active_usernames'] if 'active_usernames' in data else None,
             [ReactionType.parse(r) for r in data['available_reactions']] if 'available_reactions' in data else None,

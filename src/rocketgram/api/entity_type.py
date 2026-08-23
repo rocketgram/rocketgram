@@ -22,6 +22,7 @@ class EntityType(EnumAutoName):
     strikethrough = auto()
     spoiler = auto()
     blockquote = auto()
+    expandable_blockquote = auto()
     code = auto()
     pre = auto()
     text_link = auto()

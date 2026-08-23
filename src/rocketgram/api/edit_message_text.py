@@ -21,6 +21,7 @@ class EditMessageText(MessageOrBoolResultMixin, Request):
     """
 
     text: str
+    business_connection_id: Optional[str] = None
     chat_id: Optional[Union[int, str]] = None
     message_id: Optional[int] = None
     inline_message_id: Optional[str] = None

@@ -25,6 +25,8 @@ class User:
     can_join_groups: Optional[bool]
     can_read_all_group_messages: Optional[bool]
     supports_inline_queries: Optional[bool]
+    can_connect_to_business: Optional[bool]
+    has_main_web_app: Optional[bool]
 
     @classmethod
     def parse(cls, data: Optional[Dict]) -> Optional['User']:
@@ -34,4 +36,5 @@ class User:
         return cls(data['id'], data['is_bot'], data['first_name'], data.get('last_name'), data.get('username'),
                    data.get('language_code'), data.get('is_premium'), data.get('added_to_attachment_menu'),
                    data.get('can_join_groups'), data.get('can_read_all_group_messages'),
-                   data.get('supports_inline_queries'))
+                   data.get('supports_inline_queries'), data.get('can_connect_to_business'),
+                   data.get('has_main_web_app'))

@@ -23,9 +23,10 @@ class SendInvoice(MessageResultMixin, Request):
     title: str
     description: str
     payload: str
-    provider_token: str
     currency: str
     prices: List[LabeledPrice]
+    provider_token: Optional[str] = None
+    business_connection_id: Optional[str] = None
     message_thread_id: Optional[int] = None
     max_tip_amount: Optional[int] = None
     suggested_tip_amounts: Optional[List[int]] = None
@@ -44,5 +45,7 @@ class SendInvoice(MessageResultMixin, Request):
     is_flexible: Optional[bool] = None
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
+    message_effect_id: Optional[str] = None
+    allow_paid_broadcast: Optional[bool] = None
     reply_parameters: Optional['reply_parameters.ReplyParameters'] = None
     reply_markup: Optional[AnyInlineKeyboard] = None

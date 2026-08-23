@@ -20,6 +20,7 @@ from . import link_preview_options
 from . import location
 from . import message_origin
 from . import message_type
+from . import paid_media_info as paid_media_info_mod
 from . import photo_size
 from . import poll
 from . import sticker
@@ -49,6 +50,7 @@ class ExternalReplyInfo:
     animation: Optional['animation.Animation']
     audio: Optional['audio.Audio']
     document: Optional['document.Document']
+    paid_media: Optional['paid_media_info_mod.PaidMediaInfo']
     photo: Optional[List['photo_size.PhotoSize']]
     sticker: Optional['sticker.Sticker']
     story: Optional['story.Story']
@@ -78,6 +80,7 @@ class ExternalReplyInfo:
         animation_ = animation.Animation.parse(data.get('animation'))
         audio_ = audio.Audio.parse(data.get('audio'))
         document_ = document.Document.parse(data.get('document'))
+        paid_media_ = paid_media_info_mod.PaidMediaInfo.parse(data.get('paid_media'))
         photo_size_ = [photo_size.PhotoSize.parse(e) for e in data['photo']] if 'photo' in data else None
         sticker_ = sticker.Sticker.parse(data.get('sticker'))
         story_ = story.Story.parse(data.get('story'))
@@ -105,6 +108,8 @@ class ExternalReplyInfo:
             message_type_ = message_type.MessageType.animation
         elif game_:
             message_type_ = message_type.MessageType.game
+        elif paid_media_:
+            message_type_ = message_type.MessageType.paid_media
         elif photo_size_:
             message_type_ = message_type.MessageType.photo
         elif sticker_:
@@ -143,6 +148,7 @@ class ExternalReplyInfo:
             animation_,
             audio_,
             document_,
+            paid_media_,
             photo_size_,
             sticker_,
             story_,
