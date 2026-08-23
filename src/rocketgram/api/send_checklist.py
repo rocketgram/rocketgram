@@ -6,9 +6,9 @@
 from dataclasses import dataclass
 from typing import Optional, Union
 
-from . import reply_parameters
 from .inline_keyboard_markup import InlineKeyboardMarkup
 from .input_checklist import InputChecklist
+from .reply_parameters import ReplyParameters
 from .request import Request
 from .utils import MessageResultMixin
 
@@ -26,5 +26,5 @@ class SendChecklist(MessageResultMixin, Request):
     disable_notification: Optional[bool] = None
     protect_content: Optional[bool] = None
     message_effect_id: Optional[str] = None
-    reply_parameters: Optional[reply_parameters.ReplyParameters] = None
+    reply_parameters: Optional[ReplyParameters] = None
     reply_markup: Optional[InlineKeyboardMarkup] = None

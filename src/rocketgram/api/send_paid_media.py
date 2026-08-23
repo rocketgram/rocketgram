@@ -6,11 +6,11 @@
 from dataclasses import dataclass
 from typing import Union, Optional, List
 
-from . import reply_parameters
 from .message_entity import MessageEntity
 from .input_file import InputFile
 from .input_paid_media import InputPaidMedia
 from .parse_mode_type import ParseModeType
+from .reply_parameters import ReplyParameters
 from .request import Request
 from .suggested_post_parameters import SuggestedPostParameters
 from .utils import AnyKeyboard, MessageResultMixin
@@ -37,7 +37,7 @@ class SendPaidMedia(MessageResultMixin, Request):
     protect_content: Optional[bool] = None
     allow_paid_broadcast: Optional[bool] = None
     suggested_post_parameters: Optional[SuggestedPostParameters] = None
-    reply_parameters: Optional[reply_parameters.ReplyParameters] = None
+    reply_parameters: Optional[ReplyParameters] = None
     reply_markup: Optional[AnyKeyboard] = None
 
     def files(self) -> List[InputFile]:

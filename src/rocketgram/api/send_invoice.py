@@ -6,7 +6,7 @@
 from dataclasses import dataclass
 from typing import Optional, List, Union
 
-from . import reply_parameters
+from .reply_parameters import ReplyParameters
 from .labeled_price import LabeledPrice
 from .request import Request
 from .suggested_post_parameters import SuggestedPostParameters
@@ -49,5 +49,5 @@ class SendInvoice(MessageResultMixin, Request):
     message_effect_id: Optional[str] = None
     allow_paid_broadcast: Optional[bool] = None
     suggested_post_parameters: Optional[SuggestedPostParameters] = None
-    reply_parameters: Optional[reply_parameters.ReplyParameters] = None
+    reply_parameters: Optional[ReplyParameters] = None
     reply_markup: Optional[AnyInlineKeyboard] = None
