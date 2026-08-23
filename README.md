@@ -68,8 +68,9 @@ UpdatesExecutor.run(bot)
 Code tested automatically using `Github Actions`. 
 You can see the build status **[here](https://github.com/rocketgram/rocketgram/actions)**.
 
-To test code manually run `pytest`:
+To install development dependencies and run the tests:
 
 ```bash
-pytest
+uv sync
+uv run pytest
 ```
