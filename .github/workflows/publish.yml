@@ -18,24 +18,19 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: "Install uv"
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+
       - name: "Install dependencies"
-        run: |
-          python3 -m pip install --upgrade pip
-          pip3 install pdm
+        run: uv sync --locked --no-install-project
 
       - name: "Build"
-        run: |
-          pdm install --no-self
-          pdm build
+        run: uv build --no-sources
 
       - name: "Publish pypi"
         env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          pdm config repository.pypi.username "__token__"
-          pdm config repository.pypi.password "$PYPI_TOKEN"
-          pdm publish
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: uv publish
 
       - name: "Create release"
-        run: |
-          pdm run python tools/create_release.py ${{ secrets.GITHUB_TOKEN }} ${{ github.repository }} ${{ github.ref_name }} README.md
+        run: uv run --locked --no-sync python tools/create_release.py ${{ secrets.GITHUB_TOKEN }} ${{ github.repository }} ${{ github.ref_name }} README.md
