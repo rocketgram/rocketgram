@@ -6,6 +6,7 @@
 import asyncio
 import logging
 import signal
+from contextlib import suppress
 from typing import TYPE_CHECKING, Union, Optional, Dict, List, Set
 
 from .executor import Executor
@@ -19,12 +20,13 @@ logger = logging.getLogger('rocketgram.executors.updates')
 
 
 class UpdatesExecutor(Executor):
-    __slots__ = ('_timeout', '_bots', '_started')
+    __slots__ = ('_timeout', '_bots', '_allowed_updates', '_started')
 
     def __init__(self, request_timeout=30):
         self._timeout = request_timeout
 
         self._bots: Dict['Bot', Optional[asyncio.Task]] = dict()
+        self._allowed_updates: Dict['Bot', Optional[List[UpdateType]]] = dict()
         self._started = False
 
     @property
@@ -50,11 +52,17 @@ class UpdatesExecutor(Executor):
 
         await bot.init(self)
 
-        logger.info('Added bot @%s', bot.name)
+        try:
+            await bot.send(DeleteWebhook(drop_pending_updates=drop_pending_updates))
+        except BaseException:
+            with suppress(Exception):
+                await bot.shutdown(self)
+            raise
 
         self._bots[bot] = None
+        self._allowed_updates[bot] = allowed_updates
 
-        await bot.send(DeleteWebhook(drop_pending_updates=drop_pending_updates))
+        logger.info('Added bot @%s', bot.name)
 
         if drop_pending_updates:
             logger.debug('Updates dropped for @%s', bot.name)
@@ -68,6 +76,7 @@ class UpdatesExecutor(Executor):
 
         tasks = self._bots[bot]
         del self._bots[bot]
+        del self._allowed_updates[bot]
 
         if tasks:
             await self._wait_tasks({tasks})
@@ -87,22 +96,24 @@ class UpdatesExecutor(Executor):
                         offset = update.update_id
 
                     task = asyncio.create_task(bot.process(self, update))
-                    task.done()
                     pending.add(task)
 
                 pending = {t for t in pending if not t.done()}
             except RocketgramNetworkTimeoutError:
                 pass
             except RocketgramNetworkError:
-                logging.exception('Exception while processing updates')
+                logger.exception('Exception while processing updates')
             except asyncio.CancelledError:
                 return pending
             except Exception:  # noqa
-                logging.exception('Exception while processing updates')
+                logger.exception('Exception while processing updates')
 
     def _start_bot(self, bot: 'Bot', allowed_updates: Optional[List[UpdateType]] = None):
         assert bot in self._bots, 'Unknown bot!'
         assert self._bots[bot] is None, 'Bot already started!'
+
+        if allowed_updates is None:
+            allowed_updates = self._allowed_updates[bot]
 
         task = asyncio.create_task(self._runner(bot, allowed_updates))
         self._bots[bot] = task
@@ -124,7 +135,12 @@ class UpdatesExecutor(Executor):
         pending = set()
         for task in tasks:
             task.cancel()
-            p = await task
+
+        for task in tasks:
+            try:
+                p = await task
+            except asyncio.CancelledError:
+                continue
             pending.update(p)
 
         while len(pending):

@@ -27,7 +27,7 @@ class ReplyKeyboard(Keyboard):
         self.__selective = selective
 
     def set_persistent(self, resize=False):
-        self.__resize = resize
+        self.__persistent = resize
 
     persistent = property(fget=lambda self: self.__persistent, fset=set_persistent)
 
@@ -77,13 +77,19 @@ class ReplyKeyboard(Keyboard):
             request_id: int,
             user_is_bot: Optional[bool] = None,
             user_is_premium: Optional[bool] = None,
-            max_quantity: Optional[int] = None
+            max_quantity: Optional[int] = None,
+            request_name: Optional[bool] = None,
+            request_username: Optional[bool] = None,
+            request_photo: Optional[bool] = None
     ) -> 'ReplyKeyboard':
         request_users = api.KeyboardButtonRequestUsers(
             request_id=request_id,
             user_is_bot=user_is_bot,
             user_is_premium=user_is_premium,
-            max_quantity=max_quantity
+            max_quantity=max_quantity,
+            request_name=request_name,
+            request_username=request_username,
+            request_photo=request_photo
         )
         self.add(api.KeyboardButton(text=text, request_users=request_users))
         return self
@@ -96,15 +102,25 @@ class ReplyKeyboard(Keyboard):
             chat_is_created: Optional[bool] = None,
             user_administrator_rights: Optional['api.ChatAdministratorRights'] = None,
             bot_administrator_rights: Optional['api.ChatAdministratorRights'] = None,
-            bot_is_member: Optional[bool] = None
+            bot_is_member: Optional[bool] = None,
+            chat_is_channel: bool = False,
+            chat_is_forum: Optional[bool] = None,
+            request_title: Optional[bool] = None,
+            request_username: Optional[bool] = None,
+            request_photo: Optional[bool] = None
     ) -> 'ReplyKeyboard':
         request_chat = api.KeyboardButtonRequestChat(
             request_id=request_id,
+            chat_is_channel=chat_is_channel,
+            chat_is_forum=chat_is_forum,
             chat_has_username=chat_has_username,
             chat_is_created=chat_is_created,
             user_administrator_rights=user_administrator_rights,
             bot_administrator_rights=bot_administrator_rights,
-            bot_is_member=bot_is_member
+            bot_is_member=bot_is_member,
+            request_title=request_title,
+            request_username=request_username,
+            request_photo=request_photo
         )
         self.add(api.KeyboardButton(text=text, request_chat=request_chat))
         return self

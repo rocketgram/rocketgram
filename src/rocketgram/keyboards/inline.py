@@ -3,7 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-from typing import Optional
+from typing import Optional, Union
 
 from .keyboard import Keyboard
 from .. import api
@@ -50,7 +50,9 @@ class InlineKeyboard(Keyboard):
         self.add(api.InlineKeyboardButton(text=text, switch_inline_query_chosen_chat=siqcc))
         return self
 
-    def game(self, text: str, callback_game: str) -> 'InlineKeyboard':
+    def game(self, text: str, callback_game: Optional[Union[str, 'api.CallbackGame']] = None) -> 'InlineKeyboard':
+        if callback_game is None or isinstance(callback_game, str):
+            callback_game = api.CallbackGame()
         self.add(api.InlineKeyboardButton(text=text, callback_game=callback_game))
         return self
 

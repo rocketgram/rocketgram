@@ -5,6 +5,7 @@
 
 import asyncio
 import logging
+from contextlib import suppress
 from secrets import compare_digest
 
 from aiohttp.web import Server, ServerRunner, BaseRequest, TCPSite, Response
@@ -48,12 +49,14 @@ class AioHttpExecutor(WebhookExecutor):
         except Exception:  # noqa
             logger.exception("Got exception while processing update:")
             return Response(status=500, text="Server error.", headers=self.HEADERS_ERROR)
+        finally:
+            tasks = self._tasks.get(bot)
+            if tasks is not None:
+                tasks.discard(task)
 
         if response:
             data = self._dumps(response.render(with_method=True))
             return Response(body=data, headers=self.HEADERS)
-
-        self._tasks[bot] = {t for t in self._tasks[bot] if not t.done()}
 
         return Response(status=200)
 
@@ -61,17 +64,23 @@ class AioHttpExecutor(WebhookExecutor):
         if self._started:
             return
 
-        self._started = True
-
         logger.info("Starting with webhook...")
 
         runner = ServerRunner(Server(self.__handler))
-        await runner.setup()
-        self._srv = TCPSite(runner, self._host, self._port)
+        try:
+            await runner.setup()
+            srv = TCPSite(runner, self._host, self._port)
+            await srv.start()
+        except BaseException:
+            with suppress(Exception):
+                await runner.cleanup()
+            raise
+
+        self._runner = runner
+        self._srv = srv
+        self._started = True
 
         logger.info("Listening on http://%s:%s%s", self._host, self._port, self._base_path)
-
-        await self._srv.start()
 
         logger.info("Running!")
 
@@ -83,9 +92,12 @@ class AioHttpExecutor(WebhookExecutor):
 
         self._started = False
 
-        if self._srv:
-            await self._srv.stop()
-            self._srv = None
+        runner = self._runner
+        self._runner = None
+        self._srv = None
+
+        if runner:
+            await runner.cleanup()
 
         tasks = set()
         for b, t in self._tasks.items():

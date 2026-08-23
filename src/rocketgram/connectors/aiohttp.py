@@ -5,7 +5,6 @@
 
 import asyncio
 import logging
-from json import JSONDecodeError
 from typing import Type
 
 import aiohttp
@@ -25,16 +24,21 @@ class AioHttpConnector(Connector):
                  api_file_url: str = Connector.API_FILE_URL,
                  json_adapter: Type[BaseJsonAdapter] = default_json_adapter()):
         super().__init__(timeout=timeout, api_url=api_url, api_file_url=api_file_url, json_adapter=json_adapter)
-        self._session = aiohttp.ClientSession(loop=asyncio.get_event_loop())
+        self._session = None
 
     async def init(self):
-        pass
+        if self._session is None or self._session.closed:
+            self._session = aiohttp.ClientSession()
 
     async def shutdown(self):
-        await self._session.close()
+        if self._session is not None and not self._session.closed:
+            await self._session.close()
+        self._session = None
 
     async def send(self, token: str, request: Request) -> Response:
         try:
+            await self.init()
+
             url = self._api_url % token + request.method
 
             request_data = request.render()
@@ -47,6 +51,8 @@ class AioHttpConnector(Connector):
                     if isinstance(field, (dict, list, tuple)):
                         data.add_field(name, self._dumps(field), content_type='application/json')
                         continue
+                    if isinstance(field, bool):
+                        field = self._dumps(field)
                     data.add_field(name, str(field), content_type='text/plain')
 
                 for file in files:
@@ -57,12 +63,18 @@ class AioHttpConnector(Connector):
                 response = await self._session.post(url, data=self._dumps(request_data), headers=self.HEADERS,
                                                     timeout=self._timeout)
 
-            return Response.parse(self._loads(await response.read()), request)
-        except JSONDecodeError as error:
-            raise RocketgramParseError(error)
+            response_data = await response.read()
         except asyncio.CancelledError:
             raise
         except asyncio.TimeoutError as error:
             raise RocketgramNetworkTimeoutError(error)
         except Exception as error:
             raise RocketgramNetworkError(error) from error
+
+        try:
+            data = self._loads(response_data)
+            if not isinstance(data, dict):
+                raise TypeError('Expected a JSON object in the response')
+            return Response.parse(data, request)
+        except Exception as error:
+            raise RocketgramParseError(error) from error

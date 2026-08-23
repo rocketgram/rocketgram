@@ -3,10 +3,9 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-import asyncio
 import logging
 from dataclasses import dataclass
-from inspect import isclass
+from inspect import isawaitable, isclass
 from typing import Callable, Coroutine, AsyncGenerator, Union, List
 
 from .filters import FILTERS_ATTR, PRIORITY_ATTR, WAITER_ASSIGNED_ATTR, HANDLER_ASSIGNED_ATTR
@@ -37,7 +36,7 @@ def _get_function(handler):
 
 async def _call_or_await(func, *args, **kwargs):
     r = func(*args, **kwargs)
-    if asyncio.iscoroutine(r):
+    if isawaitable(r):
         return await r
     return r
 
@@ -129,13 +128,13 @@ class BaseDispatcher(Router):
     def _register(self, what: List[Handler], handler: Callable[..., None]):
         # Save handler to the given handlers list.
 
+        assert not hasattr(handler, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
+        assert not hasattr(handler, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
+
         function = _get_function(handler)
 
         assert _check_sig(function), \
             'Handler `%s` must not take any arguments!' % handler
-
-        assert not hasattr(handler, HANDLER_ASSIGNED_ATTR), 'Handler already registered!'
-        assert not hasattr(handler, WAITER_ASSIGNED_ATTR), 'Already registered as waiter!'
 
         priority = getattr(handler, PRIORITY_ATTR, self._default_priority)
         assert isinstance(priority, int), 'Handler function has wrong priority!'
@@ -146,7 +145,7 @@ class BaseDispatcher(Router):
 
         what.append(Handler(priority, function, filters))
 
-        setattr(function, HANDLER_ASSIGNED_ATTR, True)
+        setattr(handler, HANDLER_ASSIGNED_ATTR, True)
 
         # if handler added in runtime - resort handlers
         if self._bots:

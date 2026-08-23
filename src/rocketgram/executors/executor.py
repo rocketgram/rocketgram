@@ -82,7 +82,10 @@ class Executor:
         loop.run_until_complete(stop())
 
         pending = asyncio.all_tasks(loop)
-        waits = asyncio.wait_for(asyncio.shield(asyncio.gather(*pending)), shutdown_wait)
+        waits = asyncio.wait_for(
+            asyncio.shield(asyncio.gather(*pending, return_exceptions=True)),
+            shutdown_wait,
+        )
 
         with suppress(asyncio.TimeoutError):
             loop.run_until_complete(waits)
@@ -94,6 +97,6 @@ class Executor:
                 t.cancel()
 
         with suppress(asyncio.CancelledError):
-            loop.run_until_complete(asyncio.gather(*pending))
+            loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
 
         logger.info('Bye!')

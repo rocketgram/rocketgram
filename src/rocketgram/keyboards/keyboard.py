@@ -71,14 +71,17 @@ class Keyboard:
         head_part = [head_btns[p:q] for p, q in zip(accumulate(chain([0], head)), accumulate(head))]
 
         middle_part = list()
-        m = zip(accumulate(chain([0], cycle(middle))), accumulate(cycle(middle)))
-        while True:
-            p, q = next(m)
-            part = middle_btns[p:q]
-            if len(part):
-                middle_part.append(part)
-            else:
-                break
+        if middle:
+            m = zip(accumulate(chain([0], cycle(middle))), accumulate(cycle(middle)))
+            while True:
+                p, q = next(m)
+                part = middle_btns[p:q]
+                if len(part):
+                    middle_part.append(part)
+                else:
+                    break
+        elif middle_btns:
+            raise errors.NotEnoughButtonsError('Not enough scheme values to render all buttons')
 
         tail_part = [tail_btns[p:q] for p, q in zip(accumulate(chain([0], tail)), accumulate(tail))]
 

@@ -290,6 +290,22 @@ class Context:
             self.message = update.edited_channel_post
             self.chat = update.edited_channel_post.chat
             self.user = update.edited_channel_post.user
+        elif update.type is api.UpdateType.guest_message:
+            self.message = update.guest_message
+            self.chat = update.guest_message.chat
+            self.user = update.guest_message.user or update.guest_message.guest_bot_caller_user
+        elif update.type is api.UpdateType.business_connection:
+            self.user = update.business_connection.user
+        elif update.type is api.UpdateType.business_message:
+            self.message = update.business_message
+            self.chat = update.business_message.chat
+            self.user = update.business_message.user
+        elif update.type is api.UpdateType.edited_business_message:
+            self.message = update.edited_business_message
+            self.chat = update.edited_business_message.chat
+            self.user = update.edited_business_message.user
+        elif update.type is api.UpdateType.deleted_business_messages:
+            self.chat = update.deleted_business_messages.chat
         elif update.type is api.UpdateType.message_reaction:
             self.reaction = update.message_reaction
             self.chat = update.message_reaction.chat
@@ -319,6 +335,7 @@ class Context:
             self.poll = update.poll
         elif update.type is api.UpdateType.poll_answer:
             self.answer = update.poll_answer
+            self.chat = update.poll_answer.voter_chat
             self.user = update.poll_answer.user
         elif update.type is api.UpdateType.my_chat_member:
             self.member = update.my_chat_member
@@ -328,12 +345,21 @@ class Context:
             self.member = update.chat_member
             self.chat = update.chat_member.chat
             self.user = update.chat_member.user
+        elif update.type is api.UpdateType.chat_join_request:
+            self.chat = update.chat_join_request.chat
+            self.user = update.chat_join_request.user
         elif update.type is api.UpdateType.chat_boost:
             self.boost = update.chat_boost
             self.chat = update.chat_boost.chat
         elif update.type is api.UpdateType.removed_chat_boost:
             self.removed_boost = update.removed_chat_boost
             self.chat = update.removed_chat_boost.chat
+        elif update.type is api.UpdateType.purchased_paid_media:
+            self.user = update.purchased_paid_media.user
+        elif update.type is api.UpdateType.subscription:
+            self.user = update.subscription.user
+        elif update.type is api.UpdateType.managed_bot:
+            self.user = update.managed_bot.user
 
 
 context: Context = Context.instance()

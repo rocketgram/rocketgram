@@ -9,5 +9,8 @@ from .base_adapter import BaseJsonAdapter
 
 
 class OrJsonJsonAdapter(BaseJsonAdapter):
-    dumps = staticmethod(orjson.dumps)
+    @staticmethod
+    def dumps(obj, **kwargs) -> str:
+        return orjson.dumps(obj, **kwargs).decode()
+
     loads = staticmethod(orjson.loads)

@@ -3,7 +3,7 @@
 # Rocketgram is released under the MIT License (see LICENSE).
 
 
-from typing import ClassVar
+from typing import Type
 
 from . import api
 
@@ -59,7 +59,7 @@ class RocketgramRequestError(RocketgramError):
         return self.response.description
 
     @classmethod
-    def register_exception(cls, exception: ClassVar['RocketgramRequestError']) -> ClassVar['RocketgramRequestError']:
+    def register_exception(cls, exception: Type['RocketgramRequestError']) -> Type['RocketgramRequestError']:
         assert exception.error_code is not None
         assert exception.error_code not in cls._exceptions
         assert issubclass(exception, RocketgramRequestError)

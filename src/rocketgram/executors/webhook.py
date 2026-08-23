@@ -6,6 +6,7 @@
 import asyncio
 import logging
 import signal
+from contextlib import suppress
 from secrets import token_urlsafe
 from typing import TYPE_CHECKING, Union, Dict, List, Set, Optional, Type, Tuple
 
@@ -28,7 +29,7 @@ class WebhookExecutor(Executor):
     HEADER_SECRET = "X-Telegram-Bot-Api-Secret-Token"
 
     __slots__ = ('_base_url', '_base_path', '_host', '_port', '_bots', '_srv',
-                 '_started', '_tasks', '_dumps', '_loads', '_secret_token', '_secret_tokens')
+                 '_runner', '_started', '_tasks', '_dumps', '_loads', '_secret_token', '_secret_tokens')
 
     def __init__(self, base_url: str, base_path: str, *, host: str = 'localhost', port: int = 8080,
                  secret_token: Union[bool, str] = False,
@@ -45,6 +46,7 @@ class WebhookExecutor(Executor):
         self._secret_tokens: Dict['Bot', Optional[str]] = dict()
 
         self._srv = None
+        self._runner = None
         self._started = False
 
         self._loads = json_adapter.loads
@@ -64,9 +66,9 @@ class WebhookExecutor(Executor):
         return len(request.files()) == 0
 
     async def add_bot(self, bot: 'Bot', *, allowed_updates: Optional[List[UpdateType]] = None,
-                      drop_pending_updates: bool = False, certificate: Optional[InputFile] = None,
-                      ip_address: Optional[str] = None, suffix: str = None, set_webhook: bool = True,
-                      secret_token: Optional[Union[bool, str]] = None, max_connections: int = None):
+                       drop_pending_updates: bool = False, certificate: Optional[InputFile] = None,
+                       ip_address: Optional[str] = None, suffix: Optional[str] = None, set_webhook: bool = True,
+                       secret_token: Optional[Union[bool, str]] = None, max_connections: Optional[int] = None):
 
         if bot in self._bots.values():
             raise ValueError('Bot already added.')
@@ -76,6 +78,9 @@ class WebhookExecutor(Executor):
 
         full_path = self._base_path + suffix
         full_url = self._base_url + suffix
+
+        if full_path in self._bots:
+            raise ValueError('Webhook path already used.')
 
         if bot.name is None:
             response = await bot.send(GetMe())
@@ -90,14 +95,24 @@ class WebhookExecutor(Executor):
         self._secret_tokens[bot] = secret_token
         self._tasks[bot] = set()
 
-        logger.info('Added bot @%s', bot.name)
+        try:
+            if set_webhook or drop_pending_updates or set_secret_token:
+                swh = SetWebhook(full_url, certificate=certificate, ip_address=ip_address,
+                                 allowed_updates=allowed_updates, drop_pending_updates=drop_pending_updates,
+                                 secret_token=secret_token, max_connections=max_connections)
+                await bot.send(swh)
+                logger.debug('Webhook setup done for bot @%s', bot.name)
+        except BaseException:
+            del self._bots[full_path]
+            del self._secret_tokens[bot]
+            tasks = self._tasks.pop(bot)
+            with suppress(Exception):
+                await self._wait_tasks(tasks)
+            with suppress(Exception):
+                await bot.shutdown(self)
+            raise
 
-        if set_webhook or drop_pending_updates or set_secret_token:
-            swh = SetWebhook(full_url, certificate=certificate, ip_address=ip_address, allowed_updates=allowed_updates,
-                             drop_pending_updates=drop_pending_updates, secret_token=secret_token,
-                             max_connections=max_connections)
-            await bot.send(swh)
-            logger.debug('Webhook setup done for bot @%s', bot.name)
+        logger.info('Added bot @%s', bot.name)
 
         if drop_pending_updates:
             logger.debug('Updates dropped for @%s', bot.name)

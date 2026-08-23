@@ -43,10 +43,12 @@ def _user_scope():
 
     Valid user scope can be only for message or callback query in chats and groups."""
 
-    if context.update.type == UpdateType.message:
+    if context.update.type in (UpdateType.message, UpdateType.guest_message, UpdateType.business_message):
+        if context.chat is None or context.user is None:
+            return None
         return f"{id(context.bot)}-{context.chat.id}-{context.user.id}"
     if context.update.type == UpdateType.callback_query:
-        if context.message is None:
+        if context.message is None or context.chat is None or context.user is None:
             return None
         return f"{id(context.bot)}-{context.chat.id}-{context.user.id}"
 
@@ -107,10 +109,10 @@ class Dispatcher(BaseDispatcher):
 
         if isinstance(wait, DropWaiter):
             # drop current waiter
-            if scope in self.__waiters:
+            old_waiter = self.__waiters.pop(scope, None)
+            if old_waiter is not None and old_waiter.handler is not gen:
                 with suppress(StopAsyncIteration):
-                    await self.__waiters[scope].handler.aclose()
-                del self.__waiters[scope]
+                    await old_waiter.handler.aclose()
 
             # re-run generator again
             await self.__run_generator(True, Waiter(int(time()), gen, lambda: True, (), {}, []), scope)
@@ -182,14 +184,14 @@ class Dispatcher(BaseDispatcher):
                 if await _run_filters(post.filters):
                     await _call_or_await(post.handler)
 
+        except HandlerNotFoundError:
+            logger.warning('Handler not found for update:\n%s', replace(context.update, raw=dict()))
+        finally:
             # Cleanup waiters:
             current = int(time())
             if current > self.__last_waiters_check + self.__watires_lifetime_check:
                 self.__last_waiters_check = current
                 _ = asyncio.create_task(self.__waiters_cleanup(current))
-
-        except HandlerNotFoundError:
-            logger.warning('Handler not found for update:\n%s', replace(context.update, raw=dict()))
 
     async def __waiters_cleanup(self, current: int):
         closes = list()

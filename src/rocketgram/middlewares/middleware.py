@@ -26,7 +26,7 @@ class Middleware:
     def process_error(self, error: Exception) -> Optional[Awaitable]:
         raise NotImplementedError
 
-    def before_request(self, request: Request) -> Union[Response, Awaitable[Request]]:
+    def before_request(self, request: Request) -> Union[Request, Awaitable[Request]]:
         raise NotImplementedError
 
     def after_request(self, request: Request, response: Response) -> Union[Response, Awaitable[Response]]:

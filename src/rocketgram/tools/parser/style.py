@@ -4,6 +4,7 @@
 
 
 import re
+from html import escape as html_escape
 from typing import Dict, Callable, Optional
 
 from ... import MessageEntity
@@ -12,7 +13,7 @@ from ...api import EntityType
 
 class Style:
     _STYLER_ATTR = '_styler'
-    _stylers: Dict[EntityType, Callable[[MessageEntity, str], str]] = None
+    _stylers: Dict[EntityType, Callable[[MessageEntity, str], str]] = {}
 
     @classmethod
     def styler(cls, entity_type: EntityType):
@@ -89,7 +90,7 @@ class HtmlStyle(Style):
     @classmethod
     @Style.styler(EntityType.text_link)
     def _text_link(cls, entity: MessageEntity, text: str) -> str:
-        return f'<a href="{entity.url}">{text}</a>'
+        return f'<a href="{html_escape(entity.url or "", quote=True)}">{text}</a>'
 
     @classmethod
     @Style.styler(EntityType.text_mention)
@@ -110,13 +111,19 @@ class HtmlStyle(Style):
     @Style.styler(EntityType.pre)
     def _pre(cls, entity: MessageEntity, text: str) -> str:
         if entity.language:
-            return f'<pre><code class="language-{entity.language}">{text}</code></pre>'
+            language = html_escape(entity.language, quote=True)
+            return f'<pre><code class="language-{language}">{text}</code></pre>'
         return f"<pre>{text}</pre>"
 
     @classmethod
     @Style.styler(EntityType.blockquote)
     def _blockquote(cls, _: MessageEntity, text: str) -> str:
         return f"<blockquote>{text}</blockquote>"
+
+    @classmethod
+    @Style.styler(EntityType.expandable_blockquote)
+    def _expandable_blockquote(cls, _: MessageEntity, text: str) -> str:
+        return f"<blockquote expandable>{text}</blockquote>"
 
 
 class MarkdownStyle(Style):
@@ -139,7 +146,7 @@ class MarkdownStyle(Style):
     @classmethod
     @Style.styler(EntityType.text_link)
     def _text_link(cls, entity: MessageEntity, text: str) -> str:
-        return f"[{text}]({entity.url})"
+        return f"[{text}]({entity.url or ''})"
 
     @classmethod
     @Style.styler(EntityType.text_mention)
@@ -149,7 +156,7 @@ class MarkdownStyle(Style):
     @classmethod
     @Style.styler(EntityType.code)
     def _code(cls, _: MessageEntity, text: str) -> str:
-        return f"```\n{text}```"
+        return f"`{text}`"
 
     @classmethod
     @Style.styler(EntityType.pre)
@@ -160,6 +167,7 @@ class MarkdownStyle(Style):
 
 class MarkdownV2Style(Style):
     _RE = re.compile(r"([_*\[\]()~`>#+\-=|{}.!\\])")
+    _LINK_RE = re.compile(r"([\\)])")
 
     @classmethod
     def escape(cls, text: str) -> str:
@@ -193,7 +201,8 @@ class MarkdownV2Style(Style):
     @classmethod
     @Style.styler(EntityType.text_link)
     def _text_link(cls, entity: MessageEntity, text: str) -> str:
-        return f"[{text}]({entity.url})"
+        url = cls._LINK_RE.sub(r'\\\1', entity.url or "")
+        return f"[{text}]({url})"
 
     @classmethod
     @Style.styler(EntityType.text_mention)
@@ -221,3 +230,9 @@ class MarkdownV2Style(Style):
     def _blockquote(cls, _: MessageEntity, text: str) -> str:
         text = text.replace("\n", "\n>")
         return f">{text}\r"
+
+    @classmethod
+    @Style.styler(EntityType.expandable_blockquote)
+    def _expandable_blockquote(cls, _: MessageEntity, text: str) -> str:
+        text = text.replace("\n", "\n>")
+        return f"**>{text}||"

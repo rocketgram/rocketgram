@@ -66,7 +66,7 @@ def deeplink(*commands: str, case_sensitive: bool = False):
         return False
 
     text = msg.text
-    text_lw = msg.text.lower()
+    text_lw = text.lower()
     lw = '/start@%s ' % context.bot.name.lower()
 
     if not (text.startswith('/start ') or text_lw.startswith(lw)):
@@ -75,13 +75,13 @@ def deeplink(*commands: str, case_sensitive: bool = False):
     if not len(commands):
         return True
 
-    if not case_sensitive:
-        text = text_lw
-
-    if text.lower().startswith(lw):
-        text = msg.text[7 + len(lw):]
+    if text_lw.startswith(lw):
+        text = text[len(lw):]
     else:
-        text = msg.text[7:]
+        text = text[len('/start '):]
+
+    if not case_sensitive:
+        text = text.lower()
 
     for cmd in commands:
         if not case_sensitive:
